@@ -13,27 +13,22 @@ pipeline {
         }
         stage('Compile') {
             steps {
-                sh './gradlew compileJava --info'
+                sh './mvnw -B compile'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test --info'
+                sh './mvnw -B test'
             }
         }
         stage('Integration test') {
             steps {
-                echo './gradlew test --info'
+                echo './mvnw -B test'
             }
         }
         stage('Package WAR') {
             steps {
-                sh './gradlew war --info'
-            }
-        }
-        stage('Package WAR') {
-            steps {
-                sh './gradlew war --info'
+                sh './mvnw clean package'
             }
         }
         stage('Publish to artifactory') {
@@ -49,28 +44,24 @@ pipeline {
                         credentialsId: "artifactory-credentials"
                 )
 
-                rtGradleDeployer(
-                        id: "GRADLE_DEPLOYER",
+                rtMavenDeployer(
+                        id: "MAVEN_DEPLOYER",
                         serverId: "ARTIFACTORY_SERVER",
-                        repo: "cp-portal-staging",
+                        snapshotRepo: "cp-portal-staging",
+                        releaseRepo: "cp-portal-release",
                 )
-                rtBuildInfo(
-                        captureEnv: true,
-                        includeEnvPatterns: ["*"],
-                        excludeEnvPatterns: ["DONT_COLLECT*"]
-                )
-                rtGradleResolver(
-                        id: "GRADLE_RESOLVER",
+                rtMavenResolver(
+                        id: "MAVEN_RESOLVER",
                         serverId: "ARTIFACTORY_SERVER",
-                        repo: "cp-portal-group"
+                        snapshotRepo: "cp-portal-staging",
+                        releaseRepo: "cp-portal-release"
                 )
-                rtGradleRun(
-                        usesPlugin: true,
-                        tool: "GRADLE-JENKINS",
-                        buildFile: 'build.gradle',
-                        tasks: 'clean artifactoryPublish --stacktrace --info --scan ',
-                        deployerId: "GRADLE_DEPLOYER",
-                        resolverId: "GRADLE_RESOLVER"
+                rtMavenRun(
+                        tool: MAVEN_TOOL, // Tool name from Jenkins configuration
+                        pom: 'pom.xml',
+                        goals: 'clean install',
+                        deployerId: "MAVEN_DEPLOYER",
+                        resolverId: "MAVEN_RESOLVER"
                 )
 //                rtPublishBuildInfo (
 //                        serverId: "ARTIFACTORY_SERVER",
@@ -81,22 +72,22 @@ pipeline {
 //                )
             }
         }
-        stage('Deploy to development') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                deploy adapters: [tomcat8(credentialsId: 'remote-tomcat-aws', path: '', url: "${TOMCAT_URL}")], contextPath: 'cp-api-management', war: '**/*.war'
-            }
-        }
-        stage('Deploy to production') {
-            when {
-                branch 'master'
-            }
-            steps {
-                deploy adapters: [tomcat8(credentialsId: 'remote-tomcat-aws', path: '', url: "${TOMCAT_URL}")], contextPath: 'cp-api-management', war: '**/*.war'
-            }
-        }
+//        stage('Deploy to development') {
+//            when {
+//                branch 'develop'
+//            }
+//            steps {
+//                deploy adapters: [tomcat8(credentialsId: 'remote-tomcat-aws', path: '', url: "${TOMCAT_URL}")], contextPath: 'cp-api-management', war: '**/*.war'
+//            }
+//        }
+//        stage('Deploy to production') {
+//            when {
+//                branch 'master'
+//            }
+//            steps {
+//                deploy adapters: [tomcat8(credentialsId: 'remote-tomcat-aws', path: '', url: "${TOMCAT_URL}")], contextPath: 'cp-api-management', war: '**/*.war'
+//            }
+//        }
     }
 }
 
