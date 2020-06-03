@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        ARTIFACTORY_CREDENTIALS = credentials('artifactory-credentials')
         ARTIFACTORY_URL = 'https://repo-api.mcvl-engineering.com/repository'
+        ARTIFACTORY_CREDENTIALS = 'artifactory-credentials'
     }
     stages {
         stage('Checkout SCM') {
@@ -25,15 +25,13 @@ pipeline {
                 sh './mvnw clean package'
             }
         }
-        stage('Publish to artifactory') {
-            /*when {
-                branch 'master'
-            }*/
+        stage('Publish artifact') {
+
             steps {
                 rtServer(
                         id: "ARTIFACTORY_SERVER",
-                        url: "${ARTIFACTORY_URL}",
-                        credentialsId: "artifactory-credentials"
+                        url: env.ARTIFACTORY_URL,
+                        credentialsId: env.ARTIFACTORY_CREDENTIALS
                 )
 
                 rtMavenDeployer(
@@ -57,6 +55,17 @@ pipeline {
                 )
             }
         }
+        stage('Publish docker image') {
+            steps {
+                script {
+                    docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
+                        def customImage = docker.build("cp-portal-docker-staging/cp-api-management:${env.BUILD_ID}")
+                        customImage.push()
+                    }
+                }
+            }
+        }
+
 
     }
 }
