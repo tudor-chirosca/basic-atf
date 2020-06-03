@@ -16,32 +16,46 @@
   <name>cp-api-management</name>
   <description>CP API Management</description>
 
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.mcvl-engineering.com/repository/maven-central/</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.mcvl-engineering.com/repository/maven-central/</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>cp-portal-group</name>
+          <url>https://repo.mcvl-engineering.com/repository/cp-portal-group</url>
+        </repository>
+        <repository>
+          <snapshots/>
+          <id>snapshots</id>
+          <name>cp-portal-group</name>
+          <url>https://repo.mcvl-engineering.com/repository/cp-portal-group</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>cp-portal-group</name>
+          <url>https://repo.mcvl-engineering.com/repository/cp-portal-group</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots/>
+          <id>snapshots</id>
+          <name>cp-portal-group</name>
+          <url>https://repo.mcvl-engineering.com/repository/cp-portal-group</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
 
   <properties>
     <java.version>1.8</java.version>
