@@ -16,8 +16,6 @@
   <name>cp-api-management</name>
   <description>CP API Management</description>
 
-  <profiles>
-    <profile>
       <repositories>
         <repository>
           <snapshots>
@@ -50,12 +48,6 @@
           <url>https://repo.mcvl-engineering.com/repository/cp-portal-group</url>
         </pluginRepository>
       </pluginRepositories>
-      <id>artifactory</id>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>artifactory</activeProfile>
-  </activeProfiles>
 
   <properties>
     <java.version>1.8</java.version>
