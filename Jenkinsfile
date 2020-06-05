@@ -15,7 +15,7 @@ pipeline {
                 script{
                     def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
 
-                    echo "tag: ${BUILD_NUMBER}.${GIT_COMMIT}.${BRANCH_NAME}"
+                    echo "tag: ${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
                 }
 
             }
