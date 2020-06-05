@@ -10,7 +10,18 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'tech-user', url: 'https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management']]])
             }
         }
-        stage('Compile') {
+        stage('Test envs'){
+            steps{
+                script{
+                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+
+                    echo "tag: ${BUILD_NUMBER}.${GIT_COMMIT}.${BRANCH_NAME}"
+                }
+
+            }
+
+        }
+        /*stage('Compile') {
             steps {
                 sh './mvnw -B compile'
             }
@@ -64,7 +75,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
 
     }
