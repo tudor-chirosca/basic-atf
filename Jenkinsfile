@@ -10,18 +10,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'tech-user', url: 'https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management']]])
             }
         }
-        stage('Test envs'){
-            steps{
-                script{
-                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-
-                    echo "tag: ${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-                }
-
-            }
-
-        }
-        /*stage('Compile') {
+        stage('Compile') {
             steps {
                 sh './mvnw -B compile'
             }
@@ -69,15 +58,16 @@ pipeline {
         stage('Publish docker image') {
             steps {
                 script {
+                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                    def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
+
                     docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                        def customImage = docker.build("cp-portal-docker-staging/cp-api-management:${env.BUILD_ID}")
+                        def customImage = docker.build("cp-portal-docker-staging/cp-api-management:${gitTag}")
                         customImage.push()
                     }
                 }
             }
-        }*/
-
-
+        }
     }
 }
 
