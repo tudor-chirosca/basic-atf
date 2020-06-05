@@ -4,7 +4,7 @@
 FROM tomcat:8
 MAINTAINER Cool kids
 
-ADD ./build/libs/cp-api-management-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/cp-api-management.war
+ADD ./target/cp-api-management-*.war /usr/local/tomcat/webapps/cp-api-management.war
 
 EXPOSE 8080
 
