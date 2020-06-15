@@ -85,7 +85,7 @@ pipeline {
                     def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
 
                     docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                        def image = docker.build("cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}")
+                        def image = docker.build("cp-portal-docker-release/${PROJECT_NAME}:${gitTag}")
                         image.push()
                     }
                 }
