@@ -24,6 +24,6 @@ public class PositionsController {
 
   @GetMapping(value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
   public String healthCheck() {
-    return "OK demo story";
+    return "OK";
   }
 }
