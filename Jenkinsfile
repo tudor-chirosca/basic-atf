@@ -12,7 +12,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'tech-user', url: env.GITHUB_URL]]])
             }
         }
-        /*stage('Compile') {
+        stage('Compile') {
             steps {
                 sh './mvnw -B compile'
             }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh './mvnw clean package'
             }
-        }*/
+        }
         stage('Publish artifact') {
 
             steps {
