@@ -8,11 +8,6 @@ pipeline {
         ARTIFACTORY_CREDENTIALS = 'artifactory-credentials'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'tech-user', url: env.GITHUB_URL]]])
-            }
-        }
         stage('Compile') {
             steps {
                 sh './mvnw -B compile'
