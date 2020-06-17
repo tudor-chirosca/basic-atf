@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        ARTIFACTORY_REGISTRY = 'repo-api.mcvl-engineering.com'
         ARTIFACTORY_URL = 'https://repo-api.mcvl-engineering.com/repository'
         PROJECT_NAME = 'cp-api-management'
         GITHUB_URL = "https://github-api.mcvl-engineering.com/vocalink-portal/${PROJECT_NAME}"
@@ -22,7 +23,7 @@ pipeline {
                 sh './mvnw -B test'
             }
         }
-        stage('Packbage WAR') {
+        stage('Package WAR') {
             steps {
                 sh './mvnw clean package'
             }
@@ -106,7 +107,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: env.ARTIFACTORY_CREDENTIALS, passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USERNAME')]) {
                         sshagent(credentials: ['deployer']) {
                             sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker login -u ${ARTIFACTORY_USERNAME} -p ${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_URL}"
-                            sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 --name ${PROJECT_NAME} repo-api.mcvl-engineering.com/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
+                            sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 --name ${PROJECT_NAME} ${env.ARTIFACTORY_REGISTRY}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
                         }
                     }
                 }
