@@ -37,6 +37,7 @@ pipeline {
                         serverId: "ARTIFACTORY_SERVER",
                         snapshotRepo: "cp-portal-staging",
                         releaseRepo: "cp-portal-release",
+                        customBuildName: "test-cp-api"
                 )
                 rtMavenResolver(
                         id: "MAVEN_RESOLVER",
