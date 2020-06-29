@@ -6,6 +6,7 @@ pipeline {
         PROJECT_NAME = 'cp-api-management'
         GITHUB_URL = "https://github-api.mcvl-engineering.com/vocalink-portal/${PROJECT_NAME}"
         ARTIFACTORY_CREDENTIALS = 'artifactory-credentials'
+        GITHUB_CREDENTIALS = 'tech-user'
     }
     stages {
         stage('Compile') {
@@ -37,18 +38,17 @@ pipeline {
                         serverId: "ARTIFACTORY_SERVER",
                         snapshotRepo: "cp-portal-staging",
                         releaseRepo: "cp-portal-release",
-                        customBuildName: "test-cp-api"
                 )
                 rtMavenResolver(
                         id: "MAVEN_RESOLVER",
                         serverId: "ARTIFACTORY_SERVER",
                         snapshotRepo: "cp-portal-group",
-                        releaseRepo: "cp-portal-group"
+                        releaseRepo: "cp-portal-group",
                 )
                 rtMavenRun(
                         tool: 'MAVEN_TOOL', // Tool name from Jenkins configuration
                         pom: 'pom.xml',
-                        goals: 'clean install -U',
+                        goals: "clean install -U",
                         deployerId: "MAVEN_DEPLOYER",
                         resolverId: "MAVEN_RESOLVER"
                 )
@@ -64,11 +64,14 @@ pipeline {
                 script {
                     def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
+                    def imageName = "cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}"
 
                     docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                        def image = docker.build("cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}")
+                        def image = docker.build(imageName)
                         image.push()
                     }
+
+                    sh "docker rmi ${imageName}"
                 }
             }
         }
@@ -80,11 +83,14 @@ pipeline {
                 script {
                     def gitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
+                    def imageName = "cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
 
                     docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                        def image = docker.build("cp-portal-docker-release/${PROJECT_NAME}:${gitTag}")
+                        def image = docker.build(imageName)
                         image.push()
                     }
+
+                    sh "docker rmi ${imageName}"
                 }
             }
         }
@@ -109,6 +115,11 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
