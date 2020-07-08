@@ -8,8 +8,9 @@ pipeline {
         GITHUB_URL = "https://${GITHUB_DOMAIN}/${PROJECT_NAME}"
         ARTIFACTORY_CREDENTIALS = "artifactory-credentials"
         GITHUB_CREDENTIALS = "tech-user"
-        RELEASE_BRANCH = "master"
+        RELEASE_BRANCH = "test-changelog"
     }
+
 
     stages {
         stage("Build and publish artifact:") {
@@ -37,7 +38,12 @@ pipeline {
                 }
                 stage("Prepare release: ") {
                     when {
-                        branch "${RELEASE_BRANCH}"
+                        allOf {
+                            branch "${RELEASE_BRANCH}"
+                            not {
+                                changelog "^chore\\(release\\):.*"
+                            }
+                        }
                     }
                     stages {
                         stage('create release') {
@@ -92,6 +98,11 @@ pipeline {
         }
         stage('Build and deploy docker image') {
             agent any
+            when {
+                not {
+                    changelog "^chore\\(release\\):.*"
+                }
+            }
             stages {
                 stage("Publish docker staging") {
                     when {
