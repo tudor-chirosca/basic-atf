@@ -1,7 +1,6 @@
 package com.vocalink.portal.ui.dto;
 
 import com.vocalink.portal.domain.Participant;
-import com.vocalink.portal.domain.Position;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class PositionItem {
-
+public class PositionItemDto {
   private Participant participant;
-  private Position previousPosition;
-  private Position currentPosition;
+  private PositionDto previousPosition;
+  private PositionDto currentPosition;
 }

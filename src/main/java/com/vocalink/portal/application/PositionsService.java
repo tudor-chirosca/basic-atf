@@ -5,8 +5,8 @@ import com.vocalink.portal.domain.CycleRepository;
 import com.vocalink.portal.domain.Participant;
 import com.vocalink.portal.domain.ParticipantRepository;
 import com.vocalink.portal.domain.Position;
-import com.vocalink.portal.domain.PositionItemFactory;
-import com.vocalink.portal.ui.dto.PositionItem;
+import com.vocalink.portal.domain.PositionRow;
+import com.vocalink.portal.ui.dto.SettlementDto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class PositionsService {
   private final ParticipantRepository participantRepository;
   private final CycleRepository cycleRepository;
 
-  public List<PositionItem> fetchPositions() {
+  public SettlementDto getSettlement() {
     log.info("Fetching positions...");
 
     Mono<Participant[]> participantMono = participantRepository.fetchParticipants();
@@ -41,7 +40,7 @@ public class PositionsService {
             throw new RuntimeException("Expected two cycles!");
           }
 
-          Arrays.sort(cycles, Comparator.comparing(Cycle::getId));
+          Arrays.sort(cycles, Comparator.comparing(Cycle::getId).reversed());
 
           log.info("Positions retrieved...");
 
@@ -56,13 +55,23 @@ public class PositionsService {
               .stream()
               .collect(Collectors.toMap(Position::getParticipantId, Function.identity()));
 
-          List<PositionItem> positionItems = new ArrayList<>();
+          List<PositionRow> positionItems = new ArrayList<>();
           for (Participant participant : participants) {
             positionItems.add(
-                PositionItemFactory.newInstance(positionsCurrentCycle.get(participant.getId()),
-                    positionsPreviousCycle.get(participant.getId()), participant));
+                PositionRow.builder()
+                    .currentPosition(positionsCurrentCycle.get(participant.getId()).toDto())
+                    .previousPosition(positionsPreviousCycle.get(participant.getId()).toDto())
+                    .participant(participant)
+                    .build()
+            );
           }
-          return positionItems;
+
+          return SettlementDto.builder()
+              .positions(positionItems)
+              .currentCycle(currentCycle.toDto())
+              .previousCycle(previousCycle.toDto())
+              .build();
+
         }).block();
   }
 }
