@@ -8,7 +8,7 @@ pipeline {
         GITHUB_URL = "https://${GITHUB_DOMAIN}/${PROJECT_NAME}"
         ARTIFACTORY_CREDENTIALS = "artifactory-credentials"
         GITHUB_CREDENTIALS = "tech-user"
-        RELEASE_BRANCH = "master"
+        RELEASE_BRANCH = "test-pipeline"
     }
 
 
