@@ -17,7 +17,12 @@ pipeline {
             agent {
                 dockerfile {
                     filename 'Dockerfile-ci'
-                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock -v /jenkins-agent:/jenkins-agent -e JAVA_HOME='/usr/local/openjdk-8'"
+                    args "-v /jenkins-agent:/jenkins-agent -e JAVA_HOME='/usr/local/openjdk-8' --user 1001:1001 "
+                }
+            }
+            when {
+                not {
+                    changelog "^chore\\(release\\):.*"
                 }
             }
             stages {
