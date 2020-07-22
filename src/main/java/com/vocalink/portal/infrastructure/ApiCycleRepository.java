@@ -1,11 +1,13 @@
 package com.vocalink.portal.infrastructure;
 
+import static java.util.Arrays.asList;
+
 import com.vocalink.portal.domain.Cycle;
 import com.vocalink.portal.domain.CycleRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
 
 @Repository
 @Slf4j
@@ -15,8 +17,8 @@ public class ApiCycleRepository implements CycleRepository {
   private final ApiClient apiClient;
 
   @Override
-  public Mono<Cycle[]> fetchCycles() {
+  public List<Cycle> fetchCycles() {
     log.info("Fetch cycles..");
-    return apiClient.fetchCycles();
+    return asList(apiClient.fetchCycles().block());
   }
 }

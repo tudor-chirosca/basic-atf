@@ -1,11 +1,13 @@
 package com.vocalink.portal.infrastructure;
 
+import static java.util.Arrays.asList;
+
 import com.vocalink.portal.domain.Participant;
 import com.vocalink.portal.domain.ParticipantRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Repository
@@ -15,8 +17,8 @@ public class APIParticipantRepository implements ParticipantRepository {
   private final ApiClient apiClient;
 
   @Override
-  public Mono<Participant[]> fetchParticipants() {
+  public List<Participant> fetchParticipants() {
     log.info("Fetching participants..");
-    return apiClient.fetchParticipants();
+    return asList(apiClient.fetchParticipants().block());
   }
 }

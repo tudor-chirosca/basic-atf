@@ -1,8 +1,8 @@
 package com.vocalink.portal.domain;
 
-import reactor.core.publisher.Mono;
+import java.util.List;
 
 public interface ParticipantRepository {
 
-  Mono<Participant[]> fetchParticipants();
+  List<Participant> fetchParticipants();
 }

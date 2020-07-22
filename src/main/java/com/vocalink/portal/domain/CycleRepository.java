@@ -1,8 +1,8 @@
 package com.vocalink.portal.domain;
 
-import reactor.core.publisher.Mono;
+import java.util.List;
 
 public interface CycleRepository {
 
-  Mono<Cycle[]> fetchCycles();
+  List<Cycle> fetchCycles();
 }
