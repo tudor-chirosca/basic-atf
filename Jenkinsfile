@@ -17,7 +17,7 @@ pipeline {
             agent {
                 dockerfile {
                     filename 'Dockerfile-ci'
-                    args "-v /jenkins-agent:/jenkins-agent -e JAVA_HOME='/usr/local/openjdk-8' --user 1001:1001 "
+                    args "-u root -v /jenkins-agent:/jenkins-agent -e JAVA_HOME='/usr/local/openjdk-8'"
                 }
             }
             when {
@@ -60,9 +60,9 @@ pipeline {
                             steps {
                                 script {
                                     withCredentials([usernamePassword(credentialsId: env.GITHUB_CREDENTIALS, passwordVariable: "GITHUB_PASSWORD", usernameVariable: "GITHUB_USERNAME")]) {
-                                        sh "git config --global user.email jenkins-agent-cp-portal@mastercard.com"
-                                        sh "git config --global user.name jenkins-agent-cp-portal"
-                                        sh "git config --global push.followTags true"
+                                        sh "git config user.email jenkins-agent-cp-portal@mastercard.com"
+                                        sh "git config user.name jenkins-agent-cp-portal"
+                                        sh "git config push.followTags true"
                                         sh "npx standard-version"
                                         sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GITHUB_DOMAIN}/${PROJECT_NAME}.git HEAD:${BRANCH_NAME}"
                                         env.WORKSPACE = pwd()
