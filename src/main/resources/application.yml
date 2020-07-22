@@ -1,2 +1,2 @@
-api.url: http://localhost:9999/
+api.url: http://localhost:9999/positions-mock-server
 swagger.enabled: true
