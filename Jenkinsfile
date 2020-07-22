@@ -31,6 +31,11 @@ pipeline {
                         sh "./mvnw -B test"
                     }
                 }
+                stage("Acceptance test") {
+                    steps {
+                        sh "./mvnw -B integration-test"
+                    }
+                }
                 stage("Package WAR") {
                     steps {
                         sh "./mvnw clean package"
