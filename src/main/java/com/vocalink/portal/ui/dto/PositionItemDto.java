@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class PositionItemDto {
   private Participant participant;
-  private PositionDto previousPosition;
-  private PositionDto currentPosition;
+  private ParticipantPositionDto previousPosition;
+  private ParticipantPositionDto currentPosition;
 }

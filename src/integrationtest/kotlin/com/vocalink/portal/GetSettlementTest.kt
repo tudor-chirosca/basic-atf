@@ -79,7 +79,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .positions(
                                 mockParticipants()
                                         .map { participant: Participant ->
-                                            Position.builder()
+                                            ParticipantPosition.builder()
                                                     .participantId(participant.id)
                                                     .credit(BigInteger.valueOf(creditCurrentCycle))
                                                     .debit(BigInteger.valueOf(debitCurrentCycle))
@@ -96,7 +96,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .positions(
                                 mockParticipants()
                                         .map { participant: Participant ->
-                                            Position.builder()
+                                            ParticipantPosition.builder()
                                                     .participantId(participant.id)
                                                     .credit(BigInteger.valueOf(creditPreviousCycle))
                                                     .debit(BigInteger.valueOf(debitPreviousCycle))

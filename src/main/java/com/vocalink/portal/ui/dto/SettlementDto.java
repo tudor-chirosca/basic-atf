@@ -1,6 +1,6 @@
 package com.vocalink.portal.ui.dto;
 
-import com.vocalink.portal.domain.PositionRow;
+import com.vocalink.portal.domain.SettlementPosition;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class SettlementDto {
   private CycleDto currentCycle;
   private CycleDto previousCycle;
-  private List<PositionRow> positions;
+  private List<SettlementPosition> positions;
 }

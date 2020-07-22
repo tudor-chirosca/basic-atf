@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PositionDto {
+public class ParticipantPositionDto {
   private BigInteger credit;
   private BigInteger debit;
   private BigInteger netPosition;

@@ -16,7 +16,7 @@ public class Cycle {
   private String settlementTime;
   private String cutOffTime;
   private CycleStatus status;
-  private List<Position> positions;
+  private List<ParticipantPosition> positions;
 
   public CycleDto toDto(){
     return CycleDto.builder()

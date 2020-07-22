@@ -4,8 +4,8 @@ import com.vocalink.portal.domain.Cycle;
 import com.vocalink.portal.domain.CycleRepository;
 import com.vocalink.portal.domain.Participant;
 import com.vocalink.portal.domain.ParticipantRepository;
-import com.vocalink.portal.domain.Position;
-import com.vocalink.portal.domain.PositionRow;
+import com.vocalink.portal.domain.ParticipantPosition;
+import com.vocalink.portal.domain.SettlementPosition;
 import com.vocalink.portal.ui.dto.SettlementDto;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,18 +42,18 @@ public class PositionsService {
     Cycle currentCycle = cycles.get(0);
     Cycle previousCycle = cycles.get(1);
 
-    Map<String, Position> positionsCurrentCycle = currentCycle.getPositions()
+    Map<String, ParticipantPosition> positionsCurrentCycle = currentCycle.getPositions()
         .stream()
-        .collect(Collectors.toMap(Position::getParticipantId, Function.identity()));
+        .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
 
-    Map<String, Position> positionsPreviousCycle = previousCycle.getPositions()
+    Map<String, ParticipantPosition> positionsPreviousCycle = previousCycle.getPositions()
         .stream()
-        .collect(Collectors.toMap(Position::getParticipantId, Function.identity()));
+        .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
 
-    List<PositionRow> positionItems = new ArrayList<>();
+    List<SettlementPosition> settlementPositions = new ArrayList<>();
     for (Participant participant : participants) {
-      positionItems.add(
-          PositionRow.builder()
+      settlementPositions.add(
+          SettlementPosition.builder()
               .currentPosition(positionsCurrentCycle.get(participant.getId()).toDto())
               .previousPosition(positionsPreviousCycle.get(participant.getId()).toDto())
               .participant(participant)
@@ -62,7 +62,7 @@ public class PositionsService {
     }
 
     return SettlementDto.builder()
-        .positions(positionItems)
+        .positions(settlementPositions)
         .currentCycle(currentCycle.toDto())
         .previousCycle(previousCycle.toDto())
         .build();
