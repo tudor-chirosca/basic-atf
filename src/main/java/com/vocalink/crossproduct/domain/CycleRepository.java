@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CycleRepository {
 
-  List<Cycle> fetchCycles();
+  List<Cycle> findAll(String context);
 }

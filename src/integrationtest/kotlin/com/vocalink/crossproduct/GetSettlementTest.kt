@@ -16,8 +16,8 @@ class GetSettlementTest : AcceptanceTest() {
     fun `should fetch settlement mock data`() {
         val cyclesMock: List<Cycle> = mockCycles()
         val participants: List<Participant> = mockParticipants()
-        Mockito.doAnswer { cyclesMock }.`when`(TestApp.cycleRepository).fetchCycles()
-        Mockito.doAnswer { participants }.`when`(TestApp.participantRepository).fetchParticipants()
+        Mockito.doAnswer { cyclesMock }.`when`(TestApp.cycleRepository).findAll("BPS")
+        Mockito.doAnswer { participants }.`when`(TestApp.participantRepository).findAll("BPS")
 
         val expectedCycles = cyclesMock.map {
             CycleDto.builder()
@@ -48,7 +48,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("NDEASESS")
                         .bic("NDEASESS")
                         .name("Nordea bank")
-                        .status(ParticipantStatus.ACTIVE)
+                        .status("ACTIVE")
                         .suspendedTime(null)
                         .build(),
                 Participant
@@ -56,7 +56,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("HANDSESS")
                         .bic("HANDSESS")
                         .name("Svenska Handelsbanken")
-                        .status(ParticipantStatus.ACTIVE)
+                        .status("ACTIVE")
                         .suspendedTime(null)
                         .build()
         )

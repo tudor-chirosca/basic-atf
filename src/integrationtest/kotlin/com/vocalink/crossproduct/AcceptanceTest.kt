@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [AppConfig::class])
-//@ActiveProfiles("test")
 @Import(AcceptanceTest.AcceptanceTestConfiguration::class)
 open class AcceptanceTest {
 

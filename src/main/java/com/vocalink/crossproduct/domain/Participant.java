@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain;
 
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +14,8 @@ public class Participant {
   private String id;
   private String bic;
   private String name;
-  private ParticipantStatus status;
-  private LocalDateTime suspendedTime;
+  private String status;
+  private String suspendedTime;
 }
 
 

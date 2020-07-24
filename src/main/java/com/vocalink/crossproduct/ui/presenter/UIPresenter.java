@@ -1,9 +1,7 @@
-package com.vocalink.crossproduct.application;
+package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.CycleRepository;
 import com.vocalink.crossproduct.domain.Participant;
-import com.vocalink.crossproduct.domain.ParticipantRepository;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
 import com.vocalink.crossproduct.domain.SettlementPosition;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
@@ -13,24 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @Slf4j
-@RequiredArgsConstructor
-public class SettlementService {
-
-  private final ParticipantRepository participantRepository;
-  private final CycleRepository cycleRepository;
-
-  public SettlementDto getSettlement() {
-    log.info("Fetching positions...");
-
-    List<Participant> participants = participantRepository.fetchParticipants();
-    List<Cycle> cycles = cycleRepository.fetchCycles();
-
+public class UIPresenter implements Presenter {
+  @Override
+  public SettlementDto presentSettlement(String context, List<Cycle> cycles,
+      List<Participant> participants) {
     if (cycles.size() != 2) {
       throw new RuntimeException("Expected two cycles!");
     }
@@ -67,5 +56,9 @@ public class SettlementService {
         .previousCycle(previousCycle.toDto())
         .build();
   }
-}
 
+  @Override
+  public ClientType getClientType() {
+    return ClientType.UI;
+  }
+}

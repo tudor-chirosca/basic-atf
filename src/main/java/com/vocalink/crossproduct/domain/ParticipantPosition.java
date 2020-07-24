@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ParticipantPosition {
   private String participantId;
-  private BigInteger credit;
+  public BigInteger credit;
   private BigInteger debit;
   private BigInteger netPosition;
 
