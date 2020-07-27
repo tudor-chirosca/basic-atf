@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.domain;
+package com.vocalink.crossproduct.ui.dto;
 
+import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.ui.dto.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.PositionItemDto;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SettlementPosition {
+public class SettlementPositionDto {
   private Participant participant;
   private ParticipantPositionDto previousPosition;
   private ParticipantPositionDto currentPosition;

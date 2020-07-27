@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.presenter;
 import com.vocalink.crossproduct.domain.Cycle;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
-import com.vocalink.crossproduct.domain.SettlementPosition;
+import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,10 +39,10 @@ public class UIPresenter implements Presenter {
         .stream()
         .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
 
-    List<SettlementPosition> settlementPositions = new ArrayList<>();
+    List<SettlementPositionDto> settlementPositionDtos = new ArrayList<>();
     for (Participant participant : participants) {
-      settlementPositions.add(
-          SettlementPosition.builder()
+      settlementPositionDtos.add(
+          SettlementPositionDto.builder()
               .currentPosition(positionsCurrentCycle.get(participant.getId()).toDto())
               .previousPosition(positionsPreviousCycle.get(participant.getId()).toDto())
               .participant(participant)
@@ -51,7 +51,7 @@ public class UIPresenter implements Presenter {
     }
 
     return SettlementDto.builder()
-        .positions(settlementPositions)
+        .positions(settlementPositionDtos)
         .currentCycle(currentCycle.toDto())
         .previousCycle(previousCycle.toDto())
         .build();

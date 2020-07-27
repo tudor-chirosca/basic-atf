@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.ParticipantClient;
+import com.vocalink.crossproduct.shared.participant.ParticipantClient;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

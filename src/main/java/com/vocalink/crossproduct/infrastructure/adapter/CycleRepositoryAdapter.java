@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.CycleRepository;
 import com.vocalink.crossproduct.domain.CycleStatus;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.CyclesClient;
+import com.vocalink.crossproduct.shared.cycle.CyclesClient;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

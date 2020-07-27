@@ -109,12 +109,12 @@
     <dependency>
       <groupId>com.vocalink.crossproduct</groupId>
       <artifactId>cp-shared-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-SNAPSHOT-test</version>
     </dependency>
     <dependency>
       <groupId>com.vocalink.crossproduct</groupId>
       <artifactId>cp-adapter-bps</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-SNAPSHOT-test</version>
     </dependency>
 
   </dependencies>

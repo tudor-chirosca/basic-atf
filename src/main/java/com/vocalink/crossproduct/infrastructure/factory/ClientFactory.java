@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.factory;
 
-import com.vocalink.crossproduct.shared.CyclesClient;
-import com.vocalink.crossproduct.shared.ParticipantClient;
+import com.vocalink.crossproduct.shared.cycle.CyclesClient;
+import com.vocalink.crossproduct.shared.participant.ParticipantClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
