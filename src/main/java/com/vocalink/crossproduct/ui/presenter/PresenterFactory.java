@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
 public class PresenterFactory {
   private final List<Presenter> participantClientList;
 
-  private Map<ClientType, Presenter> presenterByClientType = new HashMap<>();
+  private Map<ClientType, Presenter> presenterByUserAgent = new HashMap<>();
 
   @PostConstruct
   public void init() {
-    presenterByClientType = participantClientList.stream()
+    presenterByUserAgent = participantClientList.stream()
         .collect(Collectors.toMap(Presenter::getClientType, Function.identity()));
   }
 
-  public Presenter getPresenterForClient(ClientType clientType){
-    if (presenterByClientType.get(clientType) == null) {
+  public Presenter getPresenter(ClientType clientType){
+    if (presenterByUserAgent.get(clientType) == null) {
       throw new RuntimeException("Presenter not available for client type " + clientType);
     }
-    return presenterByClientType.get(clientType);
+    return presenterByUserAgent.get(clientType);
   }
 }

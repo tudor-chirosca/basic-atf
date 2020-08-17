@@ -25,7 +25,7 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
     List<Participant> participants = participantRepository.findAll(context);
     List<Cycle> cycles = cycleRepository.findAll(context);
 
-    Presenter presenter = presenterFactory.getPresenterForClient(clientType);
+    Presenter presenter = presenterFactory.getPresenter(clientType);
 
     return presenter.presentSettlement(context, cycles, participants);
   }

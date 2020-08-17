@@ -3,7 +3,6 @@ package com.vocalink.crossproduct
 
 import com.vocalink.crossproduct.domain.CycleRepository
 import com.vocalink.crossproduct.domain.ParticipantRepository
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -19,7 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import javax.annotation.PostConstruct
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [AppConfig::class])
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(AcceptanceTest.AcceptanceTestConfiguration::class)
 open class AcceptanceTest {
 
