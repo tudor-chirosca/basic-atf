@@ -1,5 +1,13 @@
 FROM openjdk:8
 
+ARG USER_ID
+ARG GROUP_ID
+
+RUN addgroup --gid $GROUP_ID jenkins-agent
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID jenkins-agent
+
+USER root
+
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y curl \
@@ -8,3 +16,5 @@ RUN apt-get update \
   && curl -L https://www.npmjs.com/install.sh | sh \
   && apt-get install -y git \
   && npm install -g -y yarn
+
+USER jenkins-agent
