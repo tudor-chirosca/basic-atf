@@ -3,7 +3,7 @@ package com.vocalink.crossproduct
 
 import com.vocalink.crossproduct.domain.CycleRepository
 import com.vocalink.crossproduct.domain.ParticipantRepository
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
+import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
@@ -19,8 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import javax.annotation.PostConstruct
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [AppConfig::class])
-//@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(AcceptanceTest.AcceptanceTestConfiguration::class)
 open class AcceptanceTest {
 
@@ -43,6 +42,7 @@ open class AcceptanceTest {
         lateinit var rootUrl: String
         val cycleRepository = Mockito.mock(CycleRepository::class.java)!!
         val participantRepository = Mockito.mock(ParticipantRepository::class.java)!!
+        val presenterFactory = Mockito.mock(PresenterFactory::class.java)!!
     }
 
     @TestConfiguration

@@ -6,7 +6,8 @@ This application exposes an API with aggregated data which is consumed from diff
 ### Requirements
 
 - Java JDK 8
-- Gradle 5.4 (provided)
+- Maven 3.6.3 (provided)
+- Apache Tomcat 7+
 
 ### Installation
 
@@ -25,4 +26,8 @@ This application exposes an API with aggregated data which is consumed from diff
 ./mvnw clean package
 ```
 
-The resulting artifact will be generated in the /build/libs folder. Deploy it to an external application server.
+The resulting artifact will be generated in /target folder. Deploy it to an external application server.
+
+### Release
+
+The release of this project is managed by the [standard-version](https://github.com/conventional-changelog/standard-version) library. The current version is tracked in the ```version.txt``` file.

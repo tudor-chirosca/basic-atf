@@ -17,7 +17,8 @@ pipeline {
             agent {
                 dockerfile {
                     filename 'Dockerfile-ci'
-                    args "-u root -v /jenkins-agent:/jenkins-agent -e JAVA_HOME='/usr/local/openjdk-8'"
+                    args "-v /jenkins-agent:/jenkins-agent -v $HOME/.m2:/home/jenkins-agent/.m2:z"
+                    additionalBuildArgs '--build-arg USER_ID=1001 --build-arg GROUP_ID=1001'
                 }
             }
             when {
@@ -39,11 +40,6 @@ pipeline {
                 stage("Acceptance test") {
                     steps {
                         sh "./mvnw -B integration-test"
-                    }
-                }
-                stage("Package WAR") {
-                    steps {
-                        sh "./mvnw clean package"
                     }
                 }
                 stage("Prepare release: ") {
@@ -96,7 +92,7 @@ pipeline {
                                 rtMavenRun(
                                         tool: "MAVEN_TOOL", // Tool name from Jenkins configuration
                                         pom: "pom.xml",
-                                        goals: "clean install -U",
+                                        goals: "clean install -U -Drelease.version=${RELEASE_VERSION}",
                                         deployerId: "MAVEN_DEPLOYER",
                                         resolverId: "MAVEN_RESOLVER"
                                 )
@@ -124,7 +120,7 @@ pipeline {
                         script {
                             def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
                             def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-                            def imageName = "cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}"
+                            def imageName = "${ARTIFACTORY_DOMAIN}/cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}"
 
                             docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
                                 def image = docker.build(imageName)
@@ -143,7 +139,7 @@ pipeline {
                         script {
                             def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
                             def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-                            def imageName = "cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
+                            def imageName = "${ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
 
                             docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
                                 def image = docker.build(imageName)

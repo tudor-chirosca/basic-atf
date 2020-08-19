@@ -11,18 +11,21 @@
   </parent>
   <groupId>com.vocalink.crossproduct</groupId>
   <artifactId>cp-api-management</artifactId>
-  <version>0.0.0</version>
+  <version>${release.version}</version>
   <packaging>war</packaging>
   <name>cp-api-management</name>
   <description>CP API Management</description>
 
   <properties>
+    <release.version>0.0.0</release.version>
     <java.version>1.8</java.version>
     <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
     <swagger.version>2.9.2</swagger.version>
     <kotlin.version>1.3.72</kotlin.version>
     <kotlin-test-runner.version>3.4.2</kotlin-test-runner.version>
     <java-faker.version>1.0.2</java-faker.version>
+    <cp-shared-api.version>1.0.2</cp-shared-api.version>
+    <cp-adapter-bps.version>1.0.2</cp-adapter-bps.version>
   </properties>
 
   <dependencies>
@@ -105,6 +108,16 @@
       <groupId>com.github.javafaker</groupId>
       <artifactId>javafaker</artifactId>
       <version>${java-faker.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vocalink.crossproduct</groupId>
+      <artifactId>cp-shared-api</artifactId>
+      <version>${cp-shared-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vocalink.crossproduct</groupId>
+      <artifactId>cp-adapter-bps</artifactId>
+      <version>1.0-SNAPSHOT-test</version>
     </dependency>
 
   </dependencies>
@@ -191,5 +204,20 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>bps</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.vocalink.crossproduct</groupId>
+          <artifactId>cp-adapter-bps</artifactId>
+          <version>${cp-adapter-bps.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

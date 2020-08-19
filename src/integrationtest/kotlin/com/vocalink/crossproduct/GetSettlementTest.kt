@@ -4,9 +4,12 @@ import com.github.javafaker.Faker
 import com.vocalink.crossproduct.domain.*
 import com.vocalink.crossproduct.ui.dto.CycleDto
 import com.vocalink.crossproduct.ui.dto.SettlementDto
+import com.vocalink.crossproduct.ui.presenter.ClientType
+import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import org.springframework.http.MediaType
 import java.math.BigInteger
 import java.time.LocalDateTime
 
@@ -16,8 +19,9 @@ class GetSettlementTest : AcceptanceTest() {
     fun `should fetch settlement mock data`() {
         val cyclesMock: List<Cycle> = mockCycles()
         val participants: List<Participant> = mockParticipants()
-        Mockito.doAnswer { cyclesMock }.`when`(TestApp.cycleRepository).fetchCycles()
-        Mockito.doAnswer { participants }.`when`(TestApp.participantRepository).fetchParticipants()
+        Mockito.doAnswer { cyclesMock }.`when`(TestApp.cycleRepository).findAll("BPS")
+        Mockito.doAnswer { participants }.`when`(TestApp.participantRepository).findAll("BPS")
+        Mockito.doAnswer { UIPresenter() }.`when`(TestApp.presenterFactory).getPresenter(ClientType.UI)
 
         val expectedCycles = cyclesMock.map {
             CycleDto.builder()
@@ -31,6 +35,8 @@ class GetSettlementTest : AcceptanceTest() {
         val settlementDto = webTestClient
                 .get()
                 .uri("/settlement")
+                .header("context", "BPS")
+                .header("client-type", "UI")
                 .exchange()
                 .expectStatus().isOk
                 .expectBody(SettlementDto::class.java)
@@ -48,7 +54,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("NDEASESS")
                         .bic("NDEASESS")
                         .name("Nordea bank")
-                        .status(ParticipantStatus.ACTIVE)
+                        .status("ACTIVE")
                         .suspendedTime(null)
                         .build(),
                 Participant
@@ -56,7 +62,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("HANDSESS")
                         .bic("HANDSESS")
                         .name("Svenska Handelsbanken")
-                        .status(ParticipantStatus.ACTIVE)
+                        .status("ACTIVE")
                         .suspendedTime(null)
                         .build()
         )
