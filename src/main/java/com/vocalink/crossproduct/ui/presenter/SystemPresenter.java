@@ -3,8 +3,8 @@ package com.vocalink.crossproduct.ui.presenter;
 import com.vocalink.crossproduct.domain.Cycle;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
-import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
+import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class UIPresenter implements Presenter {
+public class SystemPresenter implements Presenter {
   @Override
   public SettlementDto presentSettlement(String context, List<Cycle> cycles,
       List<Participant> participants) {
@@ -57,6 +57,6 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ClientType getClientType() {
-    return ClientType.UI;
+    return ClientType.SYSTEM;
   }
 }
