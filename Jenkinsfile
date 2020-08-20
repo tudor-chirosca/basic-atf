@@ -159,13 +159,13 @@ pipeline {
                             def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
                             def gitTag = "${BUILD_NUMBER}.master.${gitCommit}"
 
-                            echo "Deploying ${gitTag} to ${PREPROD_API_IP}"
+                            echo "Deploying ${gitTag} to ${PREPROD_IP}"
 
                             withCredentials([usernamePassword(credentialsId: env.ARTIFACTORY_CREDENTIALS, passwordVariable: "ARTIFACTORY_PASSWORD", usernameVariable: "ARTIFACTORY_USERNAME")]) {
                                 sshagent(credentials: ["deployer"]) {
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_API_IP} docker login -u ${ARTIFACTORY_USERNAME} -p ${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_URL}"
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_API_IP} docker rm -f ${PROJECT_NAME} || true"
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_API_IP} docker run --network host -d -p 8080:8080 --name ${PROJECT_NAME} ${env.ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
+                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker login -u ${ARTIFACTORY_USERNAME} -p ${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_URL}"
+                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker rm -f ${PROJECT_NAME} || true"
+                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 --name ${PROJECT_NAME} ${env.ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
                                 }
                             }
                         }
