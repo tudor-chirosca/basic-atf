@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
                 .id(participantDto.getId())
                 .bic(participantDto.getBic())
                 .name(participantDto.getName())
-                .suspendedTime(LocalDateTime.parse(participantDto.getSuspendedTime()))
+                .suspendedTime(!StringUtils.isBlank(participantDto.getSuspendedTime()) ? LocalDateTime.parse(participantDto.getSuspendedTime()): null)
                 .status(ParticipantStatus.valueOf(participantDto.getStatus()))
                 .build()
         )
