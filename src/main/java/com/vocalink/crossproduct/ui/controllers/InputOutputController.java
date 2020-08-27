@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.ui.dto.InputOutputDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -18,17 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class SettlementController {
+public class InputOutputController {
 
   private final SettlementServiceFacade settlementServiceFacade;
 
-  @ApiOperation("Fetch settlement, including positions, participants and cycles")
+  @ApiOperation("Fetch input output data")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = SettlementDto.class),
+      @ApiResponse(code = 200, message = "Input output retrieved successfully", response = InputOutputDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  @GetMapping(value = "/settlement", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SettlementDto> getSettlement(HttpServletRequest httpServletRequest) {
+  @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<InputOutputDto> getSettlement(HttpServletRequest httpServletRequest) {
     String contextHeader = httpServletRequest.getHeader("context");
     String clientTypeHeader = httpServletRequest.getHeader("client-type");
 
@@ -40,8 +41,8 @@ public class SettlementController {
         ? ClientType.SYSTEM
         : ClientType.valueOf(clientTypeHeader.toUpperCase());
 
-    SettlementDto settlementDto = settlementServiceFacade
-        .getSettlement(contextHeader.toUpperCase(), clientType);
+    InputOutputDto settlementDto = settlementServiceFacade
+        .getInputOutput(contextHeader.toUpperCase(), clientType);
 
     return ResponseEntity.ok().body(settlementDto);
   }

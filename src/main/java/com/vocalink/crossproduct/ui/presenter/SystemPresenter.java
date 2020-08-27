@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter;
 import com.vocalink.crossproduct.domain.Cycle;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
+import com.vocalink.crossproduct.ui.dto.InputOutputDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
 import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ public class SystemPresenter implements Presenter {
         .currentCycle(currentCycle.toDto())
         .previousCycle(previousCycle.toDto())
         .build();
+  }
+
+  @Override
+  public InputOutputDto presentInputOutput() {
+    return null;
   }
 
   @Override

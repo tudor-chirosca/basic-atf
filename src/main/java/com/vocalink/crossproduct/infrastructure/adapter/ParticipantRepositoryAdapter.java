@@ -2,8 +2,10 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantRepository;
+import com.vocalink.crossproduct.domain.ParticipantStatus;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.participant.ParticipantClient;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,8 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
                 .id(participantDto.getId())
                 .bic(participantDto.getBic())
                 .name(participantDto.getName())
-                .suspendedTime(participantDto.getSuspendedTime())
-                .status(participantDto.getStatus())
+                .suspendedTime(LocalDateTime.parse(participantDto.getSuspendedTime()))
+                .status(ParticipantStatus.valueOf(participantDto.getStatus()))
                 .build()
         )
         .collect(Collectors.toList());

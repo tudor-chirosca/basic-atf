@@ -54,7 +54,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("NDEASESS")
                         .bic("NDEASESS")
                         .name("Nordea bank")
-                        .status("ACTIVE")
+                        .status(ParticipantStatus.ACTIVE)
                         .suspendedTime(null)
                         .build(),
                 Participant
@@ -62,7 +62,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("HANDSESS")
                         .bic("HANDSESS")
                         .name("Svenska Handelsbanken")
-                        .status("ACTIVE")
+                        .status(ParticipantStatus.ACTIVE)
                         .suspendedTime(null)
                         .build()
         )

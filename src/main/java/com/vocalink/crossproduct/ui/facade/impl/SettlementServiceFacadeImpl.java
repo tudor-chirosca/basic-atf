@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.Cycle;
 import com.vocalink.crossproduct.domain.CycleRepository;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantRepository;
+import com.vocalink.crossproduct.ui.dto.InputOutputDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -28,6 +29,12 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
     Presenter presenter = presenterFactory.getPresenter(clientType);
 
     return presenter.presentSettlement(context, cycles, participants);
+  }
+
+  @Override
+  public InputOutputDto getInputOutput(String toUpperCase, ClientType clientType) {
+    Presenter presenter = presenterFactory.getPresenter(clientType);
+    return presenter.presentInputOutput();
   }
 
 }
