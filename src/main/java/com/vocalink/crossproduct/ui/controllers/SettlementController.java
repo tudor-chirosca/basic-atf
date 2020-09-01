@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
-import com.vocalink.crossproduct.ui.dto.SettlementDto;
+import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
@@ -24,11 +24,11 @@ public class SettlementController {
 
   @ApiOperation("Fetch settlement, including positions, participants and cycles")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = SettlementDto.class),
+      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = SettlementDashboardDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   @GetMapping(value = "/settlement", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SettlementDto> getSettlement(HttpServletRequest httpServletRequest) {
+  public ResponseEntity<SettlementDashboardDto> getSettlement(HttpServletRequest httpServletRequest) {
     String contextHeader = httpServletRequest.getHeader("context");
     String clientTypeHeader = httpServletRequest.getHeader("client-type");
 
@@ -40,9 +40,9 @@ public class SettlementController {
         ? ClientType.SYSTEM
         : ClientType.valueOf(clientTypeHeader.toUpperCase());
 
-    SettlementDto settlementDto = settlementServiceFacade
+    SettlementDashboardDto settlementDashboardDto = settlementServiceFacade
         .getSettlement(contextHeader.toUpperCase(), clientType);
 
-    return ResponseEntity.ok().body(settlementDto);
+    return ResponseEntity.ok().body(settlementDashboardDto);
   }
 }

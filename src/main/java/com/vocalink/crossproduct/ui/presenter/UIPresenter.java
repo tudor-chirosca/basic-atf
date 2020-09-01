@@ -1,19 +1,17 @@
 package com.vocalink.crossproduct.ui.presenter;
 
-import com.github.javafaker.Faker;
 import com.vocalink.crossproduct.domain.Cycle;
+import com.vocalink.crossproduct.domain.IORejectedStats;
 import com.vocalink.crossproduct.domain.Participant;
+import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
-import com.vocalink.crossproduct.domain.ParticipantStatus;
-import com.vocalink.crossproduct.ui.dto.InputOutputDataDto;
-import com.vocalink.crossproduct.ui.dto.InputOutputItemDto;
-import com.vocalink.crossproduct.ui.dto.InputOutputDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantDto;
-import com.vocalink.crossproduct.ui.dto.SettlementDto;
+import com.vocalink.crossproduct.ui.dto.IODashboardDto;
+import com.vocalink.crossproduct.ui.dto.IOData;
+import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -25,176 +23,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class UIPresenter implements Presenter {
-  private final Faker faker = new Faker();
-  public List<Participant> participants = Arrays.asList(
-      Participant
-          .builder()
-          .id("NDEASESS")
-          .bic("NDEASESS")
-          .name("Nordea bank")
-          .status(ParticipantStatus.SUSPENDED)
-          .suspendedTime(LocalDateTime.now())
-          .build(),
-      Participant
-          .builder()
-          .id("HANDSESS")
-          .bic("HANDSESS")
-          .name("Svenska Handelsbanken")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("ESSESESS")
-          .bic("ESSESESS")
-          .name("SEB Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("SWEDSESS")
-          .bic("SWEDSESS")
-          .name("Swedbank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("FORXSES1")
-          .bic("FORXSES1")
-          .name("Forex bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("NNSESES1")
-          .bic("NNSESES1")
-          .name("Nordnet Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(LocalDateTime.now())
-          .build(),
-      Participant
-          .builder()
-          .id("IKANSE21")
-          .bic("IKANSE21")
-          .name("Ikano bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("AVANSESX")
-          .bic("AVANSESX")
-          .name("Avanza bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("IBCASES1")
-          .bic("IBCASES1")
-          .name("ICA Banken")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("RESUSE21")
-          .bic("RESUSE21")
-          .name("Resursbank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("MONYSES1")
-          .bic("MONYSES1")
-          .name("Ge Money Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("MEEOSES1")
-          .bic("MEEOSES1")
-          .name("Meetoo")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("SCADSE21")
-          .bic("SCADSE21")
-          .name("Scandem")
-          .status(ParticipantStatus.SUSPENDED)
-          .suspendedTime(LocalDateTime.now())
-          .build(),
-      Participant
-          .builder()
-          .id("SWCTSES1")
-          .bic("SWCTSES1")
-          .name("Swedish Capital Trust")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("CARNSES1")
-          .bic("CARNSES1")
-          .name("Carnegie Investment Bank")
-          .status(ParticipantStatus.SUSPENDED)
-          .suspendedTime(LocalDateTime.now())
-          .build(),
-      Participant
-          .builder()
-          .id("LAHYSESS")
-          .bic("LAHYSESS")
-          .name("Landshypotek Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("MEMMSE21")
-          .bic("MEMMSE21")
-          .name("Medmera Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("SWEDSES1")
-          .bic("SWEDSES1")
-          .name("Swedbank 2")
-          .status(ParticipantStatus.SUSPENDED)
-          .suspendedTime(LocalDateTime.now())
-          .build(),
-      Participant
-          .builder()
-          .id("SVEASES1")
-          .bic("SVEASES1")
-          .name("Svea Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build(),
-      Participant
-          .builder()
-          .id("ELLFSESS")
-          .bic("ELLFSESS")
-          .name("Lansfosakringar Bank")
-          .status(ParticipantStatus.ACTIVE)
-          .suspendedTime(null)
-          .build()
-  );
-
 
   @Override
-  public SettlementDto presentSettlement(String context, List<Cycle> cycles,
+  public SettlementDashboardDto presentSettlement(String context, List<Cycle> cycles,
       List<Participant> participants) {
     if (cycles.size() != 2) {
-      throw new RuntimeException("Expected two cycles!");
+      throw new RuntimeException("Expected at least two cycles!");
     }
 
     cycles.sort(Comparator.comparing(Cycle::getId).reversed());
@@ -221,7 +55,7 @@ public class UIPresenter implements Presenter {
       );
     }
 
-    return SettlementDto.builder()
+    return SettlementDashboardDto.builder()
         .positions(settlementPositionDtos)
         .currentCycle(currentCycle.toDto())
         .previousCycle(previousCycle.toDto())
@@ -229,41 +63,42 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public InputOutputDto presentInputOutput() {
-    List<InputOutputItemDto> rows = new ArrayList<>();
-    for (int i = 0; i < participants.size(); i++) {
-      InputOutputItemDto inputOutputItemDto = getIOItem();
-      inputOutputItemDto.setParticipant(participants.get(i).toDto());
-      rows.add(inputOutputItemDto);
-    }
-    return InputOutputDto
+  public IODashboardDto presentInputOutput(List<Participant> participants,
+      List<ParticipantIOData> ioData,
+      IORejectedStats ioRejectedStats) {
+
+    Map<String, Participant> participantsById = participants.stream().collect(
+        Collectors.toMap(Participant::getId, Function.identity()));
+
+    List<ParticipantIODataDto> participantIODataDtos = ioData.stream()
+        .map(ioDataDto ->
+            ParticipantIODataDto.builder()
+                .participant(participantsById.get(ioDataDto.getParticipantId()).toDto())
+                .batches(IOData.builder()
+                    .rejected(ioDataDto.getBatches().getRejected())
+                    .submitted(ioDataDto.getBatches().getSubmitted())
+                    .build()
+                )
+                .transactions(IOData.builder()
+                    .rejected(ioDataDto.getTransactions().getRejected())
+                    .submitted(ioDataDto.getTransactions().getSubmitted())
+                    .build()
+                )
+                .files(IOData.builder()
+                    .rejected(ioDataDto.getFiles().getRejected())
+                    .submitted(ioDataDto.getFiles().getSubmitted())
+                    .build()
+                )
+                .build())
+        .collect(Collectors.toList());
+
+    return IODashboardDto
         .builder()
         .datetime(LocalDateTime.now().toString())
-        .filesRejected(faker.number().randomDouble(2, 0, 4))
-        .batchesRejected(faker.number().randomDouble(2, 0, 4))
-        .transactionsRejected(faker.number().randomDouble(2, 0, 4))
-        .rows(rows)
-        .build();
-  }
-
-  private InputOutputItemDto getIOItem() {
-    return InputOutputItemDto
-        .builder()
-        .files(InputOutputDataDto.builder()
-            .rejected(faker.number().randomDouble(2, 0, 4))
-            .submitted(Integer.parseInt(faker.number().digits(3)))
-            .build()
-        )
-        .batches(InputOutputDataDto.builder()
-            .rejected(faker.number().randomDouble(2, 0, 4))
-            .submitted(Integer.parseInt(faker.number().digits(4)))
-            .build()
-        )
-        .transactions(InputOutputDataDto.builder()
-            .rejected(faker.number().randomDouble(2, 0, 4))
-            .submitted(Integer.parseInt(faker.number().digits(5)))
-            .build()
-        )
+        .filesRejected(ioRejectedStats.getFilesRejected())
+        .batchesRejected(ioRejectedStats.getBatchesRejected())
+        .transactionsRejected(ioRejectedStats.getTransactionsRejected())
+        .rows(participantIODataDtos)
         .build();
   }
 

@@ -5,5 +5,4 @@ import java.util.List;
 
 public interface ParticipantRepository {
     List<Participant> findAll(String context);
-
 }
