@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class SettlementDto {
+public class SettlementDashboardDto {
   private CycleDto currentCycle;
   private CycleDto previousCycle;
   private List<SettlementPositionDto> positions;

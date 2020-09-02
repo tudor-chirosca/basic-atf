@@ -3,13 +3,12 @@ package com.vocalink.crossproduct
 import com.github.javafaker.Faker
 import com.vocalink.crossproduct.domain.*
 import com.vocalink.crossproduct.ui.dto.CycleDto
-import com.vocalink.crossproduct.ui.dto.SettlementDto
+import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.springframework.http.MediaType
 import java.math.BigInteger
 import java.time.LocalDateTime
 
@@ -39,7 +38,7 @@ class GetSettlementTest : AcceptanceTest() {
                 .header("client-type", "UI")
                 .exchange()
                 .expectStatus().isOk
-                .expectBody(SettlementDto::class.java)
+                .expectBody(SettlementDashboardDto::class.java)
                 .returnResult()
                 .responseBody
 
@@ -54,7 +53,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("NDEASESS")
                         .bic("NDEASESS")
                         .name("Nordea bank")
-                        .status("ACTIVE")
+                        .status(ParticipantStatus.ACTIVE)
                         .suspendedTime(null)
                         .build(),
                 Participant
@@ -62,7 +61,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .id("HANDSESS")
                         .bic("HANDSESS")
                         .name("Svenska Handelsbanken")
-                        .status("ACTIVE")
+                        .status(ParticipantStatus.ACTIVE)
                         .suspendedTime(null)
                         .build()
         )
