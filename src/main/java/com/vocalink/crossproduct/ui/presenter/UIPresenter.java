@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.IORejectedStats;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
@@ -10,7 +9,7 @@ import com.vocalink.crossproduct.ui.dto.IOData;
 import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -64,40 +63,52 @@ public class UIPresenter implements Presenter {
 
   @Override
   public IODashboardDto presentInputOutput(List<Participant> participants,
-      List<ParticipantIOData> ioData,
-      IORejectedStats ioRejectedStats) {
+      List<ParticipantIOData> ioData, LocalDate date) {
 
     Map<String, Participant> participantsById = participants.stream().collect(
         Collectors.toMap(Participant::getId, Function.identity()));
 
-    List<ParticipantIODataDto> participantIODataDtos = ioData.stream()
-        .map(ioDataDto ->
-            ParticipantIODataDto.builder()
-                .participant(participantsById.get(ioDataDto.getParticipantId()).toDto())
-                .batches(IOData.builder()
-                    .rejected(ioDataDto.getBatches().getRejected())
-                    .submitted(ioDataDto.getBatches().getSubmitted())
-                    .build()
-                )
-                .transactions(IOData.builder()
-                    .rejected(ioDataDto.getTransactions().getRejected())
-                    .submitted(ioDataDto.getTransactions().getSubmitted())
-                    .build()
-                )
-                .files(IOData.builder()
-                    .rejected(ioDataDto.getFiles().getRejected())
-                    .submitted(ioDataDto.getFiles().getSubmitted())
-                    .build()
-                )
-                .build())
-        .collect(Collectors.toList());
+    double totalFilesRejected = 0.0;
+    double totalBatchesRejected = 0.0;
+    double totalTransactionsRejected = 0.0;
+
+    List<ParticipantIODataDto> participantIODataDtos = new ArrayList<>();
+    for (ParticipantIOData participantIOData : ioData) {
+      totalBatchesRejected += participantIOData.getBatches().getRejected();
+      totalFilesRejected += participantIOData.getFiles().getRejected();
+      totalTransactionsRejected += participantIOData.getTransactions().getRejected();
+
+      participantIODataDtos.add(
+          ParticipantIODataDto.builder()
+              .participant(participantsById.get(participantIOData.getParticipantId()).toDto())
+              .batches(IOData.builder()
+                  .rejected(participantIOData.getBatches().getRejected())
+                  .submitted(participantIOData.getBatches().getSubmitted())
+                  .build()
+              )
+              .transactions(IOData.builder()
+                  .rejected(participantIOData.getTransactions().getRejected())
+                  .submitted(participantIOData.getTransactions().getSubmitted())
+                  .build()
+              )
+              .files(IOData.builder()
+                  .rejected(participantIOData.getFiles().getRejected())
+                  .submitted(participantIOData.getFiles().getSubmitted())
+                  .build()
+              )
+              .build());
+    }
+
+    totalBatchesRejected = totalBatchesRejected / (double) participants.size();
+    totalTransactionsRejected = totalTransactionsRejected / (double) participants.size();
+    totalFilesRejected = totalFilesRejected / (double) participants.size();
 
     return IODashboardDto
         .builder()
-        .datetime(LocalDateTime.now().toString())
-        .filesRejected(ioRejectedStats.getFilesRejected())
-        .batchesRejected(ioRejectedStats.getBatchesRejected())
-        .transactionsRejected(ioRejectedStats.getTransactionsRejected())
+        .dateFrom(date)
+        .filesRejected(String.format("%.2f", totalFilesRejected))
+        .batchesRejected(String.format("%.2f", totalBatchesRejected))
+        .transactionsRejected(String.format("%.2f", totalTransactionsRejected))
         .rows(participantIODataDtos)
         .build();
   }

@@ -4,22 +4,26 @@ import com.vocalink.crossproduct.domain.IOData;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantIODataRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
+import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataDto;
-import com.vocalink.crossproduct.shared.participant.ParticipantClient;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
+@Slf4j
 public class ParticipantIODataAdapter implements ParticipantIODataRepository {
   private final ClientFactory clientFactory;
 
   @Override
-  public List<ParticipantIOData> findAll(String context) {
-    ParticipantClient participantClient = clientFactory.getParticipantClient(context);
-    return participantClient.findParticipantIOData()
+  public List<ParticipantIOData> findByTimestamp(String context, LocalDate dateFrom) {
+    log.info("Fetching all cycles from context {} ... ", context);
+    ParticipantIODataClient participantIODataClient = clientFactory.getParticipantIODataClient(context);
+    return participantIODataClient.findByTimestamp(dateFrom)
         .stream()
         .map(this::toEntity)
         .collect(Collectors.toList());

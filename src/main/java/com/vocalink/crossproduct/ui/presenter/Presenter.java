@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.IORejectedStats;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface Presenter {
@@ -16,5 +16,5 @@ public interface Presenter {
   ClientType getClientType();
 
   IODashboardDto presentInputOutput(List<Participant> participants, List<ParticipantIOData> ioData,
-      IORejectedStats ioRejectedStats);
+      LocalDate date);
 }

@@ -1,7 +1,5 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import com.vocalink.crossproduct.domain.IORejectedStats;
-import com.vocalink.crossproduct.domain.IORejectedStatsRepository;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantIODataRepository;
@@ -22,15 +20,13 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   private final ParticipantIODataRepository participantIODataRepository;
   private final ParticipantRepository participantRepository;
   private final PresenterFactory presenterFactory;
-//  private final IORejectedStatsRepository rejectedStatsRepository;
 
   @Override
-  public IODashboardDto getInputOutput(String context, ClientType clientType, LocalDate date) {
+  public IODashboardDto getInputOutputDashboard(String context, ClientType clientType, LocalDate date) {
     List<Participant> participants = participantRepository.findAll(context);
-    List<ParticipantIOData> ioData = participantIODataRepository.findAll(context);
-//    IORejectedStats ioRejectedStats = rejectedStatsRepository.findByTimestamp(date);
+    List<ParticipantIOData> ioData = participantIODataRepository.findByTimestamp(context, date);
 
     Presenter presenter = presenterFactory.getPresenter(clientType);
-    return presenter.presentInputOutput(participants, ioData, IORejectedStats.builder().build());
+    return presenter.presentInputOutput(participants, ioData, date);
   }
 }

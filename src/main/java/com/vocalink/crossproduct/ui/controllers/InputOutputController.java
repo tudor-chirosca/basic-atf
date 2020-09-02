@@ -32,7 +32,7 @@ public class InputOutputController {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest, @RequestParam String timestamp) {
+  public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest, @RequestParam(required = false) String timestamp) {
     String contextHeader = httpServletRequest.getHeader("context");
     String clientTypeHeader = httpServletRequest.getHeader("client-type");
 
@@ -49,7 +49,7 @@ public class InputOutputController {
         : ClientType.valueOf(clientTypeHeader.toUpperCase());
 
     IODashboardDto settlementDto = inputOutputFacade
-        .getInputOutput(contextHeader.toUpperCase(), clientType, dateFrom);
+        .getInputOutputDashboard(contextHeader.toUpperCase(), clientType, dateFrom);
 
     return ResponseEntity.ok().body(settlementDto);
   }
