@@ -12,13 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class Participant {
+
   private String id;
   private String bic;
   private String name;
   private ParticipantStatus status;
   private LocalDateTime suspendedTime;
 
-  public ParticipantDto toDto(){
+  public ParticipantDto toDto() {
     return ParticipantDto
         .builder()
         .id(id)
