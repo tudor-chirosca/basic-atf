@@ -4,13 +4,13 @@ import com.vocalink.crossproduct.ui.dto.CycleDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
+@Data
 public class Cycle {
   private String id;
   private String settlementTime;

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class CycleRepositoryAdapter extends BaseAdapter<CPCycle, Cycle>
+public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle, Cycle>
     implements CycleRepository {
 
   private final ClientFactory clientFactory;

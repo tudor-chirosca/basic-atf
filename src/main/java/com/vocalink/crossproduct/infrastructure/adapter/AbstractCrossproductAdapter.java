@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class BaseAdapter<I, O> {
+public abstract class AbstractCrossproductAdapter<I, O> {
   private ModelMapper modelMapper;
   private final Type outputType = ((ParameterizedType) getClass().getGenericSuperclass())
       .getActualTypeArguments()[1];

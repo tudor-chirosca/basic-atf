@@ -1,10 +1,14 @@
 package com.vocalink.crossproduct.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@Data
 public class ParticipantIOData {
   private String participantId;
   private IOData files;
