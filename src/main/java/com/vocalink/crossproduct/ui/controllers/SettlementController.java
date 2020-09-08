@@ -32,10 +32,6 @@ public class SettlementController {
     String contextHeader = httpServletRequest.getHeader("context");
     String clientTypeHeader = httpServletRequest.getHeader("client-type");
 
-    if (StringUtils.isEmpty(contextHeader)) {
-      return ResponseEntity.badRequest().build();
-    }
-
     ClientType clientType = (StringUtils.isEmpty(clientTypeHeader))
         ? ClientType.SYSTEM
         : ClientType.valueOf(clientTypeHeader.toUpperCase());

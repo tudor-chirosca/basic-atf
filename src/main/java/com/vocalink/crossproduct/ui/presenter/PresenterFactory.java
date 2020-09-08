@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
+import com.vocalink.crossproduct.infrastructure.exception.PresenterNotAvailableForClientTypeException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class PresenterFactory {
 
   public Presenter getPresenter(ClientType clientType){
     if (presenterByUserAgent.get(clientType) == null) {
-      throw new RuntimeException("Presenter not available for client type " + clientType);
+      throw new PresenterNotAvailableForClientTypeException("Presenter not available for client type " + clientType);
     }
     return presenterByUserAgent.get(clientType);
   }

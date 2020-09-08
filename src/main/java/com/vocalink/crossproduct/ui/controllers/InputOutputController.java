@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class InputOutputController {
 
-  private final SettlementServiceFacade settlementServiceFacade;
   private final InputOutputFacade inputOutputFacade;
 
   @ApiOperation("Fetch input output data")
@@ -32,13 +30,10 @@ public class InputOutputController {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest, @RequestParam(required = false) String timestamp) {
+  public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest,
+      @RequestParam(required = false) String timestamp) {
     String contextHeader = httpServletRequest.getHeader("context");
     String clientTypeHeader = httpServletRequest.getHeader("client-type");
-
-    if (StringUtils.isEmpty(contextHeader)) {
-      return ResponseEntity.badRequest().build();
-    }
 
     LocalDate dateFrom = StringUtils.isEmpty(timestamp)
         ? LocalDate.now()
