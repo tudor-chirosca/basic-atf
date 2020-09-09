@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.dto;
 
 import com.vocalink.crossproduct.domain.CycleStatus;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,7 +17,7 @@ import lombok.ToString;
 @Builder
 public class CycleDto {
   private String id;
-  private String settlementTime;
-  private String cutOffTime;
+  private LocalDateTime settlementTime;
+  private LocalDateTime cutOffTime;
   private CycleStatus status;
 }

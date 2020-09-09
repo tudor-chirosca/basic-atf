@@ -24,8 +24,9 @@
     <kotlin.version>1.3.72</kotlin.version>
     <kotlin-test-runner.version>3.4.2</kotlin-test-runner.version>
     <java-faker.version>1.0.2</java-faker.version>
-    <cp-shared-api.version>1.0.2</cp-shared-api.version>
-    <cp-adapter-bps.version>1.0.3</cp-adapter-bps.version>
+    <cp-shared-api.version>1.0.4</cp-shared-api.version>
+    <cp-adapter-bps.version>1.0.4</cp-adapter-bps.version>
+    <modelmapper.version>2.3.0</modelmapper.version>
   </properties>
 
   <dependencies>
@@ -113,6 +114,11 @@
       <groupId>com.vocalink.crossproduct</groupId>
       <artifactId>cp-shared-api</artifactId>
       <version>${cp-shared-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>${modelmapper.version}</version>
     </dependency>
   </dependencies>
 

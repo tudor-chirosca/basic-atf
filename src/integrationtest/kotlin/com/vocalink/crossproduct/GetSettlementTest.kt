@@ -77,8 +77,8 @@ class GetSettlementTest : AcceptanceTest() {
 
         return listOf(
                 Cycle.builder()
-                        .cutOffTime(LocalDateTime.now().toString())
-                        .settlementTime(LocalDateTime.now().toString())
+                        .cutOffTime(LocalDateTime.now())
+                        .settlementTime(LocalDateTime.now())
                         .id("20190212004")
                         .status(CycleStatus.OPEN)
                         .positions(
@@ -94,8 +94,8 @@ class GetSettlementTest : AcceptanceTest() {
                         )
                         .build(),
                 Cycle.builder()
-                        .cutOffTime(LocalDateTime.now().minusHours(8).toString())
-                        .settlementTime(LocalDateTime.now().minusHours(8).toString())
+                        .cutOffTime(LocalDateTime.now().minusHours(8))
+                        .settlementTime(LocalDateTime.now().minusHours(8))
                         .status(CycleStatus.COMPLETED)
                         .id("20190212003")
                         .positions(
