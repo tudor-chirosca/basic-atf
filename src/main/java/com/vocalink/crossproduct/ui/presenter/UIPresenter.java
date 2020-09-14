@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static java.util.stream.Collectors.toList;
+
 @Component
 @Slf4j
 public class UIPresenter implements Presenter {
@@ -26,14 +28,18 @@ public class UIPresenter implements Presenter {
   @Override
   public SettlementDashboardDto presentSettlement(String context, List<Cycle> cycles,
       List<Participant> participants) {
-    if (cycles.size() != 2) {
+
+    if (cycles.size() < 2) {
       throw new RuntimeException("Expected at least two cycles!");
     }
 
-    cycles.sort(Comparator.comparing(Cycle::getId).reversed());
+    cycles = cycles.stream()
+        .sorted((c1, c2) -> c1.getId().compareTo(c2.getId()))
+        .limit(2)
+        .collect(toList());
 
-    Cycle currentCycle = cycles.get(0);
-    Cycle previousCycle = cycles.get(1);
+    Cycle currentCycle = cycles.get(1);
+    Cycle previousCycle = cycles.get(0);
 
     Map<String, ParticipantPosition> positionsCurrentCycle = currentCycle.getPositions()
         .stream()
