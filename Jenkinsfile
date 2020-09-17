@@ -165,7 +165,7 @@ pipeline {
                                 sshagent(credentials: ["deployer"]) {
                                     sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker login -u ${ARTIFACTORY_USERNAME} -p ${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_URL}"
                                     sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker rm -f ${PROJECT_NAME} || true"
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 --name ${PROJECT_NAME} ${env.ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
+                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev --name ${PROJECT_NAME} ${env.ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
                                 }
                             }
                         }
