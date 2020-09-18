@@ -7,6 +7,8 @@ import org.modelmapper.AbstractProvider;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.Provider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -54,4 +56,12 @@ public class AppConfig {
 
     return modelMapper;
   }
+
+	@Bean
+	@ConditionalOnBean(name = {"applicationContextFilter"})
+	public DelegatingFilterProxyRegistrationBean applicationContextFilterProxy() {
+		DelegatingFilterProxyRegistrationBean registration =
+			new DelegatingFilterProxyRegistrationBean("applicationContextFilter");;
+		return registration;
+	}
 }
