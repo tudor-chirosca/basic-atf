@@ -11,7 +11,6 @@ pipeline {
         RELEASE_BRANCH = "master"
     }
 
-
     stages {
         stage("Build and publish artifact:") {
             agent {
@@ -58,12 +57,11 @@ pipeline {
                                     withCredentials([usernamePassword(credentialsId: env.GITHUB_CREDENTIALS, passwordVariable: "GITHUB_PASSWORD", usernameVariable: "GITHUB_USERNAME")]) {
                                         sh "git config user.email jenkins-agent-cp-portal@mastercard.com"
                                         sh "git config user.name jenkins-agent-cp-portal"
-                                        sh "git config push.followTags true"
                                         sh "npx standard-version"
-                                        sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GITHUB_DOMAIN}/${PROJECT_NAME}.git HEAD:${BRANCH_NAME}"
+                                        sh "git push --follow-tags https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GITHUB_DOMAIN}/${PROJECT_NAME}.git HEAD:${BRANCH_NAME}"
                                         env.WORKSPACE = pwd()
                                         env.RELEASE_VERSION = readFile "${env.WORKSPACE}/version.txt"
-                                        echo "release generated: ${RELEASE_VERSION}"
+                                        echo "Release generated: ${RELEASE_VERSION}"
                                     }
                                 }
                             }
