@@ -137,24 +137,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>reserve-random-jmx-port</id>
-            <goals>
-              <goal>reserve-network-port</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <portNames>
-                <portName>random.jmx.port</portName>
-              </portNames>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
@@ -163,9 +145,6 @@
             <goals>
               <goal>start</goal>
             </goals>
-            <configuration>
-              <jmxPort>${random.jmx.port}</jmxPort>
-            </configuration>
           </execution>
           <execution>
             <id>post-integration-test</id>
@@ -238,6 +217,43 @@
           <version>${cp-adapter-bps.version}</version>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>windows-jmx-port-override</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>reserve-random-jmx-port</id>
+                <goals>
+                  <goal>reserve-network-port</goal>
+                </goals>
+                <phase>process-resources</phase>
+                <configuration>
+                  <portNames>
+                    <portName>random.jmx.port</portName>
+                  </portNames>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration combine.self="override">
+              <jmxPort>${random.jmx.port}</jmxPort>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
