@@ -17,12 +17,14 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class InputOutputFacadeImpl implements InputOutputFacade {
+
   private final ParticipantIODataRepository participantIODataRepository;
   private final ParticipantRepository participantRepository;
   private final PresenterFactory presenterFactory;
 
   @Override
-  public IODashboardDto getInputOutputDashboard(String context, ClientType clientType, LocalDate date) {
+  public IODashboardDto getInputOutputDashboard(String context, ClientType clientType,
+      LocalDate date) {
     List<Participant> participants = participantRepository.findAll(context);
     List<ParticipantIOData> ioData = participantIODataRepository.findByTimestamp(context, date);
 

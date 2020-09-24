@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class SettlementDashboardDto {
   private CycleDto currentCycle;
   private CycleDto previousCycle;
-  private List<SettlementPositionDto> positions;
+  private List<TotalPositionDto> positions;
 }

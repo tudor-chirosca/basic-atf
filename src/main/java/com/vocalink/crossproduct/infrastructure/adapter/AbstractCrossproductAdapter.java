@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractCrossproductAdapter<I, O> {
+
   private ModelMapper modelMapper;
   private final Type outputType = ((ParameterizedType) getClass().getGenericSuperclass())
       .getActualTypeArguments()[1];
@@ -16,7 +17,7 @@ public abstract class AbstractCrossproductAdapter<I, O> {
   }
 
   @Autowired
-  public void setModelMapper(ModelMapper modelMapper){
+  public void setModelMapper(ModelMapper modelMapper) {
     this.modelMapper = modelMapper;
   }
 }

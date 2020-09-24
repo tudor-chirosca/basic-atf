@@ -26,6 +26,11 @@ pipeline {
                 }
             }
             stages {
+                stage("Clean") {
+                    steps {
+                        sh "./mvnw -B clean"
+                    }
+                }
                 stage("Compile") {
                     steps {
                         sh "./mvnw -B compile"
@@ -38,7 +43,7 @@ pipeline {
                 }
                 stage("Acceptance test") {
                     steps {
-                        sh "./mvnw -B integration-test"
+                        sh "./mvnw -B integration-test -U"
                     }
                 }
                 stage("Prepare release: ") {
