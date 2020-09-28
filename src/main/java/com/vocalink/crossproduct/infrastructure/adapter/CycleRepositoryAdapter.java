@@ -28,4 +28,14 @@ public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle,
         .map(this::toEntity)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public List<Cycle> findByIds(String context, List<String> cycleIds) {
+    log.info("Fetching cycle by cycleIds {} from context {} ... ", cycleIds, context);
+    CyclesClient cyclesClient = clientFactory.getCyclesClient(context);
+    return cyclesClient.findByIds(cycleIds)
+        .stream()
+        .map(this::toEntity)
+        .collect(Collectors.toList());
+  }
 }

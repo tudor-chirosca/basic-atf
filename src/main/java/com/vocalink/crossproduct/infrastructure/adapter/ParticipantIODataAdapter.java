@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class ParticipantIODataAdapter extends AbstractCrossproductAdapter<CPParticipantIOData, ParticipantIOData>
+public class ParticipantIODataAdapter extends
+    AbstractCrossproductAdapter<CPParticipantIOData, ParticipantIOData>
     implements ParticipantIODataRepository {
 
   private final ClientFactory clientFactory;

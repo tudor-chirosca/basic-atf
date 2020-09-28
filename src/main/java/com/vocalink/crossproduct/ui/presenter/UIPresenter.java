@@ -4,11 +4,13 @@ import com.vocalink.crossproduct.domain.Cycle;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
+import com.vocalink.crossproduct.domain.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.IOData;
 import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.SettlementPositionDto;
+import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.TotalPositionDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,14 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class UIPresenter implements Presenter {
+
+  private final SelfFundingSettlementDetailsMapper selfFundingDetailsMapper;
 
   @Override
   public SettlementDashboardDto presentSettlement(String context, List<Cycle> cycles,
@@ -34,25 +40,25 @@ public class UIPresenter implements Presenter {
     }
 
     cycles = cycles.stream()
-        .sorted((c1, c2) -> c1.getId().compareTo(c2.getId()))
+        .sorted(Comparator.comparing(Cycle::getId))
         .limit(2)
         .collect(toList());
 
     Cycle currentCycle = cycles.get(1);
     Cycle previousCycle = cycles.get(0);
 
-    Map<String, ParticipantPosition> positionsCurrentCycle = currentCycle.getPositions()
+    Map<String, ParticipantPosition> positionsCurrentCycle = currentCycle.getTotalPositions()
         .stream()
         .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
 
-    Map<String, ParticipantPosition> positionsPreviousCycle = previousCycle.getPositions()
+    Map<String, ParticipantPosition> positionsPreviousCycle = previousCycle.getTotalPositions()
         .stream()
         .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
 
-    List<SettlementPositionDto> settlementPositionDtos = new ArrayList<>();
+    List<TotalPositionDto> settlementPositionDtos = new ArrayList<>();
     for (Participant participant : participants) {
       settlementPositionDtos.add(
-          SettlementPositionDto.builder()
+          TotalPositionDto.builder()
               .currentPosition(positionsCurrentCycle.get(participant.getId()).toDto())
               .previousPosition(positionsPreviousCycle.get(participant.getId()).toDto())
               .participant(participant)
@@ -65,6 +71,20 @@ public class UIPresenter implements Presenter {
         .currentCycle(currentCycle.toDto())
         .previousCycle(previousCycle.toDto())
         .build();
+  }
+
+  @Override
+  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(
+      String context, List<Cycle> cycles, List<PositionDetails> positionsDetails,
+      Participant participant) {
+
+    if (cycles.size() == 1) {
+      return selfFundingDetailsMapper
+          .presentOneCycleSelfFundingSettlementDetails(cycles, positionsDetails, participant);
+    } else {
+      return selfFundingDetailsMapper
+          .presentFullSelfFundingSettlementDetails(cycles, positionsDetails, participant);
+    }
   }
 
   @Override

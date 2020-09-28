@@ -5,14 +5,19 @@ import com.vocalink.crossproduct.domain.*
 import com.vocalink.crossproduct.ui.dto.CycleDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import com.vocalink.crossproduct.ui.presenter.SelfFundingSettlementDetailsMapper
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
 import org.mockito.Mockito
 import java.math.BigInteger
 import java.time.LocalDateTime
 
 class GetSettlementTest : AcceptanceTest() {
+
+    @Mock
+    private val selfFundingSettlementMapper: SelfFundingSettlementDetailsMapper? = null
 
     @Test
     fun `should fetch settlement mock data`() {
@@ -20,7 +25,7 @@ class GetSettlementTest : AcceptanceTest() {
         val participants: List<Participant> = mockParticipants()
         Mockito.doAnswer { cyclesMock }.`when`(TestApp.cycleRepository).findAll("BPS")
         Mockito.doAnswer { participants }.`when`(TestApp.participantRepository).findAll("BPS")
-        Mockito.doAnswer { UIPresenter() }.`when`(TestApp.presenterFactory).getPresenter(ClientType.UI)
+        Mockito.doAnswer { UIPresenter(selfFundingSettlementMapper) }.`when`(TestApp.presenterFactory).getPresenter(ClientType.UI)
 
         val expectedCycles = cyclesMock.map {
             CycleDto.builder()
@@ -81,7 +86,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .settlementTime(LocalDateTime.now())
                         .id("20190212004")
                         .status(CycleStatus.OPEN)
-                        .positions(
+                        .totalPositions(
                                 mockParticipants()
                                         .map { participant: Participant ->
                                             ParticipantPosition.builder()
@@ -98,7 +103,7 @@ class GetSettlementTest : AcceptanceTest() {
                         .settlementTime(LocalDateTime.now().minusHours(8))
                         .status(CycleStatus.COMPLETED)
                         .id("20190212003")
-                        .positions(
+                        .totalPositions(
                                 mockParticipants()
                                         .map { participant: Participant ->
                                             ParticipantPosition.builder()

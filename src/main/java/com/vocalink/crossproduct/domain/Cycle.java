@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class Cycle {
+
   private String id;
   private LocalDateTime settlementTime;
   private LocalDateTime cutOffTime;
   private CycleStatus status;
-  private List<ParticipantPosition> positions;
+  private List<ParticipantPosition> totalPositions;
 
-  public CycleDto toDto(){
+  public CycleDto toDto() {
     return CycleDto.builder()
         .id(id)
         .settlementTime(settlementTime)
