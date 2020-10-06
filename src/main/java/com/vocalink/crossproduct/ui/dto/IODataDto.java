@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class IOData {
+public class IODataDto {
   private int submitted;
   private double rejected;
 }

@@ -6,7 +6,7 @@ import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
 import com.vocalink.crossproduct.domain.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
-import com.vocalink.crossproduct.ui.dto.IOData;
+import com.vocalink.crossproduct.ui.dto.IODataDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
@@ -32,12 +32,8 @@ public class UIPresenter implements Presenter {
   private final SelfFundingSettlementDetailsMapper selfFundingDetailsMapper;
 
   @Override
-  public SettlementDashboardDto presentSettlement(String context, List<Cycle> cycles,
+  public SettlementDashboardDto presentSettlement(List<Cycle> cycles,
       List<Participant> participants) {
-
-    if (cycles.size() < 2) {
-      throw new RuntimeException("Expected at least two cycles!");
-    }
 
     cycles = cycles.stream()
         .sorted(Comparator.comparing(Cycle::getId))
@@ -74,8 +70,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(
-      String context, List<Cycle> cycles, List<PositionDetails> positionsDetails,
+  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(List<Cycle> cycles,
+      List<PositionDetails> positionsDetails,
       Participant participant) {
 
     if (cycles.size() == 1) {
@@ -107,17 +103,17 @@ public class UIPresenter implements Presenter {
       participantIODataDtos.add(
           ParticipantIODataDto.builder()
               .participant(participantsById.get(participantIOData.getParticipantId()).toDto())
-              .batches(IOData.builder()
+              .batches(IODataDto.builder()
                   .rejected(participantIOData.getBatches().getRejected())
                   .submitted(participantIOData.getBatches().getSubmitted())
                   .build()
               )
-              .transactions(IOData.builder()
+              .transactions(IODataDto.builder()
                   .rejected(participantIOData.getTransactions().getRejected())
                   .submitted(participantIOData.getTransactions().getSubmitted())
                   .build()
               )
-              .files(IOData.builder()
+              .files(IODataDto.builder()
                   .rejected(participantIOData.getFiles().getRejected())
                   .submitted(participantIOData.getFiles().getSubmitted())
                   .build()

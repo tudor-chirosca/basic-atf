@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct
+package com.vocalink.crossproduct.integrationtests
 
 
 import com.vocalink.crossproduct.domain.CycleRepository

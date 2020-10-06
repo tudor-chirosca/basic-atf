@@ -5,7 +5,10 @@ import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface SettlementServiceFacade {
+
   SettlementDashboardDto getSettlement(String context, ClientType clientType);
-  SelfFundingSettlementDetailsDto getSelfFundingSettlementDetails(String context, ClientType clientType, String participantId);
+
+  SelfFundingSettlementDetailsDto getSelfFundingSettlementDetails(String context,
+      ClientType clientType, String participantId);
 
 }

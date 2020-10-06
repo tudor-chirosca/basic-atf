@@ -12,12 +12,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface Presenter {
-  SettlementDashboardDto presentSettlement(String context,
+  SettlementDashboardDto presentSettlement(
       List<Cycle> cycles,
       List<Participant> participants);
 
   SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(
-      String context,
       List<Cycle> cycles,
       List<PositionDetails> positionsDetails,
       Participant participant);

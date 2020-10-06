@@ -34,14 +34,22 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
     List<Participant> participants = participantRepository.findAll(context);
     List<Cycle> cycles = cycleRepository.findAll(context);
 
+    if (cycles.size() < 2) {
+      throw new NonConsistentDataException("Expected at least two cycles!");
+    }
+
     Presenter presenter = presenterFactory.getPresenter(clientType);
 
-    return presenter.presentSettlement(context, cycles, participants);
+    return presenter.presentSettlement(cycles, participants);
   }
 
   @Override
   public SelfFundingSettlementDetailsDto getSelfFundingSettlementDetails(String context,
       ClientType clientType, String participantId) {
+
+    Participant participant = participantRepository.findByParticipantId(context, participantId)
+        .orElseThrow(() -> new EntityNotFoundException(
+            "There is not Participant with id; " + participantId));
 
     List<PositionDetails> positionsDetails = positionDetailsRepository
         .findByParticipantId(context, participantId);
@@ -51,22 +59,18 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
 
     List<Cycle> cycles = cycleRepository.findByIds(context, activeCycleIds);
 
+    if (cycles.isEmpty()) {
+      throw new EntityNotFoundException("No cycles found for participantId: " + participantId);
+    }
+
     if (cycles.size() != positionsDetails.size()) {
       throw new NonConsistentDataException(
           "Number of Cycles is not equal with number of Position Details");
     }
 
-    if (cycles.size() == 0) {
-      throw new EntityNotFoundException("No cycles found for participantId: " + participantId);
-    }
-
-    Participant participant = participantRepository.findByParticipantId(context, participantId)
-        .orElseThrow(() -> new EntityNotFoundException(
-            "There is not Participant with id; " + participantId));
-
     Presenter presenter = presenterFactory.getPresenter(clientType);
 
     return presenter
-        .presentSelfFundingSettlementDetails(context, cycles, positionsDetails, participant);
+        .presentSelfFundingSettlementDetails(cycles, positionsDetails, participant);
   }
 }
