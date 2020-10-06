@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct
+package com.vocalink.crossproduct.integrationtests
 
 import com.github.javafaker.Faker
 import com.vocalink.crossproduct.domain.*

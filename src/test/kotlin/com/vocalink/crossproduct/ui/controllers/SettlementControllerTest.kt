@@ -1,0 +1,124 @@
+package com.vocalink.crossproduct.ui.controllers
+
+import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.mocks.MockDashboardModels
+import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
+import com.vocalink.crossproduct.ui.presenter.ClientType
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
+@ExtendWith(SpringExtension::class)
+@WebMvcTest(SettlementController::class)
+open class SettlementControllerTest {
+
+    @Autowired
+    private val mockMvc: MockMvc? = null
+
+    @MockBean
+    private val settlementServiceFacade: SettlementServiceFacade? = null
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get bad request on missing context for settlement`() {
+        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+                .thenReturn(MockDashboardModels().getSettlementDashboardDto())
+        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get settlement`() {
+        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+                .thenReturn(MockDashboardModels().getSettlementDashboardDto())
+        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
+                .header("context", TestConstants.CONTEXT)
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$.previousCycle.id").value("01"))
+                .andExpect(jsonPath("$.previousCycle.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.currentCycle.id").value("02"))
+                .andExpect(jsonPath("$.currentCycle.status").value("OPEN"))
+                .andExpect(jsonPath("$.positions[0].participant.id").value("NDEASESSXXX"))
+                .andExpect(jsonPath("$.positions[0].participant.bic").value("NDEASESSXXX"))
+                .andExpect(jsonPath("$.positions[0].participant.name").value("Nordea"))
+                .andExpect(jsonPath("$.positions[0].participant.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.positions[0].currentPosition.credit").value("1"))
+                .andExpect(jsonPath("$.positions[0].currentPosition.debit").value("10"))
+                .andExpect(jsonPath("$.positions[0].currentPosition.netPosition").value("9"))
+                .andExpect(jsonPath("$.positions[0].previousPosition.credit").value("10"))
+                .andExpect(jsonPath("$.positions[0].previousPosition.debit").value("10"))
+                .andExpect(jsonPath("$.positions[0].previousPosition.netPosition").value("0"))
+                .andExpect(jsonPath("$.positions[1].participant.id").value("HANDSESS"))
+                .andExpect(jsonPath("$.positions[1].participant.bic").value("HANDSESS"))
+                .andExpect(jsonPath("$.positions[1].participant.name").value("Svenska Handelsbanken"))
+                .andExpect(jsonPath("$.positions[1].participant.status").value("SUSPENDED"))
+                .andExpect(jsonPath("$.positions[1].currentPosition.credit").value("10"))
+                .andExpect(jsonPath("$.positions[1].currentPosition.debit").value("10"))
+                .andExpect(jsonPath("$.positions[1].currentPosition.netPosition").value("0"))
+                .andExpect(jsonPath("$.positions[1].previousPosition.credit").value("1"))
+                .andExpect(jsonPath("$.positions[1].previousPosition.debit").value("10"))
+                .andExpect(jsonPath("$.positions[1].previousPosition.netPosition").value("9"))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get self funding settlement details for given participant id`() {
+        val participantId = "NDEASESSXXX"
+        Mockito.`when`(settlementServiceFacade!!.getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
+                .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
+        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
+                .header("context", TestConstants.CONTEXT)
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(jsonPath("$.previousCycle.id").value("01"))
+                .andExpect(jsonPath("$.previousCycle.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.currentCycle.id").value("02"))
+                .andExpect(jsonPath("$.currentCycle.status").value("OPEN"))
+                .andExpect(jsonPath("$.participant.id").value("NDEASESSXXX"))
+                .andExpect(jsonPath("$.participant.bic").value("NDEASESSXXX"))
+                .andExpect(jsonPath("$.participant.name").value("Nordea"))
+                .andExpect(jsonPath("$.participant.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.customerCreditTransfer.previousPosition.credit").value("1"))
+                .andExpect(jsonPath("$.customerCreditTransfer.previousPosition.debit").value("10"))
+                .andExpect(jsonPath("$.customerCreditTransfer.previousPosition.netPosition").value("9"))
+                .andExpect(jsonPath("$.customerCreditTransfer.currentPosition.credit").value("10"))
+                .andExpect(jsonPath("$.customerCreditTransfer.currentPosition.debit").value("10"))
+                .andExpect(jsonPath("$.customerCreditTransfer.currentPosition.netPosition").value("0"))
+                .andExpect(jsonPath("$.paymentReturn.previousPosition.credit").value("1"))
+                .andExpect(jsonPath("$.paymentReturn.previousPosition.debit").value("10"))
+                .andExpect(jsonPath("$.paymentReturn.previousPosition.netPosition").value("9"))
+                .andExpect(jsonPath("$.paymentReturn.currentPosition.credit").value("10"))
+                .andExpect(jsonPath("$.paymentReturn.currentPosition.debit").value("10"))
+                .andExpect(jsonPath("$.paymentReturn.currentPosition.netPosition").value("0"))
+                .andExpect(jsonPath("$.previousPositionTotals.totalCredit").value("10"))
+                .andExpect(jsonPath("$.previousPositionTotals.totalDebit").value("10"))
+                .andExpect(jsonPath("$.previousPositionTotals.totalNetPosition").value("0"))
+                .andExpect(jsonPath("$.currentPositionTotals.totalCredit").value("0"))
+                .andExpect(jsonPath("$.currentPositionTotals.totalDebit").value("10"))
+                .andExpect(jsonPath("$.currentPositionTotals.totalNetPosition").value("10"))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get bad request on missing context for settlement details`() {
+        val participantId = "NDEASESSXXX"
+        Mockito.`when`(settlementServiceFacade!!
+                .getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
+                .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
+        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().isBadRequest)
+    }
+}

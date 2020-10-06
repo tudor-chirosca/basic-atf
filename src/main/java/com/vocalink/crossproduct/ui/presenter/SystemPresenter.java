@@ -16,15 +16,16 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class SystemPresenter implements Presenter {
+
   @Override
-  public SettlementDashboardDto presentSettlement(String context, List<Cycle> cycles,
+  public SettlementDashboardDto presentSettlement(List<Cycle> cycles,
       List<Participant> participants) {
     throw new RuntimeException("System API not implemented yet");
   }
 
   @Override
-  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(
-      String context, List<Cycle> cycles, List<PositionDetails> positionsDetails, Participant participant) {
+  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(List<Cycle> cycles,
+      List<PositionDetails> positionsDetails, Participant participant) {
 
     throw new RuntimeException("System API not implemented yet");
   }

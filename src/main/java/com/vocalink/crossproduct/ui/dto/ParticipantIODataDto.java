@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class ParticipantIODataDto {
   private ParticipantDto participant;
-  private IOData files;
-  private IOData batches;
-  private IOData transactions;
+  private IODataDto files;
+  private IODataDto batches;
+  private IODataDto transactions;
 }
