@@ -10,6 +10,10 @@ pipeline {
         GITHUB_CREDENTIALS = "tech-user"
         RELEASE_BRANCH = "master"
     }
+    
+    options {
+        disableConcurrentBuilds()
+    }
 
     stages {
         stage("Build and publish artifact:") {
