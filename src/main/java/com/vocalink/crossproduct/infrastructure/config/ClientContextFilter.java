@@ -37,7 +37,8 @@ public class ClientContextFilter implements Filter {
 
     String contextHeader = httpServletRequest.getHeader("context");
 
-    if (!contexts.contains(contextHeader)) {
+    if (!contexts.contains(contextHeader) &&
+        !(httpServletRequest.getServletPath().contains("/actuator/health"))) {
       httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid context");
     } else {
       chain.doFilter(request, response);
