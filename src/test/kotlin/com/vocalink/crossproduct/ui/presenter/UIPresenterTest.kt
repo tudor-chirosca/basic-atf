@@ -8,8 +8,10 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito.verify
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -76,10 +78,11 @@ class UIPresenterTest {
         val participant = MockParticipants().getParticipant(true)
 
         Mockito.`when`(selfFundingDetailsMapper
-                .presentFullSelfFundingSettlementDetails(any(), any(), any()))
+                .presentFullParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
 
-        val result = testingModule.presentSelfFundingSettlementDetails(cycles, positionDetails, participant)
+        val result = testingModule.presentParticipantSettlementDetails(cycles,
+                positionDetails, participant, null, null)
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
         assertEquals("01", result.previousCycle.id)
@@ -90,23 +93,25 @@ class UIPresenterTest {
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalCredit)
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalDebit)
         assertEquals(BigInteger.ZERO, result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.debit)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.credit)
-        assertEquals(BigInteger.ZERO, result.customerCreditTransfer.currentPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.customerCreditTransfer.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.customerCreditTransfer.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.currentPosition.debit)
-        assertEquals(BigInteger.TEN, result.paymentReturn.currentPosition.credit)
-        assertEquals(BigInteger.ZERO, result.paymentReturn.currentPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.paymentReturn.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.paymentReturn.previousPosition.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.currentPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.currentPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.previousPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.currentPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.currentPosition.paymentReturn.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.previousPosition.paymentReturn.netPosition)
         assertEquals("NDEASESSXXX", result.participant.bic)
         assertEquals("NDEASESSXXX", result.participant.id)
         assertEquals("Nordea", result.participant.name)
         assertEquals(ParticipantStatus.ACTIVE, result.participant.status)
         assertNull(result.participant.suspendedTime)
+
+        verify(selfFundingDetailsMapper).presentFullParticipantSettlementDetails(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -122,10 +127,11 @@ class UIPresenterTest {
         val participant = MockParticipants().getParticipant(true)
 
         Mockito.`when`(selfFundingDetailsMapper
-                .presentOneCycleSelfFundingSettlementDetails(any(), any(), any()))
+                .presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDtoForOneCycle())
 
-        val result = testingModule.presentSelfFundingSettlementDetails(cycles, positionDetails, participant)
+        val result = testingModule.presentParticipantSettlementDetails(cycles, positionDetails, participant,
+                null, null)
         assertNull(result.currentCycle)
         assertEquals("01", result.previousCycle.id)
         assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
@@ -134,18 +140,20 @@ class UIPresenterTest {
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalCredit)
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalDebit)
         assertEquals(BigInteger.ZERO, result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.customerCreditTransfer.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.customerCreditTransfer.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.paymentReturn.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.paymentReturn.previousPosition.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.previousPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.previousPosition.paymentReturn.netPosition)
 
         assertEquals("NDEASESSXXX", result.participant.bic)
         assertEquals("NDEASESSXXX", result.participant.id)
         assertEquals("Nordea", result.participant.name)
         assertEquals(ParticipantStatus.ACTIVE, result.participant.status)
         assertNull(result.participant.suspendedTime)
+
+        verify(selfFundingDetailsMapper).presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any())
     }
 
     @Test

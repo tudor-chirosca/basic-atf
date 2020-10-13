@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
@@ -47,11 +47,11 @@ public class SettlementController {
 
   @ApiOperation("Fetch self funded Settlement, including positions, participant info and cycles")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = SelfFundingSettlementDetailsDto.class),
+      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = ParticipantSettlementDetailsDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   @GetMapping(value = "/settlementDetails/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SelfFundingSettlementDetailsDto> getSelfFundingSettlementDetails(
+  public ResponseEntity<ParticipantSettlementDetailsDto> getSelfFundingSettlementDetails(
       HttpServletRequest httpServletRequest, final @PathVariable String participantId) {
 
     String contextHeader = httpServletRequest.getHeader("context");
@@ -61,8 +61,8 @@ public class SettlementController {
         ? ClientType.SYSTEM
         : ClientType.valueOf(clientTypeHeader.toUpperCase());
 
-    SelfFundingSettlementDetailsDto selfFundingDetailsDto = settlementServiceFacade
-        .getSelfFundingSettlementDetails(contextHeader.toUpperCase(), clientType, participantId);
+    ParticipantSettlementDetailsDto selfFundingDetailsDto = settlementServiceFacade
+        .getParticipantSettlementDetails(contextHeader.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(selfFundingDetailsDto);
   }

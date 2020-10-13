@@ -1,12 +1,13 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.CycleRepository
+import com.vocalink.crossproduct.repository.CycleRepository
 import com.vocalink.crossproduct.domain.CycleStatus
-import com.vocalink.crossproduct.domain.ParticipantRepository
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.repository.ParticipantRepository
 import com.vocalink.crossproduct.domain.PositionDetails
-import com.vocalink.crossproduct.domain.PositionDetailsRepository
+import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository
+import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.repository.PositionDetailsRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException
 import com.vocalink.crossproduct.mocks.MockCycles
@@ -17,10 +18,8 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -38,13 +37,16 @@ open class SettlementServiceFacadeImplTest {
     private val presenterFactory = Mockito.mock(PresenterFactory::class.java)!!
     private val positionDetailsRepository = Mockito.mock(PositionDetailsRepository::class.java)!!
     private val cycleRepository = Mockito.mock(CycleRepository::class.java)!!
+    private val intraDayPositionGrossRepository = Mockito.mock(IntraDayPositionGrossRepository::class.java)!!
+
     private val uiPresenter = Mockito.mock(UIPresenter::class.java)!!
 
     private var testingModule = SettlementServiceFacadeImpl(
             participantRepository,
             cycleRepository,
             presenterFactory,
-            positionDetailsRepository
+            positionDetailsRepository,
+            intraDayPositionGrossRepository
     )
 
     @Test
@@ -105,9 +107,9 @@ open class SettlementServiceFacadeImplTest {
                 .thenReturn(MockCycles().cycles)
         Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
-        Mockito.`when`(uiPresenter.presentSelfFundingSettlementDetails(any(), any(), any()))
+        Mockito.`when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(mockModel)
-        val result = testingModule.getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+        val result = testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
         assertEquals("01", result.previousCycle.id)
@@ -118,18 +120,18 @@ open class SettlementServiceFacadeImplTest {
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalCredit)
         assertEquals(BigInteger.TEN, result.previousPositionTotals.totalDebit)
         assertEquals(BigInteger.ZERO, result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.debit)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.credit)
-        assertEquals(BigInteger.ZERO, result.customerCreditTransfer.currentPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.customerCreditTransfer.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.customerCreditTransfer.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.currentPosition.debit)
-        assertEquals(BigInteger.TEN, result.paymentReturn.currentPosition.credit)
-        assertEquals(BigInteger.ZERO, result.paymentReturn.currentPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.paymentReturn.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.paymentReturn.previousPosition.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.currentPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.currentPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.previousPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.currentPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.currentPosition.paymentReturn.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.previousPosition.paymentReturn.netPosition)
         assertEquals("NDEASESSXXX", result.participant.bic)
         assertEquals("NDEASESSXXX", result.participant.id)
         assertEquals("Nordea", result.participant.name)
@@ -154,7 +156,7 @@ open class SettlementServiceFacadeImplTest {
         Mockito.`when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.empty())
         assertThrows(EntityNotFoundException::class.java) {
-            testingModule.getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 
@@ -168,7 +170,7 @@ open class SettlementServiceFacadeImplTest {
         Mockito.`when`(cycleRepository.findByIds(TestConstants.CONTEXT, emptyList()))
                 .thenReturn(MockCycles().cycles)
         assertThrows(NonConsistentDataException::class.java) {
-            testingModule.getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 
@@ -185,7 +187,7 @@ open class SettlementServiceFacadeImplTest {
         Mockito.`when`(cycleRepository.findByIds(TestConstants.CONTEXT, emptyList()))
                 .thenReturn(emptyList())
         assertThrows(EntityNotFoundException::class.java) {
-            testingModule.getSelfFundingSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Cycle;
+import com.vocalink.crossproduct.domain.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.PositionDetails;
@@ -9,7 +10,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +25,11 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(List<Cycle> cycles,
-      List<PositionDetails> positionsDetails, Participant participant) {
+  public ParticipantSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+      List<PositionDetails> positionsDetails,
+      Participant participant,
+      Participant fundingParticipant,
+      IntraDayPositionGross intradayPositionGross) {
 
     throw new RuntimeException("System API not implemented yet");
   }

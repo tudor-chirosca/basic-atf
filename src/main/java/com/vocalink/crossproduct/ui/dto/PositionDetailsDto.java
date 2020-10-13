@@ -2,14 +2,16 @@ package com.vocalink.crossproduct.ui.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class PositionDetailsDto {
-  private ParticipantPositionDto previousPosition;
-  private ParticipantPositionDto currentPosition;
+  private ParticipantPositionDto customerCreditTransfer;
+  private ParticipantPositionDto paymentReturn;
 }

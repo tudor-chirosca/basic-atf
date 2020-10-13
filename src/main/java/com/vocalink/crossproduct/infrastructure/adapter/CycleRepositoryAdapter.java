@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.CycleRepository;
+import com.vocalink.crossproduct.repository.CycleRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
 import com.vocalink.crossproduct.shared.cycle.CyclesClient;

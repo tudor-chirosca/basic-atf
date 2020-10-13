@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.integrationtests
 
 
-import com.vocalink.crossproduct.domain.CycleRepository
-import com.vocalink.crossproduct.domain.ParticipantRepository
+import com.vocalink.crossproduct.repository.CycleRepository
+import com.vocalink.crossproduct.repository.ParticipantRepository
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith

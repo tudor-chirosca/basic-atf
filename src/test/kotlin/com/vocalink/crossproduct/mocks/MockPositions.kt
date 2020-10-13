@@ -58,8 +58,8 @@ class MockPositions {
 
     val positionDetailsDto =
             PositionDetailsDto.builder()
-                    .previousPosition(getPositionDto(false))
-                    .currentPosition(getPositionDto(true))
+                    .customerCreditTransfer(getPositionDto(false))
+                    .paymentReturn(getPositionDto(true))
                     .build();
 
     fun getParticipantPosition(isNetZero: Boolean): ParticipantPosition {

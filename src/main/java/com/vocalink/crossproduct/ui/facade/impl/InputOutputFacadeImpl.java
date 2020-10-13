@@ -2,8 +2,8 @@ package com.vocalink.crossproduct.ui.facade.impl;
 
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
-import com.vocalink.crossproduct.domain.ParticipantIODataRepository;
-import com.vocalink.crossproduct.domain.ParticipantRepository;
+import com.vocalink.crossproduct.repository.ParticipantIODataRepository;
+import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;

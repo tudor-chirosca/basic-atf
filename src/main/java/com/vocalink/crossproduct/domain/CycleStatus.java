@@ -1,5 +1,5 @@
 package com.vocalink.crossproduct.domain;
 
 public enum CycleStatus {
-  OPEN, COMPLETED
+  OPEN, COMPLETED, NOT_STARTED
 }

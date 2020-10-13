@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.ParticipantIODataRepository
-import com.vocalink.crossproduct.domain.ParticipantRepository
+import com.vocalink.crossproduct.repository.ParticipantIODataRepository
+import com.vocalink.crossproduct.repository.ParticipantRepository
 import com.vocalink.crossproduct.domain.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants

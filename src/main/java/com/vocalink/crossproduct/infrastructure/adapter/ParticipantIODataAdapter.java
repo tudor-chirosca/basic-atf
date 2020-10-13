@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import com.vocalink.crossproduct.domain.ParticipantIOData;
-import com.vocalink.crossproduct.domain.ParticipantIODataRepository;
+import com.vocalink.crossproduct.repository.ParticipantIODataRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;

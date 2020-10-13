@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Cycle;
+import com.vocalink.crossproduct.domain.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.Participant;
 import com.vocalink.crossproduct.domain.ParticipantIOData;
 import com.vocalink.crossproduct.domain.ParticipantPosition;
@@ -9,8 +10,10 @@ import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.IODataDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.TotalPositionDto;
+import com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper;
+import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -64,23 +67,24 @@ public class UIPresenter implements Presenter {
 
     return SettlementDashboardDto.builder()
         .positions(settlementPositionDtos)
-        .currentCycle(currentCycle.toDto())
-        .previousCycle(previousCycle.toDto())
+        .currentCycle(CycleMapper.map(currentCycle))
+        .previousCycle(CycleMapper.map(previousCycle))
         .build();
   }
 
   @Override
-  public SelfFundingSettlementDetailsDto presentSelfFundingSettlementDetails(List<Cycle> cycles,
-      List<PositionDetails> positionsDetails,
-      Participant participant) {
+  public ParticipantSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+      List<PositionDetails> positionsDetails, Participant participant,
+      Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
     if (cycles.size() == 1) {
       return selfFundingDetailsMapper
-          .presentOneCycleSelfFundingSettlementDetails(cycles, positionsDetails, participant);
-    } else {
-      return selfFundingDetailsMapper
-          .presentFullSelfFundingSettlementDetails(cycles, positionsDetails, participant);
+          .presentOneCycleParticipantSettlementDetails(cycles, positionsDetails, participant,
+              fundingParticipant, intradayPositionGross);
     }
+    return selfFundingDetailsMapper
+        .presentFullParticipantSettlementDetails(cycles, positionsDetails, participant,
+            fundingParticipant, intradayPositionGross);
   }
 
   @Override

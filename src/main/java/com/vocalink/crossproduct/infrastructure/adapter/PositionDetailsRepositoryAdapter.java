@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import com.vocalink.crossproduct.domain.PositionDetails;
-import com.vocalink.crossproduct.domain.PositionDetailsRepository;
+import com.vocalink.crossproduct.repository.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.positions.PositionClient;

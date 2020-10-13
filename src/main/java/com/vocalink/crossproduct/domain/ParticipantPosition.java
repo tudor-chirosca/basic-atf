@@ -4,13 +4,15 @@ import com.vocalink.crossproduct.ui.dto.ParticipantPositionDto;
 import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
 public class ParticipantPosition {
   private String participantId;
   public BigInteger credit;

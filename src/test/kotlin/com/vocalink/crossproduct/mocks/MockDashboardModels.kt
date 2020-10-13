@@ -1,27 +1,27 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.ui.dto.SelfFundingSettlementDetailsDto
+import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 
 class MockDashboardModels {
-    fun getSelfFundingDetailsDto(): SelfFundingSettlementDetailsDto {
-        return SelfFundingSettlementDetailsDto.builder()
+    fun getSelfFundingDetailsDto(): ParticipantSettlementDetailsDto {
+        return ParticipantSettlementDetailsDto.builder()
                 .participant(MockParticipants().getParticipantDto(false))
                 .previousCycle(MockCycles().cyclesDto[0])
                 .currentCycle(MockCycles().cyclesDto[1])
-                .customerCreditTransfer(MockPositions().positionDetailsDto)
-                .paymentReturn(MockPositions().positionDetailsDto)
+                .currentPosition(MockPositions().positionDetailsDto)
+                .previousPosition(MockPositions().positionDetailsDto)
                 .previousPositionTotals(MockPositions().getPositionDetailsTotalsDto(true))
                 .currentPositionTotals(MockPositions().getPositionDetailsTotalsDto(false))
                 .build()
     }
 
-    fun getSelfFundingDetailsDtoForOneCycle(): SelfFundingSettlementDetailsDto {
-        return SelfFundingSettlementDetailsDto.builder()
+    fun getSelfFundingDetailsDtoForOneCycle(): ParticipantSettlementDetailsDto {
+        return ParticipantSettlementDetailsDto.builder()
                 .participant(MockParticipants().getParticipantDto(false))
                 .previousCycle(MockCycles().cyclesDto[0])
-                .customerCreditTransfer(MockPositions().positionDetailsDto)
-                .paymentReturn(MockPositions().positionDetailsDto)
+                .currentPosition(MockPositions().positionDetailsDto)
+                .previousPosition(MockPositions().positionDetailsDto)
                 .previousPositionTotals(MockPositions().getPositionDetailsTotalsDto(true))
                 .build()
     }

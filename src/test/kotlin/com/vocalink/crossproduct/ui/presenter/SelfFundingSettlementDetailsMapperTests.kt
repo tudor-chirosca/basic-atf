@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -26,7 +27,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(false)
 
-        val result = testingModule.presentFullSelfFundingSettlementDetails(cycles, positionDetails, participant)
+        val result = testingModule.presentFullParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
 
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
@@ -38,18 +39,18 @@ class SelfFundingSettlementDetailsMapperTests {
         assertEquals(BigInteger.valueOf(11), result.previousPositionTotals.totalCredit)
         assertEquals(BigInteger.valueOf(20), result.previousPositionTotals.totalDebit)
         assertEquals(BigInteger.valueOf(9), result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.debit)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.currentPosition.credit)
-        assertEquals(BigInteger.ZERO, result.customerCreditTransfer.currentPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.customerCreditTransfer.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.customerCreditTransfer.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.debit)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.credit)
-        assertEquals(BigInteger.ZERO, result.paymentReturn.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.currentPosition.debit)
-        assertEquals(BigInteger.ONE, result.paymentReturn.currentPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.paymentReturn.currentPosition.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.TEN, result.currentPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.ZERO, result.currentPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.previousPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.previousPosition.paymentReturn.netPosition)
+        assertEquals(BigInteger.TEN, result.currentPosition.paymentReturn.debit)
+        assertEquals(BigInteger.ONE, result.currentPosition.paymentReturn.credit)
+        assertEquals(BigInteger.valueOf(9), result.currentPosition.paymentReturn.netPosition)
         assertEquals("NDEASESSXXX", result.participant.bic)
         assertEquals("NDEASESSXXX", result.participant.id)
         assertEquals("Nordea", result.participant.name)
@@ -69,7 +70,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(true)
 
-        val result = testingModule.presentOneCycleSelfFundingSettlementDetails(cycles, positionDetails, participant)
+        val result = testingModule.presentOneCycleParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
         assertNull(result.currentCycle)
         assertEquals("01", result.previousCycle.id)
         assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
@@ -78,12 +79,12 @@ class SelfFundingSettlementDetailsMapperTests {
         assertEquals(BigInteger.valueOf(11), result.previousPositionTotals.totalCredit)
         assertEquals(BigInteger.valueOf(20), result.previousPositionTotals.totalDebit)
         assertEquals(BigInteger.valueOf(9), result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigInteger.TEN, result.customerCreditTransfer.previousPosition.debit)
-        assertEquals(BigInteger.ONE, result.customerCreditTransfer.previousPosition.credit)
-        assertEquals(BigInteger.valueOf(9), result.customerCreditTransfer.previousPosition.netPosition)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.debit)
-        assertEquals(BigInteger.TEN, result.paymentReturn.previousPosition.credit)
-        assertEquals(BigInteger.ZERO, result.paymentReturn.previousPosition.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.customerCreditTransfer.debit)
+        assertEquals(BigInteger.ONE, result.previousPosition.customerCreditTransfer.credit)
+        assertEquals(BigInteger.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.debit)
+        assertEquals(BigInteger.TEN, result.previousPosition.paymentReturn.credit)
+        assertEquals(BigInteger.ZERO, result.previousPosition.paymentReturn.netPosition)
 
         assertEquals("HANDSESS", result.participant.bic)
         assertEquals("HANDSESS", result.participant.id)

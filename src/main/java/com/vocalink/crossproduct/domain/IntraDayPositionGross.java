@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +12,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PositionDetails {
+public class IntraDayPositionGross {
 
-  private String sessionCode;
-  private ParticipantPosition customerCreditTransfer;
-  private ParticipantPosition paymentReturn;
+  private BigDecimal debitCap;
+  private BigDecimal debitPosition;
+
 }

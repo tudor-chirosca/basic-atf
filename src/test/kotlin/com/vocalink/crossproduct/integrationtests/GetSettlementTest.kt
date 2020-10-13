@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.*
 import com.vocalink.crossproduct.ui.dto.CycleDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import com.vocalink.crossproduct.ui.presenter.SelfFundingSettlementDetailsMapper
+import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
