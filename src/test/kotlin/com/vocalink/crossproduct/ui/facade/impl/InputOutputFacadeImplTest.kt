@@ -4,18 +4,21 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.repository.ParticipantIODataRepository
 import com.vocalink.crossproduct.repository.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.repository.IODetailsRepository
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
+import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -95,5 +98,65 @@ class InputOutputFacadeImplTest {
         assertEquals(0.00, result.rows[2].files.rejected)
         assertEquals(0, result.rows[2].transactions.submitted)
         assertEquals(0.00, result.rows[2].transactions.rejected)
+    }
+
+    @Test
+    fun `should get participant IO Details data`() {
+        val mockModel = MockIOData().getIODetailsDto()
+        val date = LocalDate.now()
+        val participantId = "NDEASESSXXX"
+
+        Mockito.`when`(participantRepository
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+
+        Mockito.`when`(ioDetailsRepository
+                .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
+                .thenReturn(listOf(MockIOData().getIODetails()))
+
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+
+        Mockito.`when`(uiPresenter.presentIoDetails(any(), any(), any()))
+                .thenReturn(mockModel)
+
+        val result = testingModule
+                .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+
+        Mockito.verify(uiPresenter).presentIoDetails(any(), any(), any())
+        Mockito.verify(participantRepository).findByParticipantId(any(), any())
+        Mockito.verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should throw error on io details if no participants for given id`() {
+        val participantId = "fake_id"
+        val date = LocalDate.now()
+
+        Mockito.`when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.empty())
+        Assertions.assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+        }
+    }
+
+    @Test
+    fun `should throw error on io details if no io details for given id or date`() {
+        val participantId = "NDEASESSXXX"
+        val date = LocalDate.now()
+
+        Mockito.`when`(participantRepository
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+
+        Mockito.`when`(ioDetailsRepository
+                .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
+                .thenReturn(emptyList())
+
+        Assertions.assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+        }
     }
 }

@@ -211,6 +211,39 @@ class UIPresenterTest {
     }
 
     @Test
+    fun `should present io Details`() {
+        val result = testingModule.presentIoDetails(
+                MockParticipants().getParticipant(false),
+                MockIOData().getIODetails(),
+                LocalDate.now()
+        )
+
+        assertEquals(3, result.batches.size)
+        assertEquals("Pacs.008", result.batches[0].code)
+        assertEquals("Customer Credit Transfer", result.batches[0].name)
+
+        assertEquals(10, result.files.submitted)
+        assertEquals(10, result.files.accepted)
+        assertEquals(1.5, result.files.rejected)
+        assertEquals(10, result.files.output)
+
+        assertEquals(10, result.batches[0].data.accepted)
+        assertEquals(10, result.batches[0].data.output)
+        assertEquals(1.50, result.batches[0].data.rejected)
+        assertEquals(10, result.batches[0].data.submitted)
+
+        assertEquals(3, result.transactions.size)
+        assertEquals("Pacs.004", result.transactions[1].code)
+        assertEquals("Payment Return", result.transactions[1].name)
+        assertEquals(10, result.transactions[1].data.accepted)
+        assertEquals(10, result.transactions[1].data.output)
+        assertEquals(1.50, result.transactions[1].data.rejected)
+        assertEquals(10, result.transactions[1].data.submitted)
+        assertEquals(10, result.transactions[1].data.amountAccepted)
+        assertEquals(10, result.transactions[1].data.amountOutput)
+    }
+
+    @Test
     fun `should get UI ClientType`() {
         val result = testingModule.clientType
         assertEquals(ClientType.UI, result)

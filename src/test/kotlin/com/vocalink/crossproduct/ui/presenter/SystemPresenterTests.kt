@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -38,6 +39,15 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present input output for System`() {
         Assertions.assertThrows(RuntimeException::class.java) {
             testingModule.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present input output Details for System`() {
+        val participant = MockParticipants().getParticipant(false)
+        val ioData = MockIOData().getIODetails()
+        Assertions.assertThrows(RuntimeException::class.java) {
+            testingModule.presentIoDetails(participant, ioData, LocalDate.now())
         }
     }
 }
