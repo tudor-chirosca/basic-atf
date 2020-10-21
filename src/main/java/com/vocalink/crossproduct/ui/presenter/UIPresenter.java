@@ -1,18 +1,22 @@
 package com.vocalink.crossproduct.ui.presenter;
 
-import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.Participant;
-import com.vocalink.crossproduct.domain.ParticipantIOData;
-import com.vocalink.crossproduct.domain.ParticipantPosition;
-import com.vocalink.crossproduct.domain.PositionDetails;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.io.IODetails;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
+import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.io.ParticipantIOData;
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
-import com.vocalink.crossproduct.ui.dto.IODataDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.io.IODataDto;
+import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
-import com.vocalink.crossproduct.ui.dto.TotalPositionDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper;
+import com.vocalink.crossproduct.ui.presenter.mapper.IODetailsMapper;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import static java.util.stream.Collectors.toList;
@@ -137,6 +142,12 @@ public class UIPresenter implements Presenter {
         .transactionsRejected(String.format("%.2f", totalTransactionsRejected))
         .rows(participantIODataDtos)
         .build();
+  }
+
+  @Override
+  public IODetailsDto presentIoDetails(Participant participant,
+      IODetails ioDetails, LocalDate date) {
+    return IODetailsMapper.map(ioDetails, participant, date);
   }
 
   @Override

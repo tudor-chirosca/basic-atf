@@ -1,9 +1,9 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.domain.Participant
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.CPParticipant
-import com.vocalink.crossproduct.ui.dto.ParticipantDto
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import java.time.LocalDateTime
 
 class MockParticipants {

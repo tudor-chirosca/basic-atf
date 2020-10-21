@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
-import com.vocalink.crossproduct.domain.PositionDetails;
+import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.repository.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
@@ -24,8 +24,9 @@ public class PositionDetailsRepositoryAdapter extends
   public List<PositionDetails> findByParticipantId(String context, String participantId) {
     log.info("Fetching Position Details for participantID: {} from context {} ... ", participantId,
         context);
-    PositionClient positionClient = clientFactory.getPositionClient(context);
-    return positionClient.findByParticipantId(participantId)
+    PositionClient client = clientFactory.getPositionClient(context);
+
+    return client.findByParticipantId(participantId)
         .stream()
         .map(this::toEntity)
         .collect(Collectors.toList());

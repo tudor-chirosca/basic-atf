@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.infrastructure.adapter
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
-import com.vocalink.crossproduct.domain.PositionDetails
+import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockPositions

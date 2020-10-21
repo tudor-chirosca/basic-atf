@@ -1,6 +1,6 @@
-package com.vocalink.crossproduct.domain;
+package com.vocalink.crossproduct.domain.position;
 
-import com.vocalink.crossproduct.ui.dto.ParticipantPositionDto;
+import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

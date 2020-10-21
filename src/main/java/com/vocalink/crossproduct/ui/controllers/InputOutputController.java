@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
+import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,12 +34,10 @@ public class InputOutputController {
   @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest,
       @RequestParam(required = false) String timestamp) {
-    String contextHeader = httpServletRequest.getHeader("context");
-    String clientTypeHeader = httpServletRequest.getHeader("client-type");
 
-    LocalDate dateFrom = StringUtils.isEmpty(timestamp)
-        ? LocalDate.now()
-        : LocalDate.parse(timestamp);
+    String contextHeader = getHeader(httpServletRequest, "context");
+    String clientTypeHeader = getHeader(httpServletRequest, "client-type");
+    LocalDate dateFrom = getDate(timestamp);
 
     ClientType clientType = StringUtils.isEmpty(clientTypeHeader)
         ? ClientType.SYSTEM
@@ -47,5 +47,39 @@ public class InputOutputController {
         .getInputOutputDashboard(contextHeader.toUpperCase(), clientType, dateFrom);
 
     return ResponseEntity.ok().body(settlementDto);
+  }
+
+  @ApiOperation("Fetch input output data")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Input output retrieved successfully", response = IODashboardDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  @GetMapping(value = "/io-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<IODetailsDto> getIODetails(HttpServletRequest httpServletRequest,
+      final @PathVariable String participantId,
+      @RequestParam(required = false) String timestamp) {
+
+    String contextHeader = getHeader(httpServletRequest, "context");
+    String clientTypeHeader = getHeader(httpServletRequest, "client-type");
+    LocalDate dateFrom = getDate(timestamp);
+
+    ClientType clientType = StringUtils.isEmpty(clientTypeHeader)
+        ? ClientType.SYSTEM
+        : ClientType.valueOf(clientTypeHeader.toUpperCase());
+
+    IODetailsDto ioDetails = inputOutputFacade
+        .getInputOutputDetails(contextHeader.toUpperCase(), clientType, dateFrom, participantId);
+
+    return ResponseEntity.ok().body(ioDetails);
+  }
+
+  private LocalDate getDate(String timestamp) {
+    return StringUtils.isEmpty(timestamp)
+        ? LocalDate.now()
+        : LocalDate.parse(timestamp);
+  }
+
+  private String getHeader(HttpServletRequest request, String key) {
+    return request.getHeader(key);
   }
 }

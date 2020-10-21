@@ -2,11 +2,11 @@ package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.repository.CycleRepository
-import com.vocalink.crossproduct.domain.CycleStatus
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.repository.ParticipantRepository
-import com.vocalink.crossproduct.domain.PositionDetails
+import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.repository.PositionDetailsRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException

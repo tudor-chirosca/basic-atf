@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
-import com.vocalink.crossproduct.domain.Participant;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
@@ -18,17 +18,16 @@ import static java.util.stream.Collectors.toList;
 @Repository
 @Slf4j
 public class ParticipantRepositoryAdapter extends
-    AbstractCrossproductAdapter<CPParticipant, Participant>
-    implements ParticipantRepository {
+    AbstractCrossproductAdapter<CPParticipant, Participant> implements ParticipantRepository {
 
   private final ClientFactory clientFactory;
 
   @Override
   public List<Participant> findAll(String context) {
     log.info("Fetching all participants from context {} ... ", context);
-    ParticipantClient participantClient = clientFactory.getParticipantClient(context.toUpperCase());
+    ParticipantClient client = clientFactory.getParticipantClient(context.toUpperCase());
 
-    return participantClient.findAll()
+    return client.findAll()
         .stream()
         .map(this::toEntity)
         .collect(toList());
@@ -37,9 +36,9 @@ public class ParticipantRepositoryAdapter extends
   @Override
   public Optional<Participant> findByParticipantId(String context, String participantId) {
     log.info("Fetching participant with id {} from context {} ... ", participantId, context);
-    ParticipantClient participantClient = clientFactory.getParticipantClient(context.toUpperCase());
+    ParticipantClient client = clientFactory.getParticipantClient(context.toUpperCase());
 
-    return participantClient.findById(participantId)
+    return client.findById(participantId)
         .stream()
         .map(this::toEntity)
         .findFirst();

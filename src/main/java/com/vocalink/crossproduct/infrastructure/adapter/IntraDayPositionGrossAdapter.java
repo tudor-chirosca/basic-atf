@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
-import com.vocalink.crossproduct.domain.IntraDayPositionGross;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
@@ -24,8 +24,9 @@ public class IntraDayPositionGrossAdapter extends
       String participantId) {
     log.info("Fetching Intra-day position Gross for participantID: {} from context {} ... ",
         participantId, context);
-    PositionClient positionClient = clientFactory.getPositionClient(context);
-    return positionClient
+    PositionClient client = clientFactory.getPositionClient(context);
+
+    return client
         .findIntraDayPositionGrossByParticipantId(participantId)
         .map(this::toEntity);
   }

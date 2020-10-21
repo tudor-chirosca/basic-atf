@@ -2,8 +2,8 @@ package com.vocalink.crossproduct.infrastructure.adapter
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.cycle.BPSCyclesClient
-import com.vocalink.crossproduct.domain.Cycle
-import com.vocalink.crossproduct.domain.CycleStatus
+import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockCycles

@@ -1,13 +1,13 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.domain.ParticipantPosition
-import com.vocalink.crossproduct.domain.PositionDetails
+import com.vocalink.crossproduct.domain.position.ParticipantPosition
+import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.shared.positions.CPParticipantPosition
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails
-import com.vocalink.crossproduct.ui.dto.ParticipantPositionDto
-import com.vocalink.crossproduct.ui.dto.PositionDetailsDto
-import com.vocalink.crossproduct.ui.dto.PositionDetailsTotalsDto
-import com.vocalink.crossproduct.ui.dto.TotalPositionDto
+import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
+import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import java.math.BigInteger
 
 class MockPositions {

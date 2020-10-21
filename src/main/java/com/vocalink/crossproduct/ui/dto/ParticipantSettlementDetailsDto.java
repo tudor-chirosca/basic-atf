@@ -1,5 +1,10 @@
 package com.vocalink.crossproduct.ui.dto;
 
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

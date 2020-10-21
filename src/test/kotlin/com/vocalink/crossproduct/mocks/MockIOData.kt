@@ -1,15 +1,14 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.domain.IOData
-import com.vocalink.crossproduct.domain.ParticipantIOData
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.domain.io.IOData
+import com.vocalink.crossproduct.domain.io.ParticipantIOData
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.io.CPIOData
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData
 import com.vocalink.crossproduct.ui.dto.IODashboardDto
-import com.vocalink.crossproduct.ui.dto.IODataDto
-
-import com.vocalink.crossproduct.ui.dto.ParticipantDto
-import com.vocalink.crossproduct.ui.dto.ParticipantIODataDto
+import com.vocalink.crossproduct.ui.dto.io.IODataDto
+import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import java.time.LocalDate
 
 class MockIOData {

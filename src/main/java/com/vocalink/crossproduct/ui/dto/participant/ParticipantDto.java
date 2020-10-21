@@ -1,6 +1,6 @@
-package com.vocalink.crossproduct.ui.dto;
+package com.vocalink.crossproduct.ui.dto.participant;
 
-import com.vocalink.crossproduct.domain.ParticipantStatus;
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

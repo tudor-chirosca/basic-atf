@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
-import com.vocalink.crossproduct.domain.Cycle;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.repository.CycleRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
@@ -22,8 +22,9 @@ public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle,
   @Override
   public List<Cycle> findAll(String context) {
     log.info("Fetching all cycles from context {} ... ", context);
-    CyclesClient cyclesClient = clientFactory.getCyclesClient(context);
-    return cyclesClient.findAll()
+    CyclesClient client = clientFactory.getCyclesClient(context);
+
+    return client.findAll()
         .stream()
         .map(this::toEntity)
         .collect(Collectors.toList());
@@ -32,8 +33,9 @@ public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle,
   @Override
   public List<Cycle> findByIds(String context, List<String> cycleIds) {
     log.info("Fetching cycle by cycleIds {} from context {} ... ", cycleIds, context);
-    CyclesClient cyclesClient = clientFactory.getCyclesClient(context);
-    return cyclesClient.findByIds(cycleIds)
+    CyclesClient client = clientFactory.getCyclesClient(context);
+
+    return client.findByIds(cycleIds)
         .stream()
         .map(this::toEntity)
         .collect(Collectors.toList());

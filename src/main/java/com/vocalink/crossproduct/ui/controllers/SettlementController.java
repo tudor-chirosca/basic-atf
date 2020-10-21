@@ -51,7 +51,30 @@ public class SettlementController {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   @GetMapping(value = "/settlementDetails/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Deprecated
   public ResponseEntity<ParticipantSettlementDetailsDto> getSelfFundingSettlementDetails(
+      HttpServletRequest httpServletRequest, final @PathVariable String participantId) {
+
+    String contextHeader = httpServletRequest.getHeader("context");
+    String clientTypeHeader = httpServletRequest.getHeader("client-type");
+
+    ClientType clientType = (StringUtils.isEmpty(clientTypeHeader))
+        ? ClientType.SYSTEM
+        : ClientType.valueOf(clientTypeHeader.toUpperCase());
+
+    ParticipantSettlementDetailsDto selfFundingDetailsDto = settlementServiceFacade
+        .getParticipantSettlementDetails(contextHeader.toUpperCase(), clientType, participantId);
+
+    return ResponseEntity.ok().body(selfFundingDetailsDto);
+  }
+
+  @ApiOperation("Fetch self funded Settlement, including positions, participant info and cycles")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = ParticipantSettlementDetailsDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  @GetMapping(value = "/settlement-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ParticipantSettlementDetailsDto> getSettlementDetails(
       HttpServletRequest httpServletRequest, final @PathVariable String participantId) {
 
     String contextHeader = httpServletRequest.getHeader("context");

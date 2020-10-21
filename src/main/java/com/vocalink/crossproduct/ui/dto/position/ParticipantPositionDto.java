@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.ui.dto;
+package com.vocalink.crossproduct.ui.dto.position;
 
 import java.math.BigInteger;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ParticipantPositionDto {
+
   private BigInteger credit;
   private BigInteger debit;
   private BigInteger netPosition;

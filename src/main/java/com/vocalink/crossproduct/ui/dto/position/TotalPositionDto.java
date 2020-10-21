@@ -1,6 +1,6 @@
-package com.vocalink.crossproduct.ui.dto;
+package com.vocalink.crossproduct.ui.dto.position;
 
-import com.vocalink.crossproduct.domain.Participant;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

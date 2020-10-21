@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
-import com.vocalink.crossproduct.ui.dto.PositionDetailsDto;
-import com.vocalink.crossproduct.ui.dto.PositionDetailsTotalsDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import org.modelmapper.ModelMapper;
 
 public interface ParticipantPositionMapper {

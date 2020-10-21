@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.domain;
+package com.vocalink.crossproduct.domain.position;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

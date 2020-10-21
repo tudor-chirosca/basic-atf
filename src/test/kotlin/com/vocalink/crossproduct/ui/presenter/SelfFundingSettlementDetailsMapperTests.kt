@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.presenter
 
-import com.vocalink.crossproduct.domain.Cycle
-import com.vocalink.crossproduct.domain.CycleStatus
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions

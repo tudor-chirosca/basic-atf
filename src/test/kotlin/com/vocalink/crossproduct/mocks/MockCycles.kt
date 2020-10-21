@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.domain.Cycle
-import com.vocalink.crossproduct.domain.CycleStatus
-import com.vocalink.crossproduct.domain.ParticipantPosition
+import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.shared.cycle.CPCycle
-import com.vocalink.crossproduct.ui.dto.CycleDto
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import java.math.BigInteger
 import java.time.LocalDateTime
 

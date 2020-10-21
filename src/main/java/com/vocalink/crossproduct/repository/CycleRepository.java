@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.repository;
 
-import com.vocalink.crossproduct.domain.Cycle;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
 import java.util.List;
 
 public interface CycleRepository {

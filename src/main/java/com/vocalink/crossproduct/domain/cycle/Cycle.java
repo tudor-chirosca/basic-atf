@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.domain;
+package com.vocalink.crossproduct.domain.cycle;
 
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

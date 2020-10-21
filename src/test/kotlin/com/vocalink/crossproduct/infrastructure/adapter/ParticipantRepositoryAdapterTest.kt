@@ -2,8 +2,8 @@ package com.vocalink.crossproduct.infrastructure.adapter
 
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
-import com.vocalink.crossproduct.domain.Participant
-import com.vocalink.crossproduct.domain.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockParticipants

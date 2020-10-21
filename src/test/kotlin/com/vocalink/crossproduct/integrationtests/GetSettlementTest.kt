@@ -1,8 +1,12 @@
 package com.vocalink.crossproduct.integrationtests
 
 import com.github.javafaker.Faker
-import com.vocalink.crossproduct.domain.*
-import com.vocalink.crossproduct.ui.dto.CycleDto
+import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.position.ParticipantPosition
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper

@@ -1,14 +1,14 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
-import com.vocalink.crossproduct.domain.Cycle;
-import com.vocalink.crossproduct.domain.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.Participant;
-import com.vocalink.crossproduct.domain.PositionDetails;
-import com.vocalink.crossproduct.ui.dto.CycleDto;
-import com.vocalink.crossproduct.ui.dto.IntraDayPositionGrossDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantDto;
-import com.vocalink.crossproduct.ui.dto.PositionDetailsDto;
-import com.vocalink.crossproduct.ui.dto.PositionDetailsTotalsDto;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
+import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
