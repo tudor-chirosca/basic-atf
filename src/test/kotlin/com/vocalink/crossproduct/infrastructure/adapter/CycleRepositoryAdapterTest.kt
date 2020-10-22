@@ -4,11 +4,9 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.cycle.BPSCyclesClient
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.shared.cycle.CPCycle
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.time.LocalDateTime
@@ -20,14 +18,7 @@ class CycleRepositoryAdapterTest {
 
     private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
     private var cyclesClient = Mockito.mock(BPSCyclesClient::class.java)!!
-    private val modelMapper = AppConfig().modelMapper()
-
     private var testingModule = CycleRepositoryAdapter(clientFactory)
-
-    @BeforeEach
-    fun setup() {
-        testingModule.setModelMapper(modelMapper)
-    }
 
     @Test
     fun `should find all cycles`() {

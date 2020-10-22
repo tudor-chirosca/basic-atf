@@ -12,9 +12,10 @@ import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBea
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Deprecated
 @Configuration
 public class AppConfig {
-  @Bean
+//  @Bean
   public ModelMapper modelMapper() {
 
     ModelMapper modelMapper = new ModelMapper();

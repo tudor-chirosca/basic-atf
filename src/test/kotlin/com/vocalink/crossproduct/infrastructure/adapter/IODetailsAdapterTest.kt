@@ -2,10 +2,8 @@ package com.vocalink.crossproduct.infrastructure.adapter
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockIOData
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.time.LocalDate
@@ -15,14 +13,7 @@ class IODetailsAdapterTest {
 
     private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
     private var client = Mockito.mock(BPSParticipantIODataClient::class.java)!!
-    private val modelMapper = AppConfig().modelMapper()
-
     private var testingModule = IODetailsAdapter(clientFactory)
-
-    @BeforeEach
-    fun setup() {
-        testingModule.setModelMapper(modelMapper)
-    }
 
     @Test
     fun `should find by given timestamp`() {

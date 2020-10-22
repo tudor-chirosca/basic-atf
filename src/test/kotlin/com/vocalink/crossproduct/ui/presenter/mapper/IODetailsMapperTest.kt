@@ -6,7 +6,7 @@ import com.vocalink.crossproduct.domain.io.IODetails
 import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.ui.presenter.mapper.IODetailsMapper.IO_DETAILS_MAPPER
+import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -48,7 +48,7 @@ class IODetailsMapperTest {
 
         val date = LocalDate.of(2020, APRIL, 1)
 
-        val dto = IO_DETAILS_MAPPER.toDto(ioDetails, participant, date)
+        val dto = MAPPER.toDto(ioDetails, participant, date)
 
         assertThat(dto.participant.id).isEqualTo(participant.id)
         assertThat(dto.participant.bic).isEqualTo(participant.bic)

@@ -3,10 +3,8 @@ package com.vocalink.crossproduct.infrastructure.adapter
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
 import com.vocalink.crossproduct.domain.position.PositionDetails
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockPositions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.math.BigInteger
@@ -17,14 +15,7 @@ class PositionDetailsRepositoryAdapterTest {
 
     private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
     private var positionClient = Mockito.mock(BPSPositionClient::class.java)!!
-    private val modelMapper = AppConfig().modelMapper()
-
     private var testingModule = PositionDetailsRepositoryAdapter(clientFactory)
-
-    @BeforeEach
-    fun setup() {
-        testingModule.setModelMapper(modelMapper)
-    }
 
     @Test
     fun `should find all positions`() {

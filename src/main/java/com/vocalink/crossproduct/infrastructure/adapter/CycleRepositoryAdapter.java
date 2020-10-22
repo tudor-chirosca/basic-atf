@@ -1,9 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.repository.CycleRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.cycle.CPCycle;
+import com.vocalink.crossproduct.repository.CycleRepository;
 import com.vocalink.crossproduct.shared.cycle.CyclesClient;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +15,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle, Cycle>
-    implements CycleRepository {
+public class CycleRepositoryAdapter implements CycleRepository {
 
   private final ClientFactory clientFactory;
 
@@ -26,7 +26,7 @@ public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle,
 
     return client.findAll()
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .collect(Collectors.toList());
   }
 
@@ -37,7 +37,7 @@ public class CycleRepositoryAdapter extends AbstractCrossproductAdapter<CPCycle,
 
     return client.findByIds(cycleIds)
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .collect(Collectors.toList());
   }
 }

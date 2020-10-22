@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
-import static com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper.CYCLE_MAPPER;
-import static com.vocalink.crossproduct.ui.presenter.mapper.IODetailsMapper.IO_DETAILS_MAPPER;
+import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -18,7 +17,6 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.presenter.mapper.IODetailsMapper;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,8 +69,8 @@ public class UIPresenter implements Presenter {
 
     return SettlementDashboardDto.builder()
         .positions(settlementPositionDtos)
-        .currentCycle(CYCLE_MAPPER.toDto(currentCycle))
-        .previousCycle(CYCLE_MAPPER.toDto(previousCycle))
+        .currentCycle(MAPPER.toDto(currentCycle))
+        .previousCycle(MAPPER.toDto(previousCycle))
         .build();
   }
 
@@ -146,7 +144,7 @@ public class UIPresenter implements Presenter {
   @Override
   public IODetailsDto presentIoDetails(Participant participant,
       IODetails ioDetails, LocalDate date) {
-    return IO_DETAILS_MAPPER.toDto(ioDetails, participant, date);
+    return MAPPER.toDto(ioDetails, participant, date);
   }
 
   @Override

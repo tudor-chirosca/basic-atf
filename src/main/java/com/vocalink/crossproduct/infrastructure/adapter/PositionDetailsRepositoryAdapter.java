@@ -1,9 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.repository.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.positions.PositionClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class PositionDetailsRepositoryAdapter extends
-    AbstractCrossproductAdapter<CPPositionDetails, PositionDetails> implements
-    PositionDetailsRepository {
+public class PositionDetailsRepositoryAdapter implements PositionDetailsRepository {
 
   private final ClientFactory clientFactory;
 
@@ -28,7 +27,7 @@ public class PositionDetailsRepositoryAdapter extends
 
     return client.findByParticipantId(participantId)
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .collect(Collectors.toList());
   }
 }

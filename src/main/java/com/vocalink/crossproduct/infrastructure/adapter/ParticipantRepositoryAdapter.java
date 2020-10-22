@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.participant.CPParticipant;
 import com.vocalink.crossproduct.shared.participant.ParticipantClient;
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class ParticipantRepositoryAdapter extends
-    AbstractCrossproductAdapter<CPParticipant, Participant> implements ParticipantRepository {
+public class ParticipantRepositoryAdapter implements ParticipantRepository {
 
   private final ClientFactory clientFactory;
 
@@ -29,7 +28,7 @@ public class ParticipantRepositoryAdapter extends
 
     return client.findAll()
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .collect(toList());
   }
 
@@ -40,7 +39,7 @@ public class ParticipantRepositoryAdapter extends
 
     return client.findById(participantId)
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .findFirst();
   }
 }

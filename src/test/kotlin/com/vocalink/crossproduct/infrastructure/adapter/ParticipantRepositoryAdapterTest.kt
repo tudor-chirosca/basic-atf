@@ -4,29 +4,16 @@ import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.infrastructure.config.AppConfig
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockParticipants
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ParticipantRepositoryAdapterTest {
     private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
     private var participantClient = Mockito.mock(BPSParticipantClient::class.java)!!
-    private val modelMapper = AppConfig().modelMapper()
-
     private var testingModule = ParticipantRepositoryAdapter(clientFactory)
-
-    @BeforeEach
-    fun setup() {
-        testingModule.setModelMapper(modelMapper)
-    }
 
     @Test
     fun `should find all participants`() {

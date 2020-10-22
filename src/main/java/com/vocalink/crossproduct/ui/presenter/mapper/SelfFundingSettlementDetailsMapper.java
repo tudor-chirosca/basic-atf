@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
-import static com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper.CYCLE_MAPPER;
+import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -31,18 +31,16 @@ public class SelfFundingSettlementDetailsMapper {
       IntraDayPositionGross intradayPositionGross) {
 
     ParticipantDto participantDto = modelMapper.map(participant, ParticipantDto.class);
-    CycleDto currentCycleDto = CYCLE_MAPPER.toDto(cycles.get(1));
-    CycleDto previousCycleDto = CYCLE_MAPPER.toDto(cycles.get(0));
+    CycleDto currentCycleDto = MAPPER.toDto(cycles.get(1));
+    CycleDto previousCycleDto = MAPPER.toDto(cycles.get(0));
 
     PositionDetailsDto currentPositionDetailsDto = modelMapper
         .map(positionsDetails.get(1), PositionDetailsDto.class);
     PositionDetailsDto previousPositionDetailsDto = modelMapper
         .map(positionsDetails.get(0), PositionDetailsDto.class);
 
-    PositionDetailsTotalsDto currentPositionDetailsTotalsDto = ParticipantPositionMapper
-        .map(currentPositionDetailsDto);
-    PositionDetailsTotalsDto previousPositionDetailsTotalsDto = ParticipantPositionMapper
-        .map(previousPositionDetailsDto);
+    PositionDetailsTotalsDto currentPositionDetailsTotalsDto = MAPPER.toDto(currentPositionDetailsDto);
+    PositionDetailsTotalsDto previousPositionDetailsTotalsDto = MAPPER.toDto(previousPositionDetailsDto);
 
     if (fundingParticipant != null && intradayPositionGross != null) {
       ParticipantDto fundingParticipantDto = modelMapper.map(fundingParticipant, ParticipantDto.class);
@@ -79,13 +77,12 @@ public class SelfFundingSettlementDetailsMapper {
 
     ParticipantDto participantDto = modelMapper.map(participant, ParticipantDto.class);
 
-    CycleDto previousCycleDto = CYCLE_MAPPER.toDto(cycles.get(0));
+    CycleDto previousCycleDto = MAPPER.toDto(cycles.get(0));
 
     PositionDetailsDto previousPositionDetailsDto = modelMapper
         .map(positionsDetails.get(0), PositionDetailsDto.class);
 
-    PositionDetailsTotalsDto previousPositionDetailsTotalsDto = ParticipantPositionMapper
-        .map(previousPositionDetailsDto);
+    PositionDetailsTotalsDto previousPositionDetailsTotalsDto = MAPPER.toDto(previousPositionDetailsDto);
 
     if (fundingParticipant != null && intradayPositionGross != null) {
       ParticipantDto fundingParticipantDto = modelMapper.map(fundingParticipant, ParticipantDto.class);

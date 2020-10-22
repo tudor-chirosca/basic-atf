@@ -1,9 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.repository.ParticipantIODataRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
-public class ParticipantIODataAdapter extends
-    AbstractCrossproductAdapter<CPParticipantIOData, ParticipantIOData>
-    implements ParticipantIODataRepository {
+public class ParticipantIODataAdapter implements ParticipantIODataRepository {
 
   private final ClientFactory clientFactory;
 
@@ -28,7 +27,7 @@ public class ParticipantIODataAdapter extends
 
     return client.findByTimestamp(dateFrom)
         .stream()
-        .map(this::toEntity)
+        .map(MAPPER::toEntity)
         .collect(Collectors.toList());
   }
 }

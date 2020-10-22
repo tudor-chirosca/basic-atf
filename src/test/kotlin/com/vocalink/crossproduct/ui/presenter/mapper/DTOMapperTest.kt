@@ -2,14 +2,14 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
-import com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper.CYCLE_MAPPER
+import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.Month
 
 
-class CycleMapperTest {
+class DTOMapperTest {
 
     @Test
     fun `should map all fields`() {
@@ -25,7 +25,7 @@ class CycleMapperTest {
                 .status(status)
                 .build()
 
-        val dto = CYCLE_MAPPER.toDto(cycle)
+        val dto = MAPPER.toDto(cycle)
 
         assertThat(dto.id).isEqualTo(id)
         assertThat(dto.cutOffTime).isEqualTo(cutoffTime)
