@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper.CYCLE_MAPPER;
+import static com.vocalink.crossproduct.ui.presenter.mapper.IODetailsMapper.IO_DETAILS_MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -145,7 +146,7 @@ public class UIPresenter implements Presenter {
   @Override
   public IODetailsDto presentIoDetails(Participant participant,
       IODetails ioDetails, LocalDate date) {
-    return IODetailsMapper.map(ioDetails, participant, date);
+    return IO_DETAILS_MAPPER.toDto(ioDetails, participant, date);
   }
 
   @Override
