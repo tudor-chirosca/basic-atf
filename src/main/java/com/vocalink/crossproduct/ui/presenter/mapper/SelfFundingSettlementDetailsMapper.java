@@ -1,20 +1,21 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import static com.vocalink.crossproduct.ui.presenter.mapper.CycleMapper.CYCLE_MAPPER;
+
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
-import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,8 +31,8 @@ public class SelfFundingSettlementDetailsMapper {
       IntraDayPositionGross intradayPositionGross) {
 
     ParticipantDto participantDto = modelMapper.map(participant, ParticipantDto.class);
-    CycleDto currentCycleDto = CycleMapper.map(cycles.get(1));
-    CycleDto previousCycleDto = CycleMapper.map(cycles.get(0));
+    CycleDto currentCycleDto = CYCLE_MAPPER.toDto(cycles.get(1));
+    CycleDto previousCycleDto = CYCLE_MAPPER.toDto(cycles.get(0));
 
     PositionDetailsDto currentPositionDetailsDto = modelMapper
         .map(positionsDetails.get(1), PositionDetailsDto.class);
@@ -78,7 +79,7 @@ public class SelfFundingSettlementDetailsMapper {
 
     ParticipantDto participantDto = modelMapper.map(participant, ParticipantDto.class);
 
-    CycleDto previousCycleDto = CycleMapper.map(cycles.get(0));
+    CycleDto previousCycleDto = CYCLE_MAPPER.toDto(cycles.get(0));
 
     PositionDetailsDto previousPositionDetailsDto = modelMapper
         .map(positionsDetails.get(0), PositionDetailsDto.class);
