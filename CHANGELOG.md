@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.5.0...v1.6.0) (2020-10-22)
+
+
+### Features
+
+* IO Details functional added ([5206536](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/52065361ca6c09501f1d02d1276b7ae6966484ed))
+
 ## [1.5.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.4.3...v1.5.0) (2020-10-13)
 
 
