@@ -16,13 +16,18 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
+import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +43,8 @@ public class UIPresenter implements Presenter {
 
   @Override
   public SettlementDashboardDto presentSettlement(List<Cycle> cycles,
-      List<Participant> participants) {
+      List<Participant> participants, Participant fundingParticipant,
+      List<IntraDayPositionGross> intraDays) {
 
     cycles = cycles.stream()
         .sorted(Comparator.comparing(Cycle::getId))
@@ -48,27 +54,44 @@ public class UIPresenter implements Presenter {
     Cycle currentCycle = cycles.get(1);
     Cycle previousCycle = cycles.get(0);
 
-    Map<String, ParticipantPosition> positionsCurrentCycle = currentCycle.getTotalPositions()
-        .stream()
-        .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
-
-    Map<String, ParticipantPosition> positionsPreviousCycle = previousCycle.getTotalPositions()
-        .stream()
-        .collect(Collectors.toMap(ParticipantPosition::getParticipantId, Function.identity()));
-
-    List<TotalPositionDto> settlementPositionDtos = new ArrayList<>();
-    for (Participant participant : participants) {
-      settlementPositionDtos.add(
-          TotalPositionDto.builder()
-              .currentPosition(positionsCurrentCycle.get(participant.getId()).toDto())
-              .previousPosition(positionsPreviousCycle.get(participant.getId()).toDto())
+    List<TotalPositionDto> positionsDto;
+    if (fundingParticipant != null && !intraDays.isEmpty()) {
+      positionsDto = participants.stream()
+          .map(participant -> TotalPositionDto.builder()
               .participant(participant)
-              .build()
-      );
+              .intraDayPositionGross(getIntraDayPosition(intraDays, participant.getBic()))
+              .currentPosition(getPositionFor(participant.getBic(), currentCycle))
+              .previousPosition(getPositionFor(participant.getBic(), previousCycle))
+              .build())
+          .collect(toList());
+
+      PositionDetailsTotalsDto currentPositionTotals = getPositionDetailsTotal(positionsDto.stream()
+          .map(TotalPositionDto::getCurrentPosition).collect(toList()));
+
+      PositionDetailsTotalsDto previousPositionTotals = getPositionDetailsTotal(positionsDto.stream()
+          .map(TotalPositionDto::getPreviousPosition).collect(toList()));
+
+      return SettlementDashboardDto.builder()
+          .fundingParticipant(MAPPER.toDto(fundingParticipant))
+          .currentPositionTotals(currentPositionTotals)
+          .previousPositionTotals(previousPositionTotals)
+          .intraDayPositionTotalsDto(MAPPER.toDto(intraDays))
+          .currentCycle(MAPPER.toDto(currentCycle))
+          .previousCycle(MAPPER.toDto(previousCycle))
+          .positions(positionsDto)
+          .build();
     }
 
+    positionsDto = participants.stream()
+        .map(participant -> TotalPositionDto.builder()
+            .participant(participant)
+            .currentPosition(getPositionFor(participant.getBic(), currentCycle))
+            .previousPosition(getPositionFor(participant.getBic(), previousCycle))
+            .build())
+        .collect(toList());
+
     return SettlementDashboardDto.builder()
-        .positions(settlementPositionDtos)
+        .positions(positionsDto)
         .currentCycle(MAPPER.toDto(currentCycle))
         .previousCycle(MAPPER.toDto(previousCycle))
         .build();
@@ -138,6 +161,39 @@ public class UIPresenter implements Presenter {
         .batchesRejected(String.format("%.2f", totalBatchesRejected))
         .transactionsRejected(String.format("%.2f", totalTransactionsRejected))
         .rows(participantIODataDtos)
+        .build();
+  }
+
+  private ParticipantPositionDto getPositionFor(String participantId, Cycle cycle) {
+    if (cycle.getTotalPositions() != null) {
+      ParticipantPosition position = cycle.getTotalPositions()
+          .stream()
+          .filter(pos -> pos.getParticipantId().equals(participantId))
+          .findFirst()
+          .orElse(ParticipantPosition.builder().build());
+      return MAPPER.toDto(position);
+    }
+    return ParticipantPositionDto.builder().build();
+  }
+
+  private IntraDayPositionGrossDto getIntraDayPosition(List<IntraDayPositionGross> intraDays,
+      String participantId) {
+    IntraDayPositionGross intraDay = intraDays.stream()
+        .filter(pos -> pos.getParticipantId().equals(participantId)).findFirst()
+        .orElse(IntraDayPositionGross.builder().build());
+    return MAPPER.toDto(intraDay);
+  }
+
+  private PositionDetailsTotalsDto getPositionDetailsTotal(List<ParticipantPositionDto> participantPosition) {
+    return PositionDetailsTotalsDto.builder()
+        .totalCredit(participantPosition.stream()
+            .map(ParticipantPositionDto::getCredit)
+            .filter(Objects::nonNull)
+            .reduce(BigInteger::add).orElse(BigInteger.ZERO))
+        .totalDebit(participantPosition.stream()
+            .map(ParticipantPositionDto::getDebit)
+            .filter(Objects::nonNull)
+            .reduce(BigInteger::add).orElse(BigInteger.ZERO))
         .build();
   }
 

@@ -58,9 +58,9 @@ open class SettlementServiceFacadeImplTest {
                 .thenReturn(MockCycles().cycles)
         Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
-        Mockito.`when`(uiPresenter.presentSettlement(any(), any()))
+        Mockito.`when`(uiPresenter.presentSettlement(any(), any(), any(), any()))
                 .thenReturn(mockModel)
-        val result = testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI)
+        val result = testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, null)
         assertEquals(2, result.positions.size)
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
@@ -141,12 +141,13 @@ open class SettlementServiceFacadeImplTest {
 
     @Test
     fun `should throw error on cycles less than 2`() {
+        val participantId = "HANDSESS"
         Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
         Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(emptyList())
         assertThrows(NonConsistentDataException::class.java) {
-            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI)
+            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 

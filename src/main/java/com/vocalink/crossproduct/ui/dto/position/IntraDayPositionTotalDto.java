@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.domain.position;
+package com.vocalink.crossproduct.ui.dto.position;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntraDayPositionGross {
+public class IntraDayPositionTotalDto {
 
-  private String participantId;
-  private BigDecimal debitCap;
-  private BigDecimal debitPosition;
+  private BigDecimal totalDebitCap;
+  private BigDecimal totalDebitPosition;
 }

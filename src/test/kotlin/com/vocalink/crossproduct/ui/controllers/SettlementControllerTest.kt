@@ -30,7 +30,8 @@ open class SettlementControllerTest {
     @Test
     @Throws(Exception::class)
     fun `should get bad request on missing context for settlement`() {
-        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+        val participantId = "HANDSESS"
+        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId))
                 .thenReturn(MockDashboardModels().getSettlementDashboardDto())
         mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
                 .header("client-type", TestConstants.CLIENT_TYPE))
@@ -39,8 +40,8 @@ open class SettlementControllerTest {
 
     @Test
     @Throws(Exception::class)
-    fun `should get settlement`() {
-        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+    fun `should get settlement for scheme operator`() {
+        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI, null))
                 .thenReturn(MockDashboardModels().getSettlementDashboardDto())
         mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
                 .header("context", TestConstants.CONTEXT)

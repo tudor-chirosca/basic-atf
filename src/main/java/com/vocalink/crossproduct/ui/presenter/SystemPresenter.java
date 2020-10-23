@@ -22,7 +22,8 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public SettlementDashboardDto presentSettlement(List<Cycle> cycles,
-      List<Participant> participants) {
+      List<Participant> participants, Participant fundingParticipant,
+      List<IntraDayPositionGross> intraDays) {
     throw new RuntimeException("System API not implemented yet");
   }
 

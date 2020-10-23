@@ -18,7 +18,9 @@ import java.util.Optional;
 public interface Presenter {
   SettlementDashboardDto presentSettlement(
       List<Cycle> cycles,
-      List<Participant> participants);
+      List<Participant> participants,
+      Participant fundingParticipant,
+      List<IntraDayPositionGross> intraDays);
 
   ParticipantSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
       List<PositionDetails> positionsDetails,

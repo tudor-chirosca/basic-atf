@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
@@ -36,7 +37,7 @@ class UIPresenterTest {
         val cycles = MockCycles().cyclesWithPositions
         val participants = MockParticipants().participants
 
-        val result = testingModule.presentSettlement(cycles, participants)
+        val result = testingModule.presentSettlement(cycles, participants, Participant(), emptyList())
 
         assertEquals(3, result.positions.size)
         assertEquals("02", result.currentCycle.id)
