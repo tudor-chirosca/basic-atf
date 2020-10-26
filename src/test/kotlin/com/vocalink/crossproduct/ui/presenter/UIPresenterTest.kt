@@ -74,6 +74,29 @@ class UIPresenterTest {
     }
 
     @Test
+    fun `should get Settlement Dashboard DTO for paramId with null values if missing IntraDay or Positions`() {
+        val cycles = MockCycles().cycles
+        val participants = MockParticipants().participants
+        val fundingParticipant = MockParticipants().getParticipant(false)
+
+        val result = testingModule.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
+        assertNotNull(result.fundingParticipant)
+        assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
+        assertNotNull(result.intraDayPositionTotals)
+
+        assertNotNull(result.intraDayPositionTotals)
+        assertNotNull(result.currentPositionTotals)
+        assertNotNull(result.previousPositionTotals)
+
+        assertNull(result.positions[0].currentPosition.credit)
+        assertNull(result.positions[0].currentPosition.debit)
+        assertNull(result.positions[0].previousPosition.credit)
+        assertNull(result.positions[0].previousPosition.debit)
+        assertNull(result.positions[0].intraDayPositionGross.debitCap)
+        assertNull(result.positions[0].intraDayPositionGross.debitPosition)
+    }
+
+    @Test
     fun `should get Fun ding Participant Settlement Dashboard DTO`() {
         val cycles = MockCycles().cyclesWithPositions
         val participants = MockParticipants().participants
