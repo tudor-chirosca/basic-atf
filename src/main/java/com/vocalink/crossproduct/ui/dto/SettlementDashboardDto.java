@@ -23,5 +23,5 @@ public class SettlementDashboardDto {
   private List<TotalPositionDto> positions;
   private PositionDetailsTotalsDto previousPositionTotals;
   private PositionDetailsTotalsDto currentPositionTotals;
-  private IntraDayPositionTotalDto intraDayPositionTotalsDto;
+  private IntraDayPositionTotalDto intraDayPositionTotals;
 }

@@ -128,7 +128,7 @@ public class UIPresenter implements Presenter {
         .fundingParticipant(MAPPER.toDto(fundingParticipant))
         .currentPositionTotals(currentPositionTotals)
         .previousPositionTotals(previousPositionTotals)
-        .intraDayPositionTotalsDto(countIntraDayTotals(intraDays))
+        .intraDayPositionTotals(countIntraDayTotals(intraDays))
         .currentCycle(MAPPER.toDto(currentCycle))
         .previousCycle(MAPPER.toDto(previousCycle))
         .positions(positionsDto)

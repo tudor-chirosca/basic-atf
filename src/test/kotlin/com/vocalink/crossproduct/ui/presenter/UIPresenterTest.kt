@@ -83,14 +83,14 @@ class UIPresenterTest {
         val result = testingModule.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDayPositionsGross)
         assertNotNull(result.fundingParticipant)
         assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
-        assertNotNull(result.intraDayPositionTotalsDto)
+        assertNotNull(result.intraDayPositionTotals)
 
-        assertNotNull(result.intraDayPositionTotalsDto)
+        assertNotNull(result.intraDayPositionTotals)
         assertNotNull(result.currentPositionTotals)
         assertNotNull(result.previousPositionTotals)
 
-        assertEquals(BigDecimal.valueOf(30), result.intraDayPositionTotalsDto.totalDebitCap)
-        assertEquals(BigDecimal.valueOf(3), result.intraDayPositionTotalsDto.totalDebitPosition)
+        assertEquals(BigDecimal.valueOf(30), result.intraDayPositionTotals.totalDebitCap)
+        assertEquals(BigDecimal.valueOf(3), result.intraDayPositionTotals.totalDebitPosition)
         assertEquals(BigInteger.valueOf(11), result.currentPositionTotals.totalCredit)
         assertEquals(BigInteger.valueOf(21), result.currentPositionTotals.totalDebit)
         assertEquals(BigInteger.valueOf(11), result.previousPositionTotals.totalCredit)
