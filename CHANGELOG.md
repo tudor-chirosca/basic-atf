@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.7.1...v1.7.2) (2020-10-26)
+
+
+### Bug Fixes
+
+* naming for funding participant parameter changed ([ad3700e](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/ad3700e3eafce1d9aea8ffd17806ccf425782bdb))
+
 ### [1.7.1](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.7.0...v1.7.1) (2020-10-26)
 
 ## [1.7.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.6.4...v1.7.0) (2020-10-26)
