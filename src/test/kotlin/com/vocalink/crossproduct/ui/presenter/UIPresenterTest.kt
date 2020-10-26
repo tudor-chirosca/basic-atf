@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
-import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
@@ -16,9 +15,11 @@ import org.mockito.Mockito.verify
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -33,11 +34,11 @@ class UIPresenterTest {
     )
 
     @Test
-    fun `should get Settlement Dashboard DTO`() {
+    fun `should get All participants Settlement Dashboard DTO`() {
         val cycles = MockCycles().cyclesWithPositions
         val participants = MockParticipants().participants
 
-        val result = testingModule.presentSettlement(cycles, participants, Participant(), emptyList())
+        val result = testingModule.presentAllParticipantsSettlement(cycles, participants)
 
         assertEquals(3, result.positions.size)
         assertEquals("02", result.currentCycle.id)
@@ -70,6 +71,30 @@ class UIPresenterTest {
         assertEquals(BigInteger.ONE, result.positions[1].previousPosition.credit)
         assertEquals(BigInteger.TEN, result.positions[1].previousPosition.debit)
         assertEquals(BigInteger.valueOf(9), result.positions[1].previousPosition.netPosition)
+    }
+
+    @Test
+    fun `should get Fun ding Participant Settlement Dashboard DTO`() {
+        val cycles = MockCycles().cyclesWithPositions
+        val participants = MockParticipants().participants
+        val fundingParticipant = MockParticipants().getParticipant(false)
+        val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf("NDEASESSXXX", "HANDSESS", "ESSESESS"))
+
+        val result = testingModule.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDayPositionsGross)
+        assertNotNull(result.fundingParticipant)
+        assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
+        assertNotNull(result.intraDayPositionTotalsDto)
+
+        assertNotNull(result.intraDayPositionTotalsDto)
+        assertNotNull(result.currentPositionTotals)
+        assertNotNull(result.previousPositionTotals)
+
+        assertEquals(BigDecimal.valueOf(30), result.intraDayPositionTotalsDto.totalDebitCap)
+        assertEquals(BigDecimal.valueOf(3), result.intraDayPositionTotalsDto.totalDebitPosition)
+        assertEquals(BigInteger.valueOf(11), result.currentPositionTotals.totalCredit)
+        assertEquals(BigInteger.valueOf(21), result.currentPositionTotals.totalDebit)
+        assertEquals(BigInteger.valueOf(11), result.previousPositionTotals.totalCredit)
+        assertEquals(BigInteger.valueOf(21), result.previousPositionTotals.totalDebit)
     }
 
     @Test

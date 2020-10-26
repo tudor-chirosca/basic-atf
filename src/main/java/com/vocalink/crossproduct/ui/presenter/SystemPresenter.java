@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,13 @@ import org.springframework.stereotype.Component;
 public class SystemPresenter implements Presenter {
 
   @Override
-  public SettlementDashboardDto presentSettlement(List<Cycle> cycles,
+  public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
+      List<Participant> participants) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public SettlementDashboardDto presentFundingParticipantSettlement(List<Cycle> cycles,
       List<Participant> participants, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays) {
     throw new RuntimeException("System API not implemented yet");

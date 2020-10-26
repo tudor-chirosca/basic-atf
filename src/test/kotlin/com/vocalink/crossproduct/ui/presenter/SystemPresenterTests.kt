@@ -21,9 +21,16 @@ class SystemPresenterTests {
     }
 
     @Test
-    fun `should throw RuntimeException on present Settlement for System`() {
+    fun `should throw RuntimeException on present All Participants Settlement for System`() {
         Assertions.assertThrows(RuntimeException::class.java) {
-            testingModule.presentSettlement(emptyList(), emptyList(), null, emptyList())
+            testingModule.presentAllParticipantsSettlement(emptyList(), emptyList())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present Funding Participants Settlement for System`() {
+        Assertions.assertThrows(RuntimeException::class.java) {
+            testingModule.presentFundingParticipantSettlement(emptyList(), emptyList(), null, emptyList())
         }
     }
 

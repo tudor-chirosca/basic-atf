@@ -17,7 +17,6 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,34 +34,48 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
   private final IntraDayPositionGrossRepository intraDayPositionGrossRepository;
 
   @Override
+  public SettlementDashboardDto getSettlement(String context, ClientType clientType) {
+
+    List<Cycle> cycles = cycleRepository.findAll(context);
+    if (cycles.size() < 2) {
+      throw new NonConsistentDataException("Expected at least two cycles!");
+    }
+
+    List<Participant> participants = participantRepository.findAll(context);
+
+    return presenterFactory.getPresenter(clientType)
+        .presentAllParticipantsSettlement(cycles, participants);
+  }
+
+  @Override
   public SettlementDashboardDto getSettlement(String context, ClientType clientType,
       String participantId) {
-    List<Participant> participants = participantRepository.findAll(context);
+
     List<Cycle> cycles = cycleRepository.findAll(context);
 
     if (cycles.size() < 2) {
       throw new NonConsistentDataException("Expected at least two cycles!");
     }
 
-    List<IntraDayPositionGross> intraDays = new ArrayList<>();
-    if (participantId != null) {
-      participants = participantRepository.findAll(context)
-          .stream()
-          .filter(p -> p.getFundingBic().equals(participantId))
-          .collect(toList());
+    Participant fundingParticipant = participantRepository.findByParticipantId(context, participantId)
+        .orElseThrow(() -> new EntityNotFoundException(
+            "There is no Participant with id: " + participantId));
 
-      if (participants.isEmpty()) {
-        throw new EntityNotFoundException(
-            "There are no funded participants for  id: " + participantId);
-      }
+    List<Participant> participants = participantRepository.findAll(context).stream()
+        .filter(p -> p.getFundingBic().equals(participantId))
+        .collect(toList());
 
-      intraDays = intraDayPositionGrossRepository
-          .findIntraDayPositionGrossByParticipantId(context, participants.stream()
-              .map(Participant::getBic).collect(toList()));
+    if (participants.isEmpty()) {
+      throw new EntityNotFoundException(
+          "There are no funded participants for  id: " + participantId);
     }
 
-    return presenterFactory.getPresenter(clientType).presentSettlement(
-        cycles, participants, getParticipantById(context, participantId), intraDays);
+    List<IntraDayPositionGross> intraDays = intraDayPositionGrossRepository
+        .findIntraDayPositionGrossByParticipantId(context, participants.stream()
+            .map(Participant::getBic).collect(toList()));
+    
+    return presenterFactory.getPresenter(clientType)
+        .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
   }
 
   @Override
@@ -105,16 +118,6 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
           .orElseThrow(() -> new EntityNotFoundException(
               "There is no Funding Participant with id: " + participant.getFundingBic()));
 
-    }
-    return fundingParticipant;
-  }
-
-  private Participant getParticipantById(String context, String participantId) {
-    Participant fundingParticipant = null;
-    if (participantId != null) {
-      fundingParticipant = participantRepository.findByParticipantId(context, participantId)
-          .orElseThrow(() -> new EntityNotFoundException(
-              "There is no Participant with id: " + participantId));
     }
     return fundingParticipant;
   }

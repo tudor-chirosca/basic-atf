@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.mocks
 
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.shared.positions.CPParticipantPosition
@@ -8,9 +9,23 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
+import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.stream.Collectors.toList
+import java.util.stream.Stream
 
 class MockPositions {
+    fun getIntraDaysFor(participantIds: List<String>): List<IntraDayPositionGross> {
+        return participantIds.stream()
+                .map {
+                    IntraDayPositionGross.builder()
+                            .participantId(it)
+                            .debitCap(BigDecimal.TEN)
+                            .debitPosition(BigDecimal.ONE)
+                            .build()
+                }.collect(toList())
+    }
+
     fun getPositionDetailsTotalsDto(isNetZero: Boolean): PositionDetailsTotalsDto {
         return if (isNetZero) PositionDetailsTotalsDto.builder()
                 .totalCredit(BigInteger.TEN)

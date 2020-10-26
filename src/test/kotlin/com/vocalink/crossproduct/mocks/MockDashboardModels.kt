@@ -26,7 +26,15 @@ class MockDashboardModels {
                 .build()
     }
 
-    fun getSettlementDashboardDto(): SettlementDashboardDto {
+    fun getAllParticipantsSettlementDashboardDto(): SettlementDashboardDto {
+        return SettlementDashboardDto.builder()
+                .previousCycle(MockCycles().cyclesDto[0])
+                .currentCycle(MockCycles().cyclesDto[1])
+                .positions(MockPositions().positionsDto)
+                .build()
+    }
+
+    fun getFundingParticipantsSettlementDashboardDto(): SettlementDashboardDto {
         return SettlementDashboardDto.builder()
                 .previousCycle(MockCycles().cyclesDto[0])
                 .currentCycle(MockCycles().cyclesDto[1])

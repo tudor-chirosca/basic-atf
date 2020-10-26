@@ -50,17 +50,17 @@ open class SettlementServiceFacadeImplTest {
     )
 
     @Test
-    fun `should get settlement dto`() {
-        val mockModel = MockDashboardModels().getSettlementDashboardDto()
+    fun `should get settlement dto for all aprticipants`() {
+        val mockModel = MockDashboardModels().getAllParticipantsSettlementDashboardDto()
         Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
         Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockCycles().cycles)
         Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
-        Mockito.`when`(uiPresenter.presentSettlement(any(), any(), any(), any()))
+        Mockito.`when`(uiPresenter.presentAllParticipantsSettlement(any(), any()))
                 .thenReturn(mockModel)
-        val result = testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, null)
+        val result = testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI)
         assertEquals(2, result.positions.size)
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
@@ -147,7 +147,7 @@ open class SettlementServiceFacadeImplTest {
         Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(emptyList())
         assertThrows(NonConsistentDataException::class.java) {
-            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
+            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI)
         }
     }
 
@@ -189,6 +189,18 @@ open class SettlementServiceFacadeImplTest {
                 .thenReturn(emptyList())
         assertThrows(EntityNotFoundException::class.java) {
             testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+        }
+    }
+
+    @Test
+    fun `should throw error if given fundingId does not have funded users`() {
+        val participantId = "NDEASESSXXX"
+        Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(listOf(MockParticipants().getParticipant(true)))
+        Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(MockCycles().cycles)
+        assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 }
