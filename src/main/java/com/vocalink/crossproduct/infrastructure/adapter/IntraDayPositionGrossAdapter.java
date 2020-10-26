@@ -28,7 +28,8 @@ public class IntraDayPositionGrossAdapter implements
     PositionClient client = clientFactory.getPositionClient(context);
 
     return client
-        .findIntraDayPositionsGrossByParticipantId(participantId).stream()
+        .findIntraDayPositionsGrossByParticipantId(participantId)
+        .stream()
         .map(MAPPER::toEntity)
         .collect(toList());
   }
