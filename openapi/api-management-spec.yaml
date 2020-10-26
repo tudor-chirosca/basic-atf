@@ -2,8 +2,10 @@ openapi: 3.0.1
 info:
   title: CP API Management API
   version: 1.7.0
+  description: API Contract between strategic UI and CP API-Management
 servers:
-  - url: http://localhost:8080
+  - url: 'http://localhost:8080'
+    description: Local
 tags:
   - name: IO
     description: Input/Output endpoints
@@ -12,9 +14,10 @@ tags:
 paths:
   /io:
     get:
+      operationId: getIOList
       tags:
         - IO
-      summary: Fetch input output for scheme
+      description: Fetch input output for scheme
       parameters:
         - $ref: '#/components/parameters/contextHeader'
         - $ref: '#/components/parameters/clientTypeHeader'
@@ -28,19 +31,22 @@ paths:
         '400':
           description: Some of the request params are invalid
           content: {}
-  /io-details/{participantId}:
+      summary: Get Input Outputs for scheme
+  '/io-details/{participantId}':
+    parameters:
+      - name: participantId
+        in: path
+        description: participantId to display IO breakdown
+        required: true
+        schema:
+          type: string
+          example: NDEASESSXXX
     get:
+      operationId: getIODetails
       tags:
         - IO
-      summary: Fetch input output data breakdown for a given participant
+      description: Fetch input output data breakdown for a given participant
       parameters:
-        - name: participantId
-          in: path
-          description: participantId to display IO breakdown
-          required: true
-          schema:
-            type: string
-            example: NDEASESSXXX
         - name: timestamp
           in: query
           description: timestamp
@@ -58,11 +64,13 @@ paths:
         '400':
           description: Some of the request params are invalid
           content: {}
+      summary: Get Input Output details
   /settlement:
     get:
+      operationId: getSettlements
       tags:
         - Settlement
-      summary: Fetch participants settlement positions broken down by previous and curreny cycles
+      description: Fetch participants settlement positions broken down by previous and curreny cycles
       parameters:
         - name: fundingParticipantId
           in: query
@@ -83,19 +91,22 @@ paths:
         '400':
           description: Some of the request params are invalid
           content: {}
-  /settlementDetails/{participantId}:
+      summary: Get settlements
+  '/settlementDetails/{participantId}':
+    parameters:
+      - name: participantId
+        in: path
+        description: Participant Id to get details for
+        required: true
+        schema:
+          type: string
+          example: NDEASESSXXX
     get:
+      operationId: getSettlementDetails
       tags:
         - Settlement
-      summary: Fetch self funded Settlement, including positions, participant info and cycles
+      description: 'Fetch self funded Settlement, including positions, participant info and cycles'
       parameters:
-        - name: participantId
-          in: path
-          description: participantId
-          required: true
-          schema:
-            type: string
-            example: NDEASESSXXX
         - $ref: '#/components/parameters/contextHeader'
         - $ref: '#/components/parameters/clientTypeHeader'
       responses:
@@ -108,6 +119,7 @@ paths:
         '400':
           description: Some of the request params are invalid
           content: {}
+      summary: Get settlement details by participant
 components:
   parameters:
     contextHeader:
@@ -119,7 +131,7 @@ components:
         enum:
           - BPS
         example: BPS
-        description: Context header to instruct the expected client
+      description: Context header to instruct the expected client
     clientTypeHeader:
       name: client-type
       in: header
@@ -129,23 +141,22 @@ components:
         enum:
           - UI
         example: UI
-        description: Client type specification
-
+      description: Client type specification
   schemas:
     CycleDto:
-      title: CycleDto
       type: object
+      title: CycleDto
       properties:
         cutOffTime:
           type: string
           format: date-time
-          example: '2020-09-15 13:00:00'
+          example: '2020-09-15T13:00:00Z'
         id:
           type: string
         settlementTime:
           type: string
           format: date-time
-          example: '2020-09-15 13:00:00'
+          example: '2020-09-15T13:00:00Z'
         status:
           type: string
           enum:
@@ -284,7 +295,7 @@ components:
         suspendedTime:
           type: string
           format: date-time
-          example: '2020-09-15 13:00:00'
+          example: '2020-09-15T13:00:00Z'
     ParticipantDto:
       title: ParticipantDto
       type: object
@@ -305,7 +316,7 @@ components:
         suspendedTime:
           type: string
           format: date-time
-          example: '2020-09-15 13:00:00'
+          example: '2020-09-15T13:00:00Z'
     ParticipantIODataDto:
       title: ParticipantIODataDto
       type: object
