@@ -7,18 +7,26 @@ servers:
   - url: 'http://localhost:8080'
     description: Local
 tags:
-  - name: IO
+  - name: CP-IO
     description: Input/Output endpoints
-  - name: Settlement
+  - name: CP-Settlement
     description: Settlement related endpoints
 paths:
   /io:
     get:
       operationId: getIOList
       tags:
-        - IO
+        - CP-IO
       description: Fetch input output for scheme
       parameters:
+        - name: timestamp
+          in: query
+          description: 'Optional date for which to display IO information for. If not specified, defaults to today'
+          schema:
+            type: string
+            format: date
+            example: '2020-10-15'
+            default: now()
         - $ref: '#/components/parameters/contextHeader'
         - $ref: '#/components/parameters/clientTypeHeader'
       responses:
@@ -44,7 +52,7 @@ paths:
     get:
       operationId: getIODetails
       tags:
-        - IO
+        - CP-IO
       description: Fetch input output data breakdown for a given participant
       parameters:
         - name: timestamp
@@ -69,7 +77,7 @@ paths:
     get:
       operationId: getSettlements
       tags:
-        - Settlement
+        - CP-Settlement
       description: Fetch participants settlement positions broken down by previous and curreny cycles
       parameters:
         - name: fundingParticipantId
@@ -102,9 +110,38 @@ paths:
           type: string
           example: NDEASESSXXX
     get:
+      operationId: getSettlementDetailsDeprecated
+      tags:
+        - CP-Settlement
+      description: 'Fetch self funded Settlement, including positions, participant info and cycles'
+      parameters:
+        - $ref: '#/components/parameters/contextHeader'
+        - $ref: '#/components/parameters/clientTypeHeader'
+      responses:
+        '200':
+          description: Settlement retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantSettlementDetailsDto'
+        '400':
+          description: Some of the request params are invalid
+          content: {}
+      summary: Get settlement details by participant
+      deprecated: true
+  '/settlement-details/{participantId}':
+    parameters:
+      - name: participantId
+        in: path
+        description: Participant Id to get details for
+        required: true
+        schema:
+          type: string
+          example: NDEASESSXXX
+    get:
       operationId: getSettlementDetails
       tags:
-        - Settlement
+        - CP-Settlement
       description: 'Fetch self funded Settlement, including positions, participant info and cycles'
       parameters:
         - $ref: '#/components/parameters/contextHeader'
@@ -275,6 +312,14 @@ components:
           type: number
         debitPosition:
           type: number
+    IntraDayPositionTotalDto:
+      title: IntraDayPositionTotalDto
+      type: object
+      properties:
+        totalDebitCap:
+          type: number
+        totalDebitPosition:
+          type: number
     Participant:
       title: Participant
       type: object
@@ -391,18 +436,28 @@ components:
       properties:
         currentCycle:
           $ref: '#/components/schemas/CycleDto'
+        currentPositionTotals:
+          $ref: '#/components/schemas/PositionDetailsTotalsDto'
+        fundingParticipant:
+          $ref: '#/components/schemas/ParticipantDto'
+        intraDayPositionTotals:
+          $ref: '#/components/schemas/IntraDayPositionTotalDto'
         positions:
           type: array
           items:
             $ref: '#/components/schemas/TotalPositionDto'
         previousCycle:
           $ref: '#/components/schemas/CycleDto'
+        previousPositionTotals:
+          $ref: '#/components/schemas/PositionDetailsTotalsDto'
     TotalPositionDto:
       title: TotalPositionDto
       type: object
       properties:
         currentPosition:
           $ref: '#/components/schemas/ParticipantPositionDto'
+        intraDayPositionGross:
+          $ref: '#/components/schemas/IntraDayPositionGrossDto'
         participant:
           $ref: '#/components/schemas/Participant'
         previousPosition:
