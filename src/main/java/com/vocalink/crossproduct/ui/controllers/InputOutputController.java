@@ -4,9 +4,6 @@ import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import java.time.LocalDate;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class InputOutputController {
+public class InputOutputController implements InputOutputApi {
 
   private final InputOutputFacade inputOutputFacade;
 
-  @ApiOperation("Fetch input output data")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Input output retrieved successfully", response = IODashboardDto.class),
-      @ApiResponse(code = 400, message = "Some of the request params are invalid")
-  })
   @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<IODashboardDto> getSettlement(HttpServletRequest httpServletRequest,
       @RequestParam(required = false) String timestamp) {
@@ -49,11 +41,6 @@ public class InputOutputController {
     return ResponseEntity.ok().body(settlementDto);
   }
 
-  @ApiOperation("Fetch input output data")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Input output retrieved successfully", response = IODashboardDto.class),
-      @ApiResponse(code = 400, message = "Some of the request params are invalid")
-  })
   @GetMapping(value = "/io-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<IODetailsDto> getIODetails(HttpServletRequest httpServletRequest,
       final @PathVariable String participantId,
