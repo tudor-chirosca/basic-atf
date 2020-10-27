@@ -36,9 +36,13 @@ class MockDashboardModels {
 
     fun getFundingParticipantsSettlementDashboardDto(): SettlementDashboardDto {
         return SettlementDashboardDto.builder()
+                .fundingParticipant(MockParticipants().fundingParticipantDto)
                 .previousCycle(MockCycles().cyclesDto[0])
                 .currentCycle(MockCycles().cyclesDto[1])
                 .positions(MockPositions().positionsDto)
+                .previousPositionTotals(MockPositions().getPositionDetailsTotalsDto(true))
+                .currentPositionTotals(MockPositions().getPositionDetailsTotalsDto(false))
+                .intraDayPositionTotals(MockPositions().getIntraDayPositionTotalDto(true))
                 .build()
     }
 }

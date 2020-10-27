@@ -9,10 +9,10 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.stream.Collectors.toList
-import java.util.stream.Stream
 
 class MockPositions {
     fun getIntraDaysFor(participantIds: List<String>): List<IntraDayPositionGross> {
@@ -119,6 +119,17 @@ class MockPositions {
                 .credit(BigInteger.ONE)
                 .debit(BigInteger.TEN)
                 .netPosition(BigInteger.valueOf(9))
+                .build()
+    }
+
+    fun getIntraDayPositionTotalDto(isNetZero: Boolean): IntraDayPositionTotalDto {
+        return if (isNetZero) IntraDayPositionTotalDto.builder()
+                .totalDebitCap(BigDecimal.TEN)
+                .totalDebitPosition(BigDecimal.ONE)
+                .build()
+        else IntraDayPositionTotalDto.builder ()
+                .totalDebitCap(BigDecimal.TEN)
+                .totalDebitPosition(BigDecimal.ZERO)
                 .build()
     }
 }

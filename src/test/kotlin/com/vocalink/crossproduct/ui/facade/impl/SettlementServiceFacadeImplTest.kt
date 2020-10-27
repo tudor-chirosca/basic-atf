@@ -1,19 +1,20 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.repository.CycleRepository
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
-import com.vocalink.crossproduct.repository.ParticipantRepository
-import com.vocalink.crossproduct.domain.position.PositionDetails
-import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository
+import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.repository.PositionDetailsRepository
+import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.repository.CycleRepository
+import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository
+import com.vocalink.crossproduct.repository.ParticipantRepository
+import com.vocalink.crossproduct.repository.PositionDetailsRepository
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -49,8 +50,17 @@ open class SettlementServiceFacadeImplTest {
             intraDayPositionGrossRepository
     )
 
+    private val selfFundingParticipant = Participant.builder()
+            .id("ESSESESS")
+            .bic("ESSESESS")
+            .fundingBic("ESSESESS")
+            .name("SEB Bank")
+            .suspendedTime(null)
+            .status(ParticipantStatus.ACTIVE)
+            .build()
+
     @Test
-    fun `should get settlement dto for all aprticipants`() {
+    fun `should get settlement dto for all participants`() {
         val mockModel = MockDashboardModels().getAllParticipantsSettlementDashboardDto()
         Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
@@ -90,6 +100,41 @@ open class SettlementServiceFacadeImplTest {
         assertEquals(BigInteger.ONE, result.positions[1].previousPosition.credit)
         assertEquals(BigInteger.TEN, result.positions[1].previousPosition.debit)
         assertEquals(BigInteger.valueOf(9), result.positions[1].previousPosition.netPosition)
+    }
+
+    @Test
+    fun `should get settlement dto by participant id`() {
+        val participantId = "NDEASESSXXX"
+        val fundedParticipantId = MockParticipants().getParticipant(false).id
+        val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf(fundedParticipantId))
+        val mockModel = MockDashboardModels().getFundingParticipantsSettlementDashboardDto()
+
+        Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(MockCycles().cycles)
+        Mockito.`when`(participantRepository
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+        Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(MockParticipants().participants)
+        Mockito.`when`(intraDayPositionGrossRepository
+                .findIntraDayPositionGrossByParticipantId(TestConstants.CONTEXT, listOf(fundedParticipantId)))
+                .thenReturn(intraDayPositionsGross)
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+        Mockito.`when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any()))
+                .thenReturn(mockModel)
+
+        val result = testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
+
+        Mockito.verify(intraDayPositionGrossRepository, Mockito.atLeastOnce()).findIntraDayPositionGrossByParticipantId(any(), any())
+        Mockito.verify(uiPresenter, Mockito.atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
+
+        assertNotNull(result.fundingParticipant)
+        assertNotNull(result.previousPositionTotals)
+        assertNotNull(result.currentPositionTotals)
+        assertNotNull(result.intraDayPositionTotals)
+
+        assertEquals(participantId, result.fundingParticipant.id)
     }
 
     @Test
@@ -201,6 +246,76 @@ open class SettlementServiceFacadeImplTest {
                 .thenReturn(MockCycles().cycles)
         assertThrows(EntityNotFoundException::class.java) {
             testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
+        }
+    }
+
+    @Test
+    fun `should throw error if no funded participants for given id`() {
+        val participantId = "NDEASESSXXX"
+        val fundedParticipantId = MockParticipants().getParticipant(false).id
+        val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf(fundedParticipantId))
+
+        Mockito.`when`(cycleRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(MockCycles().cycles)
+        Mockito.`when`(participantRepository
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+        Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
+                .thenReturn(emptyList())
+        Mockito.`when`(intraDayPositionGrossRepository
+                .findIntraDayPositionGrossByParticipantId(TestConstants.CONTEXT, listOf(fundedParticipantId)))
+                .thenReturn(intraDayPositionsGross)
+
+        assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
+        }
+    }
+
+    @Test
+    fun `should throw error if no funding Participant with given id`() {
+        val participantId = "HANDSESS"
+        val positionsDetails = MockPositions().positionDetails
+        val mockModel = MockDashboardModels().getSelfFundingDetailsDto()
+        val activeCycleIds = positionsDetails.stream().map { obj: PositionDetails -> obj.sessionCode }
+                .collect(Collectors.toList())
+
+        Mockito.`when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(MockParticipants().getParticipant(true)))
+        Mockito.`when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(positionsDetails)
+        Mockito.`when`(cycleRepository.findByIds(TestConstants.CONTEXT, activeCycleIds))
+                .thenReturn(MockCycles().cycles)
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+        Mockito.`when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any(), any(), any()))
+                .thenReturn(mockModel)
+
+        assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+        }
+    }
+
+    @Test
+    fun `should throw error if no Intra-Day Participant Position gross for participant id`() {
+        val participantId = "ESSESESS"
+        val positionsDetails = MockPositions().positionDetails
+        val mockModel = MockDashboardModels().getSelfFundingDetailsDto()
+        val activeCycleIds = positionsDetails.stream().map { obj: PositionDetails -> obj.sessionCode }
+                .collect(Collectors.toList())
+
+        Mockito.`when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(Optional.of(selfFundingParticipant))
+        Mockito.`when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(positionsDetails)
+        Mockito.`when`(cycleRepository.findByIds(TestConstants.CONTEXT, activeCycleIds))
+                .thenReturn(MockCycles().cycles)
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+        Mockito.`when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any(), any(), any()))
+                .thenReturn(mockModel)
+
+        assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
         }
     }
 }
