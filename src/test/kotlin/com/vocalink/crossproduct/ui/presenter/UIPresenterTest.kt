@@ -2,7 +2,9 @@ package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
@@ -19,7 +21,6 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -94,6 +95,106 @@ class UIPresenterTest {
         assertNull(result.positions[0].previousPosition.debit)
         assertNull(result.positions[0].intraDayPositionGross.debitCap)
         assertNull(result.positions[0].intraDayPositionGross.debitPosition)
+    }
+
+    @Test
+    fun `should calculate totals for debit and credit`() {
+        val fundingParticipant = Participant.builder()
+                .id("funding")
+                .bic("funding")
+                .build()
+
+        val currentCredit = BigInteger.TEN
+        val currentDebit = BigInteger.valueOf(7)
+        val currentNet = BigInteger.valueOf(3)
+
+        val previousCredit = BigInteger.valueOf(20)
+        val previousDebit = BigInteger.ONE
+        val previousNet = BigInteger.valueOf(19)
+
+        val currentPositions = listOf(
+                ParticipantPosition.builder()
+                        .participantId("funding")
+                        .credit(currentCredit)
+                        .debit(currentDebit)
+                        .netPosition(currentNet)
+                        .build(),
+                ParticipantPosition.builder()
+                        .participantId("funded_one")
+                        .credit(currentCredit)
+                        .debit(currentDebit)
+                        .netPosition(currentNet)
+                        .build(),
+                ParticipantPosition.builder()
+                        .participantId("funded-two")
+                        .credit(currentCredit)
+                        .debit(currentDebit)
+                        .netPosition(currentNet)
+                        .build()
+        )
+
+        val previousPositions = listOf(
+                ParticipantPosition.builder()
+                        .participantId("funding")
+                        .credit(previousCredit)
+                        .debit(previousDebit)
+                        .netPosition(previousNet)
+                        .build(),
+                ParticipantPosition.builder()
+                        .participantId("funded_one")
+                        .credit(previousCredit)
+                        .debit(previousDebit)
+                        .netPosition(previousNet)
+                        .build(),
+                ParticipantPosition.builder()
+                        .participantId("funded-two")
+                        .credit(previousCredit)
+                        .debit(previousDebit)
+                        .netPosition(previousNet)
+                        .build()
+        )
+
+        val cycles = listOf(
+                Cycle.builder()
+                        .id("01")
+                        .status(CycleStatus.COMPLETED)
+                        .totalPositions(previousPositions)
+                        .build(),
+                Cycle.builder()
+                        .id("02")
+                        .status(CycleStatus.OPEN)
+                        .totalPositions(currentPositions)
+                        .build()
+        )
+
+        val participants = listOf(
+                fundingParticipant,
+                Participant.builder()
+                        .id("funded_one")
+                        .bic("funded_one")
+                        .fundingBic("funding")
+                        .build(),
+                Participant.builder()
+                        .id("funded_two")
+                        .bic("funded_two")
+                        .fundingBic("funding")
+                        .build()
+        )
+
+        val result = testingModule.presentFundingParticipantSettlement(cycles, participants,
+                fundingParticipant, emptyList())
+
+        val currentCreditSum = currentCredit.add(currentCredit)
+        val currentDebitSum = currentDebit.add(currentDebit)
+
+        assertEquals(currentDebitSum, result.currentPositionTotals.totalDebit)
+        assertEquals(currentCreditSum, result.currentPositionTotals.totalCredit)
+
+        val previousCreditSum = previousCredit.add(previousCredit)
+        val previousDebitSum = previousDebit.add(previousDebit)
+
+        assertEquals(previousDebitSum, result.previousPositionTotals.totalDebit)
+        assertEquals(previousCreditSum, result.previousPositionTotals.totalCredit)
     }
 
     @Test
