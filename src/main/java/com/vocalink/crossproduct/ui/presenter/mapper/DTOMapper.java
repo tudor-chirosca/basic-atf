@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import static java.util.stream.Collectors.toList;
+
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -111,25 +113,36 @@ public interface DTOMapper {
 
   @Mapping(target = "currentCycle", source = "currentCycle")
   @Mapping(target = "previousCycle", source = "previousCycle")
-  @Mapping(target = "currentPositionTotals", source = "currentCycle.totalPositions", qualifiedByName = "countPositionTotals")
-  @Mapping(target = "previousPositionTotals", source = "previousCycle.totalPositions", qualifiedByName = "countPositionTotals")
+  @Mapping(target = "positions", source = "positions")
+  @Mapping(target = "currentPositionTotals", source = "positions", qualifiedByName = "countCurrentPositionTotals")
+  @Mapping(target = "previousPositionTotals", source = "positions", qualifiedByName = "countPreviousPositionTotals")
   @Mapping(target = "intraDayPositionTotals", source = "intraDays", qualifiedByName = "countIntraDayTotals")
   SettlementDashboardDto toDto(Cycle currentCycle, Cycle previousCycle,
       List<TotalPositionDto> positions, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays);
 
-  @Named("countPositionTotals")
-  default PositionDetailsTotalsDto countPositionTotals(List<ParticipantPosition> positions) {
-    if (positions == null) {
-      return PositionDetailsTotalsDto.builder().build();
-    }
+  @Named("countCurrentPositionTotals")
+  default PositionDetailsTotalsDto countCurrentPositionTotals(List<TotalPositionDto> positions) {
+      return countPositionTotals(positions.stream()
+          .map(TotalPositionDto::getCurrentPosition)
+          .collect(toList()));
+  }
+
+  @Named("countPreviousPositionTotals")
+  default PositionDetailsTotalsDto countPreviousPositionTotals(List<TotalPositionDto> positions) {
+    return countPositionTotals(positions.stream()
+        .map(TotalPositionDto::getPreviousPosition)
+        .collect(toList()));
+  }
+
+  default PositionDetailsTotalsDto countPositionTotals(List<ParticipantPositionDto> positions) {
     return PositionDetailsTotalsDto.builder()
         .totalCredit(positions.stream()
-            .map(ParticipantPosition::getCredit)
+            .map(ParticipantPositionDto::getCredit)
             .filter(Objects::nonNull)
             .reduce(BigInteger::add).orElse(BigInteger.ZERO))
         .totalDebit(positions.stream()
-            .map(ParticipantPosition::getDebit)
+            .map(ParticipantPositionDto::getDebit)
             .filter(Objects::nonNull)
             .reduce(BigInteger::add).orElse(BigInteger.ZERO))
         .build();
