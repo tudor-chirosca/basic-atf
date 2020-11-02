@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions
@@ -46,6 +47,14 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present input output for System`() {
         Assertions.assertThrows(RuntimeException::class.java) {
             testingModule.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present alert references for System`() {
+        val alertRef = AlertReferenceData.builder().build()
+        Assertions.assertThrows(RuntimeException::class.java) {
+            testingModule.presentAlertReference(alertRef)
         }
     }
 

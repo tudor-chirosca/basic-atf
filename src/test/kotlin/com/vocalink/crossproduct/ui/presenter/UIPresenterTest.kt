@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.alert.AlertPriority
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -391,6 +393,35 @@ class UIPresenterTest {
         assertEquals(10, result.transactions[1].data.submitted)
         assertEquals(10, result.transactions[1].data.amountAccepted)
         assertEquals(10, result.transactions[1].data.amountOutput)
+    }
+
+    @Test
+    fun `should get alert references`() {
+        val priorityName = "Priority1"
+        val threshold = 10
+        val alertType = "alertType1"
+        val model = AlertReferenceData.builder()
+                .alertTypes(listOf(alertType, "alertType2"))
+                .priorities(listOf(
+                        AlertPriority.builder()
+                                .name(priorityName)
+                                .threshold(threshold)
+                                .build(),
+                        AlertPriority.builder()
+                                .name("Priority2")
+                                .threshold(100)
+                                .build()
+                ))
+                .build()
+
+        val result = testingModule.presentAlertReference(model)
+
+        assertEquals(2, result.alertTypes.size)
+        assertEquals(2, result.priorities.size)
+        assertEquals(alertType, result.alertTypes[0])
+        assertEquals(priorityName, result.priorities[0].name)
+        assertEquals(threshold, result.priorities[0].threshold)
+
     }
 
     @Test

@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import com.vocalink.crossproduct.domain.alert.AlertPriority
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -16,6 +18,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDateTime
 import java.time.Month
+import kotlin.test.assertEquals
 
 
 class DTOMapperTest {
@@ -451,5 +454,30 @@ class DTOMapperTest {
         assertThat(dto.fundingParticipant.status).isEqualTo(participantStatus)
         assertThat(dto.fundingParticipant.suspendedTime).isEqualTo(suspendedTime)
         assertThat(dto.fundingParticipant.fundingBic).isEqualTo(fundingBic)
+    }
+
+
+    @Test
+    fun `should map all Alert Reference fields`() {
+        val priorityName = "Priority1"
+        val threshold = 10
+        val alertType = "alertType1"
+        val model = AlertReferenceData.builder()
+                .alertTypes(listOf(alertType))
+                .priorities(listOf(
+                        AlertPriority.builder()
+                                .name(priorityName)
+                                .threshold(threshold)
+                                .build()
+                ))
+                .build()
+        val result = MAPPER.toDto(model)
+
+        assertEquals(1, result.alertTypes.size)
+        assertEquals(1, result.priorities.size)
+        assertEquals(alertType, result.alertTypes[0])
+        assertEquals(priorityName, result.priorities[0].name)
+        assertEquals(threshold, result.priorities[0].threshold)
+
     }
 }

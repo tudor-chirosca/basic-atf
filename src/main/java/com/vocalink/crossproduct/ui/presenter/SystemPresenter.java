@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -8,6 +9,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -58,6 +60,11 @@ public class SystemPresenter implements Presenter {
   @Override
   public IODetailsDto presentIoDetails(Participant participant, IODetails ioDetails,
       LocalDate date) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public AlertReferenceDataDto presentAlertReference(AlertReferenceData alertsReference) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

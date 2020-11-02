@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.infrastructure.factory
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.adapter.bps.alert.BPSAlertsClient
 import com.vocalink.crossproduct.adapter.bps.cycle.BPSCyclesClient
 import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
+import com.vocalink.crossproduct.shared.alert.AlertsClient
 import com.vocalink.crossproduct.shared.cycle.CyclesClient
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
 import com.vocalink.crossproduct.shared.participant.ParticipantClient
@@ -25,12 +27,14 @@ class ClientFactoryTest {
     private var participantIOClient: ParticipantIODataClient = Mockito.mock(BPSParticipantIODataClient::class.java)!!
     private var participantClient: ParticipantClient = Mockito.mock(BPSParticipantClient::class.java)!!
     private var positionClient: PositionClient = Mockito.mock(BPSPositionClient::class.java)!!
+    private var alertsClient: AlertsClient = Mockito.mock(BPSAlertsClient::class.java)!!
 
     private var testingModule = ClientFactory(
             listOf(participantClient),
             listOf(cyclesClient),
             listOf(participantIOClient),
-            listOf(positionClient)
+            listOf(positionClient),
+            listOf(alertsClient)
     )
 
     @Test
@@ -70,6 +74,15 @@ class ClientFactoryTest {
     }
 
     @Test
+    fun `should get alerts client`() {
+        Mockito.`when`(alertsClient.context).thenReturn(TestConstants.CONTEXT)
+        testingModule.init()
+
+        val result = testingModule.getAlertsClient(TestConstants.CONTEXT)
+        assertTrue(result is AlertsClient)
+    }
+
+    @Test
     fun `should throw participant client not available for wrong context`() {
         testingModule.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
@@ -98,6 +111,14 @@ class ClientFactoryTest {
         testingModule.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
             testingModule.getPositionClient(TestConstants.CONTEXT)
+        }
+    }
+
+    @Test
+    fun `should throw alerts client not available for wrong context`() {
+        testingModule.init()
+        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+            testingModule.getAlertsClient(TestConstants.CONTEXT)
         }
     }
 }

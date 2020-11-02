@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -9,6 +10,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
@@ -35,6 +37,8 @@ public interface DTOMapper {
   DTOMapper MAPPER = Mappers.getMapper(DTOMapper.class);
 
   CycleDto toDto(Cycle cycle);
+
+  AlertReferenceDataDto toDto(AlertReferenceData alertReferenceData);
 
   ParticipantPositionDto toDto(ParticipantPosition participant);
 
