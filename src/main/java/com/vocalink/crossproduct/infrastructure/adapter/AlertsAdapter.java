@@ -4,6 +4,7 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
+import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.repository.AlertsRepository;
 import com.vocalink.crossproduct.shared.alert.AlertsClient;
@@ -26,5 +27,14 @@ public class AlertsAdapter implements AlertsRepository {
     AlertsClient client = clientFactory.getAlertsClient(context);
 
     return client.findReferenceAlerts().map(MAPPER::toDto);
+  }
+
+  @Override
+  public Optional<AlertStats> findAlertStats(String context) {
+    log.info("Fetching alert stats from context {} ...", context);
+
+    AlertsClient client = clientFactory.getAlertsClient(context);
+
+    return client.findAlertStats().map(MAPPER::toDto);
   }
 }

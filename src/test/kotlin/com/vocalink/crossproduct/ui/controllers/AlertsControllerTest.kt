@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ class AlertsControllerTest {
 
     @Test
     @Throws(Exception::class)
-    fun `should get IO Details`() {
+    fun `should get Alert References`() {
         val alertReferenceDataDto = AlertReferenceDataDto.builder().build()
         Mockito.`when`(facade.getAlertsReference(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(alertReferenceDataDto)
@@ -50,5 +51,32 @@ class AlertsControllerTest {
                 .andExpect(status().isOk)
 
         Mockito.verify(facade).getAlertsReference(any(), any())
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get bad request on missing context for alert stats`() {
+        val alertStatsDto = AlertStatsDto.builder().build()
+
+        Mockito.`when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
+                .thenReturn(alertStatsDto)
+        mockMvc.perform(get("/alerts/stats")
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `should get Alert Stats`() {
+        val alertStatsDto = AlertStatsDto.builder().build()
+
+        Mockito.`when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
+                .thenReturn(alertStatsDto)
+        mockMvc.perform(get("/alerts/stats")
+                .header("context", TestConstants.CONTEXT)
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+
+        Mockito.verify(facade).getAlertStats(any(), any())
     }
 }

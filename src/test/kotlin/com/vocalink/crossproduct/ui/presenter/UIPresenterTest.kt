@@ -1,7 +1,9 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
+import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -422,6 +424,27 @@ class UIPresenterTest {
         assertEquals(priorityName, result.priorities[0].name)
         assertEquals(threshold, result.priorities[0].threshold)
 
+    }
+
+    @Test
+    fun `should get alert stats`() {
+        val priority = "high"
+        val count = 10
+        val total = 100
+        val model = AlertStats.builder()
+                .total(total)
+                .items(listOf(AlertData.builder()
+                        .count(count)
+                        .priority(priority)
+                        .build()))
+                .build()
+        val result = testingModule.presentAlertStats(model)
+
+
+        assertEquals(1, result.items.size)
+        assertEquals(total, result.total)
+        assertEquals(priority, result.items[0].priority)
+        assertEquals(count, result.items[0].count)
     }
 
     @Test

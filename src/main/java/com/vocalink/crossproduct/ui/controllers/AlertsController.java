@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
@@ -31,5 +32,19 @@ public class AlertsController implements AlertsApi {
         .getAlertsReference(contextHeader, clientType);
 
     return ResponseEntity.ok().body(alertReferenceDataDto);
+  }
+
+  @GetMapping(value = "/alerts/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AlertStatsDto> getAlertStats(HttpServletRequest httpServletRequest) {
+    String contextHeader = httpServletRequest.getHeader("context");
+    String clientTypeHeader = httpServletRequest.getHeader("client-type");
+
+    ClientType clientType = (StringUtils.isEmpty(clientTypeHeader))
+        ? ClientType.SYSTEM
+        : ClientType.valueOf(clientTypeHeader.toUpperCase());
+
+    AlertStatsDto alertStatsDto = facade.getAlertStats(contextHeader, clientType);
+
+    return ResponseEntity.ok().body(alertStatsDto);
   }
 }

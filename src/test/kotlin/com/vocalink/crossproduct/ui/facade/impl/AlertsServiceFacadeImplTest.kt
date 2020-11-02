@@ -2,11 +2,15 @@ package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
+import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.repository.AlertsRepository
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -49,5 +53,51 @@ class AlertsServiceFacadeImplTest {
         Mockito.verify(uiPresenter).presentAlertReference(any())
 
         assertNotNull(result)
+    }
+
+    @Test
+    fun `should get alerts stats`() {
+        val alertStats = AlertStats.builder().build()
+        val alertStatsDto = AlertStatsDto.builder().build()
+
+        Mockito.`when`(alertsRepository
+                .findAlertStats(TestConstants.CONTEXT))
+                .thenReturn(Optional.of(alertStats))
+
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+
+        Mockito.`when`(uiPresenter.presentAlertStats(any()))
+                .thenReturn(alertStatsDto)
+
+        val result = testingModule.getAlertStats(TestConstants.CONTEXT, ClientType.UI)
+
+        Mockito.verify(alertsRepository).findAlertStats(any())
+        Mockito.verify(presenterFactory).getPresenter(any())
+        Mockito.verify(uiPresenter).presentAlertStats(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should throw error Not Found if no alert references found`() {
+        Mockito.`when`(alertsRepository
+                .findReferenceAlerts(TestConstants.CONTEXT))
+                .thenReturn(Optional.empty())
+
+        Assertions.assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getAlertsReference(TestConstants.CONTEXT, ClientType.UI)
+        }
+    }
+
+    @Test
+    fun `should throw error Not Found if no alert stats found`() {
+        Mockito.`when`(alertsRepository
+                .findAlertStats(TestConstants.CONTEXT))
+                .thenReturn(Optional.empty())
+
+        Assertions.assertThrows(EntityNotFoundException::class.java) {
+            testingModule.getAlertStats(TestConstants.CONTEXT, ClientType.UI)
+        }
     }
 }

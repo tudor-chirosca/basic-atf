@@ -1,9 +1,11 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
+import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.repository.AlertsRepository;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -25,5 +27,15 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertReference(alertReferenceData);
+  }
+
+  @Override
+  public AlertStatsDto getAlertStats(String context, ClientType clientType) {
+
+    AlertStats alertStats = alertsRepository.findAlertStats(context)
+        .orElseThrow(() -> new EntityNotFoundException("No alert stats were found"));
+
+    return presenterFactory.getPresenter(clientType)
+        .presentAlertStats(alertStats);
   }
 }
