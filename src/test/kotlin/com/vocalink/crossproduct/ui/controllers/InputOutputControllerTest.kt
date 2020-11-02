@@ -5,19 +5,16 @@ import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDate
 
-@ExtendWith(SpringExtension::class)
 @WebMvcTest(InputOutputController::class)
 class InputOutputControllerTest {
 
@@ -26,16 +23,6 @@ class InputOutputControllerTest {
 
     @MockBean
     private val inputOutputFacade: InputOutputFacade? = null
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for IO data`() {
-        Mockito.`when`(inputOutputFacade!!.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, LocalDate.now()))
-                .thenReturn(MockIOData().ioDashboardDto)
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/io")
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest)
-    }
 
     @Test
     @Throws(Exception::class)
@@ -85,18 +72,6 @@ class InputOutputControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].batches.rejected").value("0.0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.submitted").value("0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.rejected").value("0.0"))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for IO Details`() {
-        val participantId = "NDEASESSXXX"
-        Mockito.`when`(inputOutputFacade!!
-                .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, LocalDate.now(), participantId))
-                .thenReturn(MockIOData().getIODetailsDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/io-details/" + participantId)
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
     @Test

@@ -6,18 +6,15 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ExtendWith(SpringExtension::class)
 @WebMvcTest(AlertsController::class)
 class AlertsControllerTest {
 
@@ -26,18 +23,6 @@ class AlertsControllerTest {
 
     @MockBean
     private lateinit var facade: AlertsServiceFacade
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for alert reference`() {
-        val alertReferenceDataDto = AlertReferenceDataDto.builder().build()
-
-        Mockito.`when`(facade.getAlertsReference(TestConstants.CONTEXT, ClientType.UI))
-                .thenReturn(alertReferenceDataDto)
-        mockMvc.perform(get("/reference/alerts")
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(status().isBadRequest)
-    }
 
     @Test
     @Throws(Exception::class)
@@ -51,18 +36,6 @@ class AlertsControllerTest {
                 .andExpect(status().isOk)
 
         Mockito.verify(facade).getAlertsReference(any(), any())
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for alert stats`() {
-        val alertStatsDto = AlertStatsDto.builder().build()
-
-        Mockito.`when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
-                .thenReturn(alertStatsDto)
-        mockMvc.perform(get("/alerts/stats")
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(status().isBadRequest)
     }
 
     @Test

@@ -5,19 +5,16 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ExtendWith(SpringExtension::class)
 @WebMvcTest(SettlementController::class)
 open class SettlementControllerTest {
 
@@ -26,17 +23,6 @@ open class SettlementControllerTest {
 
     @MockBean
     private val settlementServiceFacade: SettlementServiceFacade? = null
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for settlement`() {
-        val participantId = "HANDSESS"
-        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
-                .thenReturn(MockDashboardModels().getAllParticipantsSettlementDashboardDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(status().isBadRequest)
-    }
 
     @Test
     @Throws(Exception::class)
@@ -109,17 +95,5 @@ open class SettlementControllerTest {
                 .andExpect(jsonPath("$.currentPositionTotals.totalCredit").value("0"))
                 .andExpect(jsonPath("$.currentPositionTotals.totalDebit").value("10"))
                 .andExpect(jsonPath("$.currentPositionTotals.totalNetPosition").value("10"))
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun `should get bad request on missing context for settlement details`() {
-        val participantId = "NDEASESSXXX"
-        Mockito.`when`(settlementServiceFacade!!
-                .getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
-                .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(status().isBadRequest)
     }
 }

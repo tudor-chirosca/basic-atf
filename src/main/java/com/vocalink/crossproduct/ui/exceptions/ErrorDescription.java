@@ -7,10 +7,10 @@ import lombok.Getter;
 @Builder
 public class ErrorDescription {
 
-  private String timestamp;
-  private String errorCode;
-  private int httpStatus;
-  private String message;
-  private String additionalInfo;
-  private String path;
+  private final String timestamp;
+  private final String errorCode;
+  private final int httpStatus;
+  private final String message;
+  private final String additionalInfo;
+  private final String path;
 }
