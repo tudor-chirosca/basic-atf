@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.1](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.10.0...v1.10.1) (2020-11-03)
+
+
+### Bug Fixes
+
+* Adding clean up and memory restrictions ([036e12f](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/036e12f920c0b8072b4cdb9fd1cfeaa04f8466e0))
+
 ## [1.10.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.9.0...v1.10.0) (2020-11-03)
 
 
