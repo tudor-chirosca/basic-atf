@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.9.0...v1.10.0) (2020-11-03)
+
+
+### Features
+
+* Alert stats endpoint and functional added ([9e38088](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/9e380885e5824daa651e222af7e10cbe930a993b))
+
 ## [1.9.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.8.9...v1.9.0) (2020-11-02)
 
 
