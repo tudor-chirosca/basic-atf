@@ -15,5 +15,5 @@ import lombok.Setter;
 public class AlertStatsDto {
 
   private Integer total;
-  private List<AlertDataDto> items;
+  private List<AlertStatsDataDto> items;
 }

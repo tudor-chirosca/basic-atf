@@ -1,10 +1,14 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.repository.AlertsRepository
+import com.vocalink.crossproduct.shared.alert.AlertRequest
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
@@ -75,6 +79,26 @@ class AlertsServiceFacadeImplTest {
         Mockito.verify(alertsRepository).findAlertStats(any())
         Mockito.verify(presenterFactory).getPresenter(any())
         Mockito.verify(uiPresenter).presentAlertStats(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should get alerts`() {
+        val alertFilterRequest = AlertFilterRequest()
+        val alertRequest = AlertRequest()
+        val alerts = listOf(Alert())
+        val alertsDto = listOf(AlertDto())
+
+        Mockito.`when`(alertsRepository.findAlerts(TestConstants.CONTEXT, alertRequest)).thenReturn(alerts)
+        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)
+        Mockito.`when`(uiPresenter.presentAlert(alerts)).thenReturn(alertsDto)
+
+        val result = testingModule.getAlerts(TestConstants.CONTEXT, ClientType.UI, alertFilterRequest)
+
+        Mockito.verify(alertsRepository, Mockito.atLeastOnce()).findAlerts(any(), any())
+        Mockito.verify(presenterFactory, Mockito.atLeastOnce()).getPresenter(any())
+        Mockito.verify(uiPresenter, Mockito.atLeastOnce()).presentAlert(any())
 
         assertNotNull(result)
     }

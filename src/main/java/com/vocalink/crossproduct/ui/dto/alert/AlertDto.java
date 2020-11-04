@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.dto.alert;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +12,11 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlertDataDto {
+public class AlertDto {
 
-  private Integer totalResults;
-  private List<AlertDto> items;
+  private Integer alertId;
+  private String priority;
+  private LocalDateTime dateRaised;
+  private String type;
+  private String entity;
 }

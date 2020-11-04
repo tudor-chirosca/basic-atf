@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -10,7 +11,10 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.shared.alert.AlertRequest;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -44,7 +48,11 @@ public interface DTOMapper {
 
   AlertStatsDto toDto(AlertStats alertStats);
 
+  AlertDto toDto(Alert alert);
+
   ParticipantPositionDto toDto(ParticipantPosition participant);
+
+  AlertRequest toDto(AlertFilterRequest alertFilterRequest);
 
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);

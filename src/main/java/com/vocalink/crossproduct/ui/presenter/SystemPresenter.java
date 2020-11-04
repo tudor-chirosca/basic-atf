@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -10,6 +11,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -17,7 +19,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -72,6 +73,11 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public AlertStatsDto presentAlertStats(AlertStats alertStats) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public List<AlertDto> presentAlert(List<Alert> alerts) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

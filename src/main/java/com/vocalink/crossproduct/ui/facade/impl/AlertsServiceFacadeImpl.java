@@ -1,14 +1,21 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
+
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.repository.AlertsRepository;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDataDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -37,5 +44,16 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertStats(alertStats);
+  }
+
+  @Override
+  public AlertDataDto getAlerts(String context, ClientType clientType, AlertFilterRequest request) {
+
+    List<Alert> alerts = alertsRepository.findAlerts(context, MAPPER.toDto(request));
+
+    List<AlertDto> alertsDto = presenterFactory.getPresenter(clientType)
+        .presentAlert(alerts);
+
+    return new AlertDataDto(alertsDto.size(), alertsDto);
   }
 }

@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
-
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
@@ -37,7 +38,9 @@ public interface EntityMapper {
 
   Participant toEntity(CPParticipant input);
 
-  AlertReferenceData toDto(CPAlertReferenceData alertReferenceData);
+  AlertReferenceData toEntity(CPAlertReferenceData alertReferenceData);
+
+  Alert toEntity(CPAlert input);
 
   AlertStats toDto(CPAlertStats alertReferenceData);
 

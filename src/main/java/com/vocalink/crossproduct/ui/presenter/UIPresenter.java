@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -14,6 +15,7 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
@@ -159,6 +161,13 @@ public class UIPresenter implements Presenter {
   @Override
   public AlertStatsDto presentAlertStats(AlertStats alertStats) {
     return MAPPER.toDto(alertStats);
+  }
+
+  @Override
+  public List<AlertDto> presentAlert(List<Alert> alerts) {
+    return alerts.stream()
+        .map(MAPPER::toDto)
+        .collect(Collectors.toList());
   }
 
   @Override
