@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.10.3...v1.11.0) (2020-11-05)
+
+
+### Features
+
+* added /reference/participants endpoint ([56d4dfc](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/56d4dfc96661e27a413564e95f6f480d85021cde))
+
+
+### Bug Fixes
+
+* added client-type ([d7e896a](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/d7e896a730382989f9ba5598ba47920cba01ae90))
+
 ### [1.10.3](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.10.2...v1.10.3) (2020-11-05)
 
 ### [1.10.2](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.10.1...v1.10.2) (2020-11-03)
