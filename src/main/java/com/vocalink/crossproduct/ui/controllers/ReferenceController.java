@@ -2,12 +2,13 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferenceServiceFacade;
+import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -18,11 +19,11 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
-      HttpServletRequest httpServletRequest) {
-    String contextHeader = httpServletRequest.getHeader("context");
+
+      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
     List<ParticipantReferenceDto> participantReferenceDto = referenceServiceFacade
-        .getParticipants(contextHeader.toUpperCase());
+        .getParticipants(context.toUpperCase());
 
     return ResponseEntity.ok().body(participantReferenceDto);
   }

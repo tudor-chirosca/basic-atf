@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -17,5 +18,5 @@ public interface ReferenceApi {
       @ApiResponse(code = 400, message = "Invalid context")
   })
   ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
-      HttpServletRequest httpServletRequest);
+      ClientType clientType, String context);
 }

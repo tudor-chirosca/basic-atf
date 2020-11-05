@@ -35,7 +35,8 @@ class ReferenceControllerTest {
         Mockito.`when`(referenceServiceFacade!!.getParticipants(TestConstants.CONTEXT))
                 .thenReturn(participants)
         mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
-                .header("context", TestConstants.CONTEXT))
+                .header("context", TestConstants.CONTEXT)
+                .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
     }
 
@@ -52,8 +53,9 @@ class ReferenceControllerTest {
 
         Mockito.`when`(referenceServiceFacade!!.getParticipants(TestConstants.CONTEXT))
                 .thenReturn(participants)
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants"))
-                .andExpect(status().isBadRequest)
+        mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
+                .header("client-type", TestConstants.CLIENT_TYPE))
+                .andExpect(status().is5xxServerError)
     }
 
 }
