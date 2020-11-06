@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -13,6 +14,7 @@ import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
+import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
@@ -38,10 +40,13 @@ public interface EntityMapper {
 
   Participant toEntity(CPParticipant input);
 
+  FileReference toEntity(CPFileReference cpFileReference);
+
   AlertReferenceData toEntity(CPAlertReferenceData alertReferenceData);
 
   Alert toEntity(CPAlert input);
 
-  AlertStats toDto(CPAlertStats alertReferenceData);
+  AlertReferenceData toDto(CPAlertReferenceData alertReferenceData);
 
+  AlertStats toDto(CPAlertStats alertReferenceData);
 }

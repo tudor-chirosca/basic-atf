@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -22,6 +23,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -173,5 +175,10 @@ public class UIPresenter implements Presenter {
   @Override
   public ClientType getClientType() {
     return ClientType.UI;
+  }
+
+  @Override
+  public List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences) {
+    return MAPPER.toDto(fileReferences);
   }
 }

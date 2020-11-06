@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -17,6 +18,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -50,4 +52,6 @@ public interface Presenter {
   AlertStatsDto presentAlertStats(AlertStats alertStats);
 
   List<AlertDto> presentAlert(List<Alert> alerts);
+
+  List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences);
 }

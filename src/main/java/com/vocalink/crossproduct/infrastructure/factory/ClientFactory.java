@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.factory;
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import com.vocalink.crossproduct.shared.alert.AlertsClient;
 import com.vocalink.crossproduct.shared.cycle.CyclesClient;
+import com.vocalink.crossproduct.shared.files.FilesClient;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import com.vocalink.crossproduct.shared.participant.ParticipantClient;
 
@@ -25,12 +26,14 @@ public class ClientFactory {
   private final List<ParticipantIODataClient> participantIODataClientsList;
   private final List<PositionClient> positionClientList;
   private final List<AlertsClient> alertsClientList;
+  private final List<FilesClient> filesClient;
 
   private Map<String, ParticipantClient> participantsClients;
   private Map<String, CyclesClient> cyclesClients;
   private Map<String, ParticipantIODataClient> participantIODataClients;
   private Map<String, PositionClient> positionClients;
   private Map<String, AlertsClient> alertsClients;
+  private Map<String, FilesClient> filesClients;
 
 
   @PostConstruct
@@ -45,6 +48,8 @@ public class ClientFactory {
         .collect(Collectors.toMap(PositionClient::getContext, Function.identity()));
     alertsClients = alertsClientList.stream()
         .collect(Collectors.toMap(AlertsClient::getContext, Function.identity()));
+    filesClients = filesClient.stream()
+        .collect(Collectors.toMap(FilesClient::getContext, Function.identity()));
   }
 
   public ParticipantClient getParticipantClient(String context) {
@@ -82,5 +87,12 @@ public class ClientFactory {
       throw new ClientNotAvailableException("Alerts client not available for context " + context);
     }
     return alertsClients.get(context);
+  }
+
+  public FilesClient getFilesClient(String context) {
+    if (filesClients.get(context) == null) {
+      throw new ClientNotAvailableException("Files client not available for context " + context);
+    }
+    return filesClients.get(context);
   }
 }

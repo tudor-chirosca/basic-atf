@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -26,6 +27,7 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -180,4 +182,6 @@ public interface DTOMapper {
             .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .build();
   }
+
+  List<FileStatusesDto> toDto(List<FileReference> fileReferences);
 }

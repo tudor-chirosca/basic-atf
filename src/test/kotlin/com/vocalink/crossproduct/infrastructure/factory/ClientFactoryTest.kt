@@ -3,24 +3,25 @@ package com.vocalink.crossproduct.infrastructure.factory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.alert.BPSAlertsClient
 import com.vocalink.crossproduct.adapter.bps.cycle.BPSCyclesClient
+import com.vocalink.crossproduct.adapter.bps.files.BPSFilesClient
 import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
 import com.vocalink.crossproduct.shared.alert.AlertsClient
 import com.vocalink.crossproduct.shared.cycle.CyclesClient
+import com.vocalink.crossproduct.shared.files.FilesClient
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
 import com.vocalink.crossproduct.shared.participant.ParticipantClient
 import com.vocalink.crossproduct.shared.positions.PositionClient
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertTrue
 
-@ExtendWith(SpringExtension::class)
+@ExtendWith(MockitoExtension::class)
 class ClientFactoryTest {
 
     private var cyclesClient: CyclesClient = Mockito.mock(BPSCyclesClient::class.java)!!
@@ -28,13 +29,15 @@ class ClientFactoryTest {
     private var participantClient: ParticipantClient = Mockito.mock(BPSParticipantClient::class.java)!!
     private var positionClient: PositionClient = Mockito.mock(BPSPositionClient::class.java)!!
     private var alertsClient: AlertsClient = Mockito.mock(BPSAlertsClient::class.java)!!
+    private var filesClient: FilesClient = Mockito.mock(BPSFilesClient::class.java)!!
 
-    private var testingModule = ClientFactory(
+    private var testingModule: ClientFactory = ClientFactory(
             listOf(participantClient),
             listOf(cyclesClient),
             listOf(participantIOClient),
             listOf(positionClient),
-            listOf(alertsClient)
+            listOf(alertsClient),
+            listOf(filesClient)
     )
 
     @Test
@@ -119,6 +122,14 @@ class ClientFactoryTest {
         testingModule.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
             testingModule.getAlertsClient(TestConstants.CONTEXT)
+        }
+    }
+
+    @Test
+    fun `should throw flies client not available for wrong context`() {
+        testingModule.init()
+        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+            testingModule.getFilesClient(TestConstants.CONTEXT)
         }
     }
 }

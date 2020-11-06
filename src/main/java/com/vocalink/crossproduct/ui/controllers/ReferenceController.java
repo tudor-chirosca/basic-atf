@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferenceServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -19,7 +20,6 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
-
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
     List<ParticipantReferenceDto> participantReferenceDto = referenceServiceFacade
@@ -27,4 +27,15 @@ public class ReferenceController implements ReferenceApi {
 
     return ResponseEntity.ok().body(participantReferenceDto);
   }
+
+  @GetMapping(value = "/reference/file-statuses", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<FileStatusesDto>> getFileReferences(
+      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
+
+    List<FileStatusesDto> files = referenceServiceFacade
+        .getFileReferences(context.toUpperCase(), clientType);
+
+    return ResponseEntity.ok().body(files);
+  }
+
 }
