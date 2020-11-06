@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
@@ -196,6 +197,14 @@ public class UIPresenter implements Presenter {
           return message;
         })
         .collect(toList());
+  }
+
+  @Override
+  public List<ParticipantReferenceDto> presentParticipantReferences(List<Participant> participants) {
+    return participants.stream()
+        .map(p -> new ParticipantReferenceDto(p.getBic(), p.getName()))
+        .sorted(Comparator.comparing(ParticipantReferenceDto::getName))
+        .collect(Collectors.toList());
   }
 
   @Override

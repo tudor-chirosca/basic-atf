@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade
+import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +33,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referencesServiceFacade!!.getParticipants(TestConstants.CONTEXT))
+        Mockito.`when`(referencesServiceFacade!!.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
                 .header("context", TestConstants.CONTEXT)
@@ -51,7 +52,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referencesServiceFacade!!.getParticipants(TestConstants.CONTEXT))
+        Mockito.`when`(referencesServiceFacade!!.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
                 .header("client-type", TestConstants.CLIENT_TYPE))

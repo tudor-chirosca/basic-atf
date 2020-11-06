@@ -66,4 +66,11 @@ class SystemPresenterTests {
             testingModule.presentIoDetails(participant, ioData, LocalDate.now())
         }
     }
+
+    @Test
+    fun `should throw RuntimeException on present participant references for System`() {
+        Assertions.assertThrows(RuntimeException::class.java) {
+            testingModule.presentParticipantReferences(emptyList())
+        }
+    }
 }

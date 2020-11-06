@@ -457,6 +457,34 @@ class UIPresenterTest {
     }
 
     @Test
+    fun `should get participant references sorted by name`() {
+        val aaa = "Aaa"
+        val bbb = "Bbb"
+        val ccc = "Ccc"
+
+        val model = listOf(
+                Participant.builder()
+                        .bic("ID1")
+                        .name(ccc)
+                        .build(),
+                Participant.builder()
+                        .bic("ID2")
+                        .name(aaa)
+                        .build(),
+                Participant.builder()
+                        .bic("ID3")
+                        .name(bbb)
+                        .build()
+        )
+
+        val result = testingModule.presentParticipantReferences(model)
+
+        assertEquals(aaa, result[0].name)
+        assertEquals(bbb, result[1].name)
+        assertEquals(ccc, result[2].name)
+    }
+
+    @Test
     fun `should get UI ClientType`() {
         val result = testingModule.clientType
         assertEquals(ClientType.UI, result)

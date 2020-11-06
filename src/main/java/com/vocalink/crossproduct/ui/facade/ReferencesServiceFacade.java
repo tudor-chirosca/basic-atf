@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReferencesServiceFacade {
 
-  List<ParticipantReferenceDto> getParticipants(String context);
+  List<ParticipantReferenceDto> getParticipantReferences(String context, ClientType clientType);
 
   List<MessageDirectionReferenceDto> getMessageDirectionReferences(String context,
       ClientType clientType);

@@ -24,7 +24,7 @@ public class ReferenceController implements ReferenceApi {
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
     List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
-        .getParticipants(context.toUpperCase());
+        .getParticipantReferences(context.toUpperCase(), clientType);
 
     return ResponseEntity.ok().body(participantReferenceDto);
   }

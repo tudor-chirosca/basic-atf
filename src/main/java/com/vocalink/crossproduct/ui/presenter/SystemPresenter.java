@@ -18,6 +18,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import java.time.LocalDate;
@@ -92,6 +93,11 @@ public class SystemPresenter implements Presenter {
   @Override
   public List<MessageDirectionReferenceDto> getMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public List<ParticipantReferenceDto> presentParticipantReferences(List<Participant> participants) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

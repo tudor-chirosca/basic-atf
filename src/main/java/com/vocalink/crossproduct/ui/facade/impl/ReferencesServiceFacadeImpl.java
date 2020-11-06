@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.repository.FileRepository;
@@ -11,9 +12,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,12 +28,11 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   private final FileRepository fileRepository;
 
   @Override
-  public List<ParticipantReferenceDto> getParticipants(String context) {
-    log.info("Fetching all reference participants {} ... ", context);
-    return participantRepository.findAll(context).stream()
-        .map(p -> new ParticipantReferenceDto(p.getBic(), p.getName()))
-        .sorted(Comparator.comparing(ParticipantReferenceDto::getName))
-        .collect(Collectors.toList());
+  public List<ParticipantReferenceDto> getParticipantReferences(String context,
+      ClientType clientType) {
+    List<Participant> participants = participantRepository.findAll(context);
+
+    return presenterFactory.getPresenter(clientType).presentParticipantReferences(participants);
   }
 
   @Override
@@ -43,7 +41,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
     List<MessageDirectionReference> messageDirectionReferences = referencesRepository
         .getMessageDirectionReferences(context);
-    
+
     return presenterFactory.getPresenter(clientType)
         .getMessageDirectionReferences(messageDirectionReferences);
   }
