@@ -6,14 +6,13 @@ import com.vocalink.crossproduct.shared.cycle.CyclesClient;
 import com.vocalink.crossproduct.shared.files.FilesClient;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import com.vocalink.crossproduct.shared.participant.ParticipantClient;
-
+import com.vocalink.crossproduct.shared.positions.PositionClient;
+import com.vocalink.crossproduct.shared.reference.ReferencesClient;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-
-import com.vocalink.crossproduct.shared.positions.PositionClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +26,7 @@ public class ClientFactory {
   private final List<PositionClient> positionClientList;
   private final List<AlertsClient> alertsClientList;
   private final List<FilesClient> filesClient;
+  private final List<ReferencesClient> referenceClientList;
 
   private Map<String, ParticipantClient> participantsClients;
   private Map<String, CyclesClient> cyclesClients;
@@ -35,6 +35,7 @@ public class ClientFactory {
   private Map<String, AlertsClient> alertsClients;
   private Map<String, FilesClient> filesClients;
 
+  private Map<String, ReferencesClient> referenceClients;
 
   @PostConstruct
   public void init() {
@@ -50,6 +51,8 @@ public class ClientFactory {
         .collect(Collectors.toMap(AlertsClient::getContext, Function.identity()));
     filesClients = filesClient.stream()
         .collect(Collectors.toMap(FilesClient::getContext, Function.identity()));
+    referenceClients = referenceClientList.stream()
+        .collect(Collectors.toMap(ReferencesClient::getContext, Function.identity()));
   }
 
   public ParticipantClient getParticipantClient(String context) {
@@ -94,5 +97,12 @@ public class ClientFactory {
       throw new ClientNotAvailableException("Files client not available for context " + context);
     }
     return filesClients.get(context);
+  }
+
+  public ReferencesClient getReferencesClient(String context) {
+    if (referenceClients.get(context) == null) {
+      throw new ClientNotAvailableException("References client not available for context " + context);
+    }
+    return referenceClients.get(context);
   }
 }

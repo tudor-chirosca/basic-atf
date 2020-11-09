@@ -10,8 +10,9 @@ import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.shared.alert.AlertRequest;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
@@ -28,6 +29,7 @@ import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -51,6 +53,8 @@ public interface DTOMapper {
   AlertStatsDto toDto(AlertStats alertStats);
 
   AlertDto toDto(Alert alert);
+
+  MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
   ParticipantPositionDto toDto(ParticipantPosition participant);
 

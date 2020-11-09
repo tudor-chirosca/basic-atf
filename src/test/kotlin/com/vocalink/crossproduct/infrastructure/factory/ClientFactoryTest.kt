@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.adapter.bps.files.BPSFilesClient
 import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
+import com.vocalink.crossproduct.adapter.bps.reference.BPSReferencesClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
 import com.vocalink.crossproduct.shared.alert.AlertsClient
 import com.vocalink.crossproduct.shared.cycle.CyclesClient
@@ -14,6 +15,7 @@ import com.vocalink.crossproduct.shared.files.FilesClient
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
 import com.vocalink.crossproduct.shared.participant.ParticipantClient
 import com.vocalink.crossproduct.shared.positions.PositionClient
+import com.vocalink.crossproduct.shared.reference.ReferencesClient
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,6 +32,7 @@ class ClientFactoryTest {
     private var positionClient: PositionClient = Mockito.mock(BPSPositionClient::class.java)!!
     private var alertsClient: AlertsClient = Mockito.mock(BPSAlertsClient::class.java)!!
     private var filesClient: FilesClient = Mockito.mock(BPSFilesClient::class.java)!!
+    private var referencesClient: ReferencesClient = Mockito.mock(BPSReferencesClient::class.java)!!
 
     private var testingModule: ClientFactory = ClientFactory(
             listOf(participantClient),
@@ -37,7 +40,8 @@ class ClientFactoryTest {
             listOf(participantIOClient),
             listOf(positionClient),
             listOf(alertsClient),
-            listOf(filesClient)
+            listOf(filesClient),
+            listOf(referencesClient)
     )
 
     @Test

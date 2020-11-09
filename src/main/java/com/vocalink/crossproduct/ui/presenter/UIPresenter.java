@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
-
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -13,6 +12,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -24,6 +24,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,11 +34,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class UIPresenter implements Presenter {
+
+  @Value("${default.message.reference.name}")
+  private String defaultMessageReferenceName;
 
   private final SelfFundingSettlementDetailsMapper selfFundingDetailsMapper;
 
@@ -169,7 +174,28 @@ public class UIPresenter implements Presenter {
   public List<AlertDto> presentAlert(List<Alert> alerts) {
     return alerts.stream()
         .map(MAPPER::toDto)
-        .collect(Collectors.toList());
+        .collect(toList());
+  }
+
+  @Override
+  public List<MessageDirectionReferenceDto> getMessageDirectionReferences(
+      List<MessageDirectionReference> messageDirectionReferences) {
+    List<MessageDirectionReferenceDto> messagesDto = messageDirectionReferences.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
+    return setDefault(messagesDto);
+  }
+
+  private List<MessageDirectionReferenceDto> setDefault(
+      List<MessageDirectionReferenceDto> messages) {
+    return messages.stream()
+        .map(message -> {
+          if (message.getName() != null && message.getName().equals(defaultMessageReferenceName)) {
+            message.setDefault(true);
+          }
+          return message;
+        })
+        .collect(toList());
   }
 
   @Override

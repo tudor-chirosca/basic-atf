@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
-import com.vocalink.crossproduct.ui.facade.ReferenceServiceFacade
+import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +19,7 @@ class ReferenceControllerTest {
     private val mockMvc: MockMvc? = null
 
     @MockBean
-    private val referenceServiceFacade: ReferenceServiceFacade? = null
+    private val referencesServiceFacade: ReferencesServiceFacade? = null
 
     @Test
     fun `should get all participants`() {
@@ -32,7 +32,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referenceServiceFacade!!.getParticipants(TestConstants.CONTEXT))
+        Mockito.`when`(referencesServiceFacade!!.getParticipants(TestConstants.CONTEXT))
                 .thenReturn(participants)
         mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
                 .header("context", TestConstants.CONTEXT)
@@ -51,7 +51,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referenceServiceFacade!!.getParticipants(TestConstants.CONTEXT))
+        Mockito.`when`(referencesServiceFacade!!.getParticipants(TestConstants.CONTEXT))
                 .thenReturn(participants)
         mockMvc!!.perform(MockMvcRequestBuilders.get("/reference/participants")
                 .header("client-type", TestConstants.CLIENT_TYPE))

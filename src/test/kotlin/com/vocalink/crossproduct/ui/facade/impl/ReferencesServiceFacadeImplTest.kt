@@ -12,13 +12,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.assertEquals
 
 @ExtendWith(SpringExtension::class)
-class ReferenceServiceFacadeImplTest {
+class ReferencesServiceFacadeImplTest {
 
     @Mock
     private lateinit var participantRepository: ParticipantRepository
 
     @InjectMocks
-    private lateinit var referenceServiceFacadeImpl: ReferenceServiceFacadeImpl
+    private lateinit var referenceServiceFacadeImpl: ReferencesServiceFacadeImpl
 
     @Test
     fun `should get participants name and bic sorted by name`() {

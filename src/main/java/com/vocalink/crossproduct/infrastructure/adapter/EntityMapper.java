@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
@@ -20,6 +21,7 @@ import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
+import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -46,7 +48,8 @@ public interface EntityMapper {
 
   Alert toEntity(CPAlert input);
 
-  AlertReferenceData toDto(CPAlertReferenceData alertReferenceData);
+  AlertStats toEntity(CPAlertStats alertReferenceData);
 
-  AlertStats toDto(CPAlertStats alertReferenceData);
+  MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
+
 }

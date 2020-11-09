@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
@@ -17,26 +18,34 @@ import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.verify
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
+@ContextConfiguration(classes = [UIPresenter::class])
+@TestPropertySource("classpath:application.properties")
 class UIPresenterTest {
 
-    private val selfFundingDetailsMapper = Mockito.mock(SelfFundingSettlementDetailsMapper::class.java)!!
+    @Autowired
+    private lateinit var testingModule: UIPresenter
 
-    private val testingModule = UIPresenter(
-            selfFundingDetailsMapper
-    )
+    @MockBean
+    private lateinit var selfFundingDetailsMapper: SelfFundingSettlementDetailsMapper
 
     @Test
     fun `should get All participants Settlement Dashboard DTO`() {
@@ -451,5 +460,28 @@ class UIPresenterTest {
     fun `should get UI ClientType`() {
         val result = testingModule.clientType
         assertEquals(ClientType.UI, result)
+    }
+
+    @Test
+    fun `should map all Message references fields and set isDefault true for Sending`() {
+        val sending = "Sending"
+        val receiving = "Receiving"
+        val model = listOf(
+                MessageDirectionReference.builder()
+                        .name(sending)
+                        .types(emptyList())
+                        .build(),
+                MessageDirectionReference.builder()
+                        .name(receiving)
+                        .types(emptyList())
+                        .build()
+        )
+        val result = testingModule.getMessageDirectionReferences(model)
+
+        assertEquals(sending, result[0].name)
+        assertTrue(result[0].isDefault)
+
+        assertEquals(receiving, result[1].name)
+        assertFalse(result[1].isDefault)
     }
 }

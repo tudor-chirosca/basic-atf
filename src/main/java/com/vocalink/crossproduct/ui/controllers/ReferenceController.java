@@ -1,8 +1,9 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
-import com.vocalink.crossproduct.ui.facade.ReferenceServiceFacade;
+import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ReferenceController implements ReferenceApi {
 
-  private final ReferenceServiceFacade referenceServiceFacade;
+  private final ReferencesServiceFacade referencesServiceFacade;
 
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
-    List<ParticipantReferenceDto> participantReferenceDto = referenceServiceFacade
+    List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
         .getParticipants(context.toUpperCase());
 
     return ResponseEntity.ok().body(participantReferenceDto);
@@ -32,10 +33,20 @@ public class ReferenceController implements ReferenceApi {
   public ResponseEntity<List<FileStatusesDto>> getFileReferences(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
-    List<FileStatusesDto> files = referenceServiceFacade
+    List<FileStatusesDto> files = referencesServiceFacade
         .getFileReferences(context.toUpperCase(), clientType);
 
     return ResponseEntity.ok().body(files);
   }
 
+  @GetMapping(value = "/reference/messages", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<MessageDirectionReferenceDto>> getMessageDirectionReferences(
+      @RequestHeader("client-type") ClientType clientType,
+      @RequestHeader String context) {
+
+    List<MessageDirectionReferenceDto> messageDirectionReferenceDto = referencesServiceFacade
+        .getMessageDirectionReferences(context, clientType);
+
+    return ResponseEntity.ok().body(messageDirectionReferenceDto);
+  }
 }

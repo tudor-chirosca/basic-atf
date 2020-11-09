@@ -49,6 +49,6 @@ public class AlertsAdapter implements AlertsRepository {
 
     AlertsClient client = clientFactory.getAlertsClient(context);
 
-    return client.findAlertStats().map(MAPPER::toDto);
+    return client.findAlertStats().map(MAPPER::toEntity);
   }
 }

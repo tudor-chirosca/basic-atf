@@ -22,7 +22,6 @@ import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 
-
 class DTOMapperTest {
 
     @Test
