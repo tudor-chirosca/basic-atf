@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.14.2](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.14.1...v1.14.2) (2020-11-09)
+
+
+### Bug Fixes
+
+* added preseter for participant references ([b38a568](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/b38a56844b9de05157bf1a978f79fa3039707ad7))
+
 ### [1.14.1](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.14.0...v1.14.1) (2020-11-09)
 
 ## [1.14.0](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.13.1...v1.14.0) (2020-11-09)
