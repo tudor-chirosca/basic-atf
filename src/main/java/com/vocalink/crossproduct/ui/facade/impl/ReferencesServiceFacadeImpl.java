@@ -40,10 +40,9 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
       ClientType clientType) {
 
     List<MessageDirectionReference> messageDirectionReferences = referencesRepository
-        .getMessageDirectionReferences(context);
-
+        .findMessageDirectionReferences(context);
     return presenterFactory.getPresenter(clientType)
-        .getMessageDirectionReferences(messageDirectionReferences);
+        .presentMessageDirectionReferences(messageDirectionReferences);
   }
 
   @Override

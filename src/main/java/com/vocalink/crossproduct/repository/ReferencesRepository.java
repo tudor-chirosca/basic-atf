@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ReferencesRepository {
 
-  List<MessageDirectionReference> getMessageDirectionReferences(String context);
+  List<MessageDirectionReference> findMessageDirectionReferences(String context);
 }

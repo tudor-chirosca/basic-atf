@@ -40,7 +40,6 @@ class AlertsControllerTest {
             "sort": "dateRaised",
             "order": "DESC"
         }"""
-
     }
 
     @Test

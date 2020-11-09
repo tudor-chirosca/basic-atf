@@ -504,7 +504,7 @@ class UIPresenterTest {
                         .types(emptyList())
                         .build()
         )
-        val result = testingModule.getMessageDirectionReferences(model)
+        val result = testingModule.presentMessageDirectionReferences(model)
 
         assertEquals(sending, result[0].name)
         assertTrue(result[0].isDefault)

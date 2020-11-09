@@ -179,7 +179,7 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<MessageDirectionReferenceDto> getMessageDirectionReferences(
+  public List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences) {
     List<MessageDirectionReferenceDto> messagesDto = messageDirectionReferences.stream()
         .map(MAPPER::toDto)

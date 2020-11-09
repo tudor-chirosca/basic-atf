@@ -90,6 +90,15 @@ class ClientFactoryTest {
     }
 
     @Test
+    fun `should get reference client`() {
+        Mockito.`when`(referencesClient.context).thenReturn(TestConstants.CONTEXT)
+        testingModule.init()
+
+        val result = testingModule.getReferencesClient(TestConstants.CONTEXT)
+        assertTrue(result is ReferencesClient)
+    }
+
+    @Test
     fun `should throw participant client not available for wrong context`() {
         testingModule.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
@@ -134,6 +143,14 @@ class ClientFactoryTest {
         testingModule.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
             testingModule.getFilesClient(TestConstants.CONTEXT)
+        }
+    }
+
+    @Test
+    fun `should throw references client not available for wrong context`() {
+        testingModule.init()
+        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+            testingModule.getReferencesClient(TestConstants.CONTEXT)
         }
     }
 }

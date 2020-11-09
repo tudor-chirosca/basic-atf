@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
@@ -21,6 +22,8 @@ import java.math.BigInteger
 import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class DTOMapperTest {
 
@@ -499,5 +502,21 @@ class DTOMapperTest {
         assertEquals(total, result.total)
         assertEquals(priority, result.items[0].priority)
         assertEquals(count, result.items[0].count)
+    }
+
+    @Test
+    fun `should map all Message references fields and set isDefault to false`() {
+        val sending = "Sending"
+        val type = "some_type"
+        val model = MessageDirectionReference.builder()
+                .name(sending)
+                .types(listOf(type))
+                .build()
+
+        val result = MAPPER.toDto(model)
+
+        assertEquals(sending, result.name)
+        assertEquals(type, result.types[0])
+        assertFalse(result.isDefault)
     }
 }

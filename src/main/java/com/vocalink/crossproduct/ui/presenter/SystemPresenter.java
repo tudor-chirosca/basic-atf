@@ -91,7 +91,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<MessageDirectionReferenceDto> getMessageDirectionReferences(
+  public List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences) {
     throw new RuntimeException("System API not implemented yet");
   }

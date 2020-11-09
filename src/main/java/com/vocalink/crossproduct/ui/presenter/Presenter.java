@@ -60,6 +60,6 @@ public interface Presenter {
 
   List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences);
 
-  List<MessageDirectionReferenceDto> getMessageDirectionReferences(
+  List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences);
 }
