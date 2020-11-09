@@ -52,6 +52,7 @@ public interface DTOMapper {
 
   AlertStatsDto toDto(AlertStats alertStats);
 
+  @Mapping(target = "entity", source = "entityName")
   AlertDto toDto(Alert alert);
 
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);

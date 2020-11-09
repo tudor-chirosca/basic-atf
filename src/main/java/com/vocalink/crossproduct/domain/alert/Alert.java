@@ -19,4 +19,5 @@ public class Alert {
   private LocalDateTime dateRaised;
   private String type;
   private String entity;
+  private String entityName;
 }
