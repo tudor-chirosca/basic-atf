@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -19,7 +20,7 @@ import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -35,6 +36,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class])
@@ -240,7 +242,7 @@ class UIPresenterTest {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(true)
 
-        Mockito.`when`(selfFundingDetailsMapper
+        `when`(selfFundingDetailsMapper
                 .presentFullParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
 
@@ -289,7 +291,7 @@ class UIPresenterTest {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(true)
 
-        Mockito.`when`(selfFundingDetailsMapper
+        `when`(selfFundingDetailsMapper
                 .presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDtoForOneCycle())
 
@@ -511,5 +513,36 @@ class UIPresenterTest {
 
         assertEquals(receiving, result[1].name)
         assertFalse(result[1].isDefault)
+    }
+
+    @Test
+    fun `should present alerts`() {
+        val alerts = listOf(
+                Alert.builder()
+                        .alertId(3141)
+                        .priority("high")
+                        .dateRaised(LocalDateTime.now())
+                        .type("rejected-central-bank")
+                        .entity("NDEASESSXXX")
+                        .entityName("Nordea")
+                        .build(),
+                Alert.builder()
+                        .alertId(3142)
+                        .priority("high")
+                        .dateRaised(LocalDateTime.now())
+                        .type("rejected-central-bank")
+                        .entity("NDEASESSXXX")
+                        .entityName("SEB Bank")
+                        .build())
+
+        val result = testingModule.presentAlert(alerts)
+
+        assertThat(result).isNotNull
+
+        assertThat(result[0].alertId).isEqualTo(3141)
+        assertThat(result[0].entity).isEqualTo("Nordea")
+
+        assertThat(result[1].alertId).isEqualTo(3142)
+        assertThat(result[1].entity).isEqualTo("SEB Bank")
     }
 }

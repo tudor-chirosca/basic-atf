@@ -1,16 +1,14 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
-@ExtendWith(SpringExtension::class)
 class SystemPresenterTests {
 
     private val testingModule = SystemPresenter()
@@ -23,14 +21,14 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present All Participants Settlement for System`() {
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentAllParticipantsSettlement(emptyList(), emptyList())
         }
     }
 
     @Test
     fun `should throw RuntimeException on present Funding Participants Settlement for System`() {
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentFundingParticipantSettlement(emptyList(), emptyList(), null, emptyList())
         }
     }
@@ -38,14 +36,14 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present self funded settlement details for System`() {
         val participant = MockParticipants().getParticipant(true)
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentParticipantSettlementDetails(emptyList(), emptyList(), participant, null, null)
         }
     }
 
     @Test
     fun `should throw RuntimeException on present input output for System`() {
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
         }
     }
@@ -53,7 +51,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present alert references for System`() {
         val alertRef = AlertReferenceData.builder().build()
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentAlertReference(alertRef)
         }
     }
@@ -62,15 +60,23 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present input output Details for System`() {
         val participant = MockParticipants().getParticipant(false)
         val ioData = MockIOData().getIODetails()
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentIoDetails(participant, ioData, LocalDate.now())
         }
     }
 
     @Test
     fun `should throw RuntimeException on present participant references for System`() {
-        Assertions.assertThrows(RuntimeException::class.java) {
+        assertThrows(RuntimeException::class.java) {
             testingModule.presentParticipantReferences(emptyList())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present alerts for System`() {
+        val alerts = listOf(Alert.builder().build())
+        assertThrows(RuntimeException::class.java) {
+            testingModule.presentAlert(alerts)
         }
     }
 }

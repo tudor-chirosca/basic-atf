@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -23,7 +24,7 @@ import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertNotNull
 
 class DTOMapperTest {
 
@@ -518,5 +519,28 @@ class DTOMapperTest {
         assertEquals(sending, result.name)
         assertEquals(type, result.types[0])
         assertFalse(result.isDefault)
+    }
+
+    @Test
+    fun `should map Alerts fields`() {
+        val dateRaised = LocalDateTime.now()
+        val alert = Alert.builder()
+                .alertId(3141)
+                .priority("high")
+                .dateRaised(dateRaised)
+                .type("rejected-central-bank")
+                .entity("NDEASESSXXX")
+                .entityName("Nordea")
+                .build()
+
+        val result = MAPPER.toDto(alert)
+
+        assertThat(result).isNotNull
+
+        assertThat(result.alertId).isEqualTo(3141)
+        assertThat(result.priority).isEqualTo("high")
+        assertThat(result.dateRaised).isEqualTo(dateRaised)
+        assertThat(result.type).isEqualTo("rejected-central-bank")
+        assertThat(result.entity).isEqualTo("Nordea")
     }
 }
