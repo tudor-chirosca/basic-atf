@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.14.6](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.14.5...v1.14.6) (2020-11-11)
+
 ### [1.14.5](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.14.4...v1.14.5) (2020-11-11)
 
 ### [1.14.4](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.14.3...v1.14.4) (2020-11-10)
