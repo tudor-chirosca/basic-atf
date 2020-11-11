@@ -7,22 +7,27 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import kotlin.test.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ParticipantRepositoryAdapterTest {
-    private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
-    private var participantClient = Mockito.mock(BPSParticipantClient::class.java)!!
-    private var testingModule = ParticipantRepositoryAdapter(clientFactory)
+    private val clientFactory = mock(ClientFactory::class.java)!!
+    private val participantClient = mock(BPSParticipantClient::class.java)!!
+    private val participantRepositoryAdapter = ParticipantRepositoryAdapter(clientFactory)
 
     @Test
     fun `should find all participants`() {
-        Mockito.`when`(clientFactory.getParticipantClient(CONTEXT))
+        `when`(clientFactory.getParticipantClient(CONTEXT))
                 .thenReturn(participantClient)
-        Mockito.`when`(participantClient.findAll())
+        `when`(participantClient.findAll())
                 .thenReturn(MockParticipants().cpParticipants)
 
-        val result = testingModule.findAll(CONTEXT)
+        val result = participantRepositoryAdapter.findAll(CONTEXT)
 
         assertEquals(result.size, 3)
         assertTrue(result[0] is Participant)
@@ -50,18 +55,17 @@ class ParticipantRepositoryAdapterTest {
     fun `should find participants by id`() {
         val participantId = "HANDSESS"
 
-        Mockito.`when`(clientFactory.getParticipantClient(CONTEXT))
+        `when`(clientFactory.getParticipantClient(CONTEXT))
                 .thenReturn(participantClient)
-        Mockito.`when`(participantClient.findById(participantId))
+        `when`(participantClient.findById(participantId))
                 .thenReturn(MockParticipants().cpParticipants)
 
-        val optionalResult = testingModule.findByParticipantId(CONTEXT, participantId)
+        val optionalResult = participantRepositoryAdapter.findByParticipantId(CONTEXT, participantId)
 
         assertTrue(optionalResult.isPresent)
 
         val unwrappedResult = optionalResult.get()
 
-        assertTrue(unwrappedResult is Participant)
         assertEquals("HANDSESS", unwrappedResult.bic)
         assertEquals("HANDSESS", unwrappedResult.id)
         assertEquals("Svenska Handelsbanken", unwrappedResult.name)
@@ -73,11 +77,11 @@ class ParticipantRepositoryAdapterTest {
     fun `should return empty optional when no participant for given id`() {
         val participantId = "HANDSESS"
 
-        Mockito.`when`(clientFactory.getParticipantClient(CONTEXT))
+        `when`(clientFactory.getParticipantClient(CONTEXT))
                 .thenReturn(participantClient)
-        Mockito.`when`(participantClient.findById(participantId)).thenReturn(emptyList())
+        `when`(participantClient.findById(participantId)).thenReturn(emptyList())
 
-        val optionalResult = testingModule.findByParticipantId(CONTEXT, participantId)
+        val optionalResult = participantRepositoryAdapter.findByParticipantId(CONTEXT, participantId)
 
         assertFalse(optionalResult.isPresent)
     }

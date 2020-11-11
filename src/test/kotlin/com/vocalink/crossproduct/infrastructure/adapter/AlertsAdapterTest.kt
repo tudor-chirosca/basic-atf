@@ -18,7 +18,7 @@ class AlertsAdapterTest {
 
     private val clientFactory = mock(ClientFactory::class.java)!!
     private val client = mock(BPSAlertsClient::class.java)!!
-    private val testingModule = AlertsAdapter(clientFactory)
+    private val alertsAdapter = AlertsAdapter(clientFactory)
 
     @Test
     fun `should invoke get reference alerts client`() {
@@ -29,7 +29,7 @@ class AlertsAdapterTest {
         `when`(client.findReferenceAlerts())
                 .thenReturn(Optional.of(alertReferenceData))
 
-        testingModule.findReferenceAlerts(TestConstants.CONTEXT)
+        alertsAdapter.findReferenceAlerts(TestConstants.CONTEXT)
 
         verify(clientFactory, atLeastOnce()).getAlertsClient(TestConstants.CONTEXT)
         verify(client, atLeastOnce()).findReferenceAlerts()
@@ -44,7 +44,7 @@ class AlertsAdapterTest {
         `when`(client.findAlertStats())
                 .thenReturn(Optional.of(alertStats))
 
-        testingModule.findAlertStats(TestConstants.CONTEXT)
+        alertsAdapter.findAlertStats(TestConstants.CONTEXT)
 
         verify(clientFactory, atLeastOnce()).getAlertsClient(TestConstants.CONTEXT)
         verify(client, atLeastOnce()).findAlertStats()
@@ -57,7 +57,7 @@ class AlertsAdapterTest {
         `when`(clientFactory.getAlertsClient(TestConstants.CONTEXT)).thenReturn(client)
         `when`(client.findAlerts(any())).thenReturn(alerts)
 
-        testingModule.findAlerts(TestConstants.CONTEXT, any())
+        alertsAdapter.findAlerts(TestConstants.CONTEXT, any())
 
         verify(clientFactory, atLeastOnce()).getAlertsClient(TestConstants.CONTEXT)
     }

@@ -11,25 +11,25 @@ import kotlin.test.assertEquals
 
 class SystemPresenterTests {
 
-    private val testingModule = SystemPresenter()
+    private val systemPresenter = SystemPresenter()
 
     @Test
     fun `should get System ClientType`() {
-        val result = testingModule.clientType
+        val result = systemPresenter.clientType
         assertEquals(ClientType.SYSTEM, result)
     }
 
     @Test
     fun `should throw RuntimeException on present All Participants Settlement for System`() {
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentAllParticipantsSettlement(emptyList(), emptyList())
+            systemPresenter.presentAllParticipantsSettlement(emptyList(), emptyList())
         }
     }
 
     @Test
     fun `should throw RuntimeException on present Funding Participants Settlement for System`() {
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentFundingParticipantSettlement(emptyList(), emptyList(), null, emptyList())
+            systemPresenter.presentFundingParticipantSettlement(emptyList(), emptyList(), null, emptyList())
         }
     }
 
@@ -37,14 +37,14 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present self funded settlement details for System`() {
         val participant = MockParticipants().getParticipant(true)
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentParticipantSettlementDetails(emptyList(), emptyList(), participant, null, null)
+            systemPresenter.presentParticipantSettlementDetails(emptyList(), emptyList(), participant, null, null)
         }
     }
 
     @Test
     fun `should throw RuntimeException on present input output for System`() {
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
+            systemPresenter.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
         }
     }
 
@@ -52,7 +52,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present alert references for System`() {
         val alertRef = AlertReferenceData.builder().build()
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentAlertReference(alertRef)
+            systemPresenter.presentAlertReference(alertRef)
         }
     }
 
@@ -61,14 +61,14 @@ class SystemPresenterTests {
         val participant = MockParticipants().getParticipant(false)
         val ioData = MockIOData().getIODetails()
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentIoDetails(participant, ioData, LocalDate.now())
+            systemPresenter.presentIoDetails(participant, ioData, LocalDate.now())
         }
     }
 
     @Test
     fun `should throw RuntimeException on present participant references for System`() {
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentParticipantReferences(emptyList())
+            systemPresenter.presentParticipantReferences(emptyList())
         }
     }
 
@@ -76,7 +76,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present alerts for System`() {
         val alerts = listOf(Alert.builder().build())
         assertThrows(RuntimeException::class.java) {
-            testingModule.presentAlert(alerts)
+            systemPresenter.presentAlert(alerts)
         }
     }
 }

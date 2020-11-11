@@ -14,37 +14,39 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
-import org.mockito.Mockito
-import kotlin.test.assertNotNull
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import kotlin.test.assertNotNull
 
 @ExtendWith(MockitoExtension::class)
 class ReferencesServiceFacadeImplTest {
 
-    private val participantRepository = Mockito.mock(ParticipantRepository::class.java)!!
-    private val referencesRepository = Mockito.mock(ReferencesRepository::class.java)!!
-    private val fileRepository = Mockito.mock(FileRepository::class.java)!!
-    private val presenterFactory = Mockito.mock(PresenterFactory::class.java)!!
-    private val uiPresenter = Mockito.mock(UIPresenter::class.java)!!
+    private val participantRepository = mock(ParticipantRepository::class.java)!!
+    private val referencesRepository = mock(ReferencesRepository::class.java)!!
+    private val fileRepository = mock(FileRepository::class.java)!!
+    private val presenterFactory = mock(PresenterFactory::class.java)!!
+    private val uiPresenter = mock(UIPresenter::class.java)!!
 
     @InjectMocks
     private lateinit var referenceServiceFacadeImpl: ReferencesServiceFacadeImpl
 
-
     @Test
     fun `should get participants name and bic`() {
-        Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
+        `when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
-        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
-        Mockito.`when`(uiPresenter.presentParticipantReferences(any()))
+        `when`(uiPresenter.presentParticipantReferences(any()))
                 .thenReturn(any())
 
         referenceServiceFacadeImpl.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI)
 
-        Mockito.verify(participantRepository, Mockito.atLeastOnce()).findAll(TestConstants.CONTEXT)
-        Mockito.verify(presenterFactory, Mockito.atLeastOnce()).getPresenter(any())
-        Mockito.verify(uiPresenter, Mockito.atLeastOnce()).presentParticipantReferences(any())
+        verify(participantRepository, atLeastOnce()).findAll(TestConstants.CONTEXT)
+        verify(presenterFactory, atLeastOnce()).getPresenter(any())
+        verify(uiPresenter, atLeastOnce()).presentParticipantReferences(any())
     }
 
     @Test
@@ -52,21 +54,21 @@ class ReferencesServiceFacadeImplTest {
         val messageRefs = listOf(MessageDirectionReference.builder().build())
         val messageRefsDto = listOf(MessageDirectionReferenceDto.builder().build())
 
-        Mockito.`when`(referencesRepository
+        `when`(referencesRepository
                 .findMessageDirectionReferences(TestConstants.CONTEXT))
                 .thenReturn(messageRefs)
 
-        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
 
-        Mockito.`when`(uiPresenter.presentMessageDirectionReferences(any()))
+        `when`(uiPresenter.presentMessageDirectionReferences(any()))
                 .thenReturn(messageRefsDto)
 
         val result = referenceServiceFacadeImpl.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI)
 
-        Mockito.verify(referencesRepository).findMessageDirectionReferences(any())
-        Mockito.verify(presenterFactory).getPresenter(any())
-        Mockito.verify(uiPresenter).presentMessageDirectionReferences(any())
+        verify(referencesRepository).findMessageDirectionReferences(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentMessageDirectionReferences(any())
 
         assertNotNull(result)
     }

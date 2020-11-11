@@ -5,26 +5,27 @@ import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockIOData
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
 class IODetailsAdapterTest {
 
-    private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
-    private var client = Mockito.mock(BPSParticipantIODataClient::class.java)!!
-    private var testingModule = IODetailsAdapter(clientFactory)
+    private val clientFactory = mock(ClientFactory::class.java)!!
+    private val client = mock(BPSParticipantIODataClient::class.java)!!
+    private val ioDetailsAdapter = IODetailsAdapter(clientFactory)
 
     @Test
     fun `should find by given timestamp`() {
         val participantId = "NDEASESSXXX"
         val date = LocalDate.now()
-        Mockito.`when`(clientFactory.getParticipantIODataClient(TestConstants.CONTEXT))
+        `when`(clientFactory.getParticipantIODataClient(TestConstants.CONTEXT))
                 .thenReturn(client)
-        Mockito.`when`(client.findIODetailsFor(participantId, date))
+        `when`(client.findIODetailsFor(participantId, date))
                 .thenReturn(MockIOData().getCPIODetails())
 
-        val result = testingModule.findIODetailsFor(TestConstants.CONTEXT, participantId, date)
+        val result = ioDetailsAdapter.findIODetailsFor(TestConstants.CONTEXT, participantId, date)
 
         assertEquals(3, result[0].batches.size)
         assertEquals("Pacs.008", result[0].batches[0].code)

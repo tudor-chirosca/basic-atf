@@ -8,7 +8,8 @@ import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.shared.cycle.CPCycle
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -16,17 +17,17 @@ import kotlin.test.assertTrue
 
 class CycleRepositoryAdapterTest {
 
-    private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
-    private var cyclesClient = Mockito.mock(BPSCyclesClient::class.java)!!
-    private var testingModule = CycleRepositoryAdapter(clientFactory)
+    private val clientFactory = mock(ClientFactory::class.java)!!
+    private val cyclesClient = mock(BPSCyclesClient::class.java)!!
+    private val cycleRepositoryAdapter = CycleRepositoryAdapter(clientFactory)
 
     @Test
     fun `should find all cycles`() {
-        Mockito.`when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
+        `when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
                 .thenReturn(cyclesClient)
-        Mockito.`when`(cyclesClient.findAll()).thenReturn(MockCycles().cpCycles)
+        `when`(cyclesClient.findAll()).thenReturn(MockCycles().cpCycles)
 
-        val result = testingModule.findAll(TestConstants.CONTEXT)
+        val result = cycleRepositoryAdapter.findAll(TestConstants.CONTEXT)
 
         assertEquals(2, result.size)
         assertTrue(result[0] is Cycle)
@@ -40,7 +41,7 @@ class CycleRepositoryAdapterTest {
 
     @Test
     fun `should find cycles by id`() {
-        Mockito.`when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
+        `when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
                 .thenReturn(cyclesClient)
         val cycleIds = listOf("01", "03")
         val cpCycles = listOf(
@@ -57,9 +58,9 @@ class CycleRepositoryAdapterTest {
                         .status(null)
                         .build())
 
-        Mockito.`when`(cyclesClient.findByIds(cycleIds)).thenReturn(cpCycles)
+        `when`(cyclesClient.findByIds(cycleIds)).thenReturn(cpCycles)
 
-        val result = testingModule.findByIds(TestConstants.CONTEXT, cycleIds)
+        val result = cycleRepositoryAdapter.findByIds(TestConstants.CONTEXT, cycleIds)
 
         assertEquals(2, result.size)
         assertTrue(result[0] is Cycle)

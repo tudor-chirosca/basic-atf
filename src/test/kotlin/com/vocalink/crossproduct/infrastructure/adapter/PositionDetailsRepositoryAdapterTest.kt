@@ -6,26 +6,27 @@ import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockPositions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.math.BigInteger
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class PositionDetailsRepositoryAdapterTest {
 
-    private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
-    private var positionClient = Mockito.mock(BPSPositionClient::class.java)!!
-    private var testingModule = PositionDetailsRepositoryAdapter(clientFactory)
+    private val clientFactory = mock(ClientFactory::class.java)!!
+    private val positionClient = mock(BPSPositionClient::class.java)!!
+    private val positionDetailsRepositoryAdapter = PositionDetailsRepositoryAdapter(clientFactory)
 
     @Test
     fun `should find all positions`() {
         val participantId = "HANDSESS"
         val mocks = MockPositions()
-        Mockito.`when`(clientFactory.getPositionClient(TestConstants.CONTEXT))
+        `when`(clientFactory.getPositionClient(TestConstants.CONTEXT))
                 .thenReturn(positionClient)
-        Mockito.`when`(positionClient.findByParticipantId(participantId)).thenReturn(mocks.cpPositionDetails)
+        `when`(positionClient.findByParticipantId(participantId)).thenReturn(mocks.cpPositionDetails)
 
-        val result = testingModule.findByParticipantId(TestConstants.CONTEXT, participantId)
+        val result = positionDetailsRepositoryAdapter.findByParticipantId(TestConstants.CONTEXT, participantId)
 
         assertEquals(2, result.size)
         assertTrue(result[0] is PositionDetails)

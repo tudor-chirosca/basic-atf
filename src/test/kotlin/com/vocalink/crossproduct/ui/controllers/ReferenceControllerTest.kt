@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -36,7 +36,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc.perform(get("/reference/participants")
                 .header("context", TestConstants.CONTEXT)
@@ -55,7 +55,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        Mockito.`when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc.perform(get("/reference/participants"))
                 .andExpect(status().is5xxServerError)
@@ -78,7 +78,7 @@ class ReferenceControllerTest {
                         .types(listOf(type))
                         .build()
         )
-        Mockito.`when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(messages)
         mockMvc.perform(get("/reference/messages")
                 .header("context", TestConstants.CONTEXT)
@@ -95,7 +95,7 @@ class ReferenceControllerTest {
                 MessageDirectionReferenceDto.builder().build(),
                 MessageDirectionReferenceDto.builder().build())
 
-        Mockito.`when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(messages)
         mockMvc.perform(get("/reference/messages"))
                 .andExpect(status().is5xxServerError)

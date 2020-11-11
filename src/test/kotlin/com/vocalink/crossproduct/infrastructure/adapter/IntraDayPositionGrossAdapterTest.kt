@@ -6,7 +6,10 @@ import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross
 import com.vocalink.crossproduct.shared.positions.PositionClient
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

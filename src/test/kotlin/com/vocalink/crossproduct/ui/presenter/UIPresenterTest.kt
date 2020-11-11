@@ -44,7 +44,7 @@ import org.assertj.core.api.Assertions.assertThat
 class UIPresenterTest {
 
     @Autowired
-    private lateinit var testingModule: UIPresenter
+    private lateinit var uiPresenter: UIPresenter
 
     @MockBean
     private lateinit var selfFundingDetailsMapper: SelfFundingSettlementDetailsMapper
@@ -54,7 +54,7 @@ class UIPresenterTest {
         val cycles = MockCycles().cyclesWithPositions
         val participants = MockParticipants().participants
 
-        val result = testingModule.presentAllParticipantsSettlement(cycles, participants)
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
 
         assertEquals(3, result.positions.size)
         assertEquals("02", result.currentCycle.id)
@@ -95,7 +95,7 @@ class UIPresenterTest {
         val participants = MockParticipants().participants
         val fundingParticipant = MockParticipants().getParticipant(false)
 
-        val result = testingModule.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
+        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
         assertNotNull(result.fundingParticipant)
         assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
         assertNotNull(result.intraDayPositionTotals)
@@ -196,7 +196,7 @@ class UIPresenterTest {
                         .build()
         )
 
-        val result = testingModule.presentFundingParticipantSettlement(cycles, participants,
+        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants,
                 fundingParticipant, emptyList())
 
         val currentCreditSum = currentCredit.add(currentCredit)
@@ -219,7 +219,7 @@ class UIPresenterTest {
         val fundingParticipant = MockParticipants().getParticipant(false)
         val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf("NDEASESSXXX", "HANDSESS", "ESSESESS"))
 
-        val result = testingModule.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDayPositionsGross)
+        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDayPositionsGross)
         assertNotNull(result.fundingParticipant)
         assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
         assertNotNull(result.intraDayPositionTotals)
@@ -246,7 +246,7 @@ class UIPresenterTest {
                 .presentFullParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
 
-        val result = testingModule.presentParticipantSettlementDetails(cycles,
+        val result = uiPresenter.presentParticipantSettlementDetails(cycles,
                 positionDetails, participant, null, null)
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
@@ -295,7 +295,7 @@ class UIPresenterTest {
                 .presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any()))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDtoForOneCycle())
 
-        val result = testingModule.presentParticipantSettlementDetails(cycles, positionDetails, participant,
+        val result = uiPresenter.presentParticipantSettlementDetails(cycles, positionDetails, participant,
                 null, null)
         assertNull(result.currentCycle)
         assertEquals("01", result.previousCycle.id)
@@ -327,7 +327,7 @@ class UIPresenterTest {
         val participants = MockParticipants().participants
         val ioData = MockIOData().getParticipantsIOData()
 
-        val result = testingModule.presentInputOutput(participants, ioData, date)
+        val result = uiPresenter.presentInputOutput(participants, ioData, date)
 
         assertEquals("0.67", result.batchesRejected)
         assertEquals("0.67", result.filesRejected)
@@ -377,7 +377,7 @@ class UIPresenterTest {
 
     @Test
     fun `should present io Details`() {
-        val result = testingModule.presentIoDetails(
+        val result = uiPresenter.presentIoDetails(
                 MockParticipants().getParticipant(false),
                 MockIOData().getIODetails(),
                 LocalDate.now()
@@ -427,7 +427,7 @@ class UIPresenterTest {
                 ))
                 .build()
 
-        val result = testingModule.presentAlertReference(model)
+        val result = uiPresenter.presentAlertReference(model)
 
         assertEquals(2, result.alertTypes.size)
         assertEquals(2, result.priorities.size)
@@ -449,7 +449,7 @@ class UIPresenterTest {
                         .priority(priority)
                         .build()))
                 .build()
-        val result = testingModule.presentAlertStats(model)
+        val result = uiPresenter.presentAlertStats(model)
 
 
         assertEquals(1, result.items.size)
@@ -479,7 +479,7 @@ class UIPresenterTest {
                         .build()
         )
 
-        val result = testingModule.presentParticipantReferences(model)
+        val result = uiPresenter.presentParticipantReferences(model)
 
         assertEquals(aaa, result[0].name)
         assertEquals(bbb, result[1].name)
@@ -488,7 +488,7 @@ class UIPresenterTest {
 
     @Test
     fun `should get UI ClientType`() {
-        val result = testingModule.clientType
+        val result = uiPresenter.clientType
         assertEquals(ClientType.UI, result)
     }
 
@@ -506,7 +506,7 @@ class UIPresenterTest {
                         .types(emptyList())
                         .build()
         )
-        val result = testingModule.presentMessageDirectionReferences(model)
+        val result = uiPresenter.presentMessageDirectionReferences(model)
 
         assertEquals(sending, result[0].name)
         assertTrue(result[0].isDefault)
@@ -535,7 +535,7 @@ class UIPresenterTest {
                         .entityName("SEB Bank")
                         .build())
 
-        val result = testingModule.presentAlert(alerts)
+        val result = uiPresenter.presentAlert(alerts)
 
         assertThat(result).isNotNull
 

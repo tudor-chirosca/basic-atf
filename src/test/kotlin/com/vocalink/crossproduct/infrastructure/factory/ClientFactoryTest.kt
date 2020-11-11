@@ -18,23 +18,21 @@ import com.vocalink.crossproduct.shared.positions.PositionClient
 import com.vocalink.crossproduct.shared.reference.ReferencesClient
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import kotlin.test.assertTrue
 
-@ExtendWith(MockitoExtension::class)
 class ClientFactoryTest {
 
-    private var cyclesClient: CyclesClient = Mockito.mock(BPSCyclesClient::class.java)!!
-    private var participantIOClient: ParticipantIODataClient = Mockito.mock(BPSParticipantIODataClient::class.java)!!
-    private var participantClient: ParticipantClient = Mockito.mock(BPSParticipantClient::class.java)!!
-    private var positionClient: PositionClient = Mockito.mock(BPSPositionClient::class.java)!!
-    private var alertsClient: AlertsClient = Mockito.mock(BPSAlertsClient::class.java)!!
-    private var filesClient: FilesClient = Mockito.mock(BPSFilesClient::class.java)!!
-    private var referencesClient: ReferencesClient = Mockito.mock(BPSReferencesClient::class.java)!!
+    private val cyclesClient: CyclesClient = mock(BPSCyclesClient::class.java)!!
+    private val participantIOClient: ParticipantIODataClient = mock(BPSParticipantIODataClient::class.java)!!
+    private val participantClient: ParticipantClient = mock(BPSParticipantClient::class.java)!!
+    private val positionClient: PositionClient = mock(BPSPositionClient::class.java)!!
+    private val alertsClient: AlertsClient = mock(BPSAlertsClient::class.java)!!
+    private val filesClient: FilesClient = mock(BPSFilesClient::class.java)!!
+    private val referencesClient: ReferencesClient = mock(BPSReferencesClient::class.java)!!
 
-    private var testingModule: ClientFactory = ClientFactory(
+    private val clientFactory: ClientFactory = ClientFactory(
             listOf(participantClient),
             listOf(cyclesClient),
             listOf(participantIOClient),
@@ -46,111 +44,111 @@ class ClientFactoryTest {
 
     @Test
     fun `should get participant client`() {
-        Mockito.`when`(participantClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(participantClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getParticipantClient(TestConstants.CONTEXT)
+        val result = clientFactory.getParticipantClient(TestConstants.CONTEXT)
         assertTrue(result is ParticipantClient)
     }
 
     @Test
     fun `should get cycles client`() {
-        Mockito.`when`(cyclesClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(cyclesClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getCyclesClient(TestConstants.CONTEXT)
+        val result = clientFactory.getCyclesClient(TestConstants.CONTEXT)
         assertTrue(result is CyclesClient)
     }
 
     @Test
     fun `should get participant IO client`() {
-        Mockito.`when`(participantIOClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(participantIOClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getParticipantIODataClient(TestConstants.CONTEXT)
+        val result = clientFactory.getParticipantIODataClient(TestConstants.CONTEXT)
         assertTrue(result is ParticipantIODataClient)
     }
 
     @Test
     fun `should get positions client`() {
-        Mockito.`when`(positionClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(positionClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getPositionClient(TestConstants.CONTEXT)
+        val result = clientFactory.getPositionClient(TestConstants.CONTEXT)
         assertTrue(result is PositionClient)
     }
 
     @Test
     fun `should get alerts client`() {
-        Mockito.`when`(alertsClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(alertsClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getAlertsClient(TestConstants.CONTEXT)
+        val result = clientFactory.getAlertsClient(TestConstants.CONTEXT)
         assertTrue(result is AlertsClient)
     }
 
     @Test
     fun `should get reference client`() {
-        Mockito.`when`(referencesClient.context).thenReturn(TestConstants.CONTEXT)
-        testingModule.init()
+        `when`(referencesClient.context).thenReturn(TestConstants.CONTEXT)
+        clientFactory.init()
 
-        val result = testingModule.getReferencesClient(TestConstants.CONTEXT)
+        val result = clientFactory.getReferencesClient(TestConstants.CONTEXT)
         assertTrue(result is ReferencesClient)
     }
 
     @Test
     fun `should throw participant client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getParticipantClient(TestConstants.CONTEXT)
+            clientFactory.getParticipantClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw cycles client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getCyclesClient(TestConstants.CONTEXT)
+            clientFactory.getCyclesClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw participant IO client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getParticipantIODataClient(TestConstants.CONTEXT)
+            clientFactory.getParticipantIODataClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw position client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getPositionClient(TestConstants.CONTEXT)
+            clientFactory.getPositionClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw alerts client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getAlertsClient(TestConstants.CONTEXT)
+            clientFactory.getAlertsClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw flies client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getFilesClient(TestConstants.CONTEXT)
+            clientFactory.getFilesClient(TestConstants.CONTEXT)
         }
     }
 
     @Test
     fun `should throw references client not available for wrong context`() {
-        testingModule.init()
+        clientFactory.init()
         Assertions.assertThrows(ClientNotAvailableException::class.java) {
-            testingModule.getReferencesClient(TestConstants.CONTEXT)
+            clientFactory.getReferencesClient(TestConstants.CONTEXT)
         }
     }
 }

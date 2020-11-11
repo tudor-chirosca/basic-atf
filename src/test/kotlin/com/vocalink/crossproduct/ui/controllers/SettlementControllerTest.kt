@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -19,17 +19,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 open class SettlementControllerTest {
 
     @Autowired
-    private val mockMvc: MockMvc? = null
+    private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private val settlementServiceFacade: SettlementServiceFacade? = null
+    private lateinit var settlementServiceFacade: SettlementServiceFacade
 
     @Test
     @Throws(Exception::class)
     fun `should get settlement for scheme operator`() {
-        Mockito.`when`(settlementServiceFacade!!.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+        `when`(settlementServiceFacade.getSettlement(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(MockDashboardModels().getAllParticipantsSettlementDashboardDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlement")
+        mockMvc.perform(MockMvcRequestBuilders.get("/settlement")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
@@ -63,9 +63,9 @@ open class SettlementControllerTest {
     @Throws(Exception::class)
     fun `should get self funding settlement details for given participant id`() {
         val participantId = "NDEASESSXXX"
-        Mockito.`when`(settlementServiceFacade!!.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
+        `when`(settlementServiceFacade.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
+        mockMvc.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(MockMvcResultMatchers.status().isOk)

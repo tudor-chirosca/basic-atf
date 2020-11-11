@@ -13,26 +13,25 @@ import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@ExtendWith(SpringExtension::class)
 class InputOutputFacadeImplTest {
 
-    private val participantIODataRepository = Mockito.mock(ParticipantIODataRepository::class.java)!!
-    private val ioDetailsRepository = Mockito.mock(IODetailsRepository::class.java)!!
-    private val presenterFactory = Mockito.mock(PresenterFactory::class.java)!!
-    private val participantRepository = Mockito.mock(ParticipantRepository::class.java)!!
-    private val uiPresenter = Mockito.mock(UIPresenter::class.java)!!
+    private val participantIODataRepository = mock(ParticipantIODataRepository::class.java)!!
+    private val ioDetailsRepository = mock(IODetailsRepository::class.java)!!
+    private val presenterFactory = mock(PresenterFactory::class.java)!!
+    private val participantRepository = mock(ParticipantRepository::class.java)!!
+    private val uiPresenter = mock(UIPresenter::class.java)!!
 
-    private var testingModule = InputOutputFacadeImpl(
+    private val inputOutputFacadeImpl = InputOutputFacadeImpl(
             participantIODataRepository,
             ioDetailsRepository,
             participantRepository,
@@ -43,16 +42,16 @@ class InputOutputFacadeImplTest {
     fun `should get participant IO data`() {
         val mockModel = MockIOData().ioDashboardDto
         val time = LocalDate.now()
-        Mockito.`when`(participantRepository.findAll(TestConstants.CONTEXT))
+        `when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
-        Mockito.`when`(participantIODataRepository.findByTimestamp(TestConstants.CONTEXT, time))
+        `when`(participantIODataRepository.findByTimestamp(TestConstants.CONTEXT, time))
                 .thenReturn(MockIOData().getParticipantsIOData())
-        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
-        Mockito.`when`(uiPresenter.presentInputOutput(any(), any(), any()))
+        `when`(uiPresenter.presentInputOutput(any(), any(), any()))
                 .thenReturn(mockModel)
 
-        val result = testingModule.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, time)
+        val result = inputOutputFacadeImpl.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, time)
 
         assertEquals("2.00", result.batchesRejected)
         assertEquals("2.00", result.filesRejected)
@@ -106,26 +105,26 @@ class InputOutputFacadeImplTest {
         val date = LocalDate.now()
         val participantId = "NDEASESSXXX"
 
-        Mockito.`when`(participantRepository
+        `when`(participantRepository
                 .findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
 
-        Mockito.`when`(ioDetailsRepository
+        `when`(ioDetailsRepository
                 .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
                 .thenReturn(listOf(MockIOData().getIODetails()))
 
-        Mockito.`when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
 
-        Mockito.`when`(uiPresenter.presentIoDetails(any(), any(), any()))
+        `when`(uiPresenter.presentIoDetails(any(), any(), any()))
                 .thenReturn(mockModel)
 
-        val result = testingModule
+        val result = inputOutputFacadeImpl
                 .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
 
-        Mockito.verify(uiPresenter).presentIoDetails(any(), any(), any())
-        Mockito.verify(participantRepository).findByParticipantId(any(), any())
-        Mockito.verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
+        verify(uiPresenter).presentIoDetails(any(), any(), any())
+        verify(participantRepository).findByParticipantId(any(), any())
+        verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
 
         assertNotNull(result)
     }
@@ -135,10 +134,10 @@ class InputOutputFacadeImplTest {
         val participantId = "fake_id"
         val date = LocalDate.now()
 
-        Mockito.`when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.empty())
         Assertions.assertThrows(EntityNotFoundException::class.java) {
-            testingModule.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+            inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
         }
     }
 
@@ -147,16 +146,16 @@ class InputOutputFacadeImplTest {
         val participantId = "NDEASESSXXX"
         val date = LocalDate.now()
 
-        Mockito.`when`(participantRepository
+        `when`(participantRepository
                 .findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
 
-        Mockito.`when`(ioDetailsRepository
+        `when`(ioDetailsRepository
                 .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
                 .thenReturn(emptyList())
 
         Assertions.assertThrows(EntityNotFoundException::class.java) {
-            testingModule.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+            inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
         }
     }
 }

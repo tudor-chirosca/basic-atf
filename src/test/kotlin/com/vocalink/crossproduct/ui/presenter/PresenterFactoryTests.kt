@@ -3,43 +3,41 @@ package com.vocalink.crossproduct.ui.presenter
 import com.vocalink.crossproduct.infrastructure.exception.PresenterNotAvailableForClientTypeException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import kotlin.test.assertTrue
 
-@ExtendWith(SpringExtension::class)
 class PresenterFactoryTests {
 
-    private var presenter: Presenter = Mockito.mock(UIPresenter::class.java)!!
+    private val presenter: Presenter = mock(UIPresenter::class.java)!!
 
-    private var testingModule = PresenterFactory(
+    private val presenterFactory = PresenterFactory(
             listOf(presenter)
     )
 
     @Test
     fun `should get UI presenter`() {
-        Mockito.`when`(presenter.clientType).thenReturn(ClientType.UI)
-        testingModule.init()
+        `when`(presenter.clientType).thenReturn(ClientType.UI)
+        presenterFactory.init()
 
-        val result = testingModule.getPresenter(ClientType.UI)
+        val result = presenterFactory.getPresenter(ClientType.UI)
         assertTrue(result is UIPresenter)
     }
 
     @Test
     fun `should get SYSTEM presenter`() {
-        Mockito.`when`(presenter.clientType).thenReturn(ClientType.SYSTEM)
-        testingModule.init()
+        `when`(presenter.clientType).thenReturn(ClientType.SYSTEM)
+        presenterFactory.init()
 
-        val result = testingModule.getPresenter(ClientType.SYSTEM)
+        val result = presenterFactory.getPresenter(ClientType.SYSTEM)
         assertTrue(result is UIPresenter)
     }
 
     @Test
     fun `should throw Presenter Not Available For Client Exception`() {
-        testingModule.init()
+        presenterFactory.init()
         Assertions.assertThrows(PresenterNotAvailableForClientTypeException::class.java) {
-            testingModule.getPresenter(ClientType.UI)
+            presenterFactory.getPresenter(ClientType.UI)
         }
     }
 }

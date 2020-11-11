@@ -6,27 +6,29 @@ import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class ReferencesAdapterTest {
 
-    private val clientFactory = Mockito.mock(ClientFactory::class.java)!!
-    private val client = Mockito.mock(BPSReferencesClient::class.java)!!
-    private val testingModule = ReferencesAdapter(clientFactory)
+    private val clientFactory = mock(ClientFactory::class.java)!!
+    private val client = mock(BPSReferencesClient::class.java)!!
+    private val referencesAdapter = ReferencesAdapter(clientFactory)
 
     @Test
     fun `should find alert references`() {
         val messageDirectionReferences = listOf(CPMessageDirectionReference.builder().build())
 
-        Mockito.`when`(clientFactory.getReferencesClient(any()))
+        `when`(clientFactory.getReferencesClient(any()))
                 .thenReturn(client)
-        Mockito.`when`(client.findMessageDirectionReferences())
+        `when`(client.findMessageDirectionReferences())
                 .thenReturn(messageDirectionReferences)
 
-        testingModule.findMessageDirectionReferences(TestConstants.CONTEXT)
+        referencesAdapter.findMessageDirectionReferences(TestConstants.CONTEXT)
 
-        Mockito.verify(clientFactory, atLeastOnce()).getReferencesClient(TestConstants.CONTEXT)
-        Mockito.verify(client, atLeastOnce()).findMessageDirectionReferences()
+        verify(clientFactory, atLeastOnce()).getReferencesClient(TestConstants.CONTEXT)
+        verify(client, atLeastOnce()).findMessageDirectionReferences()
     }
 }

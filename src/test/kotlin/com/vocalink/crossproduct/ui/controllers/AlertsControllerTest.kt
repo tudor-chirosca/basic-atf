@@ -9,7 +9,8 @@ import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -46,14 +47,14 @@ class AlertsControllerTest {
     @Throws(Exception::class)
     fun `should get Alert References`() {
         val alertReferenceDataDto = AlertReferenceDataDto.builder().build()
-        Mockito.`when`(facade.getAlertsReference(TestConstants.CONTEXT, ClientType.UI))
+        `when`(facade.getAlertsReference(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(alertReferenceDataDto)
         mockMvc.perform(get("/reference/alerts")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
 
-        Mockito.verify(facade).getAlertsReference(any(), any())
+        verify(facade).getAlertsReference(any(), any())
     }
 
     @Test
@@ -61,14 +62,14 @@ class AlertsControllerTest {
     fun `should get Alert Stats`() {
         val alertStatsDto = AlertStatsDto.builder().build()
 
-        Mockito.`when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
+        `when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(alertStatsDto)
         mockMvc.perform(get("/alerts/stats")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
 
-        Mockito.verify(facade).getAlertStats(any(), any())
+        verify(facade).getAlertStats(any(), any())
     }
 
     @Test
@@ -76,7 +77,7 @@ class AlertsControllerTest {
         val alertDataDto = AlertDataDto()
         val alertFilterRequest = AlertFilterRequest()
 
-        Mockito.`when`(facade.getAlerts(TestConstants.CONTEXT, ClientType.UI, alertFilterRequest))
+        `when`(facade.getAlerts(TestConstants.CONTEXT, ClientType.UI, alertFilterRequest))
                 .thenReturn(alertDataDto)
 
         mockMvc.perform(post("/alerts")
@@ -86,6 +87,6 @@ class AlertsControllerTest {
                 .content(VALID_ALERT_REQUEST))
                 .andExpect(status().isOk)
 
-        Mockito.verify(facade).getAlerts(any(), any(), any())
+        verify(facade).getAlerts(any(), any(), any())
     }
 }

@@ -6,7 +6,8 @@ import com.vocalink.crossproduct.ui.facade.InputOutputFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -19,17 +20,17 @@ import java.time.LocalDate
 class InputOutputControllerTest {
 
     @Autowired
-    private val mockMvc: MockMvc? = null
+    private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private val inputOutputFacade: InputOutputFacade? = null
+    private lateinit var inputOutputFacade: InputOutputFacade
 
     @Test
     @Throws(Exception::class)
     fun `should get IO data`() {
-        Mockito.`when`(inputOutputFacade!!.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, LocalDate.now()))
+        `when`(inputOutputFacade.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, LocalDate.now()))
                 .thenReturn(MockIOData().ioDashboardDto)
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/io")
+        mockMvc.perform(MockMvcRequestBuilders.get("/io")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(MockMvcResultMatchers.status().isOk)
@@ -78,14 +79,14 @@ class InputOutputControllerTest {
     @Throws(Exception::class)
     fun `should get IO Details`() {
         val participantId = "NDEASESSXXX"
-        Mockito.`when`(inputOutputFacade!!
+        `when`(inputOutputFacade
                 .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, LocalDate.now(), participantId))
                 .thenReturn(MockIOData().getIODetailsDto())
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/io-details/" + participantId)
+        mockMvc.perform(MockMvcRequestBuilders.get("/io-details/" + participantId)
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(MockMvcResultMatchers.status().isOk)
 
-        Mockito.verify(inputOutputFacade).getInputOutputDetails(any(), any(), any(), any())
+        verify(inputOutputFacade).getInputOutputDetails(any(), any(), any(), any())
     }
 }

@@ -8,8 +8,6 @@ import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDateTime
@@ -17,10 +15,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@ExtendWith(SpringExtension::class)
 class SelfFundingSettlementDetailsMapperTests {
 
-    private val testingModule = SelfFundingSettlementDetailsMapper()
+    private val selfFundingSettlementDetailsMapper = SelfFundingSettlementDetailsMapper()
 
     @Test
     fun `should get Self Funding Settlement Details DTO for 2 cycles`() {
@@ -28,7 +25,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(false)
 
-        val result = testingModule.presentFullParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
+        val result = selfFundingSettlementDetailsMapper.presentFullParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
 
         assertEquals("02", result.currentCycle.id)
         assertEquals(CycleStatus.OPEN, result.currentCycle.status)
@@ -67,7 +64,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val fundingParticipant = MockParticipants().fundingParticipant
         val intraDayPositionGross = MockPositions().getIntraDaysFor(listOf("NDEASESSXXX"))
 
-        val result = testingModule.presentFullParticipantSettlementDetails(cycle, positions, participant, fundingParticipant, intraDayPositionGross[0])
+        val result = selfFundingSettlementDetailsMapper.presentFullParticipantSettlementDetails(cycle, positions, participant, fundingParticipant, intraDayPositionGross[0])
 
         assertEquals("DABASESX", result.settlementBank.id)
         assertEquals("Danske Bank AG", result.settlementBank.name)
@@ -117,7 +114,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val positionDetails = MockPositions().positionDetails
         val participant = MockParticipants().getParticipant(true)
 
-        val result = testingModule.presentOneCycleParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
+        val result = selfFundingSettlementDetailsMapper.presentOneCycleParticipantSettlementDetails(cycles, positionDetails, participant, null, null)
         assertNull(result.currentCycle)
         assertEquals("01", result.previousCycle.id)
         assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
@@ -154,7 +151,7 @@ class SelfFundingSettlementDetailsMapperTests {
         val fundingParticipant = MockParticipants().fundingParticipant
         val intraDayPositionGross = MockPositions().getIntraDaysFor(listOf("NDEASESSXXX"))
 
-        val result = testingModule.presentOneCycleParticipantSettlementDetails(cycles, positionDetails, participant, fundingParticipant, intraDayPositionGross[0])
+        val result = selfFundingSettlementDetailsMapper.presentOneCycleParticipantSettlementDetails(cycles, positionDetails, participant, fundingParticipant, intraDayPositionGross[0])
 
         assertEquals("DABASESX", result.settlementBank.id)
         assertEquals("Danske Bank AG", result.settlementBank.name)
