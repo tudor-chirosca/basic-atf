@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
+import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.dto.alert.AlertDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertDataDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
@@ -18,14 +18,12 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
 
 @WebMvcTest(AlertsController::class)
-class AlertsControllerTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var facade: AlertsServiceFacade
@@ -33,25 +31,43 @@ class AlertsControllerTest {
     private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
             MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
-    companion object {
-        const val VALID_ALERT_REQUEST: String = """ 
+    private companion object {
+        const val VALID_REQUEST = "{}"
+        const val VALID_PARTIAL_ALERT_REQUEST: String = """ 
         {
-            "offset": 0,
-            "limit": 20,
-            "sort": "dateRaised",
-            "order": "DESC"
+          "offset": 0,
+          "limit": 20,
+          "priorities": [ "high"
+          ],
+          "dateFrom": "2020-12-23",
+          "dateTo": "2020-12-28",
+          "alertTypes": [
+          ],
+          "entities": [
+          ],
+          "alertId": "142"
         }"""
+
+        const val CONTEXT_HEADER = "context"
+        const val CLIENT_TYPE_HEADER = "client-type"
+
+        const val VALID_RESPONSE = """{
+            "totalResults": 0,
+            "items": []
+        }"""
+
+
     }
 
     @Test
     @Throws(Exception::class)
     fun `should get Alert References`() {
         val alertReferenceDataDto = AlertReferenceDataDto.builder().build()
-        `when`(facade.getAlertsReference(TestConstants.CONTEXT, ClientType.UI))
+        `when`(facade.getAlertsReference(CONTEXT, ClientType.UI))
                 .thenReturn(alertReferenceDataDto)
         mockMvc.perform(get("/reference/alerts")
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE))
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
 
         verify(facade).getAlertsReference(any(), any())
@@ -62,31 +78,45 @@ class AlertsControllerTest {
     fun `should get Alert Stats`() {
         val alertStatsDto = AlertStatsDto.builder().build()
 
-        `when`(facade.getAlertStats(TestConstants.CONTEXT, ClientType.UI))
+        `when`(facade.getAlertStats(CONTEXT, ClientType.UI))
                 .thenReturn(alertStatsDto)
         mockMvc.perform(get("/alerts/stats")
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE))
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
 
         verify(facade).getAlertStats(any(), any())
     }
 
     @Test
-    fun `should get Alerts`() {
-        val alertDataDto = AlertDataDto()
-        val alertFilterRequest = AlertFilterRequest()
-
-        `when`(facade.getAlerts(TestConstants.CONTEXT, ClientType.UI, alertFilterRequest))
-                .thenReturn(alertDataDto)
+    fun `should return 200 if no criteria specified in request`() {
+        `when`(facade.getAlerts(any(), any(), any())).thenReturn(AlertDataDto(0, null))
 
         mockMvc.perform(post("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE)
-                .content(VALID_ALERT_REQUEST))
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .content(VALID_REQUEST))
                 .andExpect(status().isOk)
+                .andExpect(content().json(VALID_RESPONSE))
+    }
 
-        verify(facade).getAlerts(any(), any(), any())
+    @Test
+    fun `should return 200 if some criteria specified in request`() {
+        mockMvc.perform(post("/alerts")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .content(VALID_PARTIAL_ALERT_REQUEST))
+                .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should fail with 400 when request body missing`() {
+        mockMvc.perform(post("/alerts")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().is4xxClientError)
     }
 }

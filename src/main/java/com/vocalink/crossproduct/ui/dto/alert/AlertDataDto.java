@@ -1,19 +1,21 @@
 package com.vocalink.crossproduct.ui.dto.alert;
 
+import static java.util.Collections.emptyList;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class AlertDataDto {
 
-  private Integer totalResults;
-  private List<AlertDto> items;
+  private final int totalResults;
+  private final List<AlertDto> items;
+
+  @JsonCreator
+  public AlertDataDto(int totalResults,
+      List<AlertDto> items) {
+    this.totalResults = totalResults;
+    this.items = items == null ? emptyList() : items;
+  }
 }

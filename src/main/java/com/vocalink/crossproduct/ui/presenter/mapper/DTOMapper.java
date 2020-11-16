@@ -13,11 +13,11 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.shared.alert.AlertRequest;
+import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -59,7 +59,7 @@ public interface DTOMapper {
 
   ParticipantPositionDto toDto(ParticipantPosition participant);
 
-  AlertRequest toDto(AlertFilterRequest alertFilterRequest);
+  CPAlertRequest toDto(AlertSearchRequest searchRequest);
 
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);
@@ -146,9 +146,9 @@ public interface DTOMapper {
 
   @Named("countCurrentPositionTotals")
   default PositionDetailsTotalsDto countCurrentPositionTotals(List<TotalPositionDto> positions) {
-      return countPositionTotals(positions.stream()
-          .map(TotalPositionDto::getCurrentPosition)
-          .collect(toList()));
+    return countPositionTotals(positions.stream()
+        .map(TotalPositionDto::getCurrentPosition)
+        .collect(toList()));
   }
 
   @Named("countPreviousPositionTotals")

@@ -10,7 +10,6 @@ import org.mockito.Mockito
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
@@ -29,7 +28,7 @@ open class AcceptanceTest {
     lateinit var webTestClient: WebTestClient
 
     @BeforeEach
-    fun setUp(context: ApplicationContext) {
+    fun setUp() {
         webTestClient = WebTestClient.bindToServer().baseUrl(rootUrl).build()
     }
 

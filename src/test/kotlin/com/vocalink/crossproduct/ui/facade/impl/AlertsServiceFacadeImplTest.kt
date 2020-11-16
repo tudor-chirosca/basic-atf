@@ -6,10 +6,9 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.repository.AlertsRepository
-import com.vocalink.crossproduct.shared.alert.AlertRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertFilterRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -21,7 +20,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.util.Optional
+import java.util.*
 import kotlin.test.assertNotNull
 
 class AlertsServiceFacadeImplTest {
@@ -85,16 +84,15 @@ class AlertsServiceFacadeImplTest {
 
     @Test
     fun `should get alerts`() {
-        val alertFilterRequest = AlertFilterRequest()
-        val alertRequest = AlertRequest()
+        val searchRequest = AlertSearchRequest(null,null,null,null,null,null,null,null,null,null)
         val alerts = listOf(Alert())
         val alertsDto = listOf(AlertDto())
 
-        `when`(alertsRepository.findAlerts(TestConstants.CONTEXT, alertRequest)).thenReturn(alerts)
+        `when`(alertsRepository.findAlerts(TestConstants.CONTEXT, searchRequest)).thenReturn(alerts)
         `when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)
         `when`(uiPresenter.presentAlert(alerts)).thenReturn(alertsDto)
 
-        val result = alertsServiceFacadeImpl.getAlerts(TestConstants.CONTEXT, ClientType.UI, alertFilterRequest)
+        val result = alertsServiceFacadeImpl.getAlerts(TestConstants.CONTEXT, ClientType.UI, searchRequest)
 
         verify(alertsRepository, atLeastOnce()).findAlerts(any(), any())
         verify(presenterFactory, atLeastOnce()).getPresenter(any())

@@ -26,7 +26,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.math.BigInteger
-import java.util.Optional
+import java.util.*
 import java.util.stream.Collectors
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -186,7 +186,6 @@ open class SettlementServiceFacadeImplTest {
 
     @Test
     fun `should throw error on cycles less than 2`() {
-        val participantId = "HANDSESS"
         `when`(participantRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockParticipants().participants)
         `when`(cycleRepository.findAll(TestConstants.CONTEXT))
