@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import org.mapstruct.Context;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -55,6 +56,14 @@ public interface DTOMapper {
 
   AlertStatsDto toDto(AlertStats alertStats);
 
+  @Mapping(target = "items", source = "alert.items", qualifiedByName = "toAlertDtoList")
+  PageDto toAlertPageDto(Page<Alert> alert);
+
+  @Named("toAlertDtoList")
+  @IterableMapping(qualifiedByName = "toDto")
+  List<AlertDto> toAlertDtoList(List<Alert> alerts);
+
+  @Named("toDto")
   @Mapping(target = "entity", source = "entityName")
   AlertDto toDto(Alert alert);
 

@@ -17,7 +17,6 @@ import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -89,7 +88,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<AlertDto> presentAlert(List<Alert> alerts) {
+  public PageDto presentAlert(Page<Alert> alerts) {
     throw new RuntimeException("System API not implemented yet");
   }
 

@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.adapter
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.alert.BPSAlertsClient
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
+import com.vocalink.crossproduct.shared.CPPage
 import com.vocalink.crossproduct.shared.alert.CPAlert
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData
 import com.vocalink.crossproduct.shared.alert.CPAlertStats
@@ -52,7 +53,7 @@ class AlertsAdapterTest {
 
     @Test
     fun `should invoke get alerts client`() {
-        val alerts = listOf(CPAlert.builder().build())
+        val alerts = CPPage<CPAlert>(2, listOf(CPAlert.builder().build()))
 
         `when`(clientFactory.getAlertsClient(TestConstants.CONTEXT)).thenReturn(client)
         `when`(client.findAlerts(any())).thenReturn(alerts)

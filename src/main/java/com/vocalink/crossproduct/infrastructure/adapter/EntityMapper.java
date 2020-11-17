@@ -52,7 +52,7 @@ public interface EntityMapper {
 
   AlertReferenceData toEntity(CPAlertReferenceData alertReferenceData);
 
-  Alert toEntity(CPAlert input);
+  Page<Alert> toEntityAlert(CPPage<CPAlert> input);
 
   AlertStats toEntity(CPAlertStats alertReferenceData);
 

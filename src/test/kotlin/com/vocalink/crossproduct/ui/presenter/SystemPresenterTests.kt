@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
@@ -74,7 +76,7 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present alerts for System`() {
-        val alerts = listOf(Alert.builder().build())
+        val alerts = Page<Alert>(0, null)
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentAlert(alerts)
         }

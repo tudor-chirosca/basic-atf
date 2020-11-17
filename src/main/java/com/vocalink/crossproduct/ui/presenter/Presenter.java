@@ -17,7 +17,6 @@ import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -57,7 +56,7 @@ public interface Presenter {
 
   AlertStatsDto presentAlertStats(AlertStats alertStats);
 
-  List<AlertDto> presentAlert(List<Alert> alerts);
+  PageDto presentAlert(Page<Alert> alerts);
 
   List<ParticipantReferenceDto> presentParticipantReferences(List<Participant> participants);
 

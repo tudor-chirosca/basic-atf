@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -9,9 +10,7 @@ import com.vocalink.crossproduct.shared.alert.AlertsClient;
 import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -33,16 +32,14 @@ public class AlertsAdapter implements AlertsRepository {
   }
 
   @Override
-  public List<Alert> findAlerts(String context, AlertSearchRequest searchRequest) {
+  public Page<Alert> findAlerts(String context, AlertSearchRequest searchRequest) {
     log.info("Fetching alerts from context {} ...", context);
 
     final CPAlertRequest request = DTOMapper.MAPPER.toDto(searchRequest);
 
     AlertsClient client = clientFactory.getAlertsClient(context);
 
-    return client.findAlerts(request).stream()
-        .map(EntityMapper.MAPPER::toEntity)
-        .collect(Collectors.toList());
+    return EntityMapper.MAPPER.toEntityAlert(client.findAlerts(request));
   }
 
   @Override

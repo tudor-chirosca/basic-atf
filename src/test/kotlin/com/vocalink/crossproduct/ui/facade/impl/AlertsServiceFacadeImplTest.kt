@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.repository.AlertsRepository
+import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
@@ -20,7 +22,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.util.*
+import java.util.Optional
 import kotlin.test.assertNotNull
 
 class AlertsServiceFacadeImplTest {
@@ -85,8 +87,8 @@ class AlertsServiceFacadeImplTest {
     @Test
     fun `should get alerts`() {
         val searchRequest = AlertSearchRequest(null,null,null,null,null,null,null,null,null,null)
-        val alerts = listOf(Alert())
-        val alertsDto = listOf(AlertDto())
+        val alerts = Page<Alert>(2, listOf())
+        val alertsDto = PageDto(2, listOf<AlertDto>())
 
         `when`(alertsRepository.findAlerts(TestConstants.CONTEXT, searchRequest)).thenReturn(alerts)
         `when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)

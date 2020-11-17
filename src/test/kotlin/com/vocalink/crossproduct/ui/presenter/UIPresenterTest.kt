@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter
 
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
@@ -16,6 +17,7 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -535,14 +537,16 @@ class UIPresenterTest {
                         .entityName("SEB Bank")
                         .build())
 
-        val result = uiPresenter.presentAlert(alerts)
+        val alertsResponse = Page<Alert>(2, alerts)
+
+        val result = uiPresenter.presentAlert(alertsResponse)
 
         assertThat(result).isNotNull
 
-        assertThat(result[0].alertId).isEqualTo(3141)
-        assertThat(result[0].entity).isEqualTo("Nordea")
+        assertThat((result.items.elementAt(0) as AlertDto).alertId).isEqualTo(3141)
+        assertThat((result.items.elementAt(0) as AlertDto).entity).isEqualTo("Nordea")
 
-        assertThat(result[1].alertId).isEqualTo(3142)
-        assertThat(result[1].entity).isEqualTo("SEB Bank")
+        assertThat((result.items.elementAt(1) as AlertDto).alertId).isEqualTo(3142)
+        assertThat((result.items.elementAt(1) as AlertDto).entity).isEqualTo("SEB Bank")
     }
 }

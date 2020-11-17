@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
-import com.vocalink.crossproduct.ui.dto.alert.AlertDataDto
+import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
@@ -90,7 +90,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        `when`(facade.getAlerts(any(), any(), any())).thenReturn(AlertDataDto(0, null))
+        `when`(facade.getAlerts(any(), any(), any())).thenReturn(PageDto(0, null))
 
         mockMvc.perform(post("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)

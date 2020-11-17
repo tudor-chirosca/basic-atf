@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
@@ -12,6 +13,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
@@ -24,7 +26,6 @@ import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 
 class DTOMapperTest {
 
@@ -533,14 +534,17 @@ class DTOMapperTest {
                 .entityName("Nordea")
                 .build()
 
-        val result = MAPPER.toDto(alert)
+        val alerts = Page<Alert>(1, listOf(alert))
+
+        val result = MAPPER.toAlertPageDto(alerts)
 
         assertThat(result).isNotNull
 
-        assertThat(result.alertId).isEqualTo(3141)
-        assertThat(result.priority).isEqualTo("high")
-        assertThat(result.dateRaised).isEqualTo(dateRaised)
-        assertThat(result.type).isEqualTo("rejected-central-bank")
-        assertThat(result.entity).isEqualTo("Nordea")
+        assertThat(result.totalResults).isEqualTo(1)
+        assertThat((result.items.elementAt(0) as AlertDto).alertId).isEqualTo(3141)
+        assertThat((result.items.elementAt(0) as AlertDto).priority).isEqualTo("high")
+        assertThat((result.items.elementAt(0) as AlertDto).dateRaised).isEqualTo(dateRaised)
+        assertThat((result.items.elementAt(0) as AlertDto).type).isEqualTo("rejected-central-bank")
+        assertThat((result.items.elementAt(0) as AlertDto).entity).isEqualTo("Nordea")
     }
 }
