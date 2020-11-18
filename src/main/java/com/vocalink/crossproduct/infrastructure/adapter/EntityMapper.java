@@ -1,9 +1,11 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
@@ -11,10 +13,13 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
+import com.vocalink.crossproduct.shared.files.CPFileEnquiry;
+import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
@@ -22,6 +27,7 @@ import com.vocalink.crossproduct.shared.participant.CPParticipant;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -52,4 +58,7 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
 
+  Page<FileEnquiry> toEntity(CPPage<CPFileEnquiry> files);
+
+  CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
 }

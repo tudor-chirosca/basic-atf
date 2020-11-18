@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
+import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,25 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorDescription> handleHttpsConversionException(
+      final HttpServletRequest request,
+      final Exception exception) {
+
+    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
+
+    ErrorDescription error = ErrorDescription.builder()
+        .timestamp(LocalDateTime.now(clock).toString())
+        .errorCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
+        .httpStatus(HttpStatus.BAD_REQUEST.value())
+        .message(exception.getMessage())
+        .additionalInfo("")
+        .path(request.getRequestURI())
+        .build();
+
+    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(InvalidRequestParameterException.class)
+  public ResponseEntity<ErrorDescription> handleInvalidRequestParameterException(
       final HttpServletRequest request,
       final Exception exception) {
 

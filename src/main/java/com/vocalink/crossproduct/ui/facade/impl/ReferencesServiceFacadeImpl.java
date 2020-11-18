@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.files.FileReference;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.repository.FileRepository;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
@@ -14,12 +14,10 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-@Slf4j
 public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   private final ParticipantRepository participantRepository;
@@ -47,7 +45,6 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   @Override
   public List<FileStatusesDto> getFileReferences(String context, ClientType clientType) {
-    log.info("Fetching all file references from: {}", context);
 
     final List<FileReference> fileReferences = fileRepository.findFileReferences(context);
 

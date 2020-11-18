@@ -2,10 +2,13 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
+
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
@@ -14,6 +17,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
@@ -184,10 +188,15 @@ public class UIPresenter implements Presenter {
     List<MessageDirectionReferenceDto> messagesDto = messageDirectionReferences.stream()
         .map(MAPPER::toDto)
         .collect(toList());
-    return setDefault(messagesDto);
+    return setDefaultDirection(messagesDto);
   }
 
-  private List<MessageDirectionReferenceDto> setDefault(
+  @Override
+  public PageDto presentEnquiries(Page<FileEnquiry> enquiries) {
+    return MAPPER.toDto(enquiries);
+  }
+
+  private List<MessageDirectionReferenceDto> setDefaultDirection(
       List<MessageDirectionReferenceDto> messages) {
     return messages.stream()
         .map(message -> {
