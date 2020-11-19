@@ -40,7 +40,6 @@ import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -89,19 +88,19 @@ public interface DTOMapper {
   IntraDayPositionGrossDto toDto(IntraDayPositionGross intraDayPositionGross);
 
   @Named("countCredit")
-  default BigInteger countCredit(PositionDetailsDto details) {
+  default BigDecimal countCredit(PositionDetailsDto details) {
     return details.getCustomerCreditTransfer().getCredit()
         .add(details.getPaymentReturn().getCredit());
   }
 
   @Named("countDebit")
-  default BigInteger countDebit(PositionDetailsDto details) {
+  default BigDecimal countDebit(PositionDetailsDto details) {
     return details.getCustomerCreditTransfer().getDebit()
         .add(details.getPaymentReturn().getDebit());
   }
 
   @Named("countNetPosition")
-  default BigInteger countNetPosition(PositionDetailsDto details) {
+  default BigDecimal countNetPosition(PositionDetailsDto details) {
     return details.getCustomerCreditTransfer().getNetPosition()
         .add(details.getPaymentReturn().getNetPosition());
   }
@@ -176,11 +175,11 @@ public interface DTOMapper {
         .totalCredit(positions.stream()
             .map(ParticipantPositionDto::getCredit)
             .filter(Objects::nonNull)
-            .reduce(BigInteger::add).orElse(BigInteger.ZERO))
+            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .totalDebit(positions.stream()
             .map(ParticipantPositionDto::getDebit)
             .filter(Objects::nonNull)
-            .reduce(BigInteger::add).orElse(BigInteger.ZERO))
+            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .build();
   }
 

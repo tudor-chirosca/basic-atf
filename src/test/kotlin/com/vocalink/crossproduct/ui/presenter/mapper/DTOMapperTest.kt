@@ -66,9 +66,9 @@ class DTOMapperTest {
         val participantStatus = ParticipantStatus.ACTIVE
         val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
 
-        val credit = BigInteger.TEN
-        val debit = BigInteger.TEN
-        val netPosition = BigInteger.TEN
+        val credit = BigDecimal.TEN
+        val debit = BigDecimal.TEN
+        val netPosition = BigDecimal.TEN
 
         val totalPositions: List<ParticipantPosition> = listOf(
                 ParticipantPosition.builder()
@@ -139,9 +139,9 @@ class DTOMapperTest {
         val participantStatus = ParticipantStatus.ACTIVE
         val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
 
-        val credit = BigInteger.TEN
-        val debit = BigInteger.TEN
-        val netPosition = BigInteger.TEN
+        val credit = BigDecimal.TEN
+        val debit = BigDecimal.TEN
+        val netPosition = BigDecimal.TEN
 
         val totalPositions: List<ParticipantPosition> = listOf(
                 ParticipantPosition.builder()
@@ -227,9 +227,9 @@ class DTOMapperTest {
         val participantStatus = ParticipantStatus.ACTIVE
         val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
 
-        val credit = BigInteger.TEN
-        val debit = BigInteger.TEN
-        val netPosition = BigInteger.TEN
+        val credit = BigDecimal.TEN
+        val debit = BigDecimal.TEN
+        val netPosition = BigDecimal.TEN
 
         val participant = Participant.builder()
                 .id(participantId)
@@ -323,9 +323,9 @@ class DTOMapperTest {
         val participantStatus = ParticipantStatus.ACTIVE
         val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
 
-        val credit = BigInteger.TEN
-        val debit = BigInteger.TEN
-        val netPosition = BigInteger.TEN
+        val credit = BigDecimal.TEN
+        val debit = BigDecimal.TEN
+        val netPosition = BigDecimal.TEN
 
         val participant1 = Participant.builder()
                 .id(participantId)

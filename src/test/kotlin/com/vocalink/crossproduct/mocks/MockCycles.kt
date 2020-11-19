@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDateTime
 
@@ -48,9 +49,9 @@ class MockCycles {
                             MockPositions().getParticipantPosition(true),
                             ParticipantPosition.builder()
                                     .participantId("ESSESESS")
-                                    .credit(BigInteger.ZERO)
-                                    .debit(BigInteger.ONE)
-                                    .netPosition(BigInteger.ONE)
+                                    .credit(BigDecimal.ZERO)
+                                    .debit(BigDecimal.ONE)
+                                    .netPosition(BigDecimal.ONE)
                                     .build()
                             ))
                     .build(),
@@ -64,9 +65,9 @@ class MockCycles {
                             MockPositions().getParticipantPosition(false),
                             ParticipantPosition.builder()
                                     .participantId("ESSESESS")
-                                    .credit(BigInteger.ZERO)
-                                    .debit(BigInteger.ONE)
-                                    .netPosition(BigInteger.ONE)
+                                    .credit(BigDecimal.ZERO)
+                                    .debit(BigDecimal.ONE)
+                                    .netPosition(BigDecimal.ONE)
                                     .build()
                     ))
                     .build())

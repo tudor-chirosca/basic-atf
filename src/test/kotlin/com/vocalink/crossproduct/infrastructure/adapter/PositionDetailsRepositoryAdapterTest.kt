@@ -8,7 +8,7 @@ import com.vocalink.crossproduct.mocks.MockPositions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import java.math.BigInteger
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -31,20 +31,20 @@ class PositionDetailsRepositoryAdapterTest {
         assertEquals(2, result.size)
         assertTrue(result[0] is PositionDetails)
 
-        assertEquals(BigInteger.ONE, result[0].customerCreditTransfer.credit)
-        assertEquals(BigInteger.TEN, result[0].customerCreditTransfer.debit)
-        assertEquals(BigInteger.valueOf(9), result[0].customerCreditTransfer.netPosition)
+        assertEquals(BigDecimal.ONE, result[0].customerCreditTransfer.credit)
+        assertEquals(BigDecimal.TEN, result[0].customerCreditTransfer.debit)
+        assertEquals(BigDecimal.valueOf(9), result[0].customerCreditTransfer.netPosition)
 
-        assertEquals(BigInteger.TEN, result[0].paymentReturn.credit)
-        assertEquals(BigInteger.TEN, result[0].paymentReturn.debit)
-        assertEquals(BigInteger.ZERO, result[0].paymentReturn.netPosition)
+        assertEquals(BigDecimal.TEN, result[0].paymentReturn.credit)
+        assertEquals(BigDecimal.TEN, result[0].paymentReturn.debit)
+        assertEquals(BigDecimal.ZERO, result[0].paymentReturn.netPosition)
 
-        assertEquals(BigInteger.TEN, result[1].customerCreditTransfer.credit)
-        assertEquals(BigInteger.TEN, result[1].customerCreditTransfer.debit)
-        assertEquals(BigInteger.ZERO, result[1].customerCreditTransfer.netPosition)
+        assertEquals(BigDecimal.TEN, result[1].customerCreditTransfer.credit)
+        assertEquals(BigDecimal.TEN, result[1].customerCreditTransfer.debit)
+        assertEquals(BigDecimal.ZERO, result[1].customerCreditTransfer.netPosition)
 
-        assertEquals(BigInteger.ONE, result[1].paymentReturn.credit)
-        assertEquals(BigInteger.TEN, result[1].paymentReturn.debit)
-        assertEquals(BigInteger.valueOf(9), result[1].paymentReturn.netPosition)
+        assertEquals(BigDecimal.ONE, result[1].paymentReturn.credit)
+        assertEquals(BigDecimal.TEN, result[1].paymentReturn.debit)
+        assertEquals(BigDecimal.valueOf(9), result[1].paymentReturn.netPosition)
     }
 }

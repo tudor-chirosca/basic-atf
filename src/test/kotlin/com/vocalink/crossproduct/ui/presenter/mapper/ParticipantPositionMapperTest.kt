@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.math.BigInteger
 
 class ParticipantPositionMapperTest {
@@ -14,9 +15,9 @@ class ParticipantPositionMapperTest {
 
         val participantPosition = ParticipantPosition.builder()
                 .participantId(id)
-                .credit(BigInteger.TEN)
-                .debit(BigInteger.TEN)
-                .netPosition(BigInteger.ZERO)
+                .credit(BigDecimal.TEN)
+                .debit(BigDecimal.TEN)
+                .netPosition(BigDecimal.ZERO)
                 .build()
 
         val dto = MAPPER.toDto(participantPosition)

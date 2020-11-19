@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDateTime
 
@@ -95,9 +96,9 @@ class GetSettlementTest : AcceptanceTest() {
                                         .map { participant: Participant ->
                                             ParticipantPosition.builder()
                                                     .participantId(participant.id)
-                                                    .credit(BigInteger.valueOf(creditCurrentCycle))
-                                                    .debit(BigInteger.valueOf(debitCurrentCycle))
-                                                    .netPosition(BigInteger.valueOf(creditCurrentCycle - debitCurrentCycle))
+                                                    .credit(BigDecimal.valueOf(creditCurrentCycle))
+                                                    .debit(BigDecimal.valueOf(debitCurrentCycle))
+                                                    .netPosition(BigDecimal.valueOf(creditCurrentCycle - debitCurrentCycle))
                                                     .build()
                                         }.toList()
                         )
@@ -112,9 +113,9 @@ class GetSettlementTest : AcceptanceTest() {
                                         .map { participant: Participant ->
                                             ParticipantPosition.builder()
                                                     .participantId(participant.id)
-                                                    .credit(BigInteger.valueOf(creditPreviousCycle))
-                                                    .debit(BigInteger.valueOf(debitPreviousCycle))
-                                                    .netPosition(BigInteger.valueOf(creditPreviousCycle - debitPreviousCycle))
+                                                    .credit(BigDecimal.valueOf(creditPreviousCycle))
+                                                    .debit(BigDecimal.valueOf(debitPreviousCycle))
+                                                    .netPosition(BigDecimal.valueOf(creditPreviousCycle - debitPreviousCycle))
                                                     .build()
                                         }.toList()
                         ).build()
