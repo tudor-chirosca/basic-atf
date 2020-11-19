@@ -2,13 +2,12 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
-
-
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -26,6 +25,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -204,6 +204,11 @@ public class UIPresenter implements Presenter {
     return cycles.stream()
         .map(MAPPER::toDto)
         .collect(toList());
+  }
+
+  @Override
+  public FileDetailsDto presentFileDetails(FileDetails fileDetails) {
+    return MAPPER.toDto(fileDetails);
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(

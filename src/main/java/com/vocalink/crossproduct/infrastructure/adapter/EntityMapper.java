@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -19,7 +20,7 @@ import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
-import com.vocalink.crossproduct.shared.files.CPFileEnquiry;
+import com.vocalink.crossproduct.shared.files.CPFile;
 import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
@@ -29,8 +30,11 @@ import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -63,7 +67,17 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
 
-  Page<FileEnquiry> toEntity(CPPage<CPFileEnquiry> files);
+  Page<FileEnquiry> toEntity(CPPage<CPFile> files);
 
   CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
+
+  @Mapping(target = "fileName", source = "name")
+  @Mapping(target = "settlementCycleId", source = "cycle.id")
+  @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
+  FileDetails toEntity(CPFile file);
+
+  @Named("convertToDate")
+  default LocalDate convertToDate(LocalDateTime date) {
+    return date.toLocalDate();
+  }
 }

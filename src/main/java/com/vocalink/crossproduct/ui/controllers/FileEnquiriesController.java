@@ -1,16 +1,17 @@
 package com.vocalink.crossproduct.ui.controllers;
 
-import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
-import com.vocalink.crossproduct.ui.facade.FileEnquiriesFacade;
+import com.vocalink.crossproduct.ui.facade.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FileEnquiriesController implements FileEnquiriesApi {
 
-  private final FileEnquiriesFacade fileEnquiriesFacade;
+  private final FilesFacade filesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<FileEnquiryDto>> getFileEnquiries(
@@ -41,9 +42,19 @@ public class FileEnquiriesController implements FileEnquiriesApi {
       throw new InvalidRequestParameterException("Sending and Receiving BIC are the same");
     }
 
-    PageDto fileEnquiryDto = fileEnquiriesFacade
+    PageDto<FileEnquiryDto> fileEnquiryDto = filesFacade
         .getFileEnquiries(context, clientType, request);
 
     return ResponseEntity.ok().body(fileEnquiryDto);
+  }
+
+  @GetMapping(value = "/enquiry/files/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<FileDetailsDto> getFileDetails(
+      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
+      @PathVariable String fileId) {
+
+    FileDetailsDto fileEnquiryDetails = filesFacade.getDetailsById(context, clientType, fileId);
+
+    return ResponseEntity.ok().body(fileEnquiryDetails);
   }
 }

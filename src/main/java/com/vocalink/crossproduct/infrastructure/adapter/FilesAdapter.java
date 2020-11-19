@@ -1,9 +1,11 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
@@ -12,6 +14,7 @@ import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.FilesClient;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -57,5 +60,18 @@ public class FilesAdapter implements FileRepository {
     CPFileEnquirySearchRequest cpRequest = MAPPER.toCp(request);
 
     return MAPPER.toEntity(filesClient.findFileEnquiries(cpRequest));
+  }
+
+  @Override
+  public List<FileDetails> findDetailsBy(String context, List<String> ids) {
+    log.info("Fetching file details from: {}", context);
+
+    final FilesClient filesClient = clientFactory.getFilesClient(context);
+
+    return filesClient.findFilesByIds(ids)
+        .getItems()
+        .stream()
+        .map(MAPPER::toEntity)
+        .collect(toList());
   }
 }

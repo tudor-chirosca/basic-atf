@@ -18,7 +18,7 @@ class ReferencesAdapterTest {
     private val referencesAdapter = ReferencesAdapter(clientFactory)
 
     @Test
-    fun `should find alert references`() {
+    fun `should invoke references client`() {
         val messageDirectionReferences = listOf(CPMessageDirectionReference.builder().build())
 
         `when`(clientFactory.getReferencesClient(any()))

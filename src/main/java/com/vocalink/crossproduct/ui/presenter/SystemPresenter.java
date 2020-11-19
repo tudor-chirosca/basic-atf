@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -20,6 +21,7 @@ import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
@@ -118,6 +120,11 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public FileDetailsDto presentFileDetails(FileDetails fileDetails) {
     throw new RuntimeException("System API not implemented yet");
   }
 }
