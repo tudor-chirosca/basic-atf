@@ -7,14 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@Deprecated
 @Getter
 @AllArgsConstructor
 @Builder
-public class FileStatusesDto {
+public class FileStatusesTypeDto {
 
   private final String status;
   private final boolean hasReason;
   @JsonInclude(Include.NON_EMPTY)
   private final List<String> reasonCodes;
+  private final String enquiryType;
 }

@@ -1,13 +1,17 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
+import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -17,13 +21,26 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(ReferenceController::class)
-class ReferenceControllerTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var referencesServiceFacade: ReferencesServiceFacade
+
+    companion object {
+        const val CONTEXT_HEADER = "context"
+        const val CLIENT_TYPE_HEADER = "client-type"
+        const val REQUIRED_TYPE_PARAM = "type"
+
+        const val VALID_REF_RESPONSE = """[{
+        "status": "Rejected",
+        "hasReason": true,
+        "reasonCodes": [
+            "F01",
+            "F02"
+        ],
+        "enquiryType": "FILES"
+    }]"""
+    }
 
     @Test
     fun `should get all participant references`() {
@@ -36,11 +53,11 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        `when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc.perform(get("/reference/participants")
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE))
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
     }
 
@@ -55,7 +72,7 @@ class ReferenceControllerTest {
                         .name("Svenska Handelsbanken")
                         .build())
 
-        `when`(referencesServiceFacade.getParticipantReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc.perform(get("/reference/participants"))
                 .andExpect(status().is5xxServerError)
@@ -78,11 +95,11 @@ class ReferenceControllerTest {
                         .types(listOf(type))
                         .build()
         )
-        `when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getMessageDirectionReferences(CONTEXT, ClientType.UI))
                 .thenReturn(messages)
         mockMvc.perform(get("/reference/messages")
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE))
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().string(containsString(sending)))
                 .andExpect(content().string(containsString(receiving)))
@@ -95,9 +112,41 @@ class ReferenceControllerTest {
                 MessageDirectionReferenceDto.builder().build(),
                 MessageDirectionReferenceDto.builder().build())
 
-        `when`(referencesServiceFacade.getMessageDirectionReferences(TestConstants.CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getMessageDirectionReferences(CONTEXT, ClientType.UI))
                 .thenReturn(messages)
         mockMvc.perform(get("/reference/messages"))
+                .andExpect(status().is5xxServerError)
+    }
+
+    @Test
+    fun `should return 200 for enquiry statuses`() {
+        mockMvc.perform(get("/reference/enquiry-statuses")
+                .param(REQUIRED_TYPE_PARAM, "files")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should return 200 for enquiry statuses and return valid response`() {
+        val fileStatusesTypeDto = FileStatusesTypeDto("Rejected", true, listOf("F01", "F02"), "FILES")
+
+        `when`(referencesServiceFacade.getFileReferences(anyString(), any(), anyString()))
+                .thenReturn(listOf(fileStatusesTypeDto))
+
+        mockMvc.perform(get("/reference/enquiry-statuses")
+                .param(REQUIRED_TYPE_PARAM, "files")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_REF_RESPONSE))
+    }
+
+    @Test
+    fun `should fail if missing required parameter files`() {
+        mockMvc.perform(get("/reference/enquiry-statuses")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().is5xxServerError)
     }
 

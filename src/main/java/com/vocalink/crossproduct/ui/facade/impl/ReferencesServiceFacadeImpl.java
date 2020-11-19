@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.repository.FileRepository;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.repository.ReferencesRepository;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade;
@@ -49,5 +50,14 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
     final List<FileReference> fileReferences = fileRepository.findFileReferences(context);
 
     return presenterFactory.getPresenter(clientType).presentFileReferences(fileReferences);
+  }
+
+  @Override
+  public List<FileStatusesTypeDto> getFileReferences(String context, ClientType clientType,
+      String enquiryType) {
+    final List<FileReference> fileReferences = fileRepository
+        .findFileReferences(context, enquiryType);
+
+    return presenterFactory.getPresenter(clientType).presentFileReferencesFor(fileReferences);
   }
 }

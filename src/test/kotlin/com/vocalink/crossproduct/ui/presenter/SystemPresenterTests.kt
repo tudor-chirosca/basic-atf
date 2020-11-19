@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyInt
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
@@ -71,6 +70,13 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present participant references for System`() {
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentParticipantReferences(emptyList())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present present file references with type for System`() {
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentFileReferencesFor(emptyList())
         }
     }
 

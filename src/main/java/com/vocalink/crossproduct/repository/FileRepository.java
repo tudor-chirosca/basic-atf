@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface FileRepository {
 
+  @Deprecated
   List<FileReference> findFileReferences(String context);
+
+  List<FileReference> findFileReferences(String context, String enquiryType);
 
   Page<FileEnquiry> findFileEnquiries(String context, FileEnquirySearchRequest request);
 }

@@ -13,4 +13,5 @@ public class FileReference {
   private final String status;
   private final boolean hasReason;
   private final List<String> reasonCodes;
+  private final String enquiryType;
 }

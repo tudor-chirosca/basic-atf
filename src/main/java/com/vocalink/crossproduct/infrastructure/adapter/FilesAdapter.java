@@ -36,6 +36,18 @@ public class FilesAdapter implements FileRepository {
   }
 
   @Override
+  public List<FileReference> findFileReferences(String context, String enquiryType) {
+
+    final FilesClient filesClient = clientFactory.getFilesClient(context);
+
+    return filesClient.findFileReferences()
+        .stream()
+        .filter(ref -> ref.getEnquiryType().equalsIgnoreCase(enquiryType))
+        .map(MAPPER::toEntity)
+        .collect(toList());
+  }
+
+  @Override
   public Page<FileEnquiry> findFileEnquiries(String context,
       FileEnquirySearchRequest request) {
 

@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
+
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -26,9 +27,10 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -221,5 +223,10 @@ public class UIPresenter implements Presenter {
   @Override
   public List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences) {
     return MAPPER.toDto(fileReferences);
+  }
+
+  @Override
+  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences) {
+    return MAPPER.toDtoType(fileReferences);
   }
 }

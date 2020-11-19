@@ -20,9 +20,10 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
-import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +85,11 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences) {
     throw new RuntimeException("System API not implemented yet");
   }
 
