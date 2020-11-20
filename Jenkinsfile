@@ -1,21 +1,23 @@
+@Library('Shared@shared') _
+
 pipeline {
     agent any
+
     environment {
-        ARTIFACTORY_DOMAIN = "repo-api.mcvl-engineering.com"
-        ARTIFACTORY_URL = "https://${ARTIFACTORY_DOMAIN}/repository"
-        PROJECT_NAME = "cp-api-management"
-        GITHUB_DOMAIN = "github-api.mcvl-engineering.com/vocalink-portal"
-        GITHUB_URL = "https://${GITHUB_DOMAIN}/${PROJECT_NAME}"
-        ARTIFACTORY_CREDENTIALS = "artifactory-credentials"
-        GITHUB_CREDENTIALS = "tech-user"
         RELEASE_BRANCH = "master"
+        repoType = "staging"
     }
     
     options {
         disableConcurrentBuilds()
     }
-
+    
     stages {
+        stage("Prepare Params") {
+            steps {
+                setVars()
+            }
+        }
         stage("Build and publish artifact:") {
             agent {
                 dockerfile {
@@ -30,24 +32,20 @@ pipeline {
                 }
             }
             stages {
-                stage("Clean") {
-                    steps {
-                        sh "./mvnw -B clean"
-                    }
-                }
+                
                 stage("Compile") {
                     steps {
-                        sh "./mvnw -B compile"
+                        runMaven(goal: "-B clean compile")
                     }
                 }
-                stage("Test") {
+                stage("Unit Tests") {
                     steps {
-                        sh "./mvnw -B test"
+                        runMaven(goal: "-B test")
                     }
                 }
-                stage("Acceptance test") {
+                stage("Integration tests") {
                     steps {
-                        sh "./mvnw -B integration-test -U"
+                        runMaven(goal: "-B integration-test -U")
                     }
                 }
                 stage("Prepare release: ") {
@@ -63,52 +61,22 @@ pipeline {
                         stage('create release') {
                             steps {
                                 script {
-                                    withCredentials([usernamePassword(credentialsId: env.GITHUB_CREDENTIALS, passwordVariable: "GITHUB_PASSWORD", usernameVariable: "GITHUB_USERNAME")]) {
-                                        sh "git config user.email jenkins-agent-cp-portal@mastercard.com"
-                                        sh "git config user.name jenkins-agent-cp-portal"
-                                        sh "npx standard-version"
-                                        sh "git push --follow-tags https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GITHUB_DOMAIN}/${PROJECT_NAME}.git HEAD:${BRANCH_NAME}"
-                                        env.WORKSPACE = pwd()
-                                        env.RELEASE_VERSION = readFile "${env.WORKSPACE}/version.txt"
-                                        echo "Release generated: ${RELEASE_VERSION}"
-                                    }
-                                }
+                                    createRelease(releasePlugin: "standard-version")
+                                    env.RELEASE_VERSION = readFile("${WORKSPACE}/version.txt")
+                                    echo "Release generated: ${RELEASE_VERSION}"
+  
+                                 }
                             }
                         }
                         stage("publish artifact") {
                             steps {
-                                rtServer(
-                                        id: "ARTIFACTORY_SERVER",
-                                        url: env.ARTIFACTORY_URL,
-                                        credentialsId: env.ARTIFACTORY_CREDENTIALS
-                                )
-
-                                rtMavenDeployer(
-                                        id: "MAVEN_DEPLOYER",
-                                        serverId: "ARTIFACTORY_SERVER",
-                                        snapshotRepo: "cp-portal-staging",
-                                        releaseRepo: "cp-portal-release",
-                                        customBuildName: "cp-api-management-test"
-                                )
-                                rtMavenResolver(
-                                        id: "MAVEN_RESOLVER",
-                                        serverId: "ARTIFACTORY_SERVER",
-                                        snapshotRepo: "cp-portal-group",
-                                        releaseRepo: "cp-portal-group",
-                                )
-                                rtMavenRun(
-                                        tool: "MAVEN_TOOL", // Tool name from Jenkins configuration
-                                        pom: "pom.xml",
-                                        goals: "clean install -U -Drelease.version=${RELEASE_VERSION}",
-                                        deployerId: "MAVEN_DEPLOYER",
-                                        resolverId: "MAVEN_RESOLVER"
-                                )
+                                publishArtifact(goal: "clean install -U -Drelease.version=${RELEASE_VERSION}")
                             }
                         }
                     }
-                }
-            }
-        }
+                }//stage
+            }//stages
+        }//stage
         stage('Build and deploy docker image') {
             agent any
             when {
@@ -117,43 +85,13 @@ pipeline {
                 }
             }
             stages {
-                stage("Publish docker staging") {
-                    when {
-                        not {
-                            branch "${RELEASE_BRANCH}"
-                        }
-                    }
+                stage("Publish docker") {
                     steps {
                         script {
-                            def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-                            def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-                            def imageName = "${ARTIFACTORY_DOMAIN}/cp-portal-docker-staging/${PROJECT_NAME}:${gitTag}"
-
-                            docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                                def image = docker.build(imageName)
-                                image.push()
+                            if (GIT_BRANCH == RELEASE_BRANCH) {
+                                repoType = "release"
                             }
-
-                            sh "docker rmi ${imageName}"
-                        }
-                    }
-                }
-                stage("Publish docker release") {
-                    when {
-                        branch "${RELEASE_BRANCH}"
-                    }
-                    steps {
-                        script {
-                            def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-                            def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-                            def imageName = "${ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
-
-                            docker.withRegistry(env.ARTIFACTORY_URL, env.ARTIFACTORY_CREDENTIALS) {
-                                def image = docker.build(imageName)
-                                image.push()
-                            }
-
-                            sh "docker rmi ${imageName}"
+                            publishDockerImage(containerName: projectName, repoType: repoType)
                         }
                     }
                 }
@@ -163,30 +101,25 @@ pipeline {
                     }
                     steps {
                         script {
-                            def gitCommit = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-                            def gitTag = "${BUILD_NUMBER}.${BRANCH_NAME}.${gitCommit}"
-
-                            echo "Deploying ${gitTag} to ${PREPROD_IP}"
-
-                            withCredentials([usernamePassword(credentialsId: env.ARTIFACTORY_CREDENTIALS, passwordVariable: "ARTIFACTORY_PASSWORD", usernameVariable: "ARTIFACTORY_USERNAME")]) {
-                                sshagent(credentials: ["deployer"]) {
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker login -u ${ARTIFACTORY_USERNAME} -p ${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_URL}"
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker rm -f ${PROJECT_NAME} || true"
-                                    sh """ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} "docker images -f reference=repo-api.mcvl-engineering.com/cp-portal-docker-*/${PROJECT_NAME} -q | xargs docker rmi" || true """
-                                    sh "ssh -o StrictHostKeyChecking=no deployer@${PREPROD_IP} docker run --network host -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev -e JAVA_OPTS='-Xmx2g' --name ${PROJECT_NAME} ${env.ARTIFACTORY_DOMAIN}/cp-portal-docker-release/${PROJECT_NAME}:${gitTag}"
-                                }
-                            }
+                            echo "Deploying ${env.gitTag} to ${PREPROD_IP}"
+                            def envVars = "-e BPS_BASE_URL=http://positions-mock-server:8080/positions-mock-server -e SPRINT_PROFILES_ACTIVE=dev -e JAVA_OPTS='-Xmx2g'"
+                            def dockerArgs = "--network cpp-network -d -p 8080:8080 ${envVars}"
+                            deployContainer(
+                                containerName: projectName, 
+                                deployHost: PREPROD_IP, 
+                                repoType: repoType, 
+                                dockerArgs: dockerArgs, 
+                                imageTag: env.gitTag
+                            )
                         }
                     }
                 }
             }
-        }
+        }//stage
     }
     post {
         always {
             cleanWs()
         }
     }
-
 }
-
