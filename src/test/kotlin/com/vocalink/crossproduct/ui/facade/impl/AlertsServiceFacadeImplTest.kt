@@ -88,7 +88,7 @@ class AlertsServiceFacadeImplTest {
     fun `should get alerts`() {
         val searchRequest = AlertSearchRequest(null,null,null,null,null,null,null,null,null,null)
         val alerts = Page<Alert>(2, listOf())
-        val alertsDto = PageDto(2, listOf<AlertDto>())
+        val alertsDto = PageDto<AlertDto>(2, listOf<AlertDto>())
 
         `when`(alertsRepository.findAlerts(TestConstants.CONTEXT, searchRequest)).thenReturn(alerts)
         `when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)

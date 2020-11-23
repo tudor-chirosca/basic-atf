@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain.participant;
 
-import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,16 +21,6 @@ public class Participant {
   private ParticipantStatus status;
   private LocalDateTime suspendedTime;
 
-  public ParticipantDto toDto() {
-    return ParticipantDto
-        .builder()
-        .id(id)
-        .bic(bic)
-        .name(name)
-        .status(status)
-        .suspendedTime(suspendedTime)
-        .build();
-  }
 }
 
 

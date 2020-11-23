@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
@@ -40,11 +41,11 @@ public class AlertsController implements AlertsApi {
   }
 
   @PostMapping(value = "/alerts", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PageDto> getAlerts(
+  public ResponseEntity<PageDto<AlertDto>> getAlerts(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       final @RequestBody AlertSearchRequest request) {
 
-    PageDto alertDataDto = alertsServiceFacade.getAlerts(context, clientType, request);
+    PageDto<AlertDto> alertDataDto = alertsServiceFacade.getAlerts(context, clientType, request);
 
     return ResponseEntity.ok().body(alertDataDto);
   }

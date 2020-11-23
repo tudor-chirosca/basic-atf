@@ -1,12 +1,11 @@
-package com.vocalink.crossproduct.ui.dto.reference;
+package com.vocalink.crossproduct.domain.reference;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ParticipantReferenceDto {
+public class ParticipantReference {
 
   private final String participantIdentifier;
   private final String name;

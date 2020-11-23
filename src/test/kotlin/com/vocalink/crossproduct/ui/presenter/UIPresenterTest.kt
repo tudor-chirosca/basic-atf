@@ -12,12 +12,14 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -465,20 +467,11 @@ class UIPresenterTest {
         val aaa = "Aaa"
         val bbb = "Bbb"
         val ccc = "Ccc"
-
+        val id = "id"
         val model = listOf(
-                Participant.builder()
-                        .bic("ID1")
-                        .name(ccc)
-                        .build(),
-                Participant.builder()
-                        .bic("ID2")
-                        .name(aaa)
-                        .build(),
-                Participant.builder()
-                        .bic("ID3")
-                        .name(bbb)
-                        .build()
+                ParticipantReference(id, ccc),
+                ParticipantReference(id, aaa),
+                ParticipantReference(id, bbb)
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
@@ -519,22 +512,23 @@ class UIPresenterTest {
 
     @Test
     fun `should present alerts`() {
+        val id = "NDEASESSXXX"
+        val nordea = "Nordea"
+        val seb = "SEB Bank"
         val alerts = listOf(
                 Alert.builder()
                         .alertId(3141)
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entity("NDEASESSXXX")
-                        .entityName("Nordea")
+                        .entities(listOf(ParticipantReference(id, nordea)))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entity("NDEASESSXXX")
-                        .entityName("SEB Bank")
+                        .entities(listOf(ParticipantReference(id, seb)))
                         .build())
 
         val alertsResponse = Page<Alert>(2, alerts)
@@ -544,9 +538,9 @@ class UIPresenterTest {
         assertThat(result).isNotNull
 
         assertThat((result.items.elementAt(0) as AlertDto).alertId).isEqualTo(3141)
-        assertThat((result.items.elementAt(0) as AlertDto).entity).isEqualTo("Nordea")
+        assertThat((result.items.elementAt(0) as AlertDto).entities[0].name).isEqualTo("Nordea")
 
         assertThat((result.items.elementAt(1) as AlertDto).alertId).isEqualTo(3142)
-        assertThat((result.items.elementAt(1) as AlertDto).entity).isEqualTo("SEB Bank")
+        assertThat((result.items.elementAt(1) as AlertDto).entities[0].name).isEqualTo("SEB Bank")
     }
 }

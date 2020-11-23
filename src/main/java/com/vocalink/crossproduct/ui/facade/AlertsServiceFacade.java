@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.facade;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
@@ -12,5 +13,5 @@ public interface AlertsServiceFacade {
 
   AlertStatsDto getAlertStats(String context, ClientType clientType);
 
-  PageDto getAlerts(String context, ClientType clientType, AlertSearchRequest request);
+  PageDto<AlertDto> getAlerts(String context, ClientType clientType, AlertSearchRequest request);
 }

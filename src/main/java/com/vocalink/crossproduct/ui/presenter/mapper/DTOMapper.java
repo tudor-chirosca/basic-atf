@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -23,6 +24,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
@@ -34,13 +36,13 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import org.mapstruct.Context;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -57,16 +59,7 @@ public interface DTOMapper {
 
   AlertStatsDto toDto(AlertStats alertStats);
 
-  @Mapping(target = "items", source = "alert.items", qualifiedByName = "toAlertDtoList")
-  PageDto toAlertPageDto(Page<Alert> alert);
-
-  @Named("toAlertDtoList")
-  @IterableMapping(qualifiedByName = "toDto")
-  List<AlertDto> toAlertDtoList(List<Alert> alerts);
-
-  @Named("toDto")
-  @Mapping(target = "entity", source = "entityName")
-  AlertDto toDto(Alert alert);
+  PageDto<AlertDto> toAlertPageDto(Page<Alert> alert);
 
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
@@ -83,6 +76,11 @@ public interface DTOMapper {
   PositionDetailsTotalsDto toDto(PositionDetailsDto details);
 
   ParticipantDto toDto(Participant participant);
+
+  @Mapping(target = "participantIdentifier", source = "id")
+  ParticipantReference toReference(Participant input);
+
+  ParticipantReferenceDto toDto(ParticipantReference participant);
 
   PositionDetailsDto toDto(PositionDetails positionDetails);
 
@@ -205,5 +203,5 @@ public interface DTOMapper {
 
   List<FileStatusesTypeDto> toDtoType(List<FileReference> fileReferences);
 
-  PageDto toDto(Page<FileEnquiry> files);
+  PageDto<FileEnquiryDto> toDto(Page<FileEnquiry> files);
 }

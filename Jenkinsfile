@@ -35,7 +35,7 @@ pipeline {
                 
                 stage("Compile") {
                     steps {
-                        runMaven(goal: "-B clean compile")
+                        runMaven(goal: "-B -U clean compile")
                     }
                 }
                 stage("Unit Tests") {

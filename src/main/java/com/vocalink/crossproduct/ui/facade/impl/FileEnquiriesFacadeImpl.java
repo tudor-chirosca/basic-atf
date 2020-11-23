@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.repository.FileRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.FileEnquiriesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -19,7 +20,7 @@ public class FileEnquiriesFacadeImpl implements FileEnquiriesFacade {
   private final FileRepository fileRepository;
 
   @Override
-  public PageDto getFileEnquiries(String context, ClientType clientType,
+  public PageDto<FileEnquiryDto> getFileEnquiries(String context, ClientType clientType,
       FileEnquirySearchRequest request) {
 
     Page<FileEnquiry> fileEnquiries = fileRepository.findFileEnquiries(context, request);

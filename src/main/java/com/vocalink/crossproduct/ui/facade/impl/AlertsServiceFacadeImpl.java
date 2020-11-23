@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.repository.AlertsRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
@@ -44,7 +45,7 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
   }
 
   @Override
-  public PageDto getAlerts(String context, ClientType clientType, AlertSearchRequest request) {
+  public PageDto<AlertDto> getAlerts(String context, ClientType clientType, AlertSearchRequest request) {
 
     Page<Alert> alerts = alertsRepository.findAlerts(context, request);
 

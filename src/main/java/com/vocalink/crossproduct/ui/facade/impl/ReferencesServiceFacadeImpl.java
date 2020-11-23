@@ -1,8 +1,11 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
+import static java.util.stream.Collectors.toList;
+
 import com.vocalink.crossproduct.domain.files.FileReference;
-import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.repository.FileRepository;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.repository.ReferencesRepository;
@@ -29,9 +32,11 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String context,
       ClientType clientType) {
-    List<Participant> participants = participantRepository.findAll(context);
+    List<ParticipantReference> participantReferences = participantRepository.findAll(context)
+        .stream().map(MAPPER::toReference).collect(toList());
 
-    return presenterFactory.getPresenter(clientType).presentParticipantReferences(participants);
+    return presenterFactory.getPresenter(clientType)
+        .presentParticipantReferences(participantReferences);
   }
 
   @Override

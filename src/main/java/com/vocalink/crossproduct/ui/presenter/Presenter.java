@@ -13,12 +13,15 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
@@ -57,9 +60,9 @@ public interface Presenter {
 
   AlertStatsDto presentAlertStats(AlertStats alertStats);
 
-  PageDto presentAlert(Page<Alert> alerts);
+  PageDto<AlertDto> presentAlert(Page<Alert> alerts);
 
-  List<ParticipantReferenceDto> presentParticipantReferences(List<Participant> participants);
+  List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants);
 
   @Deprecated
   List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences);
@@ -69,5 +72,5 @@ public interface Presenter {
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences);
 
-  PageDto presentEnquiries(Page<FileEnquiry> enquiries);
+  PageDto<FileEnquiryDto> presentEnquiries(Page<FileEnquiry> enquiries);
 }

@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
-import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
@@ -530,8 +531,7 @@ class DTOMapperTest {
                 .priority("high")
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
-                .entity("NDEASESSXXX")
-                .entityName("Nordea")
+                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea")))
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))
@@ -539,12 +539,30 @@ class DTOMapperTest {
         val result = MAPPER.toAlertPageDto(alerts)
 
         assertThat(result).isNotNull
+        val alertItem: AlertDto = result.items.elementAt(0) as AlertDto
+        assertThat(alertItem.alertId).isEqualTo(alert.alertId)
+        assertThat(alertItem.priority).isEqualTo(alert.priority)
+        assertThat(alertItem.dateRaised).isEqualTo(dateRaised)
+        assertThat(alertItem.type).isEqualTo(alert.type)
+        assertThat(alertItem.entities[0].name).isEqualTo(alert.entities[0].name)
+        assertThat(alertItem.entities[0].participantIdentifier).isEqualTo(alert.entities[0].participantIdentifier)
+    }
 
-        assertThat(result.totalResults).isEqualTo(1)
-        assertThat((result.items.elementAt(0) as AlertDto).alertId).isEqualTo(3141)
-        assertThat((result.items.elementAt(0) as AlertDto).priority).isEqualTo("high")
-        assertThat((result.items.elementAt(0) as AlertDto).dateRaised).isEqualTo(dateRaised)
-        assertThat((result.items.elementAt(0) as AlertDto).type).isEqualTo("rejected-central-bank")
-        assertThat((result.items.elementAt(0) as AlertDto).entity).isEqualTo("Nordea")
+    @Test
+    fun `should map Participant to ParticipantReference`() {
+        val participant = Participant.builder()
+                .id("participantId")
+                .bic("bic")
+                .status(ParticipantStatus.ACTIVE)
+                .name("name")
+                .suspendedTime(null)
+                .fundingBic("fundingBic")
+                .build()
+        val result = MAPPER.toReference(participant)
+
+        assertThat(result).isNotNull
+
+        assertThat(result.name).isEqualTo(participant.name)
+        assertThat(result.participantIdentifier).isEqualTo(participant.id)
     }
 }

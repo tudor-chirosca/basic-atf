@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
@@ -31,5 +32,5 @@ public interface AlertsApi {
       @ApiResponse(code = 200, message = "Alerts successfully", response = PageDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<PageDto> getAlerts(ClientType clientType, String context, AlertSearchRequest request);
+  ResponseEntity<PageDto<AlertDto>> getAlerts(ClientType clientType, String context, AlertSearchRequest request);
 }

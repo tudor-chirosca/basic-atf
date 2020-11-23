@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
@@ -29,6 +30,7 @@ import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -53,6 +55,9 @@ public interface EntityMapper {
   AlertReferenceData toEntity(CPAlertReferenceData alertReferenceData);
 
   Page<Alert> toEntityAlert(CPPage<CPAlert> input);
+
+  @Mapping(target = "participantIdentifier", source = "id")
+  ParticipantReference toCpReference(CPParticipant input);
 
   AlertStats toEntity(CPAlertStats alertReferenceData);
 

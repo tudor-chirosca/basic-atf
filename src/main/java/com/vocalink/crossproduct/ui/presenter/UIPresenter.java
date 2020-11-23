@@ -17,12 +17,15 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
@@ -127,7 +130,7 @@ public class UIPresenter implements Presenter {
 
       participantIODataDtos.add(
           ParticipantIODataDto.builder()
-              .participant(participantsById.get(participantIOData.getParticipantId()).toDto())
+              .participant(MAPPER.toDto(participantsById.get(participantIOData.getParticipantId())))
               .batches(IODataDto.builder()
                   .rejected(participantIOData.getBatches().getRejected())
                   .submitted(participantIOData.getBatches().getSubmitted())
@@ -177,7 +180,7 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto presentAlert(Page<Alert> alerts) {
+  public PageDto<AlertDto> presentAlert(Page<Alert> alerts) {
     return MAPPER.toAlertPageDto(alerts);
   }
 
@@ -191,7 +194,7 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto presentEnquiries(Page<FileEnquiry> enquiries) {
+  public PageDto<FileEnquiryDto> presentEnquiries(Page<FileEnquiry> enquiries) {
     return MAPPER.toDto(enquiries);
   }
 
@@ -208,11 +211,11 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<ParticipantReferenceDto> presentParticipantReferences(List<Participant> participants) {
+  public List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants) {
     return participants.stream()
-        .map(p -> new ParticipantReferenceDto(p.getBic(), p.getName()))
+        .map(MAPPER::toDto)
         .sorted(Comparator.comparing(ParticipantReferenceDto::getName))
-        .collect(Collectors.toList());
+        .collect(toList());
   }
 
   @Override

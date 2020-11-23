@@ -6,12 +6,12 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class PageDto {
+public class PageDto<T> {
 
   private final int totalResults;
-  private final List<?> items;
+  private final List<T> items;
 
-  public PageDto(final int totalResults, final List<?> items) {
+  public PageDto(final int totalResults, final List<T> items) {
     this.totalResults = totalResults;
     this.items = items == null ? emptyList() : items;
   }

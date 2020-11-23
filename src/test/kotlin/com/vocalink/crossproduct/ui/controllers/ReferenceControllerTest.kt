@@ -44,14 +44,10 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all participant references`() {
-        val participants = listOf(ParticipantReferenceDto.builder()
-                .participantIdentifier("ESSESESS")
-                .name("SEB Bank")
-                .build(),
-                ParticipantReferenceDto.builder()
-                        .participantIdentifier("HANDSESS")
-                        .name("Svenska Handelsbanken")
-                        .build())
+        val participants = listOf(
+                ParticipantReferenceDto("ESSESESS", "SEB Bank"),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken")
+        )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
                 .thenReturn(participants)
@@ -63,14 +59,10 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get bad request on missing context for reference participants`() {
-        val participants = listOf(ParticipantReferenceDto.builder()
-                .participantIdentifier("ESSESESS")
-                .name("SEB Bank")
-                .build(),
-                ParticipantReferenceDto.builder()
-                        .participantIdentifier("HANDSESS")
-                        .name("Svenska Handelsbanken")
-                        .build())
+        val participants = listOf(
+                ParticipantReferenceDto("ESSESESS", "SEB Bank"),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken")
+        )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
                 .thenReturn(participants)

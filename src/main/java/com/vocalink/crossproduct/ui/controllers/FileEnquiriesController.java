@@ -1,7 +1,9 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.FileEnquiriesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -19,7 +21,7 @@ public class FileEnquiriesController implements FileEnquiriesApi {
   private final FileEnquiriesFacade fileEnquiriesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PageDto> getFileEnquiries(
+  public ResponseEntity<PageDto<FileEnquiryDto>> getFileEnquiries(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final FileEnquirySearchRequest request) {
