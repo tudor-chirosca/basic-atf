@@ -39,8 +39,8 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
           "limit": 20,
           "priorities": [ "high"
           ],
-          "dateFrom": "2020-12-23",
-          "dateTo": "2020-12-28",
+          "dateFrom": "2020-10-23T10:39:39.215",
+          "dateTo": "2020-10-28T10:39:39.215",
           "alertTypes": [
           ],
           "entities": [

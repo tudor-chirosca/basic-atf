@@ -9,7 +9,7 @@ import static java.lang.Integer.parseInt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 
@@ -20,8 +20,8 @@ public class AlertSearchRequest implements Serializable {
   private final int offset;
   private final int limit;
   private final List<String> priorities;
-  private final LocalDate dateFrom;
-  private final LocalDate dateTo;
+  private final LocalDateTime dateFrom;
+  private final LocalDateTime dateTo;
   private final List<String> alertTypes;
   private final List<String> entities;
   private final String alertId;
@@ -30,7 +30,7 @@ public class AlertSearchRequest implements Serializable {
 
   @JsonCreator
   public AlertSearchRequest(Integer offset, Integer limit,
-      List<String> priorities, LocalDate dateFrom, LocalDate dateTo,
+      List<String> priorities, LocalDateTime dateFrom, LocalDateTime dateTo,
       List<String> alertTypes, List<String> entities, String alertId, String sort,
       String order) {
     this.offset = offset == null ? parseInt(getDefault(OFFSET)) : offset;
