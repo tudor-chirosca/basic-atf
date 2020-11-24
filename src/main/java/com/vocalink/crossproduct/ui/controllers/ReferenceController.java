@@ -71,7 +71,8 @@ public class ReferenceController implements ReferenceApi {
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @RequestParam(value = "day") String date) {
 
-    List<CycleDto> cycleDto = referencesServiceFacade.getCyclesByDate(context, clientType, LocalDate.parse(date));
+    List<CycleDto> cycleDto = referencesServiceFacade
+        .getCyclesByDate(context, clientType, LocalDate.parse(date));
 
     return ResponseEntity.ok().body(cycleDto);
   }

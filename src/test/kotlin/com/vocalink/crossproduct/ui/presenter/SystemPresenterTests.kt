@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
+import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -85,6 +86,14 @@ class SystemPresenterTests {
         val alerts = Page<Alert>(0, null)
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentAlert(alerts)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present cycle date references for System`() {
+        val cycles = listOf(Cycle.builder().build())
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentCycleDateReferences(cycles)
         }
     }
 }

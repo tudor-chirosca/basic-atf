@@ -2,6 +2,8 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
@@ -19,6 +21,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReferenceController::class)
 class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
@@ -30,6 +35,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val CONTEXT_HEADER = "context"
         const val CLIENT_TYPE_HEADER = "client-type"
         const val REQUIRED_TYPE_PARAM = "type"
+        const val REQUIRED_DATE_PARAM = "day"
 
         const val VALID_REF_RESPONSE = """[{
         "status": "Rejected",
@@ -142,4 +148,44 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is5xxServerError)
     }
 
+    @Test
+    fun `should get 200 for find cycles by date`() {
+        val stringDate = "2020-11-03"
+        mockMvc.perform(get("/reference/cycles")
+                .param(REQUIRED_DATE_PARAM, stringDate)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should get 200 for find cycles by date and return valid response`() {
+        val stringDate = "2020-11-03"
+        val date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE)
+
+        val cycles = listOf(
+                CycleDto.builder()
+                        .id("03")
+                        .settlementTime(LocalDateTime.parse("2020-11-03T17:58:19.183"))
+                        .cutOffTime(LocalDateTime.parse("2020-11-03T17:58:19.183"))
+                        .status(CycleStatus.OPEN)
+                        .build())
+
+        `when`(referencesServiceFacade.getCyclesByDate(CONTEXT, ClientType.UI, date))
+                .thenReturn(cycles)
+
+        mockMvc.perform(get("/reference/cycles")
+                .param(REQUIRED_DATE_PARAM, stringDate)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should fail if missing required parameter day`() {
+        mockMvc.perform(get("/reference/cycles")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().is5xxServerError)
+    }
 }
