@@ -3,12 +3,15 @@ package com.vocalink.crossproduct.ui.facade.impl;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.repository.CycleRepository;
 import com.vocalink.crossproduct.repository.FileRepository;
 import com.vocalink.crossproduct.repository.ParticipantRepository;
 import com.vocalink.crossproduct.repository.ReferencesRepository;
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -16,6 +19,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,6 +32,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   private final ReferencesRepository referencesRepository;
   private final PresenterFactory presenterFactory;
   private final FileRepository fileRepository;
+  private final CycleRepository cycleRepository;
 
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String context,
@@ -64,5 +69,13 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
         .findFileReferences(context, enquiryType);
 
     return presenterFactory.getPresenter(clientType).presentFileReferencesFor(fileReferences);
+  }
+
+  @Override
+  public List<CycleDto> getCyclesByDate(String context, ClientType clientType,
+      LocalDate date) {
+    List<Cycle> cycles = cycleRepository.findCyclesByDate(context, date);
+
+    return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);
   }
 }

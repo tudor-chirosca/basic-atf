@@ -22,6 +22,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
@@ -73,4 +74,6 @@ public interface Presenter {
       List<MessageDirectionReference> messageDirectionReferences);
 
   PageDto<FileEnquiryDto> presentEnquiries(Page<FileEnquiry> enquiries);
+
+  List<CycleDto> presentCycleDateReferences(List<Cycle> cycles);
 }

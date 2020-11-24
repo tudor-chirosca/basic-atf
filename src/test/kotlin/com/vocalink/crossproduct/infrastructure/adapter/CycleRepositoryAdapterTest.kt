@@ -10,6 +10,8 @@ import com.vocalink.crossproduct.shared.cycle.CPCycle
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -70,5 +72,19 @@ class CycleRepositoryAdapterTest {
 
         assertEquals("03", result[1].id)
         assertNull(result[1].status)
+    }
+
+    @Test
+    fun `should invoke get cycles by date`() {
+        val date = LocalDate.now()
+
+        `when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
+                .thenReturn(cyclesClient)
+        `when`(cyclesClient.findByDate(date)).thenReturn(listOf())
+
+        cycleRepositoryAdapter.findCyclesByDate(TestConstants.CONTEXT, date)
+
+        verify(clientFactory).getCyclesClient(TestConstants.CONTEXT)
+        verify(cyclesClient).findByDate(date)
     }
 }

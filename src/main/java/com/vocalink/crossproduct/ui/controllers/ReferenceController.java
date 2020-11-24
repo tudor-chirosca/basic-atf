@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -62,5 +64,15 @@ public class ReferenceController implements ReferenceApi {
         .getMessageDirectionReferences(context, clientType);
 
     return ResponseEntity.ok().body(messageDirectionReferenceDto);
+  }
+
+  @GetMapping(value = "reference/cycles", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<CycleDto>> getCycleByDate(
+      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
+      @RequestParam(value = "day") String date) {
+
+    List<CycleDto> cycleDto = referencesServiceFacade.getCyclesByDate(context, clientType, LocalDate.parse(date));
+
+    return ResponseEntity.ok().body(cycleDto);
   }
 }

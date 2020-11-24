@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -43,4 +44,12 @@ public interface ReferenceApi {
   })
   ResponseEntity<List<MessageDirectionReferenceDto>> getMessageDirectionReferences(
       ClientType clientType, String context);
+
+  @ApiOperation("Fetch cycles that were completed on a specific date")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Cycles by date retrieved successfully", response = CycleDto.class),
+      @ApiResponse(code = 400, message = "Invalid context")
+  })
+  ResponseEntity<List<CycleDto>> getCycleByDate(
+      ClientType clientType, String context, String date);
 }

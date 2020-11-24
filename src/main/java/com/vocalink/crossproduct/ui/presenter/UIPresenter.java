@@ -26,6 +26,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
@@ -196,6 +197,13 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<FileEnquiryDto> presentEnquiries(Page<FileEnquiry> enquiries) {
     return MAPPER.toDto(enquiries);
+  }
+
+  @Override
+  public List<CycleDto> presentCycleDateReferences(List<Cycle> cycles) {
+    return cycles.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(
