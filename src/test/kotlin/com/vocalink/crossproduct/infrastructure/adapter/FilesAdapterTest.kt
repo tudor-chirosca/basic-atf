@@ -25,13 +25,13 @@ class FilesAdapterTest {
 
         `when`(clientFactory.getFilesClient(any()))
                 .thenReturn(fileClient)
-        `when`(fileClient.findFileEnquiries(any()))
+        `when`(fileClient.findFiles(any()))
                 .thenReturn(files)
 
-        filesAdapter.findFileEnquiries(TestConstants.CONTEXT, FileEnquirySearchRequest())
+        filesAdapter.findFiles(TestConstants.CONTEXT, FileEnquirySearchRequest())
 
         verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
-        verify(fileClient, atLeastOnce()).findFileEnquiries(any())
+        verify(fileClient, atLeastOnce()).findFiles(any())
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.ui.dto.file;
+package com.vocalink.crossproduct.domain.files;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class FileEnquiryDto {
+public class File {
 
   private final String name;
   private final LocalDateTime createdAt;

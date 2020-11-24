@@ -6,7 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.FileDetails;
-import com.vocalink.crossproduct.domain.files.FileEnquiry;
+import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
@@ -67,7 +67,7 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
 
-  Page<FileEnquiry> toEntity(CPPage<CPFile> files);
+  Page<File> toEntity(CPPage<CPFile> files);
 
   CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
 

@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.controllers;
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
-import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class FileEnquiriesController implements FileEnquiriesApi {
+public class FilesController implements FilesApi {
 
   private final FilesFacade filesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<PageDto<FileEnquiryDto>> getFileEnquiries(
+  public ResponseEntity<PageDto<FileDto>> getFiles(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final FileEnquirySearchRequest request) {
@@ -42,10 +42,9 @@ public class FileEnquiriesController implements FileEnquiriesApi {
       throw new InvalidRequestParameterException("Sending and Receiving BIC are the same");
     }
 
-    PageDto<FileEnquiryDto> fileEnquiryDto = filesFacade
-        .getFileEnquiries(context, clientType, request);
+    PageDto<FileDto> fileDto = filesFacade.getFiles(context, clientType, request);
 
-    return ResponseEntity.ok().body(fileEnquiryDto);
+    return ResponseEntity.ok().body(fileDto);
   }
 
   @GetMapping(value = "/enquiry/files/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,8 +52,8 @@ public class FileEnquiriesController implements FileEnquiriesApi {
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @PathVariable String fileId) {
 
-    FileDetailsDto fileEnquiryDetails = filesFacade.getDetailsById(context, clientType, fileId);
+    FileDetailsDto fileDetails = filesFacade.getDetailsById(context, clientType, fileId);
 
-    return ResponseEntity.ok().body(fileEnquiryDetails);
+    return ResponseEntity.ok().body(fileDetails);
   }
 }

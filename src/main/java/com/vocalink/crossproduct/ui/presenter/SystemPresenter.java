@@ -6,7 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.FileDetails;
-import com.vocalink.crossproduct.domain.files.FileEnquiry;
+import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
@@ -109,7 +109,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto presentEnquiries(Page<FileEnquiry> enquiries) {
+  public PageDto presentFiles(Page<File> enquiries) {
     throw new RuntimeException("System API not implemented yet");
   }
 

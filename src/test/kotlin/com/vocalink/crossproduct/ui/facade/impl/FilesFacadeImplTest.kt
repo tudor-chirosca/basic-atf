@@ -3,12 +3,12 @@ package com.vocalink.crossproduct.ui.facade.impl
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.files.FileDetails
-import com.vocalink.crossproduct.domain.files.FileEnquiry
+import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.repository.FileRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
-import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto
+import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -19,7 +19,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.util.Optional
 import kotlin.test.assertNotNull
 
 class FilesFacadeImplTest {
@@ -35,24 +34,24 @@ class FilesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get files`() {
-        val page = Page<FileEnquiry>(1, listOf(FileEnquiry.builder().build()))
-        val pageDto = PageDto<FileEnquiryDto>(1, listOf(FileEnquiryDto.builder().build()))
+        val page = Page<File>(1, listOf(File.builder().build()))
+        val pageDto = PageDto<FileDto>(1, listOf(FileDto.builder().build()))
         val request = FileEnquirySearchRequest()
 
-        `when`(fileRepository.findFileEnquiries(any(), any()))
+        `when`(fileRepository.findFiles(any(), any()))
                 .thenReturn(page)
 
         `when`(presenterFactory.getPresenter(any()))
                 .thenReturn(uiPresenter)
 
-        `when`(uiPresenter.presentEnquiries(any()))
+        `when`(uiPresenter.presentFiles(any()))
                 .thenReturn(pageDto)
 
-        val result = filesServiceFacadeImpl.getFileEnquiries(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = filesServiceFacadeImpl.getFiles(TestConstants.CONTEXT, ClientType.UI, request)
 
-        verify(fileRepository).findFileEnquiries(any(), any())
+        verify(fileRepository).findFiles(any(), any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentEnquiries(any())
+        verify(uiPresenter).presentFiles(any())
 
         assertNotNull(result)
     }

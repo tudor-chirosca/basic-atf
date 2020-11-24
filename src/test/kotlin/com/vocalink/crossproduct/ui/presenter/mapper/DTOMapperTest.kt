@@ -10,13 +10,13 @@ import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.FileDetails
-import com.vocalink.crossproduct.domain.files.FileEnquiry
+import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.ui.dto.file.FileEnquiryDto
+import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
@@ -573,7 +573,7 @@ class DTOMapperTest {
     @Test
     fun `should map File fields`() {
         val totalResults = 1
-        val file = FileEnquiry.builder()
+        val file = File.builder()
                 .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
                 .messageType("message_type")
                 .name("name")
@@ -581,13 +581,13 @@ class DTOMapperTest {
                 .senderBic("sender_bic")
                 .status("status")
                 .build()
-        val page = Page<FileEnquiry>(totalResults, listOf(file))
+        val page = Page<File>(totalResults, listOf(file))
 
         val result = MAPPER.toDto(page)
 
         assertThat(result).isNotNull
 
-        val resultItem = result.items[0] as FileEnquiryDto
+        val resultItem = result.items[0] as FileDto
         assertThat(result.totalResults).isEqualTo(totalResults)
         assertThat(resultItem.createdAt).isEqualTo(file.createdAt)
         assertThat(resultItem.messageType).isEqualTo(file.messageType)

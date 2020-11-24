@@ -1,12 +1,11 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileDetails;
-import com.vocalink.crossproduct.domain.files.FileEnquiry;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.repository.FileRepository;
@@ -14,7 +13,6 @@ import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.FilesClient;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -51,15 +49,14 @@ public class FilesAdapter implements FileRepository {
   }
 
   @Override
-  public Page<FileEnquiry> findFileEnquiries(String context,
-      FileEnquirySearchRequest request) {
+  public Page<File> findFiles(String context, FileEnquirySearchRequest request) {
 
     final FilesClient filesClient = clientFactory.getFilesClient(context);
     log.info("Fetching all file enquiries from: {}", context);
 
     CPFileEnquirySearchRequest cpRequest = MAPPER.toCp(request);
 
-    return MAPPER.toEntity(filesClient.findFileEnquiries(cpRequest));
+    return MAPPER.toEntity(filesClient.findFiles(cpRequest));
   }
 
   @Override
