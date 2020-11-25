@@ -6,7 +6,8 @@ public enum DtoProperties {
   SORT("default.sort"),
   ORDER("default.order"),
   OFFSET("default.offset"),
-  LIMIT("default.limit");
+  LIMIT("default.limit"),
+  DAYS_LIMIT("default.daysLimit");
 
   @Getter
   private final String property;
