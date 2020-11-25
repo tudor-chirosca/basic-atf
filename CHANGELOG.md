@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.19.4](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.19.3...v1.19.4) (2020-11-25)
+
+
+### Bug Fixes
+
+* date parsing in file param ([5748410](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/commit/574841010ad55fff9947c11f0a61e546826aadc6))
+
 ### [1.19.3](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.19.2...v1.19.3) (2020-11-25)
 
 ### [1.19.2](https://github-api.mcvl-engineering.com/vocalink-portal/cp-api-management/compare/v1.19.1...v1.19.2) (2020-11-25)
