@@ -31,12 +31,12 @@ public class FileEnquirySearchRequest {
   @Setter
   private String id;
 
-  public void setDate_from(LocalDate dateFrom) {
-    this.dateFrom = dateFrom;
+  public void setDate_from(String dateFrom) {
+    this.dateFrom = LocalDate.parse(dateFrom);
   }
 
-  public void setDate_to(LocalDate dateTo) {
-    this.dateTo = dateTo;
+  public void setDate_to(String dateTo) {
+    this.dateTo = LocalDate.parse(dateTo);
   }
 
   public void setCycle_ids(List<String> cycleIds) {
