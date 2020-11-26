@@ -1,6 +1,5 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.cycle;
 
-import com.vocalink.crossproduct.domain.cycle.Cycle;
 import java.time.LocalDate;
 import java.util.List;
 

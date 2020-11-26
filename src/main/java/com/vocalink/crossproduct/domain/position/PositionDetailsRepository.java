@@ -1,6 +1,5 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.position;
 
-import com.vocalink.crossproduct.domain.position.PositionDetails;
 import java.util.List;
 
 public interface PositionDetailsRepository {

@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.AlertsRepository;
+import com.vocalink.crossproduct.domain.alert.AlertsRepository;
 import com.vocalink.crossproduct.shared.alert.AlertsClient;
 import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;

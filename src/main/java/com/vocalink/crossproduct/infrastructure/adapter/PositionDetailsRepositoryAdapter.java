@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.domain.position.PositionDetails;
-import com.vocalink.crossproduct.repository.PositionDetailsRepository;
+import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.positions.PositionClient;
 import lombok.RequiredArgsConstructor;

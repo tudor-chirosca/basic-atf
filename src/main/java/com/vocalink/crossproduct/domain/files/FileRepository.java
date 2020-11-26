@@ -1,9 +1,6 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.files;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileDetails;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import java.util.List;
 

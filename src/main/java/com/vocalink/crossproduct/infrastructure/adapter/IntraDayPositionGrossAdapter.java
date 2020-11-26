@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.shared.positions.PositionClient;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPP
 import static java.util.stream.Collectors.toList;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.ReferencesRepository;
+import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.shared.reference.ReferencesClient;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

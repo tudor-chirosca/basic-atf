@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.files.FileDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
-import com.vocalink.crossproduct.repository.FileRepository
+import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto

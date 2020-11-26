@@ -4,7 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPP
 
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.IODetailsRepository;
+import com.vocalink.crossproduct.domain.io.IODetailsRepository;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import java.time.LocalDate;
 import java.util.List;

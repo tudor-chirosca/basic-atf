@@ -1,13 +1,13 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.repository.ParticipantIODataRepository
-import com.vocalink.crossproduct.repository.ParticipantRepository
+import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import com.vocalink.crossproduct.repository.IODetailsRepository
+import com.vocalink.crossproduct.domain.io.IODetailsRepository
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter

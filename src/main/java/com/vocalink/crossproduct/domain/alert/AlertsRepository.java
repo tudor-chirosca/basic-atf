@@ -1,9 +1,6 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.alert;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.alert.Alert;
-import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
-import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import java.util.Optional;
 
