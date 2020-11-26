@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FilesController implements FilesApi {
 
-  public static final String REJECTED = "Rejected";
+  public static final String REJECTED = "rejected";
   private final FilesFacade filesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +48,8 @@ public class FilesController implements FilesApi {
       throw new InvalidRequestParameterException("send_big and recv_bic are the same");
     }
 
-    if (nonNull(request.getReasonCode()) && !REJECTED.equals(request.getStatus())) {
+    if (nonNull(request.getReasonCode()) && (request.getStatus() == null
+        || nonNull(request.getStatus()) && !REJECTED.equals(request.getStatus().toLowerCase()))) {
       throw new InvalidRequestParameterException("Have reason_code specified with missing "
           + "status value, or value that is not 'Rejected'");
     }
