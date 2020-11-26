@@ -1,4 +1,4 @@
-# Cross Product API management
+# Cross Product International Suite Service
 
 This application exposes an API with aggregated data which is consumed from different products.
 

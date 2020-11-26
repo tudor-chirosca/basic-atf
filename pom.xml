@@ -10,11 +10,11 @@
     <relativePath/>
   </parent>
   <groupId>com.vocalink.crossproduct</groupId>
-  <artifactId>cp-api-management</artifactId>
+  <artifactId>international-suite-service</artifactId>
   <version>${release.version}</version>
   <packaging>war</packaging>
-  <name>cp-api-management</name>
-  <description>CP API Management</description>
+  <name>international-suite-service</name>
+  <description>International suite service</description>
 
   <properties>
     <release.version>0.0.0</release.version>
