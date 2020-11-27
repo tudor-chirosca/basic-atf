@@ -13,8 +13,8 @@
   <artifactId>international-suite-service</artifactId>
   <version>${release.version}</version>
   <packaging>war</packaging>
-  <name>international-suite-service</name>
-  <description>International suite service</description>
+  <name>International Suite Service</name>
+  <description>Crossproduct application to interact with different internal products through crossproduct adapters</description>
 
   <properties>
     <release.version>0.0.0</release.version>

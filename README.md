@@ -1,4 +1,4 @@
-# Cross Product International Suite Service
+# International Suite Service
 
 This application exposes an API with aggregated data which is consumed from different products.
 
