@@ -1,6 +1,5 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.reference;
 
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import java.util.List;
 
 public interface ReferencesRepository {

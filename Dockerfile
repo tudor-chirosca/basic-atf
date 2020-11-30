@@ -4,7 +4,7 @@
 FROM tomcat:8
 MAINTAINER Cool kids
 
-ADD ./target/cp-api-management-*.war /usr/local/tomcat/webapps/cp-api-management.war
+ADD ./target/international-suite-service-*.war /usr/local/tomcat/webapps/international-suite-service.war
 
 EXPOSE 8080
 

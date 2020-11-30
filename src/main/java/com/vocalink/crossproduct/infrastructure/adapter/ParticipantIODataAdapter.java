@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.infrastructure.adapter;
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.repository.ParticipantIODataRepository;
+import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import java.time.LocalDate;

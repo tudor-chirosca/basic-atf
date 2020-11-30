@@ -8,10 +8,10 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
-import com.vocalink.crossproduct.repository.CycleRepository;
-import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository;
-import com.vocalink.crossproduct.repository.ParticipantRepository;
-import com.vocalink.crossproduct.repository.PositionDetailsRepository;
+import com.vocalink.crossproduct.domain.cycle.CycleRepository;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
+import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
@@ -73,7 +73,7 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
     List<IntraDayPositionGross> intraDays = intraDayPositionGrossRepository
         .findIntraDayPositionGrossByParticipantId(context, participants.stream()
             .map(Participant::getBic).collect(toList()));
-    
+
     return presenterFactory.getPresenter(clientType)
         .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
   }

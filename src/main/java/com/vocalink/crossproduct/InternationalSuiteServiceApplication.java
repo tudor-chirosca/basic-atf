@@ -6,10 +6,10 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan
 @SpringBootApplication
-public class CpApiManagementApplication {
+public class InternationalSuiteServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(CpApiManagementApplication.class, args);
+    SpringApplication.run(InternationalSuiteServiceApplication.class, args);
   }
 
 }

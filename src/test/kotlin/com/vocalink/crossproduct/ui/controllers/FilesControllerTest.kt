@@ -68,8 +68,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
-        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"));
-        val dateTo = LocalDate.now().minusDays(5).format(ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
+        val dateTo = LocalDate.now().minusDays(5).format(ofPattern("yyyy-MM-dd"))
 
         `when`(filesFacade.getFiles(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
@@ -92,7 +92,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
-        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
         `when`(filesFacade.getFiles(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
@@ -156,7 +156,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should fail with 400 when cycleIds and date_to are both in request`() {
-        val dateTo = LocalDate.now().format(ofPattern("yyyy-MM-dd"));
+        val dateTo = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
@@ -184,7 +184,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
-        val dateFrom = LocalDate.now().minusDays(31).format(ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now().minusDays(31).format(ofPattern("yyyy-MM-dd"))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)

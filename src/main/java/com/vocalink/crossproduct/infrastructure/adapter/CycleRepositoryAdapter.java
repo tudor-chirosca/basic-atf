@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.CycleRepository;
+import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.shared.cycle.CyclesClient;
 import java.time.LocalDate;
 import java.util.List;

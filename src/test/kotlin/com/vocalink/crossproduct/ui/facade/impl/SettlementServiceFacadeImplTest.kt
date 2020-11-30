@@ -11,10 +11,10 @@ import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
-import com.vocalink.crossproduct.repository.CycleRepository
-import com.vocalink.crossproduct.repository.IntraDayPositionGrossRepository
-import com.vocalink.crossproduct.repository.ParticipantRepository
-import com.vocalink.crossproduct.repository.PositionDetailsRepository
+import com.vocalink.crossproduct.domain.cycle.CycleRepository
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository
+import com.vocalink.crossproduct.domain.position.PositionDetailsRepository
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -26,7 +26,6 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.test.assertEquals

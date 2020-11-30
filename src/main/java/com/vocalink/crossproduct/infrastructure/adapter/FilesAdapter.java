@@ -8,7 +8,7 @@ import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
-import com.vocalink.crossproduct.repository.FileRepository;
+import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.files.FilesClient;

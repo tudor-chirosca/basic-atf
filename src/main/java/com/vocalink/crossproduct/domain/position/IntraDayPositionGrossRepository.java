@@ -1,8 +1,6 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.position;
 
-import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import java.util.List;
-import java.util.Optional;
 
 public interface IntraDayPositionGrossRepository {
 

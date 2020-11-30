@@ -1,6 +1,5 @@
-package com.vocalink.crossproduct.repository;
+package com.vocalink.crossproduct.domain.participant;
 
-import com.vocalink.crossproduct.domain.participant.Participant;
 import java.util.List;
 import java.util.Optional;
 
