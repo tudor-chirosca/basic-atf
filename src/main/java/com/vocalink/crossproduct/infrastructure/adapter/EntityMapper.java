@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -19,6 +20,8 @@ import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
+import com.vocalink.crossproduct.shared.batch.CPBatch;
+import com.vocalink.crossproduct.shared.batch.CPBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.cycle.CPCycle;
 import com.vocalink.crossproduct.shared.files.CPFile;
 import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
@@ -29,6 +32,7 @@ import com.vocalink.crossproduct.shared.participant.CPParticipant;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
+import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,9 +71,13 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
 
-  Page<File> toEntity(CPPage<CPFile> files);
+  Page<File> toEntityFile(CPPage<CPFile> files);
+
+  Page<Batch> toEntityBatch(CPPage<CPBatch> batches);
 
   CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
+
+  CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
 
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")

@@ -59,7 +59,7 @@ public class FilesAdapter implements FileRepository {
 
     CPFileEnquirySearchRequest cpRequest = MAPPER.toCp(request);
 
-    return MAPPER.toEntity(filesClient.findFiles(cpRequest));
+    return MAPPER.toEntityFile(filesClient.findFiles(cpRequest));
   }
 
   @Override

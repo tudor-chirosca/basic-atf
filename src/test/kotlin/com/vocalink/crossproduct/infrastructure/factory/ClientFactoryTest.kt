@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.factory
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.alert.BPSAlertsClient
+import com.vocalink.crossproduct.adapter.bps.batch.BPSBatchesClient
 import com.vocalink.crossproduct.adapter.bps.cycle.BPSCyclesClient
 import com.vocalink.crossproduct.adapter.bps.files.BPSFilesClient
 import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
@@ -10,6 +11,7 @@ import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
 import com.vocalink.crossproduct.adapter.bps.reference.BPSReferencesClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
 import com.vocalink.crossproduct.shared.alert.AlertsClient
+import com.vocalink.crossproduct.shared.batch.BatchesClient
 import com.vocalink.crossproduct.shared.cycle.CyclesClient
 import com.vocalink.crossproduct.shared.files.FilesClient
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
@@ -31,6 +33,7 @@ class ClientFactoryTest {
     private val alertsClient: AlertsClient = mock(BPSAlertsClient::class.java)!!
     private val filesClient: FilesClient = mock(BPSFilesClient::class.java)!!
     private val referencesClient: ReferencesClient = mock(BPSReferencesClient::class.java)!!
+    private val batchesClient: BatchesClient = mock(BPSBatchesClient::class.java)!!
 
     private val clientFactory: ClientFactory = ClientFactory(
             listOf(participantClient),
@@ -39,7 +42,8 @@ class ClientFactoryTest {
             listOf(positionClient),
             listOf(alertsClient),
             listOf(filesClient),
-            listOf(referencesClient)
+            listOf(referencesClient),
+            listOf(batchesClient)
     )
 
     @Test

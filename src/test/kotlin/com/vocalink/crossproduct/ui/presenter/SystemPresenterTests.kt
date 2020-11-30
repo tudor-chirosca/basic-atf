@@ -3,7 +3,10 @@ package com.vocalink.crossproduct.ui.presenter
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
+import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.files.File
+import com.vocalink.crossproduct.domain.files.FileDetails
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -83,7 +86,7 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present alerts for System`() {
-        val alerts = Page<Alert>(0, null)
+        val alerts = Page<Alert>(0, emptyList())
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentAlert(alerts)
         }
@@ -94,6 +97,30 @@ class SystemPresenterTests {
         val cycles = listOf(Cycle.builder().build())
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentCycleDateReferences(cycles)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present files for System`() {
+        val files = Page<File>(0, emptyList())
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentFiles(files)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present file details for System`() {
+        val fileDetails = FileDetails.builder().build()
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentFileDetails(fileDetails)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present batches for System`() {
+        val batches = Page<Batch>(0, emptyList())
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentBatches(batches)
         }
     }
 }

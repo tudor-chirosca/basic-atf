@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileDetails;
@@ -22,6 +23,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -75,9 +77,11 @@ public interface Presenter {
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences);
 
-  PageDto<FileDto> presentFiles(Page<File> enquiries);
+  PageDto<FileDto> presentFiles(Page<File> files);
 
   List<CycleDto> presentCycleDateReferences(List<Cycle> cycles);
 
   FileDetailsDto presentFileDetails(FileDetails fileDetails);
+
+  PageDto<BatchDto> presentBatches(Page<Batch> batches);
 }

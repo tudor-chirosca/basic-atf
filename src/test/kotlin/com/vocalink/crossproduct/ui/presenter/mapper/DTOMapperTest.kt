@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
@@ -19,6 +20,7 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
+import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
@@ -583,7 +585,7 @@ class DTOMapperTest {
                 .build()
         val page = Page<File>(totalResults, listOf(file))
 
-        val result = MAPPER.toDto(page)
+        val result = MAPPER.toFilePageDto(page)
 
         assertThat(result).isNotNull
 
@@ -634,5 +636,32 @@ class DTOMapperTest {
         assertThat(result.sender.entityName).isEqualTo(file.sender.entityName)
         assertThat(result.sender.fullName).isEqualTo(file.sender.fullName)
         assertThat(result.sender.iban).isEqualTo(file.sender.iban)
+    }
+
+    @Test
+    fun `should map Batch fields`() {
+        val totalResults = 1
+        val batch = Batch.builder()
+                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .messageType("message_type")
+                .id("name")
+                .nrOfTransactions(12)
+                .senderBic("sender_bic")
+                .status("status")
+                .build()
+        val page = Page<Batch>(totalResults, listOf(batch))
+
+        val result = MAPPER.toBatchPageDto(page)
+
+        assertThat(result).isNotNull
+
+        val resultItem = result.items[0] as BatchDto
+        assertThat(result.totalResults).isEqualTo(totalResults)
+        assertThat(resultItem.createdAt).isEqualTo(batch.createdAt)
+        assertThat(resultItem.messageType).isEqualTo(batch.messageType)
+        assertThat(resultItem.id).isEqualTo(batch.id)
+        assertThat(resultItem.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
+        assertThat(resultItem.senderBic).isEqualTo(batch.senderBic)
+        assertThat(resultItem.status).isEqualTo(batch.status)
     }
 }
