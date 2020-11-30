@@ -10,8 +10,10 @@ import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
+import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.files.FilesClient;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,7 @@ public class FilesAdapter implements FileRepository {
     return filesClient.findFileReferences()
         .stream()
         .filter(ref -> ref.getEnquiryType().equalsIgnoreCase(enquiryType))
+        .sorted(Comparator.comparing(CPFileReference::getStatus))
         .map(MAPPER::toEntity)
         .collect(toList());
   }

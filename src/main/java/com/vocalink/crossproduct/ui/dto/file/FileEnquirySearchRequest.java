@@ -1,9 +1,12 @@
 package com.vocalink.crossproduct.ui.dto.file;
 
 import static com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault;
+import static com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
+
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
@@ -18,7 +21,7 @@ public class FileEnquirySearchRequest {
   private int limit = parseInt(getDefault(LIMIT));
   @Setter
   private List<String> sort;
-  private LocalDate dateFrom;
+  private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
   private List<String> cycleIds;
   private String messageDirection;

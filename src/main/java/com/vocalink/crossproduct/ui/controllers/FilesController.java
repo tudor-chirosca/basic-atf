@@ -1,5 +1,9 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT;
+import static java.lang.Long.parseLong;
+import static java.util.Objects.nonNull;
+import static com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault;
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
@@ -7,6 +11,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FilesController implements FilesApi {
 
+  public static final String REJECTED = "rejected";
   private final FilesFacade filesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,15 +37,26 @@ public class FilesController implements FilesApi {
       throw new InvalidRequestParameterException("msg_direction is missing in request params");
     }
 
-    if (request.getCycleIds() != null && !request.getCycleIds().isEmpty() &&
-        (request.getDateFrom() != null || request.getDateTo() != null)) {
-      throw new InvalidRequestParameterException("cycleIds and date are included in request params");
+    if (nonNull(request.getCycleIds()) && !request.getCycleIds().isEmpty() &&
+        nonNull(request.getDateTo())) {
+      throw new InvalidRequestParameterException("cycle_ids and date_to are both included "
+          + "in request params, exclude one of them");
     }
 
-    if (request.getSendingBic() != null && request.getReceivingBic() != null &&
+    if (nonNull(request.getSendingBic()) && nonNull(request.getReceivingBic()) &&
         request.getSendingBic().equals(request.getReceivingBic())) {
+      throw new InvalidRequestParameterException("send_big and recv_bic are the same");
+    }
 
-      throw new InvalidRequestParameterException("Sending and Receiving BIC are the same");
+    if (nonNull(request.getReasonCode()) && (request.getStatus() == null
+        || nonNull(request.getStatus()) && !REJECTED.equals(request.getStatus().toLowerCase()))) {
+      throw new InvalidRequestParameterException("Have reason_code specified with missing "
+          + "status value, or value that is not 'Rejected'");
+    }
+
+    if (nonNull(request.getDateFrom()) && request.getDateFrom()
+        .isBefore(LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT))))) {
+      throw new InvalidRequestParameterException("date_from can't be earlier than 30 days");
     }
 
     PageDto<FileDto> fileDto = filesFacade.getFiles(context, clientType, request);

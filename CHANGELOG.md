@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.19.11](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.10...v1.19.11) (2020-11-27)
+
+### [1.19.10](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.9...v1.19.10) (2020-11-27)
+
+### [1.19.9](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.8...v1.19.9) (2020-11-27)
+
+### [1.19.8](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.7...v1.19.8) (2020-11-27)
+
+### [1.19.7](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.6...v1.19.7) (2020-11-26)
+
+
+### Bug Fixes
+
+* added sorting to enqiury-statuses andd refactored param check ([ca772a3](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/ca772a381dcedebd62317b326cefd3e622d06ecb))
+
+### [1.19.6](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.5...v1.19.6) (2020-11-26)
+
+
+### Bug Fixes
+
+* added default value of 30 days on file, and additional validation ([0b3c78f](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/0b3c78f52281af25268f7dc808813340d0e3addb))
+
 ### [1.19.5](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.4...v1.19.5) (2020-11-26)
 
 
