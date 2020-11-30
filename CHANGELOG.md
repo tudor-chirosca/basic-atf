@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.19.12](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.11...v1.19.12) (2020-11-30)
+
 ### [1.19.11](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.10...v1.19.11) (2020-11-27)
 
 ### [1.19.10](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.9...v1.19.10) (2020-11-27)
