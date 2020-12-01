@@ -60,20 +60,24 @@ pipeline {
                     stages {
                         stage('create release') {
                             steps {
-                                script {
-                                    createRelease(releasePlugin: "standard-version")
-                                    env.RELEASE_VERSION = readFile("${WORKSPACE}/version.txt")
-                                    echo "Release generated: ${RELEASE_VERSION}"
-  
-                                 }
+                                sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release"
+                                createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
                             }
                         }
                         stage("publish artifact") {
+                            when {
+                                allOf {
+                                    branch "${RELEASE_BRANCH}"
+                                    not {
+                                         changelog "^chore\\(release\\):.*"
+                                    }
+                                }
+                            }
                             steps {
-                                publishArtifact(goal: "clean install -U -Drelease.version=${RELEASE_VERSION}")
+                                publishArtifact(goal: "clean install -U")
                             }
                         }
-                    }
+                    }//stages
                 }//stage
             }//stages
         }//stage
