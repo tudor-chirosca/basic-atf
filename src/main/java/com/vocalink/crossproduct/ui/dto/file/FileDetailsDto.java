@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Builder
@@ -23,5 +24,5 @@ public class FileDetailsDto {
   @JsonInclude(Include.NON_EMPTY)
   private final String reasonCode;
   private final String messageType;
-  private final FileSenderDetailsDto sender;
+  private final EnquirySenderDetailsDto sender;
 }

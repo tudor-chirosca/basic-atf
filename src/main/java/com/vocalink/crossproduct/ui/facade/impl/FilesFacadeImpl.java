@@ -3,10 +3,9 @@ package com.vocalink.crossproduct.ui.facade.impl;
 import static java.util.Collections.singletonList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.domain.files.FileRepository;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -28,17 +27,17 @@ public class FilesFacadeImpl implements FilesFacade {
   public PageDto<FileDto> getFiles(String context, ClientType clientType,
       FileEnquirySearchRequest request) {
 
-    final Page<File> files = fileRepository.findFiles(context, request);
+    final Page<File> files = fileRepository.findFilesPaginated(context, request);
 
     return presenterFactory.getPresenter(clientType).presentFiles(files);
   }
 
   @Override
   public FileDetailsDto getDetailsById(String context, ClientType clientType, String id) {
-    final FileDetails fileDetails = fileRepository.findDetailsBy(context, singletonList(id)).stream()
+    final File file = fileRepository.findFilesByIds(context, singletonList(id)).stream()
         .findFirst()
         .orElseThrow(() -> new EntityNotFoundException("There is no file with such an id"));
 
-    return presenterFactory.getPresenter(clientType).presentFileDetails(fileDetails);
+    return presenterFactory.getPresenter(clientType).presentFileDetails(file);
   }
 }

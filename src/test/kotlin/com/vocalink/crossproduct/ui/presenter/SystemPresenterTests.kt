@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.files.File
-import com.vocalink.crossproduct.domain.files.FileDetails
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -110,9 +109,9 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present file details for System`() {
-        val fileDetails = FileDetails.builder().build()
+        val file = File.builder().build()
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFileDetails(fileDetails)
+            systemPresenter.presentFileDetails(file)
         }
     }
 

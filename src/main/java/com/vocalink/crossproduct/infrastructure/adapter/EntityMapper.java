@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -75,6 +74,11 @@ public interface EntityMapper {
 
   Page<Batch> toEntityBatch(CPPage<CPBatch> batches);
 
+  @Mapping(target = "fileName", source = "name")
+  @Mapping(target = "settlementCycleId", source = "cycle.id")
+  @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
+  Batch toEntity(CPBatch file);
+
   CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
 
   CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
@@ -82,7 +86,7 @@ public interface EntityMapper {
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")
   @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
-  FileDetails toEntity(CPFile file);
+  File toEntity(CPFile file);
 
   @Named("convertToDate")
   default LocalDate convertToDate(LocalDateTime date) {

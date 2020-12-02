@@ -8,7 +8,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.files.FileDetails;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -25,8 +25,10 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -208,7 +210,17 @@ public interface DTOMapper {
 
   PageDto<FileDto> toFilePageDto(Page<File> files);
 
+  @Mapping(target = "name", source = "fileName")
+  @Mapping(target = "senderBic", source = "sender.entityBic")
+  FileDto toDto(File file);
+
   PageDto<BatchDto> toBatchPageDto(Page<Batch> batches);
 
-  FileDetailsDto toDto(FileDetails fileDetails);
+  @Mapping(target = "id", source = "batchId")
+  @Mapping(target = "senderBic", source = "sender.entityBic")
+  BatchDto toDto(Batch batch);
+
+  FileDetailsDto toDetailsDto(File file);
+
+  BatchDetailsDto toDetailsDto(Batch batch);
 }

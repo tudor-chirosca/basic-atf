@@ -10,30 +10,29 @@ import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
-import com.vocalink.crossproduct.domain.files.FileDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
+import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -491,7 +490,6 @@ class DTOMapperTest {
         assertEquals(alertType, result.alertTypes[0])
         assertEquals(priorityName, result.priorities[0].name)
         assertEquals(threshold, result.priorities[0].threshold)
-
     }
 
     @Test
@@ -575,12 +573,15 @@ class DTOMapperTest {
     @Test
     fun `should map File fields`() {
         val totalResults = 1
+        val sender =  EnquirySenderDetails.builder()
+                .entityBic("sender_bic")
+                .build()
         val file = File.builder()
                 .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
                 .messageType("message_type")
-                .name("name")
+                .fileName("name")
                 .nrOfBatches(12)
-                .senderBic("sender_bic")
+                .sender(sender)
                 .status("status")
                 .build()
         val page = Page<File>(totalResults, listOf(file))
@@ -593,9 +594,9 @@ class DTOMapperTest {
         assertThat(result.totalResults).isEqualTo(totalResults)
         assertThat(resultItem.createdAt).isEqualTo(file.createdAt)
         assertThat(resultItem.messageType).isEqualTo(file.messageType)
-        assertThat(resultItem.name).isEqualTo(file.name)
+        assertThat(resultItem.name).isEqualTo(file.fileName)
         assertThat(resultItem.nrOfBatches).isEqualTo(file.nrOfBatches)
-        assertThat(resultItem.senderBic).isEqualTo(file.senderBic)
+        assertThat(resultItem.senderBic).isEqualTo(file.sender.entityBic)
         assertThat(resultItem.status).isEqualTo(file.status)
     }
 
@@ -607,7 +608,7 @@ class DTOMapperTest {
                 .fullName("full_name")
                 .iban("23423423423423423")
                 .build()
-        val file = FileDetails.builder()
+        val file = File.builder()
                 .fileName("name")
                 .nrOfBatches(12)
                 .fileSize(23423423423)
@@ -620,7 +621,7 @@ class DTOMapperTest {
                 .sender(sender)
                 .build()
 
-        val result = MAPPER.toDto(file)
+        val result: FileDetailsDto = MAPPER.toDetailsDto(file)
 
         assertThat(result).isNotNull
         assertThat(result.fileName).isEqualTo(file.fileName)
@@ -641,12 +642,16 @@ class DTOMapperTest {
     @Test
     fun `should map Batch fields`() {
         val totalResults = 1
+        val sender =  EnquirySenderDetails.builder()
+                .entityBic("sender_bic")
+                .build()
         val batch = Batch.builder()
+                .fileName("filename")
                 .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
                 .messageType("message_type")
-                .id("name")
+                .batchId("id")
                 .nrOfTransactions(12)
-                .senderBic("sender_bic")
+                .sender(sender)
                 .status("status")
                 .build()
         val page = Page<Batch>(totalResults, listOf(batch))
@@ -657,11 +662,45 @@ class DTOMapperTest {
 
         val resultItem = result.items[0] as BatchDto
         assertThat(result.totalResults).isEqualTo(totalResults)
+        assertThat(resultItem.id).isEqualTo(batch.batchId)
         assertThat(resultItem.createdAt).isEqualTo(batch.createdAt)
+        assertThat(resultItem.senderBic).isEqualTo(batch.sender.entityBic)
         assertThat(resultItem.messageType).isEqualTo(batch.messageType)
-        assertThat(resultItem.id).isEqualTo(batch.id)
         assertThat(resultItem.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
-        assertThat(resultItem.senderBic).isEqualTo(batch.senderBic)
         assertThat(resultItem.status).isEqualTo(batch.status)
+    }
+
+    @Test
+    fun `should map Batch Details fields`() {
+        val sender = EnquirySenderDetails.builder()
+                .entityBic("sender_bic")
+                .fullName("full_name")
+                .build()
+        val batch = Batch.builder()
+                .fileName("filename")
+                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .messageType("message_type")
+                .batchId("id")
+                .nrOfTransactions(12)
+                .sender(sender)
+                .status("status")
+                .build()
+
+        val result = MAPPER.toDetailsDto(batch)
+
+        assertThat(result).isNotNull
+        assertThat(result.batchId).isEqualTo(batch.batchId)
+        assertThat(result.fileName).isEqualTo(batch.fileName)
+        assertThat(result.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
+        assertThat(result.fileSize).isEqualTo(batch.fileSize)
+        assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
+        assertThat(result.settlementCycleId).isEqualTo(batch.settlementCycleId)
+        assertThat(result.createdAt).isEqualTo(batch.createdAt)
+        assertThat(result.status).isEqualTo(batch.status)
+        assertThat(result.reasonCode).isEqualTo(batch.reasonCode)
+        assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
+        assertThat(result.messageType).isEqualTo(batch.messageType)
+        assertThat(result.sender.entityBic).isEqualTo(batch.sender.entityBic)
+        assertThat(result.sender.entityName).isEqualTo(batch.sender.entityName)
     }
 }

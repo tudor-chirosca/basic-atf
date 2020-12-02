@@ -28,7 +28,7 @@ class BatchesAdapterTest {
         `when`(batchClient.findBatches(any()))
                 .thenReturn(batches)
 
-        batchesAdapter.findBatches(TestConstants.CONTEXT, BatchEnquirySearchRequest())
+        batchesAdapter.findBatchesPaginated(TestConstants.CONTEXT, BatchEnquirySearchRequest())
 
         verify(clientFactory, atLeastOnce()).getBatchesClient(TestConstants.CONTEXT)
         verify(batchClient, atLeastOnce()).findBatches(any())

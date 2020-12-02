@@ -5,10 +5,9 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.FileReference;
-import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.domain.files.FileRepository;
+import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.files.FilesClient;
@@ -52,7 +51,7 @@ public class FilesAdapter implements FileRepository {
   }
 
   @Override
-  public Page<File> findFiles(String context, FileEnquirySearchRequest request) {
+  public Page<File> findFilesPaginated(String context, FileEnquirySearchRequest request) {
 
     final FilesClient filesClient = clientFactory.getFilesClient(context);
     log.info("Fetching all file enquiries from: {}", context);
@@ -63,7 +62,7 @@ public class FilesAdapter implements FileRepository {
   }
 
   @Override
-  public List<FileDetails> findDetailsBy(String context, List<String> ids) {
+  public List<File> findFilesByIds(String context, List<String> ids) {
     log.info("Fetching file details from: {}", context);
 
     final FilesClient filesClient = clientFactory.getFilesClient(context);

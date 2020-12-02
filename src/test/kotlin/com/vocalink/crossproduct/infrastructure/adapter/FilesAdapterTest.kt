@@ -28,7 +28,7 @@ class FilesAdapterTest {
         `when`(fileClient.findFiles(any()))
                 .thenReturn(files)
 
-        filesAdapter.findFiles(TestConstants.CONTEXT, FileEnquirySearchRequest())
+        filesAdapter.findFilesPaginated(TestConstants.CONTEXT, FileEnquirySearchRequest())
 
         verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
         verify(fileClient, atLeastOnce()).findFiles(any())
@@ -43,7 +43,7 @@ class FilesAdapterTest {
         `when`(fileClient.findFilesByIds(any()))
                 .thenReturn(files)
 
-        filesAdapter.findDetailsBy(TestConstants.CONTEXT, listOf(""))
+        filesAdapter.findFilesByIds(TestConstants.CONTEXT, listOf(""))
 
         verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
         verify(fileClient, atLeastOnce()).findFilesByIds(any())

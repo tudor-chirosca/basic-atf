@@ -72,8 +72,9 @@ public class FilesController implements FilesApi {
 
   @GetMapping(value = "/enquiry/files/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<FileDetailsDto> getFileDetails(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @PathVariable String fileId) {
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final @PathVariable String fileId) {
 
     FileDetailsDto fileDetails = filesFacade.getDetailsById(context, clientType, fileId);
 

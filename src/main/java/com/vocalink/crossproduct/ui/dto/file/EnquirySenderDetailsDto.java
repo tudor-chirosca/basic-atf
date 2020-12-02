@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class FileSenderDetailsDto {
+public class EnquirySenderDetailsDto {
 
   private final String entityName;
   private final String entityBic;

@@ -11,7 +11,7 @@ public interface FileRepository {
 
   List<FileReference> findFileReferences(String context, String enquiryType);
 
-  Page<File> findFiles(String context, FileEnquirySearchRequest request);
+  Page<File> findFilesPaginated(String context, FileEnquirySearchRequest request);
 
-  List<FileDetails> findDetailsBy(String context, List<String> ids);
+  List<File> findFilesByIds(String context, List<String> ids);
 }

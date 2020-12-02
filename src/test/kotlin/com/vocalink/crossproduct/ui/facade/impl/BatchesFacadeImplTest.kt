@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.facade.impl
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.batch.Batch
-import com.vocalink.crossproduct.repository.BatchRepository
+import com.vocalink.crossproduct.domain.batch.BatchRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
@@ -34,7 +34,7 @@ class BatchesFacadeImplTest {
         val pageDto = PageDto<BatchDto>(1, listOf(BatchDto.builder().build()))
         val request = BatchEnquirySearchRequest()
 
-        `when`(batchRepository.findBatches(any(), any()))
+        `when`(batchRepository.findBatchesPaginated(any(), any()))
                 .thenReturn(page)
 
         `when`(presenterFactory.getPresenter(any()))
@@ -45,7 +45,7 @@ class BatchesFacadeImplTest {
 
         val result = batchesServiceFacadeImpl.getBatches(TestConstants.CONTEXT, ClientType.UI, request)
 
-        verify(batchRepository).findBatches(any(), any())
+        verify(batchRepository).findBatchesPaginated(any(), any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentBatches(any())
 

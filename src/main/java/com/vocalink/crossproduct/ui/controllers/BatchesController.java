@@ -7,6 +7,7 @@ import static java.util.Objects.nonNull;
 
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.BatchesFacade;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,5 +70,16 @@ public class BatchesController implements BatchesApi {
     PageDto<BatchDto> batchesDto = batchesFacade.getBatches(context, clientType, request);
 
     return ResponseEntity.ok().body(batchesDto);
+  }
+
+  @GetMapping(value = "/enquiry/batches/{batchId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<BatchDetailsDto> getBatchDetails(
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final @PathVariable String batchId) {
+
+    BatchDetailsDto batchDetailsDto = batchesFacade.getDetailsById(context, clientType, batchId);
+
+    return ResponseEntity.ok().body(batchDetailsDto);
   }
 }

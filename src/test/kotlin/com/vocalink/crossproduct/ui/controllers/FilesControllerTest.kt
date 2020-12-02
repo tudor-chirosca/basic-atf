@@ -4,7 +4,7 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
-import com.vocalink.crossproduct.ui.dto.file.FileSenderDetailsDto
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.FilesFacade
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
@@ -275,7 +275,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .createdAt(LocalDateTime.of(2020, 10, 30, 10, 10, 10))
                 .status("Accepted")
                 .messageType("prtp.001SO")
-                .sender(FileSenderDetailsDto.builder()
+                .sender(EnquirySenderDetailsDto.builder()
                         .entityName("Nordea Bank")
                         .entityBic("NDEASESSXXX")
                         .build())

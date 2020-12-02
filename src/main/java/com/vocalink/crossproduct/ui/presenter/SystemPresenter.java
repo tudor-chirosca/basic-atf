@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.files.FileDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -20,11 +19,14 @@ import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
-import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
@@ -100,7 +102,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto presentAlert(Page<Alert> alerts) {
+  public PageDto<AlertDto> presentAlert(Page<Alert> alerts) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -111,7 +113,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto presentFiles(Page<File> enquiries) {
+  public PageDto<FileDto> presentFiles(Page<File> enquiries) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -126,12 +128,17 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(FileDetails fileDetails) {
+  public FileDetailsDto presentFileDetails(File file) {
     throw new RuntimeException("System API not implemented yet");
   }
 
   @Override
   public PageDto<BatchDto> presentBatches(Page<Batch> batches) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public BatchDetailsDto presentBatchDetails(Batch batch) {
     throw new RuntimeException("System API not implemented yet");
   }
 }
