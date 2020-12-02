@@ -1,3 +1,16 @@
+# [1.20.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.12...v1.20.0) (2020-12-02)
+
+
+### Bug Fixes
+
+* changed mock urls variable ([5bbe9b9](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/5bbe9b9b98ab7ad0e95d27f96121c52a63ac5d56))
+
+
+### Features
+
+* Added Batches list endpoint ([8db3ee9](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/8db3ee9f66616e14ef4638a0de552e1be5085883))
+* Added semantic release instead of standart release ([c3b4674](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/c3b4674e52b753b82ebd1ee80f3d97f27e3a3260))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
