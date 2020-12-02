@@ -102,7 +102,7 @@ pipeline {
                     steps {
                         script {
                             echo "Deploying ${env.gitTag} to ${PREPROD_IP}"
-                            def envVars = "-e BPS_BASE_URL=http://positions-mock-server:8080/positions-mock-server -e SPRINT_PROFILES_ACTIVE=dev -e JAVA_OPTS='-Xmx2g'"
+                            def envVars = "-e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRINT_PROFILES_ACTIVE=dev -e JAVA_OPTS='-Xmx2g'"
                             def dockerArgs = "--network cpp-network -d -p 8080:8080 ${envVars}"
                             deployContainer(
                                 containerName: projectName, 
