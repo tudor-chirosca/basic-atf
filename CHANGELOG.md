@@ -1,3 +1,10 @@
+# [1.21.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.20.1...v1.21.0) (2020-12-02)
+
+
+### Features
+
+* Added semantic release instead of standart release ([c3b4674](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/c3b4674e52b753b82ebd1ee80f3d97f27e3a3260))
+
 # [1.20.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.19.12...v1.20.0) (2020-12-02)
 
 
