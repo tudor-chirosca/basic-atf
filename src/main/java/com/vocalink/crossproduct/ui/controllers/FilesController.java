@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class FilesController implements FilesApi {
 
   public static final String REJECTED = "rejected";
+  public static final String WILDCARD_REGEX = "^(\\*?)[a-zA-Z0-9_.]+(\\*?)$";
+
   private final FilesFacade filesFacade;
 
   @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,6 +58,11 @@ public class FilesController implements FilesApi {
     if (nonNull(request.getDateFrom()) && request.getDateFrom()
         .isBefore(LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT))))) {
       throw new InvalidRequestParameterException("date_from can't be earlier than 30 days");
+    }
+
+    if (nonNull(request.getId()) && !request.getId().matches(WILDCARD_REGEX)) {
+      throw new InvalidRequestParameterException("wildcard '*' can not be in the middle and "
+          + "id can't contain special symbols beside '.' and '_'");
     }
 
     PageDto<FileDto> fileDto = filesFacade.getFiles(context, clientType, request);

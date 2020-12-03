@@ -90,7 +90,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("cycle_ids", "HANDSESS")
                 .param("recv_bic", "NDEASESSSX")
                 .param("status", "Accepted")
-                .param("id", "2342")
+                .param("id", "_2342*")
                 .param("limit", "20")
                 .param("offset", "0")
                 .param("sort", "-senderBic"))
@@ -205,6 +205,32 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Have reason_code specified with missing "
                         + "status value, or value that is not 'pre-rejected' or 'post-rejected'")))
+    }
+
+    @Test
+    fun `should fail with 400 when id wildcard search string has * on middle of the word`() {
+        mockMvc.perform(get("/enquiry/batches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("msg_direction", "Sending")
+                .param("id", "BANK*YY"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
+                        + "id can't contain special symbols beside '.' and '_'")))
+    }
+
+    @Test
+    fun `should fail with 400 when id wildcard search string has other special characters than allowed by the regex`() {
+        mockMvc.perform(get("/enquiry/batches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("msg_direction", "Sending")
+                .param("id", "BANK()[]"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
+                        + "id can't contain special symbols beside '.' and '_'")))
     }
 
     @Test

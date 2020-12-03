@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BatchesController implements BatchesApi {
 
   public static final List<String> REJECTED_STATES = Arrays.asList("post-rejected", "pre-rejected");
+  public static final String WILDCARD_REGEX = "^(\\*?)[a-zA-Z0-9_.]+(\\*?)$";
   private final BatchesFacade batchesFacade;
 
   @GetMapping(value = "/enquiry/batches", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,6 +58,11 @@ public class BatchesController implements BatchesApi {
     if (nonNull(request.getDateFrom()) && request.getDateFrom()
         .isBefore(LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT))))) {
       throw new InvalidRequestParameterException("date_from can't be earlier than 30 days");
+    }
+
+    if (nonNull(request.getId()) && !request.getId().matches(WILDCARD_REGEX)) {
+      throw new InvalidRequestParameterException("wildcard '*' can not be in the middle and "
+          + "id can't contain special symbols beside '.' and '_'");
     }
 
     PageDto<BatchDto> batchesDto = batchesFacade.getBatches(context, clientType, request);
