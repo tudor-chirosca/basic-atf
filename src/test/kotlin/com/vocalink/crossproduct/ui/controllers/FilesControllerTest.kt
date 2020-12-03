@@ -47,7 +47,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                     "nrOfBatches": 12,
                     "status": "Accepted"
                 }
-            ]       
+            ]
         }"""
 
         const val VALID_DETAILS_RESPONSE = """{
@@ -62,7 +62,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "sender": {
                 "entityName": "Nordea Bank",
                 "entityBic": "NDEASESSXXX"
-            }       
+            }
         }"""
     }
 

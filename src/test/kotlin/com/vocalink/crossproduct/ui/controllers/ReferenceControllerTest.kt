@@ -78,8 +78,8 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all message direction references`() {
-        val sending = "Sending"
-        val receiving = "Receiving"
+        val sending = "sending"
+        val receiving = "receiving"
         val type = "some_type"
         val messages = listOf(
                 MessageDirectionReferenceDto.builder()
