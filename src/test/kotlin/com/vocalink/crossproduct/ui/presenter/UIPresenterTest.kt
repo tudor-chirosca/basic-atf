@@ -488,9 +488,9 @@ class UIPresenterTest {
     }
 
     @Test
-    fun `should map all Message references fields and set isDefault true for Sending`() {
-        val sending = "Sending"
-        val receiving = "Receiving"
+    fun `should map all Message references fields and set isDefault true for sending`() {
+        val sending = "sending"
+        val receiving = "receiving"
         val model = listOf(
                 MessageDirectionReference.builder()
                         .name(sending)
