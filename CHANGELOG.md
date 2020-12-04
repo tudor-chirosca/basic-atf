@@ -1,3 +1,10 @@
+## [1.21.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.21.0...v1.21.1) (2020-12-04)
+
+
+### Bug Fixes
+
+* changes casing of default message direction ([443eb5b](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/443eb5bddc3d8f63776f59fdf261ec76e5bfb250))
+
 # [1.21.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.20.1...v1.21.0) (2020-12-02)
 
 
