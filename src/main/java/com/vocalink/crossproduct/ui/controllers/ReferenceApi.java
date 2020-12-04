@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -21,13 +20,6 @@ public interface ReferenceApi {
   })
   ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
       ClientType clientType, String context);
-
-  @ApiOperation("Fetch all file references")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "File reference retrieved successfully", response = FileStatusesDto.class),
-      @ApiResponse(code = 500, message = "Invalid context")
-  })
-  ResponseEntity<List<FileStatusesDto>> getFileReferences(ClientType clientType, String context);
 
   @ApiOperation("Get statuses for an enquiry type")
   @ApiResponses({

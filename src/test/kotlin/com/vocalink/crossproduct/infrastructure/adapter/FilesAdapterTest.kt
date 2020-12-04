@@ -51,17 +51,4 @@ class FilesAdapterTest {
         verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
         verify(fileClient, atLeastOnce()).findFileById(any())
     }
-
-    @Test
-    fun `should invoke files client when finding file reference`() {
-        `when`(clientFactory.getFilesClient(any()))
-                .thenReturn(fileClient)
-        `when`(fileClient.findFileReferences())
-                .thenReturn(emptyList())
-
-        filesAdapter.findFileReferences(TestConstants.CONTEXT)
-
-        verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
-        verify(fileClient, atLeastOnce()).findFileReferences()
-    }
 }

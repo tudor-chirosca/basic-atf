@@ -6,9 +6,6 @@ import java.util.List;
 
 public interface FileRepository {
 
-  @Deprecated
-  List<FileReference> findFileReferences(String context);
-
   List<FileReference> findFileReferences(String context, String enquiryType);
 
   Page<File> findFilesPaginated(String context, FileEnquirySearchRequest request);

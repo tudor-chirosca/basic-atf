@@ -26,18 +26,6 @@ public class FilesAdapter implements FileRepository {
   private final ClientFactory clientFactory;
 
   @Override
-  public List<FileReference> findFileReferences(String context) {
-
-    final FilesClient filesClient = clientFactory.getFilesClient(context);
-    log.info("Fetching all file references from: {}", context);
-
-    return filesClient.findFileReferences()
-        .stream()
-        .map(MAPPER::toEntity)
-        .collect(toList());
-  }
-
-  @Override
   public List<FileReference> findFileReferences(String context, String enquiryType) {
 
     final FilesClient filesClient = clientFactory.getFilesClient(context);

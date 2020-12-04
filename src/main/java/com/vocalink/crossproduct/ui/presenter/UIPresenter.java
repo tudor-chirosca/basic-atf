@@ -34,7 +34,6 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -246,11 +245,6 @@ public class UIPresenter implements Presenter {
   @Override
   public ClientType getClientType() {
     return ClientType.UI;
-  }
-
-  @Override
-  public List<FileStatusesDto> presentFileReferences(List<FileReference> fileReferences) {
-    return MAPPER.toDto(fileReferences);
   }
 
   @Override

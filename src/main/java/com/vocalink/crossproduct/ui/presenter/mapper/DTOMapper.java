@@ -39,7 +39,6 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -203,8 +202,6 @@ public interface DTOMapper {
             .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .build();
   }
-
-  List<FileStatusesDto> toDto(List<FileReference> fileReferences);
 
   List<FileStatusesTypeDto> toDtoType(List<FileReference> fileReferences);
 
