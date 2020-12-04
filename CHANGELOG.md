@@ -1,3 +1,10 @@
+# [1.22.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.21.1...v1.22.0) (2020-12-04)
+
+
+### Features
+
+* Added Batch Details ([3a099ea](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/3a099ea3c01c4da4b4a55e0aa709e3f660d4e362))
+
 ## [1.21.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.21.0...v1.21.1) (2020-12-04)
 
 
