@@ -13,5 +13,5 @@ public interface FileRepository {
 
   Page<File> findFilesPaginated(String context, FileEnquirySearchRequest request);
 
-  List<File> findFilesByIds(String context, List<String> ids);
+  File findFileById(String context, String id);
 }

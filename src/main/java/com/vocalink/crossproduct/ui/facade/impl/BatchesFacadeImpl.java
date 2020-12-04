@@ -35,12 +35,8 @@ public class BatchesFacadeImpl implements BatchesFacade {
   @Override
   public BatchDetailsDto getDetailsById(String context, ClientType clientType, String id) {
 
-    final Batch batch = batchRepository
-        .findBatchesByIds(context, singletonList(id))
-        .stream()
-        .findFirst()
-        .orElseThrow(() -> new EntityNotFoundException("There is no batch with such an id"));
-
+    final Batch batch = batchRepository.findBatchById(context, id);
+    
     return presenterFactory.getPresenter(clientType).presentBatchDetails(batch);
   }
 }

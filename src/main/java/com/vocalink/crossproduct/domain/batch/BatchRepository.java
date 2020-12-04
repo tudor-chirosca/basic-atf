@@ -8,6 +8,6 @@ public interface BatchRepository {
 
   Page<Batch> findBatchesPaginated(String context, BatchEnquirySearchRequest request);
 
-  List<Batch> findBatchesByIds(String context, List<String> batchIds);
+  Batch findBatchById(String context, String id);
 
 }

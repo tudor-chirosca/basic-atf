@@ -62,15 +62,11 @@ public class FilesAdapter implements FileRepository {
   }
 
   @Override
-  public List<File> findFilesByIds(String context, List<String> ids) {
+  public File findFileById(String context, String id) {
     log.info("Fetching file details from: {}", context);
 
     final FilesClient filesClient = clientFactory.getFilesClient(context);
 
-    return filesClient.findFilesByIds(ids)
-        .getItems()
-        .stream()
-        .map(MAPPER::toEntity)
-        .collect(toList());
+    return MAPPER.toEntity(filesClient.findFileById(id));
   }
 }

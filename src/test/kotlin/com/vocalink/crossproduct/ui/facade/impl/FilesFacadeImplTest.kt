@@ -57,12 +57,12 @@ class FilesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get file details`() {
-        val details = File.builder().build()
+        val file = File.builder().build()
         val detailsDto = FileDetailsDto.builder().build()
 
         `when`(fileRepository
-                .findFilesByIds(any(), any()))
-                .thenReturn(listOf(details))
+                .findFileById(any(), any()))
+                .thenReturn(file)
 
         `when`(presenterFactory.getPresenter(any()))
                 .thenReturn(uiPresenter)
@@ -72,20 +72,10 @@ class FilesFacadeImplTest {
 
         val result = filesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
-        verify(fileRepository).findFilesByIds(any(), any())
+        verify(fileRepository).findFileById(any(), any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentFileDetails(any())
 
         assertNotNull(result)
-    }
-
-    @Test
-    fun `should throw error Not Found if no file details found`() {
-        `when`(fileRepository.findFilesByIds(any(), any()))
-                .thenReturn(emptyList())
-
-        assertThrows(EntityNotFoundException::class.java) {
-            filesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
-        }
     }
 }

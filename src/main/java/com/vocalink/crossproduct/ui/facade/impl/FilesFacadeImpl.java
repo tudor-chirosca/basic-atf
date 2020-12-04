@@ -34,9 +34,8 @@ public class FilesFacadeImpl implements FilesFacade {
 
   @Override
   public FileDetailsDto getDetailsById(String context, ClientType clientType, String id) {
-    final File file = fileRepository.findFilesByIds(context, singletonList(id)).stream()
-        .findFirst()
-        .orElseThrow(() -> new EntityNotFoundException("There is no file with such an id"));
+
+    final File file = fileRepository.findFileById(context, id);
 
     return presenterFactory.getPresenter(clientType).presentFileDetails(file);
   }

@@ -34,15 +34,11 @@ public class BatchesAdapter implements BatchRepository {
   }
 
   @Override
-  public List<Batch> findBatchesByIds(String context, List<String> batchIds) {
+  public Batch findBatchById(String context, String id) {
     final BatchesClient batchClient = clientFactory.getBatchesClient(context);
 
-    log.info("Fetching batches with ids: {}, from: {}", batchIds, context);
+    log.info("Fetching batch with id: {}, from: {}", id, context);
 
-    return batchClient.findBatchesByIds(batchIds)
-        .getItems()
-        .stream()
-        .map(MAPPER::toEntity)
-        .collect(toList());
+    return MAPPER.toEntity(batchClient.findBatchById(id));
   }
 }

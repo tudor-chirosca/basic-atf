@@ -4,8 +4,10 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.adapter.bps.files.BPSFilesClient
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.shared.CPPage
+import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.shared.files.CPFile
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
+import java.time.LocalDateTime
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -36,17 +38,18 @@ class FilesAdapterTest {
 
     @Test
     fun `should invoke files client when finding file by id`() {
-        val files = CPPage<CPFile>(0, emptyList());
+        val cycle = CPCycle.builder().settlementTime(LocalDateTime.now()).build()
+        val file = CPFile.builder().cycle(cycle).build();
 
         `when`(clientFactory.getFilesClient(any()))
                 .thenReturn(fileClient)
-        `when`(fileClient.findFilesByIds(any()))
-                .thenReturn(files)
+        `when`(fileClient.findFileById(any()))
+                .thenReturn(file)
 
-        filesAdapter.findFilesByIds(TestConstants.CONTEXT, listOf(""))
+        filesAdapter.findFileById(TestConstants.CONTEXT, "")
 
         verify(clientFactory, atLeastOnce()).getFilesClient(TestConstants.CONTEXT)
-        verify(fileClient, atLeastOnce()).findFilesByIds(any())
+        verify(fileClient, atLeastOnce()).findFileById(any())
     }
 
     @Test
