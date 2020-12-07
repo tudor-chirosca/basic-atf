@@ -25,7 +25,7 @@
     <kotlin-test-runner.version>3.4.2</kotlin-test-runner.version>
     <java-faker.version>1.0.2</java-faker.version>
     <cp-shared-api.version>1.13.1</cp-shared-api.version>
-    <cp-adapter-bps.version>1.18.1</cp-adapter-bps.version>
+    <cp-adapter-bps.version>1.18.2</cp-adapter-bps.version>
     <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
     <lombok.version>1.18.16</lombok.version>
   </properties>
