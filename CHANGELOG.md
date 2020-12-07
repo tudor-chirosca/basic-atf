@@ -1,3 +1,10 @@
+## [1.22.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.0...v1.22.1) (2020-12-07)
+
+
+### Bug Fixes
+
+* fixed batch and file by ID fetch ([5c5a7a7](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/5c5a7a7901b3ae4a2da5b6c2ab0fafc241a6b6dd))
+
 # [1.22.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.21.1...v1.22.0) (2020-12-04)
 
 
