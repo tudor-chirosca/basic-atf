@@ -1,3 +1,10 @@
+## [1.22.2](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.1...v1.22.2) (2020-12-07)
+
+
+### Bug Fixes
+
+* bump adapter version in pom ([acd02b5](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/acd02b5db3c60cd08db4b906e89fee5a8d5f50a3))
+
 ## [1.22.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.0...v1.22.1) (2020-12-07)
 
 
