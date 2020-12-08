@@ -1,3 +1,10 @@
+## [1.22.3](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.2...v1.22.3) (2020-12-08)
+
+
+### Bug Fixes
+
+* removed duplicated sender_id ([a1a2cd7](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/a1a2cd78310a595a10a6e9c964cc650ad7392565))
+
 ## [1.22.2](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.1...v1.22.2) (2020-12-07)
 
 
