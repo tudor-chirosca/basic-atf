@@ -7,7 +7,9 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.domain.alert.AlertsRepository;
 import com.vocalink.crossproduct.shared.alert.AlertsClient;
+import com.vocalink.crossproduct.shared.alert.CPAlertParams;
 import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.util.Optional;
@@ -31,6 +33,7 @@ public class AlertsAdapter implements AlertsRepository {
     return client.findReferenceAlerts().map(EntityMapper.MAPPER::toEntity);
   }
 
+  @Deprecated
   @Override
   public Page<Alert> findAlerts(String context, AlertSearchRequest searchRequest) {
     log.info("Fetching alerts from context {} ...", context);
@@ -40,6 +43,17 @@ public class AlertsAdapter implements AlertsRepository {
     AlertsClient client = clientFactory.getAlertsClient(context);
 
     return EntityMapper.MAPPER.toEntityAlert(client.findAlerts(request));
+  }
+
+  @Override
+  public Page<Alert> findAlerts(String context, AlertSearchParams searchParams) {
+    log.info("Fetching alerts from context {} ...", context);
+
+    final CPAlertParams cpAlertParams = DTOMapper.MAPPER.toDto(searchParams);
+
+    AlertsClient client = clientFactory.getAlertsClient(context);
+
+    return EntityMapper.MAPPER.toEntityAlert(client.findAlerts(cpAlertParams));
   }
 
   @Override

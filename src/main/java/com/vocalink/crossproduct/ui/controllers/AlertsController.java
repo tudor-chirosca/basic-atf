@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
@@ -26,7 +27,8 @@ public class AlertsController implements AlertsApi {
   public ResponseEntity<AlertReferenceDataDto> getReferenceAlerts(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
-    AlertReferenceDataDto alertReferenceDataDto = alertsServiceFacade.getAlertsReference(context, clientType);
+    AlertReferenceDataDto alertReferenceDataDto = alertsServiceFacade
+        .getAlertsReference(context, clientType);
 
     return ResponseEntity.ok().body(alertReferenceDataDto);
   }
@@ -46,6 +48,17 @@ public class AlertsController implements AlertsApi {
       final @RequestBody AlertSearchRequest request) {
 
     PageDto<AlertDto> alertDataDto = alertsServiceFacade.getAlerts(context, clientType, request);
+
+    return ResponseEntity.ok().body(alertDataDto);
+  }
+
+  @GetMapping(value = "/alerts", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<PageDto<AlertDto>> getAlerts(
+      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
+      AlertSearchParams searchParams) {
+
+    PageDto<AlertDto> alertDataDto = alertsServiceFacade
+        .getAlerts(context, clientType, searchParams);
 
     return ResponseEntity.ok().body(alertDataDto);
   }

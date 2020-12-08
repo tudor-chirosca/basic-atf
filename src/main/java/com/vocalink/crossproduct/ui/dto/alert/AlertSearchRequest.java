@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.Getter;
 
 
+@Deprecated
 @Getter
 public class AlertSearchRequest implements Serializable {
 

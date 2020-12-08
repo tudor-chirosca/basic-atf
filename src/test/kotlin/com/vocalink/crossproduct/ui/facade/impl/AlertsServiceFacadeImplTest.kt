@@ -96,7 +96,7 @@ class AlertsServiceFacadeImplTest {
 
         val result = alertsServiceFacadeImpl.getAlerts(TestConstants.CONTEXT, ClientType.UI, searchRequest)
 
-        verify(alertsRepository, atLeastOnce()).findAlerts(any(), any())
+        verify(alertsRepository, atLeastOnce()).findAlerts(TestConstants.CONTEXT, searchRequest)
         verify(presenterFactory, atLeastOnce()).getPresenter(any())
         verify(uiPresenter, atLeastOnce()).presentAlert(any())
 

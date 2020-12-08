@@ -4,12 +4,14 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -90,7 +92,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        `when`(facade.getAlerts(any(), any(), any())).thenReturn(PageDto(0, null))
+        `when`(facade.getAlerts(any(), any(), any(AlertSearchRequest::class.java))).thenReturn(PageDto(0, null))
 
         mockMvc.perform(post("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -98,7 +100,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_REQUEST))
                 .andExpect(status().isOk)
-                .andExpect(content().json(VALID_RESPONSE))
+                .andExpect(content().json(VALID_RESPONSE, true))
     }
 
     @Test
