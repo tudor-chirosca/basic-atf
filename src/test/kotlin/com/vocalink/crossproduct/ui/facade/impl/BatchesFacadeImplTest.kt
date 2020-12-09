@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.ui.facade.impl
-
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.batch.BatchRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
@@ -48,6 +48,30 @@ class BatchesFacadeImplTest {
         verify(batchRepository).findBatchesPaginated(any(), any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentBatches(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke presenter and repository on get batch details`() {
+        val batch = Batch.builder().build()
+        val batchDetailsDto = BatchDetailsDto.builder().build()
+
+        `when`(batchRepository
+                .findBatchById(any(), any()))
+                .thenReturn(batch)
+
+        `when`(presenterFactory.getPresenter(any()))
+                .thenReturn(uiPresenter)
+
+        `when`(uiPresenter.presentBatchDetails(any()))
+                .thenReturn(batchDetailsDto)
+
+        val result = batchesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
+
+        verify(batchRepository).findBatchById(any(), any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentBatchDetails(any())
 
         assertNotNull(result)
     }

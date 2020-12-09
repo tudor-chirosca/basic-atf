@@ -5,10 +5,12 @@ import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
+import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
+import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -95,6 +97,30 @@ class ReferencesServiceFacadeImplTest {
         verify(cycleRepository).findCyclesByDate(CONTEXT, date)
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentCycleDateReferences(cycles)
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should get file references`() {
+        val fileRefs = listOf(FileReference.builder().build())
+        val fileStatsDto = listOf(FileStatusesTypeDto.builder().build())
+
+        `when`(fileRepository
+                .findFileReferences(any(), any()))
+                .thenReturn(fileRefs)
+
+        `when`(presenterFactory.getPresenter(any()))
+                .thenReturn(uiPresenter)
+
+        `when`(uiPresenter.presentFileReferencesFor(any()))
+                .thenReturn(fileStatsDto)
+
+        val result = referenceServiceFacadeImpl.getFileReferences(CONTEXT, ClientType.UI, "")
+
+        verify(fileRepository).findFileReferences(any(), any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentFileReferencesFor(any())
 
         assertNotNull(result)
     }

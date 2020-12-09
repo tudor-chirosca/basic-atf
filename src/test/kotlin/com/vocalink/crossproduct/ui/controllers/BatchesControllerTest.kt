@@ -3,7 +3,10 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.facade.BatchesFacade
 import java.nio.charset.Charset
 import java.time.LocalDate
@@ -48,8 +51,23 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 }
             ]       
         }"""
-    }
 
+        const val VALID_DETAILS_RESPONSE = """{
+            "batchId": "A27ISTXBANKSESSXXX2",
+            "fileName": "A27ISTXBANKSESSXXX2.gz",
+            "nrOfTransactions": 12,
+            "fileSize": 3245234523,
+            "settlementDate": "2020-11-03",
+            "settlementCycleId": "04",
+            "createdAt": "2020-10-30T10:10:10",
+            "status": "Accepted",
+            "messageType": "prtp.001SO",
+            "sender": {
+                "entityName": "Nordea Bank",
+                "entityBic": "NDEASESSXXX"
+            }
+        }"""
+    }
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
@@ -234,7 +252,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should return 200 when has reason code and status is pre-ejected`() {
+    fun `should return 200 when has reason code and status is pre-rejected`() {
         `when`(batchesFacade.getBatches(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
@@ -248,7 +266,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should return 200 when has reason code and status is post-ejected`() {
+    fun `should return 200 when has reason code and status is post-rejected`() {
         `when`(batchesFacade.getBatches(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
@@ -259,5 +277,32 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "post-rejected")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should return 200 on get batch by Id`() {
+        val id = "A27ISTXBANKSESSXXX2"
+        val details = BatchDetailsDto.builder()
+                .batchId(id)
+                .fileName("$id.gz")
+                .nrOfTransactions(12)
+                .fileSize(3245234523)
+                .settlementDate(LocalDate.of(2020, 11, 3))
+                .settlementCycleId("04")
+                .createdAt(LocalDateTime.of(2020, 10, 30, 10, 10, 10))
+                .status("Accepted")
+                .messageType("prtp.001SO")
+                .sender(EnquirySenderDetailsDto.builder()
+                        .entityName("Nordea Bank")
+                        .entityBic("NDEASESSXXX")
+                        .build())
+                .build()
+        `when`(batchesFacade.getDetailsById(any(), any(), any())).thenReturn(details)
+        mockMvc.perform(get("/enquiry/batches/$id")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_DETAILS_RESPONSE))
     }
 }

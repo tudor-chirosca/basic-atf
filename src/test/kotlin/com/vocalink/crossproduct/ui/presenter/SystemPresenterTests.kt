@@ -3,9 +3,11 @@ package com.vocalink.crossproduct.ui.presenter
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
+import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.files.File
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -120,6 +122,29 @@ class SystemPresenterTests {
         val batches = Page<Batch>(0, emptyList())
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentBatches(batches)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present alert stats for System`() {
+        val alertStats = AlertStats.builder().build()
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentAlertStats(alertStats)
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present message direction refs for System`() {
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentMessageDirectionReferences(emptyList())
+        }
+    }
+
+    @Test
+    fun `should throw RuntimeException on present batch details for System`() {
+        val batch = Batch.builder().build()
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentBatchDetails(batch)
         }
     }
 }

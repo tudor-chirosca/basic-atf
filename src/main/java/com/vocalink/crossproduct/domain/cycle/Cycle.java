@@ -6,20 +6,16 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Cycle {
 
-  private String id;
-  private LocalDateTime settlementTime;
-  private LocalDateTime cutOffTime;
-  private CycleStatus status;
-  private List<ParticipantPosition> totalPositions;
+  private final String id;
+  private final LocalDateTime settlementTime;
+  private final LocalDateTime cutOffTime;
+  private final CycleStatus status;
+  private final List<ParticipantPosition> totalPositions;
 
 }

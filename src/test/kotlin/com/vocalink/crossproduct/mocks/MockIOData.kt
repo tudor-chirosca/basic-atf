@@ -43,7 +43,7 @@ class MockIOData {
             .dateFrom(LocalDate.now())
             .batches(emptyList())
             .transactions(emptyList())
-            .files(IODataDetailsDto())
+            .files(IODataDetailsDto.builder().build())
             .build()
 
     fun getCPIODetails() = listOf(

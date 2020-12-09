@@ -2,16 +2,15 @@ package com.vocalink.crossproduct.domain.io;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
-@Data
+@AllArgsConstructor
 public class ParticipantIOData {
-  private String participantId;
-  private IOData files;
-  private IOData batches;
-  private IOData transactions;
+
+  private final String participantId;
+  private final IOData files;
+  private final IOData batches;
+  private final IOData transactions;
 }
