@@ -1,3 +1,10 @@
+# [1.23.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.3...v1.23.0) (2020-12-10)
+
+
+### Features
+
+* get /alerts ([590fe06](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/590fe06781bb7a68b6faed64eba2d13d72a5695a))
+
 ## [1.22.3](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.2...v1.22.3) (2020-12-08)
 
 
