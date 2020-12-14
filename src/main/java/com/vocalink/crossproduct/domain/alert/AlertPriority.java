@@ -15,4 +15,5 @@ public class AlertPriority {
 
   private String name;
   private Integer threshold;
+  private Boolean highlight;
 }
