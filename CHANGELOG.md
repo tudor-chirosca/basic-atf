@@ -1,3 +1,10 @@
+# [1.24.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.23.0...v1.24.0) (2020-12-14)
+
+
+### Features
+
+* added highlight to alert refs ([e4c4051](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/e4c40518015bf7ae83180905e207bd7982aaf02c))
+
 # [1.23.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.22.3...v1.23.0) (2020-12-10)
 
 
