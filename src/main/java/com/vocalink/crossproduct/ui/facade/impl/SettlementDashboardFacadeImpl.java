@@ -12,9 +12,9 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
+import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.Collections;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
+public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade {
 
   public static final String NOT_AVAILABLE = "NA";
   private final ParticipantRepository participantRepository;
@@ -79,7 +79,7 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
   }
 
   @Override
-  public ParticipantSettlementDetailsDto getParticipantSettlementDetails(String context,
+  public ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId) {
 
     Participant participant = participantRepository.findByParticipantId(context, participantId)

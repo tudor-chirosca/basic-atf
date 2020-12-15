@@ -1,16 +1,16 @@
 package com.vocalink.crossproduct.ui.facade;
 
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 
-public interface SettlementServiceFacade {
+public interface SettlementDashboardFacade {
 
   SettlementDashboardDto getSettlement(String context, ClientType clientType);
 
   SettlementDashboardDto getSettlement(String context, ClientType clientType, String participantId);
 
-  ParticipantSettlementDetailsDto getParticipantSettlementDetails(String context,
+  ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId);
 
 }

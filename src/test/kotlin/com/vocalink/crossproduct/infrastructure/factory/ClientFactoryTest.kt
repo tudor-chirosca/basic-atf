@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantClient
 import com.vocalink.crossproduct.adapter.bps.positions.BPSPositionClient
 import com.vocalink.crossproduct.adapter.bps.reference.BPSReferencesClient
+import com.vocalink.crossproduct.adapter.bps.settlement.BPSSettlementsClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
 import com.vocalink.crossproduct.shared.alert.AlertsClient
 import com.vocalink.crossproduct.shared.batch.BatchesClient
@@ -18,11 +19,12 @@ import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
 import com.vocalink.crossproduct.shared.participant.ParticipantClient
 import com.vocalink.crossproduct.shared.positions.PositionClient
 import com.vocalink.crossproduct.shared.reference.ReferencesClient
-import org.junit.jupiter.api.Assertions
+import com.vocalink.crossproduct.shared.settlement.SettlementsClient
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertThrows
 
 class ClientFactoryTest {
 
@@ -34,6 +36,7 @@ class ClientFactoryTest {
     private val filesClient: FilesClient = mock(BPSFilesClient::class.java)!!
     private val referencesClient: ReferencesClient = mock(BPSReferencesClient::class.java)!!
     private val batchesClient: BatchesClient = mock(BPSBatchesClient::class.java)!!
+    private val settlementsClient: SettlementsClient = mock(BPSSettlementsClient::class.java)!!
 
     private val clientFactory: ClientFactory = ClientFactory(
             listOf(participantClient),
@@ -43,7 +46,8 @@ class ClientFactoryTest {
             listOf(alertsClient),
             listOf(filesClient),
             listOf(referencesClient),
-            listOf(batchesClient)
+            listOf(batchesClient),
+            listOf(settlementsClient)
     )
 
     @Test
@@ -103,7 +107,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw participant client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getParticipantClient(TestConstants.CONTEXT)
         }
     }
@@ -111,7 +115,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw cycles client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getCyclesClient(TestConstants.CONTEXT)
         }
     }
@@ -119,7 +123,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw participant IO client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getParticipantIODataClient(TestConstants.CONTEXT)
         }
     }
@@ -127,7 +131,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw position client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getPositionClient(TestConstants.CONTEXT)
         }
     }
@@ -135,7 +139,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw alerts client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getAlertsClient(TestConstants.CONTEXT)
         }
     }
@@ -143,7 +147,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw flies client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getFilesClient(TestConstants.CONTEXT)
         }
     }
@@ -151,7 +155,7 @@ class ClientFactoryTest {
     @Test
     fun `should throw references client not available for wrong context`() {
         clientFactory.init()
-        Assertions.assertThrows(ClientNotAvailableException::class.java) {
+        assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getReferencesClient(TestConstants.CONTEXT)
         }
     }

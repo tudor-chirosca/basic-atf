@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.factory;
 
+import static java.util.stream.Collectors.toMap;
+
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import com.vocalink.crossproduct.shared.alert.AlertsClient;
 import com.vocalink.crossproduct.shared.batch.BatchesClient;
@@ -9,6 +11,7 @@ import com.vocalink.crossproduct.shared.io.ParticipantIODataClient;
 import com.vocalink.crossproduct.shared.participant.ParticipantClient;
 import com.vocalink.crossproduct.shared.positions.PositionClient;
 import com.vocalink.crossproduct.shared.reference.ReferencesClient;
+import com.vocalink.crossproduct.shared.settlement.SettlementsClient;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,6 +32,8 @@ public class ClientFactory {
   private final List<FilesClient> filesClientList;
   private final List<ReferencesClient> referenceClientList;
   private final List<BatchesClient> batchesClientList;
+  private final List<SettlementsClient> settlementsClientList;
+
 
   private Map<String, ParticipantClient> participantsClients;
   private Map<String, CyclesClient> cyclesClients;
@@ -38,25 +43,28 @@ public class ClientFactory {
   private Map<String, FilesClient> filesClients;
   private Map<String, ReferencesClient> referenceClients;
   private Map<String, BatchesClient> batchesClients;
+  private Map<String, SettlementsClient> settlementsClients;
 
   @PostConstruct
   public void init() {
     participantsClients = participantClientList.stream()
-        .collect(Collectors.toMap(ParticipantClient::getContext, Function.identity()));
+        .collect(toMap(ParticipantClient::getContext, Function.identity()));
     cyclesClients = cyclesClientList.stream()
-        .collect(Collectors.toMap(CyclesClient::getContext, Function.identity()));
+        .collect(toMap(CyclesClient::getContext, Function.identity()));
     participantIODataClients = participantIODataClientsList.stream()
-        .collect(Collectors.toMap(ParticipantIODataClient::getContext, Function.identity()));
+        .collect(toMap(ParticipantIODataClient::getContext, Function.identity()));
     positionClients = positionClientList.stream()
-        .collect(Collectors.toMap(PositionClient::getContext, Function.identity()));
+        .collect(toMap(PositionClient::getContext, Function.identity()));
     alertsClients = alertsClientList.stream()
-        .collect(Collectors.toMap(AlertsClient::getContext, Function.identity()));
+        .collect(toMap(AlertsClient::getContext, Function.identity()));
     filesClients = filesClientList.stream()
-        .collect(Collectors.toMap(FilesClient::getContext, Function.identity()));
+        .collect(toMap(FilesClient::getContext, Function.identity()));
     referenceClients = referenceClientList.stream()
-        .collect(Collectors.toMap(ReferencesClient::getContext, Function.identity()));
+        .collect(toMap(ReferencesClient::getContext, Function.identity()));
     batchesClients = batchesClientList.stream()
-        .collect(Collectors.toMap(BatchesClient::getContext, Function.identity()));
+        .collect(toMap(BatchesClient::getContext, Function.identity()));
+    settlementsClients = settlementsClientList.stream()
+        .collect(toMap(SettlementsClient::getContext, Function.identity()));
   }
 
   public ParticipantClient getParticipantClient(String context) {
@@ -115,5 +123,12 @@ public class ClientFactory {
       throw new ClientNotAvailableException("Batches client not available for context " + context);
     }
     return batchesClients.get(context);
+  }
+
+  public SettlementsClient getSettlementsClient(String context) {
+    if (settlementsClients.get(context) == null) {
+      throw new ClientNotAvailableException("Settlements client not available for context " + context);
+    }
+    return settlementsClients.get(context);
   }
 }

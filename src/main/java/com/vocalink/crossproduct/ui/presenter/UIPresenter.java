@@ -18,9 +18,10 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
@@ -38,6 +39,7 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -103,7 +105,7 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+  public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
       List<PositionDetails> positionsDetails, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
@@ -224,6 +226,12 @@ public class UIPresenter implements Presenter {
   @Override
   public BatchDetailsDto presentBatchDetails(Batch batch) {
     return MAPPER.toDetailsDto(batch);
+  }
+
+  @Override
+  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+      List<Participant> participants, Cycle cycle) {
+    return MAPPER.toDto(settlement, cycle, participants);
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(

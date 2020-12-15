@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.mocks
 
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 
 class MockDashboardModels {
-    fun getSelfFundingDetailsDto(): ParticipantSettlementDetailsDto {
-        return ParticipantSettlementDetailsDto.builder()
+    fun getSelfFundingDetailsDto(): ParticipantDashboardSettlementDetailsDto {
+        return ParticipantDashboardSettlementDetailsDto.builder()
                 .participant(MockParticipants().getParticipantDto(false))
                 .previousCycle(MockCycles().cyclesDto[0])
                 .currentCycle(MockCycles().cyclesDto[1])
@@ -16,8 +16,8 @@ class MockDashboardModels {
                 .build()
     }
 
-    fun getSelfFundingDetailsDtoForOneCycle(): ParticipantSettlementDetailsDto {
-        return ParticipantSettlementDetailsDto.builder()
+    fun getSelfFundingDetailsDtoForOneCycle(): ParticipantDashboardSettlementDetailsDto {
+        return ParticipantDashboardSettlementDetailsDto.builder()
                 .participant(MockParticipants().getParticipantDto(false))
                 .previousCycle(MockCycles().cyclesDto[0])
                 .currentPosition(MockPositions().positionDetailsDto)

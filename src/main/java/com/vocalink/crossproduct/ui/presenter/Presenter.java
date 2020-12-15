@@ -15,9 +15,10 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
@@ -31,6 +32,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public interface Presenter {
       Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays);
 
-  ParticipantSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+  ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
       List<PositionDetails> positionsDetails,
       Participant participant,
       Participant fundingParticipant,
@@ -82,5 +84,8 @@ public interface Presenter {
   PageDto<BatchDto> presentBatches(Page<Batch> batches);
 
   BatchDetailsDto presentBatchDetails(Batch batch);
+
+  ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+      List<Participant> participants, Cycle cycle);
 
 }

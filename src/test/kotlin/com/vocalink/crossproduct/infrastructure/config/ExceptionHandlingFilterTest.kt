@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.config
 
-import com.vocalink.crossproduct.ui.controllers.SettlementController
+import com.vocalink.crossproduct.ui.controllers.SettlementDashboardController
 import com.vocalink.crossproduct.ui.exceptions.GlobalExceptionHandler
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
+import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.atLeastOnce
@@ -14,11 +14,11 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 
-@WebMvcTest(value = [SettlementController::class])
+@WebMvcTest(value = [SettlementDashboardController::class])
 class ExceptionHandlingFilterTest @Autowired constructor(var mockMvc: MockMvc) {
 
     @MockBean
-    private lateinit var service: SettlementServiceFacade
+    private lateinit var dashboard: SettlementDashboardFacade
 
     @MockBean
     private lateinit var handler: GlobalExceptionHandler

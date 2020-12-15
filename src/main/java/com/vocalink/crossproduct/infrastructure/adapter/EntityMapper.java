@@ -15,6 +15,8 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
+import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
@@ -31,8 +33,12 @@ import com.vocalink.crossproduct.shared.participant.CPParticipant;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
+import com.vocalink.crossproduct.shared.settlement.CPInstructionEnquiryRequest;
+import com.vocalink.crossproduct.shared.settlement.CPParticipantInstruction;
+import com.vocalink.crossproduct.shared.settlement.CPParticipantSettlement;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.mapstruct.Mapper;
@@ -74,6 +80,10 @@ public interface EntityMapper {
 
   Page<Batch> toEntityBatch(CPPage<CPBatch> batches);
 
+  Page<ParticipantInstruction> toEntityInstruction(CPPage<CPParticipantInstruction> batches);
+
+  ParticipantSettlement toEntity(CPParticipantSettlement settlement);
+
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")
   @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
@@ -82,6 +92,8 @@ public interface EntityMapper {
   CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
 
   CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
+
+  CPInstructionEnquiryRequest toCp(ParticipantSettlementRequest request);
 
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")

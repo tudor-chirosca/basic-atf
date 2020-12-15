@@ -1,27 +1,27 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.io.IODetailsRepository
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import com.vocalink.crossproduct.domain.io.IODetailsRepository
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class InputOutputFacadeImplTest {
 
@@ -136,7 +136,7 @@ class InputOutputFacadeImplTest {
 
         `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.empty())
-        Assertions.assertThrows(EntityNotFoundException::class.java) {
+        assertThrows(EntityNotFoundException::class.java) {
             inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
         }
     }
@@ -154,7 +154,7 @@ class InputOutputFacadeImplTest {
                 .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
                 .thenReturn(emptyList())
 
-        Assertions.assertThrows(EntityNotFoundException::class.java) {
+        assertThrows(EntityNotFoundException::class.java) {
             inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
         }
     }

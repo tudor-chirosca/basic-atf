@@ -17,6 +17,8 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
+import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
+import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -26,15 +28,17 @@ import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -704,5 +708,59 @@ class DTOMapperTest {
         assertThat(result.messageType).isEqualTo(batch.messageType)
         assertThat(result.sender.entityBic).isEqualTo(batch.sender.entityBic)
         assertThat(result.sender.entityName).isEqualTo(batch.sender.entityName)
+    }
+
+    @Test
+    fun `should map ParticipantSettlementDto fields`() {
+        val instruction = ParticipantInstruction(
+                "cycleId", "participantId", "reference", "status",
+                "counterpartyId", "settlementCounterpartyId",
+                BigDecimal.TEN, BigDecimal.TEN
+        )
+        val settlement = ParticipantSettlement("cycleId", "status", "participantId", Page(1, listOf(instruction)))
+        val cycle = Cycle("cycleId",
+                LocalDateTime.of(2020, 10, 10, 10, 10, 10),
+                LocalDateTime.of(2020, 10, 10, 12, 10, 10),
+                CycleStatus.COMPLETED,
+                emptyList()
+        )
+        val participant = Participant("participantId", "participantId", "name",
+        "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+        val counterparty = Participant("counterpartyId", "counterpartyId", "counterpartyName",
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+        val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+
+        val result = MAPPER.toDto(settlement, cycle, listOf(participant, counterparty, settlementCounterparty))
+        assertThat(result).isNotNull
+
+        assertThat(result.cycleId).isEqualTo(settlement.cycleId)
+        assertThat(result.settlementTime).isEqualTo(cycle.settlementTime)
+        assertThat(result.status).isEqualTo(settlement.status)
+        assertThat(result.participant.id).isEqualTo(participant.id)
+        assertThat(result.participant.bic).isEqualTo(participant.bic)
+        assertThat(result.participant.name).isEqualTo(participant.name)
+        assertThat(result.participant.fundingBic).isEqualTo(participant.fundingBic)
+        assertThat(result.participant.status).isEqualTo(participant.status)
+        assertThat(result.participant.suspendedTime).isEqualTo(participant.suspendedTime)
+        assertThat(result.participant.participantType).isEqualTo(participant.participantType.description)
+        assertThat(result.instructions.totalResults).isEqualTo(1)
+
+        val instructionResult = result.instructions.items[0] as ParticipantInstructionDto
+        assertThat(instructionResult.counterparty.bic).isEqualTo(counterparty.bic)
+        assertThat(instructionResult.counterparty.id).isEqualTo(counterparty.id)
+        assertThat(instructionResult.counterparty.name).isEqualTo(counterparty.name)
+        assertThat(instructionResult.counterparty.fundingBic).isEqualTo(counterparty.fundingBic)
+        assertThat(instructionResult.counterparty.status).isEqualTo(counterparty.status)
+        assertThat(instructionResult.counterparty.suspendedTime).isEqualTo(counterparty.suspendedTime)
+        assertThat(instructionResult.counterparty.participantType).isEqualTo(counterparty.participantType.description)
+
+        assertThat(instructionResult.settlementCounterparty.bic).isEqualTo(settlementCounterparty.bic)
+        assertThat(instructionResult.settlementCounterparty.id).isEqualTo(settlementCounterparty.id)
+        assertThat(instructionResult.settlementCounterparty.name).isEqualTo(settlementCounterparty.name)
+        assertThat(instructionResult.settlementCounterparty.fundingBic).isEqualTo(settlementCounterparty.fundingBic)
+        assertThat(instructionResult.settlementCounterparty.status).isEqualTo(settlementCounterparty.status)
+        assertThat(instructionResult.settlementCounterparty.suspendedTime).isEqualTo(settlementCounterparty.suspendedTime)
+        assertThat(instructionResult.settlementCounterparty.participantType).isEqualTo(settlementCounterparty.participantType.description)
     }
 }

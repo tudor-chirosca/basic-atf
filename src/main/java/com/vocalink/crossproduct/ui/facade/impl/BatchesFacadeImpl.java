@@ -1,11 +1,8 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import static java.util.Collections.singletonList;
-
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;

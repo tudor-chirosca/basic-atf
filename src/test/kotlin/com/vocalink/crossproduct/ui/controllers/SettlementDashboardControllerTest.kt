@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.mocks.MockDashboardModels
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
+import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -10,26 +10,25 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(SettlementController::class)
-open class SettlementControllerTest {
+@WebMvcTest(SettlementDashboardController::class)
+open class SettlementDashboardControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var settlementServiceFacade: SettlementServiceFacade
+    private lateinit var settlementDashboardFacade: SettlementDashboardFacade
 
     @Test
     @Throws(Exception::class)
     fun `should get settlement for scheme operator`() {
-        `when`(settlementServiceFacade.getSettlement(TestConstants.CONTEXT, ClientType.UI))
+        `when`(settlementDashboardFacade.getSettlement(TestConstants.CONTEXT, ClientType.UI))
                 .thenReturn(MockDashboardModels().getAllParticipantsSettlementDashboardDto())
-        mockMvc.perform(MockMvcRequestBuilders.get("/settlement")
+        mockMvc.perform(get("/settlement")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
@@ -63,12 +62,12 @@ open class SettlementControllerTest {
     @Throws(Exception::class)
     fun `should get self funding settlement details for given participant id`() {
         val participantId = "NDEASESSXXX"
-        `when`(settlementServiceFacade.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
+        `when`(settlementDashboardFacade.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
-        mockMvc.perform(MockMvcRequestBuilders.get("/settlementDetails/$participantId")
+        mockMvc.perform(get("/settlementDetails/$participantId")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(status().isOk)
                 .andExpect(jsonPath("$.previousCycle.id").value("01"))
                 .andExpect(jsonPath("$.previousCycle.status").value("COMPLETED"))
                 .andExpect(jsonPath("$.currentCycle.id").value("02"))

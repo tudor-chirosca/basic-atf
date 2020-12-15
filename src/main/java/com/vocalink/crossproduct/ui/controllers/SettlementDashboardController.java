@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.controllers;
 
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
+import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class SettlementController implements SettlementApi {
+public class SettlementDashboardController implements SettlementDashboardApi {
 
-  private final SettlementServiceFacade settlementServiceFacade;
+  private final SettlementDashboardFacade settlementDashboardFacade;
 
   @GetMapping(value = "/settlement/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SettlementDashboardDto> getSettlement(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @PathVariable String participantId) {
 
-    SettlementDashboardDto settlementDashboardDto = settlementServiceFacade
+    SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
         .getSettlement(context.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(settlementDashboardDto);
@@ -33,7 +33,7 @@ public class SettlementController implements SettlementApi {
   public ResponseEntity<SettlementDashboardDto> getSettlement(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
 
-    SettlementDashboardDto settlementDashboardDto = settlementServiceFacade
+    SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
         .getSettlement(context.toUpperCase(), clientType);
 
     return ResponseEntity.ok().body(settlementDashboardDto);
@@ -41,22 +41,22 @@ public class SettlementController implements SettlementApi {
 
   @GetMapping(value = "/settlementDetails/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Deprecated
-  public ResponseEntity<ParticipantSettlementDetailsDto> getSelfFundingSettlementDetails(
+  public ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSelfFundingSettlementDetails(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @PathVariable String participantId) {
 
-    ParticipantSettlementDetailsDto selfFundingDetailsDto = settlementServiceFacade
+    ParticipantDashboardSettlementDetailsDto selfFundingDetailsDto = settlementDashboardFacade
         .getParticipantSettlementDetails(context.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(selfFundingDetailsDto);
   }
 
   @GetMapping(value = "/settlement-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ParticipantSettlementDetailsDto> getSettlementDetails(
+  public ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSettlementDetails(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @PathVariable String participantId) {
 
-    ParticipantSettlementDetailsDto selfFundingDetailsDto = settlementServiceFacade
+    ParticipantDashboardSettlementDetailsDto selfFundingDetailsDto = settlementDashboardFacade
         .getParticipantSettlementDetails(context.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(selfFundingDetailsDto);

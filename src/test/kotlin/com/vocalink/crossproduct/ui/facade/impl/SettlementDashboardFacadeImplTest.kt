@@ -32,7 +32,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-open class SettlementServiceFacadeImplTest {
+open class SettlementDashboardFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
@@ -42,7 +42,7 @@ open class SettlementServiceFacadeImplTest {
 
     private val uiPresenter = mock(UIPresenter::class.java)!!
 
-    private val settlementServiceFacadeImpl = SettlementServiceFacadeImpl(
+    private val settlementServiceFacadeImpl = SettlementDashboardFacadeImpl(
             participantRepository,
             cycleRepository,
             presenterFactory,

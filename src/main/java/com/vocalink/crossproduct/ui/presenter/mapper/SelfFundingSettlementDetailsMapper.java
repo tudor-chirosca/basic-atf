@@ -6,7 +6,7 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
-import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SelfFundingSettlementDetailsMapper {
 
-  public ParticipantSettlementDetailsDto presentFullParticipantSettlementDetails(
+  public ParticipantDashboardSettlementDetailsDto presentFullParticipantSettlementDetails(
       List<Cycle> cycles,
       List<PositionDetails> positionsDetails,
       Participant participant,
@@ -36,7 +36,7 @@ public class SelfFundingSettlementDetailsMapper {
     PositionDetailsTotalsDto previousPositionDetailsTotalsDto = MAPPER.toDto(previousPositionDetailsDto);
 
     if (fundingParticipant == null || intradayPositionGross == null) {
-      return ParticipantSettlementDetailsDto.builder()
+      return ParticipantDashboardSettlementDetailsDto.builder()
           .participant(participantDto)
           .currentCycle(currentCycleDto)
           .previousCycle(previousCycleDto)
@@ -47,7 +47,7 @@ public class SelfFundingSettlementDetailsMapper {
           .build();
     }
 
-    return ParticipantSettlementDetailsDto.builder()
+    return ParticipantDashboardSettlementDetailsDto.builder()
         .participant(participantDto)
         .settlementBank(MAPPER.toDto(fundingParticipant))
         .currentCycle(currentCycleDto)
@@ -60,7 +60,7 @@ public class SelfFundingSettlementDetailsMapper {
         .build();
   }
 
-  public ParticipantSettlementDetailsDto presentOneCycleParticipantSettlementDetails(
+  public ParticipantDashboardSettlementDetailsDto presentOneCycleParticipantSettlementDetails(
       List<Cycle> cycles, List<PositionDetails> positionsDetails, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
@@ -73,7 +73,7 @@ public class SelfFundingSettlementDetailsMapper {
     PositionDetailsTotalsDto previousPositionDetailsTotalsDto = MAPPER.toDto(previousPositionDetailsDto);
 
     if (fundingParticipant == null || intradayPositionGross == null) {
-      return ParticipantSettlementDetailsDto.builder()
+      return ParticipantDashboardSettlementDetailsDto.builder()
           .participant(participantDto)
           .previousCycle(previousCycleDto)
           .previousPosition(previousPositionDetailsDto)
@@ -81,7 +81,7 @@ public class SelfFundingSettlementDetailsMapper {
           .build();
     }
 
-    return ParticipantSettlementDetailsDto.builder()
+    return ParticipantDashboardSettlementDetailsDto.builder()
         .participant(participantDto)
         .settlementBank(MAPPER.toDto(fundingParticipant))
         .previousCycle(previousCycleDto)

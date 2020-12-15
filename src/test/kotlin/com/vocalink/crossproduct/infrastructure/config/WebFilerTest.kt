@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.config
 
-import com.vocalink.crossproduct.ui.controllers.SettlementController
-import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade
+import com.vocalink.crossproduct.ui.controllers.SettlementDashboardController
+import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
@@ -16,11 +16,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
-@WebMvcTest(value = [SettlementController::class])
+@WebMvcTest(value = [SettlementDashboardController::class])
 class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
 
     @MockBean
-    private lateinit var service: SettlementServiceFacade
+    private lateinit var dashboard: SettlementDashboardFacade
 
     @Test
     fun `should reach service on success`() {
@@ -29,7 +29,7 @@ class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
                 .header("client-type", "UI"))
                 .andExpect(status().isOk)
 
-        verify(service, atMostOnce()).getSettlement(anyString(), any())
+        verify(dashboard, atMostOnce()).getSettlement(anyString(), any())
     }
 
     @Test

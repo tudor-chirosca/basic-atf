@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class ParticipantSettlementDetailsDto {
+public class ParticipantDashboardSettlementDetailsDto {
 
   private ParticipantDto participant;
   private CycleDto currentCycle;

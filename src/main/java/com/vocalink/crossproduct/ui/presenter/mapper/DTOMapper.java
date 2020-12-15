@@ -17,6 +17,8 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
+import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.shared.alert.CPAlertParams;
 import com.vocalink.crossproduct.shared.alert.CPAlertRequest;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -42,6 +44,8 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -227,4 +231,23 @@ public interface DTOMapper {
   FileDetailsDto toDetailsDto(File file);
 
   BatchDetailsDto toDetailsDto(Batch batch);
+
+  @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
+  @Mapping(target = "settlementTime", source = "cycle.settlementTime")
+  @Mapping(target = "status", source = "settlement.status")
+  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement, Cycle cycle, @Context  List<Participant> participants);
+
+  @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
+  @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
+  ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction, @Context List<Participant> participants);
+
+  @Named("findParticipant")
+  default ParticipantDto findParticipant(String participantId, @Context List<Participant> participants) {
+    return participants.stream()
+        .filter(p -> p.getBic().equals(participantId))
+        .findFirst()
+        .map(this::toDto)
+        .orElse(null);
+  }
+
 }
