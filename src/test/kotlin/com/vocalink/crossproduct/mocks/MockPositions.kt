@@ -5,13 +5,13 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.shared.positions.CPParticipantPosition
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails
+import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
-import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto
+import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.stream.Collectors.toList
 
 class MockPositions {
@@ -43,13 +43,14 @@ class MockPositions {
             TotalPositionDto.builder()
                     .currentPosition(getPositionDto(false))
                     .previousPosition(getPositionDto(true))
-                    .participant(MockParticipants().getParticipant(false))
+                    .participant(MAPPER.toDto(MockParticipants().getParticipant(false)))
                     .build(),
             TotalPositionDto.builder()
                     .currentPosition(getPositionDto(true))
                     .previousPosition(getPositionDto(false))
-                    .participant(MockParticipants().getParticipant(true))
-                    .build())
+                    .participant(MAPPER.toDto(MockParticipants().getParticipant(true)))
+                    .build()
+    )
 
     val cpPositionDetails = listOf(
             CPPositionDetails.builder()

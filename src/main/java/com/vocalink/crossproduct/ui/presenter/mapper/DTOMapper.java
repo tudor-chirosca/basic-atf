@@ -159,7 +159,7 @@ public interface DTOMapper {
   @Mapping(target = "previousPositionTotals", source = "positions", qualifiedByName = "countPreviousPositionTotals")
   @Mapping(target = "intraDayPositionTotals", source = "intraDays", qualifiedByName = "countIntraDayTotals")
   SettlementDashboardDto toDto(Cycle currentCycle, Cycle previousCycle,
-      List<TotalPositionDto> positions, Participant fundingParticipant,
+      List<TotalPositionDto> positions, ParticipantDto fundingParticipant,
       List<IntraDayPositionGross> intraDays);
 
   @Named("countCurrentPositionTotals")

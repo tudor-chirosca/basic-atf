@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.dto.position;
 
-import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TotalPositionDto {
-  private Participant participant;
+  private ParticipantDto participant;
   private ParticipantPositionDto previousPosition;
   private ParticipantPositionDto currentPosition;
   private IntraDayPositionGrossDto intraDayPositionGross;

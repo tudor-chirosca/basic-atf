@@ -3,15 +3,15 @@ package com.vocalink.crossproduct.ui.facade.impl;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
-import com.vocalink.crossproduct.domain.cycle.CycleRepository;
-import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
-import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
-import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.ui.dto.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementServiceFacade;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
 
-  public static final String NOT_AVALAIBLE = "NA";
+  public static final String NOT_AVAILABLE = "NA";
   private final ParticipantRepository participantRepository;
   private final CycleRepository cycleRepository;
   private final PresenterFactory presenterFactory;
@@ -125,7 +125,7 @@ public class SettlementServiceFacadeImpl implements SettlementServiceFacade {
   private IntraDayPositionGross getIntraDayPositionGross(String context, Participant participant) {
     IntraDayPositionGross intraDayPositionGross = null;
 
-    if (participant.getFundingBic() != null && !participant.getFundingBic().equals(NOT_AVALAIBLE)) {
+    if (participant.getFundingBic() != null && !participant.getFundingBic().equals(NOT_AVAILABLE)) {
 
       intraDayPositionGross = intraDayPositionGrossRepository
           .findIntraDayPositionGrossByParticipantId(context,

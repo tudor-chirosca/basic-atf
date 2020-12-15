@@ -33,6 +33,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -96,7 +97,9 @@ public class UIPresenter implements Presenter {
             MAPPER.toDto(participant, currentCycle, previousCycle, intraDays, participant.getBic()))
         .collect(toList());
 
-    return MAPPER.toDto(currentCycle, previousCycle, positionsDto, fundingParticipant, intraDays);
+    ParticipantDto fundingParticipantDto = MAPPER.toDto(fundingParticipant);
+
+    return MAPPER.toDto(currentCycle, previousCycle, positionsDto, fundingParticipantDto, intraDays);
   }
 
   @Override

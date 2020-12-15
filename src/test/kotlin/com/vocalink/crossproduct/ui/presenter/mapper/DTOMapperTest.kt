@@ -21,18 +21,19 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -232,7 +233,7 @@ class DTOMapperTest {
         val debit = BigDecimal.TEN
         val netPosition = BigDecimal.TEN
 
-        val participant = Participant.builder()
+        val participant = ParticipantDto.builder()
                 .id(participantId)
                 .bic(bic)
                 .status(participantStatus)
@@ -328,7 +329,7 @@ class DTOMapperTest {
         val debit = BigDecimal.TEN
         val netPosition = BigDecimal.TEN
 
-        val participant1 = Participant.builder()
+        val participant1 = ParticipantDto.builder()
                 .id(participantId)
                 .bic(bic)
                 .status(participantStatus)
@@ -358,7 +359,7 @@ class DTOMapperTest {
                 .netPosition(netPosition)
                 .build()
 
-        val participant2 = Participant.builder()
+        val participant2 = ParticipantDto.builder()
                 .id(secondParticipantId)
                 .bic(bic)
                 .status(participantStatus)
