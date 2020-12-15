@@ -1,3 +1,15 @@
+# [1.25.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.24.0...v1.25.0) (2020-12-15)
+
+
+### Bug Fixes
+
+* updated tests with types ([ca83577](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/ca8357709613b8fb0bb2b348b06399f120d77747))
+
+
+### Features
+
+* added participant types ([043a0a0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/043a0a04fc63f9fdb730b23d6b7a95459a751117))
+
 # [1.24.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.23.0...v1.24.0) (2020-12-14)
 
 
