@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.mocks
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.CPParticipant
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import java.time.LocalDateTime
 
@@ -55,6 +56,7 @@ class MockParticipants {
                 .name("Svenska Handelsbanken")
                 .suspendedTime(LocalDateTime.now().plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
+                .participantType(ParticipantType.DIRECT_ONLY)
                 .build()
         else ParticipantDto.builder()
                 .id("NDEASESSXXX")
@@ -62,6 +64,7 @@ class MockParticipants {
                 .name("Nordea")
                 .suspendedTime(null)
                 .status(ParticipantStatus.ACTIVE)
+                .participantType(ParticipantType.DIRECT_ONLY)
                 .build()
     }
 
@@ -90,6 +93,7 @@ class MockParticipants {
                     .name("Svenska Handelsbanken")
                     .suspendedTime(LocalDateTime.now().plusDays(15))
                     .status(ParticipantStatus.SUSPENDED)
+                    .participantType(ParticipantType.DIRECT_ONLY)
                     .build()
         else Participant.builder()
                 .id("NDEASESSXXX")
@@ -98,6 +102,7 @@ class MockParticipants {
                 .name("Nordea")
                 .suspendedTime(null)
                 .status(ParticipantStatus.ACTIVE)
+                .participantType(ParticipantType.DIRECT_ONLY)
                 .build()
     }
 }

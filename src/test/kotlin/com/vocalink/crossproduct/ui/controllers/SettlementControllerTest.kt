@@ -77,6 +77,7 @@ open class SettlementControllerTest {
                 .andExpect(jsonPath("$.participant.bic").value("NDEASESSXXX"))
                 .andExpect(jsonPath("$.participant.name").value("Nordea"))
                 .andExpect(jsonPath("$.participant.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.participant.participantType").value("DIRECT-ONLY"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.credit").value("1"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.debit").value("10"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.netPosition").value("9"))

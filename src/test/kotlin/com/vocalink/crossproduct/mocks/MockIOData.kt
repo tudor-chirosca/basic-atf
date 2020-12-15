@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.shared.io.CPIODataDetails
 import com.vocalink.crossproduct.shared.io.CPIODetails
 import com.vocalink.crossproduct.shared.io.CPIOTransactionsMessageTypes
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.IODashboardDto
 import com.vocalink.crossproduct.ui.dto.io.IODataDetailsDto
 import com.vocalink.crossproduct.ui.dto.io.IODataDto
@@ -214,6 +215,7 @@ class MockIOData {
                             .name("SEB Bank")
                             .suspendedTime(null)
                             .status(ParticipantStatus.ACTIVE)
+                            .participantType(ParticipantType.DIRECT_ONLY)
                             .build())
                     .batches(IODataDto.builder()
                             .submitted(1)
