@@ -17,6 +17,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
@@ -537,7 +538,7 @@ class DTOMapperTest {
                 .priority("high")
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
-                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea")))
+                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea", ParticipantType.DIRECT_ONLY, null)))
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))

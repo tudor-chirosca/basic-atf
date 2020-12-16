@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
@@ -46,13 +47,42 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         ],
         "enquiryType": "FILES"
     }]"""
+
+        const val VALID_RESPONSE_WITH_PARTICIPANT_TYPE = """
+       [{
+        "participantIdentifier": "ESSESESS",
+        "name": "SEB Bank",
+        "participantType": "DIRECT-ONLY"
+        },
+        {
+        "participantIdentifier": "HANDSESS",
+        "name": "Svenska Handelsbanken",
+        "participantType": "DIRECT-ONLY"
+        }]
+        """
+
+        const val VALID_RESPONSE_WITH_CON_PARTICIPANT = """
+       [{
+        "participantIdentifier": "ESSESESS",
+        "name": "SEB Bank",
+        "participantType": "DIRECT-ONLY",
+        "connectingParticipantId": "any id"
+        },
+        {
+        "participantIdentifier": "HANDSESS",
+        "name": "Svenska Handelsbanken",
+        "participantType": "DIRECT-ONLY",
+        "connectingParticipantId": "any id_2"
+        }]
+        """
     }
 
     @Test
     fun `should get all participant references`() {
+        val directOnly = ParticipantType.DIRECT_ONLY
         val participants = listOf(
-                ParticipantReferenceDto("ESSESESS", "SEB Bank"),
-                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken")
+                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
         )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
@@ -61,13 +91,35 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
+                .andExpect(content().json(VALID_RESPONSE_WITH_PARTICIPANT_TYPE, true))
+    }
+
+    @Test
+    fun `should get all participant references with connectingParticipantId`() {
+        val directOnly = ParticipantType.DIRECT_ONLY
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly)
+        val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
+
+        participantReferenceDto.connectingParticipantId="any id"
+        participantReferenceDto2.connectingParticipantId="any id_2"
+
+        val participants = listOf(participantReferenceDto, participantReferenceDto2)
+
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+                .thenReturn(participants)
+        mockMvc.perform(get("/reference/participants")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_RESPONSE_WITH_CON_PARTICIPANT, true))
     }
 
     @Test
     fun `should get bad request on missing context for reference participants`() {
+        val directOnly = ParticipantType.DIRECT_ONLY
         val participants = listOf(
-                ParticipantReferenceDto("ESSESESS", "SEB Bank"),
-                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken")
+                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
         )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))

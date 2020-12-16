@@ -49,6 +49,7 @@ import java.util.Objects;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
@@ -83,7 +84,10 @@ public interface DTOMapper {
 
   ParticipantDto toDto(Participant participant);
 
-  @Mapping(target = "participantIdentifier", source = "id")
+  @Mappings({
+      @Mapping(target = "participantIdentifier", source = "id"),
+      @Mapping(target = "connectingParticipantId", source = "fundingBic")
+  })
   ParticipantReference toReference(Participant input);
 
   ParticipantReferenceDto toDto(ParticipantReference participant);

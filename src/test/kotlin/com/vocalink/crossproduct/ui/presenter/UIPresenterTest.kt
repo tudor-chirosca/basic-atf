@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertData
 import com.vocalink.crossproduct.domain.alert.AlertPriority
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
-import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -18,9 +18,10 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
-import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +33,6 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
@@ -40,7 +40,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.assertj.core.api.Assertions.assertThat
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class])
@@ -468,10 +467,11 @@ class UIPresenterTest {
         val bbb = "Bbb"
         val ccc = "Ccc"
         val id = "id"
+        val participantType = ParticipantType.DIRECT_ONLY
         val model = listOf(
-                ParticipantReference(id, ccc),
-                ParticipantReference(id, aaa),
-                ParticipantReference(id, bbb)
+                ParticipantReference(id, ccc, participantType, null),
+                ParticipantReference(id, aaa, participantType, null),
+                ParticipantReference(id, bbb, participantType, null)
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
@@ -515,20 +515,21 @@ class UIPresenterTest {
         val id = "NDEASESSXXX"
         val nordea = "Nordea"
         val seb = "SEB Bank"
+        val participantType = ParticipantType.DIRECT_ONLY
         val alerts = listOf(
                 Alert.builder()
                         .alertId(3141)
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, nordea)))
+                        .entities(listOf(ParticipantReference(id, nordea, participantType, null)))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, seb)))
+                        .entities(listOf(ParticipantReference(id, seb, participantType, null)))
                         .build())
 
         val alertsResponse = Page<Alert>(2, alerts)
