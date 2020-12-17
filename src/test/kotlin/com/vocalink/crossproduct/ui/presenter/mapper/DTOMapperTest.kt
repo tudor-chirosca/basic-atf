@@ -542,7 +542,7 @@ class DTOMapperTest {
                 .priority("high")
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
-                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea", ParticipantType.DIRECT_ONLY, null)))
+                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea", ParticipantType.DIRECT_ONLY, null, null)))
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))
@@ -725,11 +725,11 @@ class DTOMapperTest {
                 emptyList()
         )
         val participant = Participant("participantId", "participantId", "name",
-        "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+        "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
         val counterparty = Participant("counterpartyId", "counterpartyId", "counterpartyName",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
         val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
 
         val result = MAPPER.toDto(settlement, cycle, listOf(participant, counterparty, settlementCounterparty))
         assertThat(result).isNotNull

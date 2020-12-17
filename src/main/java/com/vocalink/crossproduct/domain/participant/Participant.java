@@ -18,4 +18,5 @@ public class Participant {
   private final ParticipantStatus status;
   private final LocalDateTime suspendedTime;
   private final ParticipantType participantType;
+  private final String schemeCode;
 }

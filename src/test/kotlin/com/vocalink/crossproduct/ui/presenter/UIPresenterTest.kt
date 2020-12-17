@@ -469,9 +469,9 @@ class UIPresenterTest {
         val id = "id"
         val participantType = ParticipantType.DIRECT_ONLY
         val model = listOf(
-                ParticipantReference(id, ccc, participantType, null),
-                ParticipantReference(id, aaa, participantType, null),
-                ParticipantReference(id, bbb, participantType, null)
+                ParticipantReference(id, ccc, participantType, null, null),
+                ParticipantReference(id, aaa, participantType, null, null),
+                ParticipantReference(id, bbb, participantType, null, null)
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
@@ -479,6 +479,30 @@ class UIPresenterTest {
         assertEquals(aaa, result[0].name)
         assertEquals(bbb, result[1].name)
         assertEquals(ccc, result[2].name)
+    }
+
+    @Test
+    fun `should get P27 as first participant references sorted by name`() {
+        val aaa = "Aaa"
+        val bbb = "Bbb"
+        val p27 = "P27"
+        val id = "id"
+
+        val pTypeDirect = ParticipantType.DIRECT_ONLY
+        val pTypeFunding = ParticipantType.FUNDING
+        val pTypeScheme = ParticipantType.SCHEME
+
+        val model = listOf(
+                ParticipantReference(id, aaa, pTypeDirect, null, null),
+                ParticipantReference(id, p27, pTypeScheme, null, null),
+                ParticipantReference(id, bbb, pTypeFunding, null, null)
+        )
+
+        val result = uiPresenter.presentParticipantReferences(model)
+
+        assertEquals(p27, result[0].name)
+        assertEquals(aaa, result[1].name)
+        assertEquals(bbb, result[2].name)
     }
 
     @Test
@@ -522,14 +546,14 @@ class UIPresenterTest {
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, nordea, participantType, null)))
+                        .entities(listOf(ParticipantReference(id, nordea, participantType, null, null)))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
                         .priority("high")
                         .dateRaised(LocalDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, seb, participantType, null)))
+                        .entities(listOf(ParticipantReference(id, seb, participantType, null, null)))
                         .build())
 
         val alertsResponse = Page<Alert>(2, alerts)

@@ -79,8 +79,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val cycleId = "20201209001"
         val participantId = "HANDSESS"
         val participant = ParticipantReferenceDto(
-                participantId, "Svenska Handelsbanken", ParticipantType.FUNDED
-                )
+                participantId, "Svenska Handelsbanken", ParticipantType.FUNDED, null)
         participant.connectingParticipantId = "NDEASESSXXX"
         val instruction = ParticipantInstructionDto.builder()
                 .reference("538264950")

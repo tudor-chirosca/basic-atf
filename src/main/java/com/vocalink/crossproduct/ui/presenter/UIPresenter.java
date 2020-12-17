@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
+import static com.vocalink.crossproduct.shared.participant.ParticipantType.SCHEME;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
@@ -101,7 +102,8 @@ public class UIPresenter implements Presenter {
 
     ParticipantDto fundingParticipantDto = MAPPER.toDto(fundingParticipant);
 
-    return MAPPER.toDto(currentCycle, previousCycle, positionsDto, fundingParticipantDto, intraDays);
+    return MAPPER
+        .toDto(currentCycle, previousCycle, positionsDto, fundingParticipantDto, intraDays);
   }
 
   @Override
@@ -246,10 +248,12 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants) {
+  public List<ParticipantReferenceDto> presentParticipantReferences(
+      List<ParticipantReference> participants) {
     return participants.stream()
         .map(MAPPER::toDto)
-        .sorted(Comparator.comparing(ParticipantReferenceDto::getName))
+        .sorted(Comparator.comparing((ParticipantReferenceDto p) -> !p.getParticipantType().equals(
+            SCHEME.getDescription())).thenComparing(ParticipantReferenceDto::getName))
         .collect(toList());
   }
 
@@ -259,7 +263,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences) {
+  public List<FileStatusesTypeDto> presentFileReferencesFor
+      (List<FileReference> fileReferences) {
     return MAPPER.toDtoType(fileReferences);
   }
 }

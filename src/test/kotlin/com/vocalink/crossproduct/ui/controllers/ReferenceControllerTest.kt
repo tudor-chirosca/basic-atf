@@ -52,12 +52,14 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT+ONLY"
+        "participantType": "DIRECT+ONLY",
+        "schemeCode": "P27"
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT+ONLY"
+        "participantType": "DIRECT+ONLY",
+        "schemeCode": "P27"
         }]
         """
 
@@ -66,13 +68,32 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
         "participantType": "DIRECT+ONLY",
-        "connectingParticipantId": "any id"
+        "connectingParticipantId": "any id",
+        "schemeCode": null
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
         "participantType": "DIRECT+ONLY",
-        "connectingParticipantId": "any id_2"
+        "connectingParticipantId": "any id_2",
+        "schemeCode": null
+        }]
+        """
+
+        const val VALID_RESPONSE_WITH_SCHEME_CODE = """
+       [{
+        "participantIdentifier": "ESSESESS",
+        "name": "SEB Bank",
+        "participantType": "DIRECT+ONLY",
+        "connectingParticipantId": "any id",
+        "schemeCode": "P27"
+        },
+        {
+        "participantIdentifier": "HANDSESS",
+        "name": "Svenska Handelsbanken",
+        "participantType": "DIRECT+ONLY",
+        "connectingParticipantId": "any id_2",
+        "schemeCode": "P27"
         }]
         """
     }
@@ -81,8 +102,8 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     fun `should get all participant references`() {
         val directOnly = ParticipantType.DIRECT_ONLY
         val participants = listOf(
-                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly),
-                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
+                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27"),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
         )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
@@ -97,8 +118,8 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should get all participant references with connectingParticipantId`() {
         val directOnly = ParticipantType.DIRECT_ONLY
-        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly)
-        val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, null)
+        val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, null)
 
         participantReferenceDto.connectingParticipantId="any id"
         participantReferenceDto2.connectingParticipantId="any id_2"
@@ -115,11 +136,32 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
+    fun `should get all participant references with schemeCode`() {
+        val directOnly = ParticipantType.DIRECT_ONLY
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27")
+        val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
+
+        participantReferenceDto.connectingParticipantId="any id"
+        participantReferenceDto2.connectingParticipantId="any id_2"
+
+        val participants = listOf(participantReferenceDto, participantReferenceDto2)
+
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+                .thenReturn(participants)
+        mockMvc.perform(get("/reference/participants")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_RESPONSE_WITH_SCHEME_CODE, true))
+
+    }
+
+    @Test
     fun `should get bad request on missing context for reference participants`() {
         val directOnly = ParticipantType.DIRECT_ONLY
         val participants = listOf(
-                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly),
-                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly)
+                ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27"),
+                ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
         )
 
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))

@@ -12,4 +12,5 @@ public class ParticipantReference {
   private final String name;
   private final ParticipantType participantType;
   private final String connectingParticipantId;
+  private final String schemeCode;
 }
