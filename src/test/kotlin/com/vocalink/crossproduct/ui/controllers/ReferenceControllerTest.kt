@@ -52,12 +52,12 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT-ONLY"
+        "participantType": "DIRECT+ONLY"
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT-ONLY"
+        "participantType": "DIRECT+ONLY"
         }]
         """
 
@@ -65,13 +65,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT-ONLY",
+        "participantType": "DIRECT+ONLY",
         "connectingParticipantId": "any id"
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT-ONLY",
+        "participantType": "DIRECT+ONLY",
         "connectingParticipantId": "any id_2"
         }]
         """
