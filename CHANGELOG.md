@@ -1,3 +1,10 @@
+## [1.26.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.0...v1.26.1) (2020-12-17)
+
+
+### Bug Fixes
+
+* bump shared ([1568caa](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/1568caada01085b5deaf2b812ec2088a243d70f1))
+
 # [1.26.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.25.0...v1.26.0) (2020-12-16)
 
 
