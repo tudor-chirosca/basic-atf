@@ -25,7 +25,6 @@ public class ReferenceController implements ReferenceApi {
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
-
     List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
         .getParticipantReferences(context.toUpperCase(), clientType);
 

@@ -6,12 +6,7 @@ import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
-import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.facade.BatchesFacade
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,8 +19,12 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-@WebMvcTest(BatchesController::class)
+@WebMvcTest(BatchesApi::class)
 class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
@@ -154,7 +153,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("msg_direction is missing in request params")))
+                .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
     }
 
     @Test
@@ -182,7 +181,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("send_bic", "HANDSESS")
                 .param("recv_bic", "HANDSESS"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("send_big and recv_bic are the same")))
+                .andExpect(content().string(containsString("send_bic and recv_bic should not be the same")))
     }
 
     @Test
@@ -195,7 +194,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can't be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
     }
 
     @Test
@@ -207,8 +206,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Have reason_code specified with missing "
-                        + "status value, or value that is not 'pre-rejected' or 'post-rejected'")))
+                .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
     }
 
     @Test
@@ -221,8 +219,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "Accepted")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Have reason_code specified with missing "
-                        + "status value, or value that is not 'pre-rejected' or 'post-rejected'")))
+                .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
     }
 
     @Test
@@ -234,8 +231,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("id", "BANK*YY"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
-                        + "id can't contain special symbols beside '.' and '_'")))
+                .andExpect(content()
+                        .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
     }
 
     @Test
@@ -247,8 +244,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("id", "BANK()[]"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
-                        + "id can't contain special symbols beside '.' and '_'")))
+                .andExpect(content()
+                        .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
     }
 
     @Test

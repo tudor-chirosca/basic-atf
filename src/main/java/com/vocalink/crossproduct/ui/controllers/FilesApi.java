@@ -8,10 +8,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface FilesApi {
 
   @ApiOperation("Fetch Files")
@@ -22,7 +23,7 @@ public interface FilesApi {
   ResponseEntity<PageDto<FileDto>> getFiles(
       final ClientType clientType,
       final String context,
-      final FileEnquirySearchRequest request
+      @Valid final FileEnquirySearchRequest request
   );
 
   @ApiOperation("Fetch File Details")

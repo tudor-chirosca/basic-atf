@@ -1,13 +1,14 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
-import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -55,10 +56,10 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(InvalidRequestParameterException.class)
-  public ResponseEntity<ErrorDescription> handleInvalidRequestParameterException(
+  @ExceptionHandler(BindException.class)
+  public ResponseEntity<ErrorDescription> handleBindExceptions(
       final HttpServletRequest request,
-      final Exception exception) {
+      final BindException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
@@ -66,11 +67,19 @@ public class GlobalExceptionHandler {
         .timestamp(LocalDateTime.now(clock).toString())
         .errorCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
         .httpStatus(HttpStatus.BAD_REQUEST.value())
-        .message(exception.getMessage())
+        .message(getMessage(exception))
         .additionalInfo("")
         .path(request.getRequestURI())
         .build();
 
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
+
+ private String getMessage(BindException exception) {
+   return exception.getAllErrors()
+       .stream()
+       .findFirst()
+       .map(DefaultMessageSourceResolvable::getDefaultMessage)
+       .orElseGet(() -> "Invalid request");
+ }
 }

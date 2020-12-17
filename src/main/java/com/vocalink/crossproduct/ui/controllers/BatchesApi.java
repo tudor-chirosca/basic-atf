@@ -8,8 +8,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface BatchesApi {
 
   @ApiOperation("Fetch Batches")
@@ -20,7 +23,7 @@ public interface BatchesApi {
   ResponseEntity<PageDto<BatchDto>> getBatches(
       final ClientType clientType,
       final String context,
-      final BatchEnquirySearchRequest request
+      @Valid final BatchEnquirySearchRequest request
   );
 
   @ApiOperation("Fetch Batch Details")

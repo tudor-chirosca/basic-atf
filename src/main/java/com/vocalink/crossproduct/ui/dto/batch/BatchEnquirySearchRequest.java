@@ -7,12 +7,21 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
+import com.vocalink.crossproduct.ui.validations.NotEqual;
+import com.vocalink.crossproduct.ui.validations.ValidDateOrCycle;
+import com.vocalink.crossproduct.ui.validations.ValidDirection;
+import com.vocalink.crossproduct.ui.validations.ValidFromDate;
+import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
+import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@ValidDateOrCycle(date = "dateTo", cycles = "cycleIds")
+@NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
+@ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"post-rejected", "pre-rejected"})
 public class BatchEnquirySearchRequest {
 
   @Setter
@@ -21,9 +30,11 @@ public class BatchEnquirySearchRequest {
   private int limit = parseInt(getDefault(LIMIT));
   @Setter
   private List<String> sort;
+  @ValidFromDate
   private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
   private List<String> cycleIds;
+  @ValidDirection
   private String messageDirection;
   private String messageType;
   private String sendingBic;
@@ -32,6 +43,7 @@ public class BatchEnquirySearchRequest {
   private String status;
   private String reasonCode;
   @Setter
+  @ValidRegexSearch(regExp = "^(\\*?)[a-zA-Z0-9_.]+(\\*?)$")
   private String id;
 
   public void setDate_from(String dateFrom) {
@@ -65,5 +77,4 @@ public class BatchEnquirySearchRequest {
   public void setReason_code(String reasonCode) {
     this.reasonCode = reasonCode;
   }
-
 }

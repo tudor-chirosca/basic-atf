@@ -2,9 +2,9 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.FilesFacade
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
@@ -151,7 +151,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("msg_direction is missing in request params")))
+                .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
     }
 
     @Test
@@ -179,7 +179,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("send_bic", "HANDSESS")
                 .param("recv_bic", "HANDSESS"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("send_big and recv_bic are the same")))
+                .andExpect(content().string(containsString("send_bic and recv_bic should not be the same")))
     }
 
     @Test
@@ -192,7 +192,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can't be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
     }
 
     @Test
@@ -204,8 +204,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Have reason_code specified with missing "
-                        + "status value, or value that is not 'Rejected'")))
+                .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
     }
 
     @Test
@@ -218,8 +217,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "Accepted")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Have reason_code specified with missing "
-                        + "status value, or value that is not 'Rejected'")))
+                .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
     }
 
 
@@ -232,8 +230,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("id", "BANK*YY"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
-                        + "id can't contain special symbols beside '.' and '_'")))
+                .andExpect(content()
+                        .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
     }
 
     @Test
@@ -245,8 +243,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("id", "BANK()[]"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("wildcard '*' can not be in the middle and "
-                        + "id can't contain special symbols beside '.' and '_'")))
+                .andExpect(content()
+                        .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
     }
 
     @Test
@@ -258,7 +256,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("status", "Rejected")
+                .param("status", "rejected")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
     }
