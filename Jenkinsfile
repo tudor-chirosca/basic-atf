@@ -13,12 +13,16 @@ pipeline {
     }
     
     stages {
-        stage("Prepare Params") {
+        stage("Clean workspace and Prepare params") {
             steps {
                 setVars()
+                cleanWorkspace()
+                dir("${WORKSPACE}") {
+                    git url: "${GIT_URL}", branch: "${BRANCH_NAME}", credentialsId: githubCredentialsId
+                }
             }
         }
-        stage("Build and publish artifact:") {
+        stage("Build and publish artifact") {
             agent {
                 dockerfile {
                     filename 'Dockerfile-ci'
@@ -48,7 +52,7 @@ pipeline {
                         runMaven(goal: "-B integration-test -U")
                     }
                 }
-                stage("Prepare release: ") {
+                stage("Prepare release") {
                     when {
                         allOf {
                             branch "${RELEASE_BRANCH}"
@@ -58,13 +62,13 @@ pipeline {
                         }
                     }
                     stages {
-                        stage('create release') {
+                        stage('Create release') {
                             steps {
                                 sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release"
                                 createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
                             }
                         }
-                        stage("publish artifact") {
+                        stage("Publish artifact") {
                             when {
                                 allOf {
                                     branch "${RELEASE_BRANCH}"
@@ -118,12 +122,7 @@ pipeline {
                         }
                     }
                 }
-            }
+            }//stages
         }//stage
-    }
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+    }//stages
+}//pipeline
