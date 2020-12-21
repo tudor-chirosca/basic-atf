@@ -1,14 +1,14 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
+import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
+import com.vocalink.crossproduct.shared.exception.AdapterException;
+import com.vocalink.crossproduct.ui.exceptions.wrapper.ErrorWrappingStrategy;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -16,70 +16,59 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  private final Clock clock = Clock.systemUTC();
+  private final ErrorWrappingStrategy errorWrapper;
+
+  public GlobalExceptionHandler(
+      ErrorWrappingStrategy wrappingStrategy) {
+    this.errorWrapper = wrappingStrategy;
+  }
 
   @ExceptionHandler
-  public ResponseEntity<ErrorDescription> handleException(
+  public ResponseEntity<ErrorDescriptionResponse> handleException(
       final HttpServletRequest request,
       final Exception exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
-
-    ErrorDescription error = ErrorDescription.builder()
-        .timestamp(LocalDateTime.now(clock).toString())
-        .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-        .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .message(exception.getMessage())
-        .additionalInfo("")
-        .path(request.getRequestURI())
-        .build();
-
-    return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    return errorWrapper.wrapException(exception);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorDescription> handleHttpsConversionException(
+  public ResponseEntity<ErrorDescriptionResponse> handleHttpsConversionException(
       final HttpServletRequest request,
-      final Exception exception) {
+      final HttpMessageNotReadableException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
-    ErrorDescription error = ErrorDescription.builder()
-        .timestamp(LocalDateTime.now(clock).toString())
-        .errorCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        .httpStatus(HttpStatus.BAD_REQUEST.value())
-        .message(exception.getMessage())
-        .additionalInfo("")
-        .path(request.getRequestURI())
-        .build();
+    return errorWrapper.wrapException(exception);
+  }
 
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  @ExceptionHandler(InvalidRequestParameterException.class)
+  public ResponseEntity<ErrorDescriptionResponse> handleInvalidRequestParameterException(
+      final HttpServletRequest request,
+      final InvalidRequestParameterException exception) {
+
+    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
+
+    return errorWrapper.wrapException(exception);
   }
 
   @ExceptionHandler(BindException.class)
-  public ResponseEntity<ErrorDescription> handleBindExceptions(
+  public ResponseEntity<ErrorDescriptionResponse> handleBindException(
       final HttpServletRequest request,
       final BindException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
-    ErrorDescription error = ErrorDescription.builder()
-        .timestamp(LocalDateTime.now(clock).toString())
-        .errorCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        .httpStatus(HttpStatus.BAD_REQUEST.value())
-        .message(getMessage(exception))
-        .additionalInfo("")
-        .path(request.getRequestURI())
-        .build();
-
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    return errorWrapper.wrapException(exception);
   }
 
- private String getMessage(BindException exception) {
-   return exception.getAllErrors()
-       .stream()
-       .findFirst()
-       .map(DefaultMessageSourceResolvable::getDefaultMessage)
-       .orElseGet(() -> "Invalid request");
- }
+  @ExceptionHandler(AdapterException.class)
+  public ResponseEntity<ErrorDescriptionResponse> handleAdapterExceptions(
+      final HttpServletRequest request,
+      final AdapterException exception) {
+
+    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
+
+    return errorWrapper.wrapException(exception);
+  }
 }
