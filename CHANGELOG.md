@@ -1,3 +1,10 @@
+# [1.27.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.2...v1.27.0) (2020-12-21)
+
+
+### Features
+
+* add bean validation ([11aec0c](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/11aec0c2d9a5d60854b740ab194184ddf2fc9fc6))
+
 ## [1.26.2](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.1...v1.26.2) (2020-12-21)
 
 
