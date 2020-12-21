@@ -1,3 +1,10 @@
+# [1.28.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.27.0...v1.28.0) (2020-12-21)
+
+
+### Features
+
+* Added settlement details ([4cdf410](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/4cdf4103af4c1607a14d50abcf7349bca0266f57))
+
 # [1.27.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.2...v1.27.0) (2020-12-21)
 
 
