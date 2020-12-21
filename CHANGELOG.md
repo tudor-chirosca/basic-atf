@@ -1,3 +1,10 @@
+## [1.26.2](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.1...v1.26.2) (2020-12-21)
+
+
+### Bug Fixes
+
+* Change workspace cleaning principles ([c25a8a6](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/c25a8a68ceace54940f087fc79da0553de24ae7c))
+
 ## [1.26.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.26.0...v1.26.1) (2020-12-17)
 
 
