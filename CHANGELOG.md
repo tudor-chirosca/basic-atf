@@ -1,3 +1,10 @@
+## [1.28.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.28.0...v1.28.1) (2020-12-22)
+
+
+### Bug Fixes
+
+* changed ParticipantDto to ParticipantReferenceDto ([6ff1ef4](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/6ff1ef4d83068dc540ee2bc009d7bded3840163f))
+
 # [1.28.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.27.0...v1.28.0) (2020-12-21)
 
 
