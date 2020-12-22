@@ -12,5 +12,4 @@ public interface SettlementDashboardFacade {
 
   ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId);
-
 }

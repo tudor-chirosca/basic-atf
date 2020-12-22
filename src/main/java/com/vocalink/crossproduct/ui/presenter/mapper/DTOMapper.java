@@ -45,6 +45,7 @@ import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -238,10 +239,13 @@ public interface DTOMapper {
 
   BatchDetailsDto toDetailsDto(Batch batch);
 
+  PageDto<ParticipantSettlementCycleDto> toDto(Page<ParticipantSettlement> settlements, @Context List<Participant> participants);
+
   @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
-  @Mapping(target = "settlementTime", source = "cycle.settlementTime")
-  @Mapping(target = "status", source = "settlement.status")
-  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement, Cycle cycle, @Context  List<Participant> participants);
+  ParticipantSettlementCycleDto toDto(@Context List<Participant> participants, ParticipantSettlement settlement);
+
+  @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
+  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement, @Context  List<Participant> participants);
 
   @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
   @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
@@ -255,5 +259,4 @@ public interface DTOMapper {
         .map(this::toReferenceDto)
         .orElse(null);
   }
-
 }

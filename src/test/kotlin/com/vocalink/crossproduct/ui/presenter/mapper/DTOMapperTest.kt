@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.shared.participant.ParticipantType
+import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
@@ -717,7 +718,8 @@ class DTOMapperTest {
                 "counterpartyId", "settlementCounterpartyId",
                 BigDecimal.TEN, BigDecimal.TEN
         )
-        val settlement = ParticipantSettlement("cycleId", "status", "participantId", Page(1, listOf(instruction)))
+        val settlement = ParticipantSettlement("cycleId", LocalDateTime.of(2020, 10, 10, 10, 10, 10),
+                SettlementStatus.PARTIAL, "participantId", Page(1, listOf(instruction)))
         val cycle = Cycle("cycleId",
                 LocalDateTime.of(2020, 10, 10, 10, 10, 10),
                 LocalDateTime.of(2020, 10, 10, 12, 10, 10),
@@ -731,7 +733,7 @@ class DTOMapperTest {
         val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
 
-        val result = MAPPER.toDto(settlement, cycle, listOf(participant, counterparty, settlementCounterparty))
+        val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty))
         assertThat(result).isNotNull
 
         assertThat(result.cycleId).isEqualTo(settlement.cycleId)

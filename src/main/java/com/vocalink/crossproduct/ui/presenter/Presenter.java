@@ -32,7 +32,9 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -86,6 +88,8 @@ public interface Presenter {
   BatchDetailsDto presentBatchDetails(Batch batch);
 
   ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
-      List<Participant> participants, Cycle cycle);
+      List<Participant> participants);
 
+  PageDto<ParticipantSettlementCycleDto> presentSettlements(Page<ParticipantSettlement> settlements,
+      List<Participant> participants);
 }

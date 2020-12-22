@@ -1,10 +1,9 @@
 package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.ParticipantType
+import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.PageDto
-import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
@@ -40,7 +39,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val VALID_DETAILS_RESPONSE = """{
             "cycleId": "20201209001",
             "settlementTime": "2020-12-09T15:58:19",
-            "status": "OPEN",
+            "status": "PARTIAL",
             "participant": {
                 "participantIdentifier": "HANDSESS",
                 "name": "Svenska Handelsbanken",
@@ -92,7 +91,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val details = ParticipantSettlementDetailsDto.builder()
                 .cycleId(cycleId)
                 .settlementTime(LocalDateTime.of(2020,12,9,15,58,19))
-                .status("OPEN")
+                .status(SettlementStatus.PARTIAL)
                 .participant(participant)
                 .instructions(PageDto(1, listOf(instruction)))
                 .build()

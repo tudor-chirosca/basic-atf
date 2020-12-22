@@ -40,6 +40,7 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
@@ -232,8 +233,14 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
-      List<Participant> participants, Cycle cycle) {
-    return MAPPER.toDto(settlement, cycle, participants);
+      List<Participant> participants) {
+    return MAPPER.toDto(settlement, participants);
+  }
+
+  @Override
+  public PageDto<ParticipantSettlementCycleDto> presentSettlements(
+      Page<ParticipantSettlement> settlements, List<Participant> participants) {
+    return MAPPER.toDto(settlements, participants);
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(

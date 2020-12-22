@@ -36,9 +36,11 @@ import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import com.vocalink.crossproduct.shared.settlement.CPInstructionEnquiryRequest;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantInstruction;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantSettlement;
+import com.vocalink.crossproduct.shared.settlement.CPSettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.mapstruct.Mapper;
@@ -84,6 +86,8 @@ public interface EntityMapper {
 
   ParticipantSettlement toEntity(CPParticipantSettlement settlement);
 
+  Page<ParticipantSettlement> toEntity(CPPage<CPParticipantSettlement> settlements);
+
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")
   @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
@@ -94,6 +98,10 @@ public interface EntityMapper {
   CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
 
   CPInstructionEnquiryRequest toCp(ParticipantSettlementRequest request);
+
+  @Mapping(target = "cycleIds", source = "cycleIds")
+  @Mapping(target = "participants", source = "participants")
+  CPSettlementEnquiryRequest toCp(SettlementEnquiryRequest request);
 
   @Mapping(target = "fileName", source = "name")
   @Mapping(target = "settlementCycleId", source = "cycle.id")

@@ -1,7 +1,13 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static java.util.Objects.isNull;
+
+import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
+import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +36,21 @@ public class SettlementsController implements SettlementsApi {
         clientType, request, cycleId, participantId);
 
     return ResponseEntity.ok().body(participantSettlementDetailsDto);
+  }
+
+  @GetMapping(value = "/enquiry/settlements", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<PageDto<ParticipantSettlementCycleDto>> getSettlements(
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final SettlementEnquiryRequest request) {
+
+    if(isNull(request.getParticipants()) || request.getParticipants().isEmpty()) {
+      throw new InvalidRequestParameterException("participants is missing in request params");
+    }
+
+    PageDto<ParticipantSettlementCycleDto> settlementsDto =
+        settlementsFacade.getSettlements(context, clientType, request);
+
+    return ResponseEntity.ok().body(settlementsDto);
   }
 }

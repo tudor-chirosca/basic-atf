@@ -1,7 +1,9 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -9,8 +11,11 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -25,7 +30,6 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
   private final PresenterFactory presenterFactory;
   private final SettlementsRepository settlementsRepository;
   private final ParticipantRepository participantRepository;
-  private final CycleRepository cycleRepository;
 
   @Override
   public ParticipantSettlementDetailsDto getDetailsBy(String context, ClientType clientType,
@@ -36,12 +40,24 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
     final List<Participant> participants = participantRepository.findAll(context);
 
-    Cycle cycle = cycleRepository.findByIds(context, singletonList(cycleId)).stream()
-        .findFirst()
-        .orElseThrow(() -> new EntityNotFoundException("There is no Cycle with id: " + cycleId));
+    return presenterFactory.getPresenter(clientType)
+        .presentSettlementDetails(participantSettlement, participants);
+  }
 
+  @Override
+  public PageDto<ParticipantSettlementCycleDto> getSettlements(String context,
+      ClientType clientType, SettlementEnquiryRequest request) {
+
+    final Page<ParticipantSettlement> participantSettlements = settlementsRepository
+        .findSettlements(context, request);
+
+    List<Participant> participants = request.getParticipants().stream()
+        .map(participantId -> participantRepository.findByParticipantId(context, participantId)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "There is no Participant with id: " + participantId)))
+        .collect(toList());
 
     return presenterFactory.getPresenter(clientType)
-        .presentSettlementDetails(participantSettlement, participants, cycle);
+        .presentSettlements(participantSettlements, participants);
   }
 }
