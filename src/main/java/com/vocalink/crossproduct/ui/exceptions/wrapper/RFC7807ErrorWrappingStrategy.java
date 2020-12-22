@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.exceptions.wrapper;
 
 import com.vocalink.crossproduct.domain.error.RFCError;
 import com.vocalink.crossproduct.infrastructure.exception.ErrorConstants;
-import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.shared.exception.AdapterException;
 import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
 import com.vocalink.crossproduct.ui.exceptions.RFCErrorDescription;
@@ -11,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,10 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
         )))
         .build();
 
-    return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -63,7 +66,10 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
         .errorDetails(errorDetails)
         .build();
 
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -75,7 +81,10 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
         .detail(exception.getMessage())
         .build();
 
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -86,6 +95,9 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
         .detail(exception.getMessage())
         .build();
 
-    return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 }

@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
 import com.vocalink.crossproduct.ui.exceptions.GatewayErrorDescription;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,10 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
             .recoverable(false)
             .build()
     );
-    return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -48,7 +52,10 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
             .build()
         ));
 
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -63,7 +70,10 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
             .recoverable(false)
             .build()
     );
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 
   @Override
@@ -77,6 +87,9 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
             .recoverable(false)
             .build()
     );
-    return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
   }
 }
