@@ -2,18 +2,17 @@ package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import org.junit.jupiter.api.Test
 
 class SelfFundingSettlementDetailsMapperTests {
 

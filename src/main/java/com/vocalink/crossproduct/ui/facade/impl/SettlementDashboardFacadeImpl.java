@@ -12,6 +12,8 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
+import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
+import com.vocalink.crossproduct.shared.participant.ParticipantType;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade;
@@ -57,18 +59,11 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
       throw new NonConsistentDataException("Expected at least two cycles!");
     }
 
-    Participant fundingParticipant = participantRepository.findByParticipantId(context, participantId)
-        .orElseThrow(() -> new EntityNotFoundException(
-            "There is no Participant with id: " + participantId));
+    Participant fundingParticipant = participantRepository
+        .findByParticipantId(context, participantId);
 
-    List<Participant> participants = participantRepository.findAll(context).stream()
-        .filter(p -> p.getFundingBic().equals(participantId))
-        .collect(toList());
-
-    if (participants.isEmpty()) {
-      throw new EntityNotFoundException(
-          "There are no funded participants for  id: " + participantId);
-    }
+    List<Participant> participants = participantRepository
+        .findWith(context, participantId, ParticipantType.FUNDED.getDescription());
 
     List<IntraDayPositionGross> intraDays = intraDayPositionGrossRepository
         .findIntraDayPositionGrossByParticipantId(context, participants.stream()
@@ -82,9 +77,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   public ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId) {
 
-    Participant participant = participantRepository.findByParticipantId(context, participantId)
-        .orElseThrow(() -> new EntityNotFoundException(
-            "There is no Participant with id: " + participantId));
+    Participant participant = participantRepository.findByParticipantId(context, participantId);
 
     List<PositionDetails> positionsDetails = positionDetailsRepository
         .findByParticipantId(context, participantId);
@@ -114,9 +107,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     if (participant.getFundingBic() != null && !participant.getFundingBic().equals("NA")) {
       fundingParticipant = participantRepository
-          .findByParticipantId(context, participant.getFundingBic())
-          .orElseThrow(() -> new EntityNotFoundException(
-              "There is no Funding Participant with id: " + participant.getFundingBic()));
+          .findByParticipantId(context, participant.getFundingBic());
 
     }
     return fundingParticipant;

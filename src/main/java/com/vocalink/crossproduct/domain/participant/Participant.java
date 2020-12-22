@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.participant;
 
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus;
 import com.vocalink.crossproduct.shared.participant.ParticipantType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

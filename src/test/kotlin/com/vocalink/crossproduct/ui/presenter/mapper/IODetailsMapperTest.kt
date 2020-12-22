@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.io.IODataDetails
 import com.vocalink.crossproduct.domain.io.IODetails
 import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes
 import com.vocalink.crossproduct.domain.participant.Participant
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

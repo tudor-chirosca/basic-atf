@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import com.vocalink.crossproduct.adapter.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -30,6 +31,7 @@ import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
+import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.shared.positions.CPIntraDayPositionGross;
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
@@ -98,6 +100,10 @@ public interface EntityMapper {
   CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
 
   CPInstructionEnquiryRequest toCp(ParticipantSettlementRequest request);
+
+  @Mapping(target = "connectingParty", source = "connectingParty")
+  @Mapping(target = "participantType", source = "participantType")
+  CPParticipantsSearchRequest toCp(String connectingParty, String participantType);
 
   @Mapping(target = "cycleIds", source = "cycleIds")
   @Mapping(target = "participants", source = "participants")
