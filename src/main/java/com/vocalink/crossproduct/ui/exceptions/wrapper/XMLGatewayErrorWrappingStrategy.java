@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.exceptions.wrapper;
 
 import com.vocalink.crossproduct.domain.error.GatewayError;
 import com.vocalink.crossproduct.infrastructure.exception.ErrorConstants;
-import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.shared.exception.AdapterException;
 import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
 import com.vocalink.crossproduct.ui.exceptions.GatewayErrorDescription;
@@ -55,21 +54,6 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
   @Override
   public ResponseEntity<ErrorDescriptionResponse> wrapException(
       HttpMessageNotReadableException exception) {
-    GatewayErrorDescription error = new GatewayErrorDescription();
-    error.getErrors().addError(
-        GatewayError.builder()
-            .source(ErrorConstants.ERROR_SOURCE_ISS)
-            .reasonCode(ErrorConstants.ERROR_REASON_INVALID_INPUT)
-            .description(exception.getMessage())
-            .recoverable(false)
-            .build()
-    );
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-  }
-
-  @Override
-  public ResponseEntity<ErrorDescriptionResponse> wrapException(
-      InvalidRequestParameterException exception) {
     GatewayErrorDescription error = new GatewayErrorDescription();
     error.getErrors().addError(
         GatewayError.builder()

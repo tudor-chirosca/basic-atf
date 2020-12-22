@@ -79,18 +79,6 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
   }
 
   @Override
-  public ResponseEntity<ErrorDescriptionResponse> wrapException(
-      InvalidRequestParameterException exception) {
-    RFCErrorDescription error = RFCErrorDescription.builder()
-        .status(HttpStatus.BAD_REQUEST.value())
-        .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        .detail(exception.getMessage())
-        .build();
-
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-  }
-
-  @Override
   public ResponseEntity<ErrorDescriptionResponse> wrapException(Exception exception) {
     RFCErrorDescription error = RFCErrorDescription.builder()
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

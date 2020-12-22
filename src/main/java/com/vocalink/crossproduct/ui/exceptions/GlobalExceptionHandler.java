@@ -1,27 +1,22 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
-import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.shared.exception.AdapterException;
 import com.vocalink.crossproduct.ui.exceptions.wrapper.ErrorWrappingStrategy;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
   private final ErrorWrappingStrategy errorWrapper;
-
-  public GlobalExceptionHandler(
-      ErrorWrappingStrategy wrappingStrategy) {
-    this.errorWrapper = wrappingStrategy;
-  }
 
   @ExceptionHandler
   public ResponseEntity<ErrorDescriptionResponse> handleException(
@@ -36,16 +31,6 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDescriptionResponse> handleHttpsConversionException(
       final HttpServletRequest request,
       final HttpMessageNotReadableException exception) {
-
-    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
-
-    return errorWrapper.wrapException(exception);
-  }
-
-  @ExceptionHandler(InvalidRequestParameterException.class)
-  public ResponseEntity<ErrorDescriptionResponse> handleInvalidRequestParameterException(
-      final HttpServletRequest request,
-      final InvalidRequestParameterException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
