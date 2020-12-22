@@ -94,6 +94,12 @@ public interface DTOMapper {
   })
   ParticipantReference toReference(Participant input);
 
+  @Mappings({
+      @Mapping(target = "participantIdentifier", source = "id"),
+      @Mapping(target = "connectingParticipantId", source = "fundingBic")
+  })
+  ParticipantReferenceDto toReferenceDto(Participant participant);
+
   ParticipantReferenceDto toDto(ParticipantReference participant);
 
   PositionDetailsDto toDto(PositionDetails positionDetails);
@@ -242,11 +248,11 @@ public interface DTOMapper {
   ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction, @Context List<Participant> participants);
 
   @Named("findParticipant")
-  default ParticipantDto findParticipant(String participantId, @Context List<Participant> participants) {
+  default ParticipantReferenceDto findParticipant(String participantId, @Context List<Participant> participants) {
     return participants.stream()
         .filter(p -> p.getBic().equals(participantId))
         .findFirst()
-        .map(this::toDto)
+        .map(this::toReferenceDto)
         .orElse(null);
   }
 

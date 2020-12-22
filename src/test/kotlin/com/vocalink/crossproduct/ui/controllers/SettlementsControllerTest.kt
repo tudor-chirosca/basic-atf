@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade
@@ -41,13 +42,10 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "settlementTime": "2020-12-09T15:58:19",
             "status": "OPEN",
             "participant": {
-                "id": "HANDSESS",
-                "bic": "HANDSESS",
+                "participantIdentifier": "HANDSESS",
                 "name": "Svenska Handelsbanken",
-                "fundingBic": "NDEASESSXXX",
-                "status": "SUSPENDED",
-                "suspendedTime": "2019-12-22T14:09:05",
-                "participantType": "FUNDED"
+                "participantType": "FUNDED",
+                "connectingParticipantId": "NDEASESSXXX"
             },
             "instructions": {
                 "totalResults": 1,
@@ -56,22 +54,16 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                     "reference": "538264950",
                     "status": "rejected",
                     "counterparty": {
-                        "id": "HANDSESS",
-                        "bic": "HANDSESS",
+                        "participantIdentifier": "HANDSESS",
                         "name": "Svenska Handelsbanken",
-                        "fundingBic": "NDEASESSXXX",
-                        "status": "SUSPENDED",
-                        "suspendedTime": "2019-12-22T14:09:05",
-                        "participantType": "FUNDED"
+                        "participantType": "FUNDED",
+                        "connectingParticipantId": "NDEASESSXXX"
                     },
                     "settlementCounterparty": {
-                        "id": "HANDSESS",
-                        "bic": "HANDSESS",
+                        "participantIdentifier": "HANDSESS",
                         "name": "Svenska Handelsbanken",
-                        "fundingBic": "NDEASESSXXX",
-                        "status": "SUSPENDED",
-                        "suspendedTime": "2019-12-22T14:09:05",
-                        "participantType": "FUNDED"
+                        "participantType": "FUNDED",
+                        "connectingParticipantId": "NDEASESSXXX"
                     },
                     "totalDebit": 10,
                     "totalCredit": 10
@@ -86,15 +78,10 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     fun `should return 200 on get settlement by cycle and participant id's`() {
         val cycleId = "20201209001"
         val participantId = "HANDSESS"
-        val participant = ParticipantDto.builder()
-                .id(participantId)
-                .bic(participantId)
-                .name("Svenska Handelsbanken")
-                .fundingBic("NDEASESSXXX")
-                .status(ParticipantStatus.SUSPENDED)
-                .suspendedTime(LocalDateTime.of(2019,12,22,14,9,5))
-                .participantType(ParticipantType.FUNDED)
-                .build()
+        val participant = ParticipantReferenceDto(
+                participantId, "Svenska Handelsbanken", ParticipantType.FUNDED
+                )
+        participant.connectingParticipantId = "NDEASESSXXX"
         val instruction = ParticipantInstructionDto.builder()
                 .reference("538264950")
                 .status("rejected")
