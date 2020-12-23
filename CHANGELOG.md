@@ -1,3 +1,10 @@
+# [1.29.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.28.1...v1.29.0) (2020-12-23)
+
+
+### Features
+
+* add scheme participant to ref participants ([d7ef9fe](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/d7ef9fe831c18fcf60d0b115816db17cbbc996e3))
+
 ## [1.28.1](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.28.0...v1.28.1) (2020-12-22)
 
 
