@@ -1,3 +1,10 @@
+# [1.30.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.29.0...v1.30.0) (2020-12-23)
+
+
+### Features
+
+* Added  settlement enquiry endpoint ([b91f155](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/b91f1559d1bf21e74b6877f183dcfe60d74dd6b8))
+
 # [1.29.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.28.1...v1.29.0) (2020-12-23)
 
 
