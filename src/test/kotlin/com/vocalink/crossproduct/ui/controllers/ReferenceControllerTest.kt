@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReferenceController::class)
@@ -263,8 +263,8 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val cycles = listOf(
                 CycleDto.builder()
                         .id("03")
-                        .settlementTime(LocalDateTime.parse("2020-11-03T17:58:19.183"))
-                        .cutOffTime(LocalDateTime.parse("2020-11-03T17:58:19.183"))
+                        .settlementTime(ZonedDateTime.parse("2020-11-03T17:58:19Z"))
+                        .cutOffTime(ZonedDateTime.parse("2020-11-03T17:58:19Z"))
                         .status(CycleStatus.OPEN)
                         .build())
 

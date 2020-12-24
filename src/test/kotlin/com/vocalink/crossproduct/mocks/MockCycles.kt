@@ -6,42 +6,42 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import java.math.BigDecimal
-import java.math.BigInteger
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class MockCycles {
     val cyclesDto = listOf(
             CycleDto.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                     .id("01")
                     .status(CycleStatus.COMPLETED)
                     .build(),
             CycleDto.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 12, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 15, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
                     .id("02")
                     .status(CycleStatus.OPEN)
                     .build())
 
     val cycles = listOf(
             Cycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                     .id("01")
                     .status(CycleStatus.COMPLETED)
                     .build(),
             Cycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 12, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 15, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
                     .id("02")
                     .status(CycleStatus.OPEN)
                     .build())
 
     val cyclesWithPositions = listOf(
             Cycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                     .id("01")
                     .status(CycleStatus.COMPLETED)
                     .totalPositions(listOf(
@@ -56,8 +56,8 @@ class MockCycles {
                             ))
                     .build(),
             Cycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 12, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 15, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
                     .id("02")
                     .status(CycleStatus.OPEN)
                     .totalPositions(listOf(
@@ -74,14 +74,14 @@ class MockCycles {
 
     var cpCycles = listOf(
             CPCycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                     .id("01")
                     .status("COMPLETED")
                     .build(),
             CPCycle.builder()
-                    .cutOffTime(LocalDateTime.of(2019, 12, 10, 12, 10))
-                    .settlementTime(LocalDateTime.of(2019, 12, 10, 15, 10))
+                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
                     .id("02")
                     .status("OPEN")
                     .build())

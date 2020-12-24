@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.CPParticipant
 import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class MockParticipants {
     var participants = listOf(
@@ -37,7 +37,7 @@ class MockParticipants {
                 .bic("HANDSESS")
                 .fundingBic("NA")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(LocalDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now().plusDays(15))
                 .status("SUSPENDED")
                 .build()
         else CPParticipant.builder()
@@ -54,7 +54,7 @@ class MockParticipants {
                 .id("HANDSESS")
                 .bic("HANDSESS")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(LocalDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now().plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
                 .participantType(ParticipantType.DIRECT_ONLY)
                 .build()
@@ -72,7 +72,7 @@ class MockParticipants {
             .id("DABASESX")
             .bic("DABASESX")
             .name("Danske Bank AG")
-            .suspendedTime(LocalDateTime.now().plusDays(15))
+            .suspendedTime(ZonedDateTime.now().plusDays(15))
             .status(ParticipantStatus.SUSPENDED)
             .build()
 
@@ -80,7 +80,7 @@ class MockParticipants {
             .id("NDEASESSXXX")
             .bic("NDEASESSXXX")
             .name("Nordea")
-            .suspendedTime(LocalDateTime.now().plusDays(15))
+            .suspendedTime(ZonedDateTime.now().plusDays(15))
             .status(ParticipantStatus.ACTIVE)
             .build()
 
@@ -91,7 +91,7 @@ class MockParticipants {
                     .bic("HANDSESS")
                     .fundingBic("NDEASESSXXX")
                     .name("Svenska Handelsbanken")
-                    .suspendedTime(LocalDateTime.now().plusDays(15))
+                    .suspendedTime(ZonedDateTime.now().plusDays(15))
                     .status(ParticipantStatus.SUSPENDED)
                     .participantType(ParticipantType.DIRECT_ONLY)
                     .build()

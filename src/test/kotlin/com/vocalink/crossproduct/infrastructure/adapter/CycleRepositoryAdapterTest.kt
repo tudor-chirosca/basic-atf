@@ -12,7 +12,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -48,14 +49,14 @@ class CycleRepositoryAdapterTest {
         val cycleIds = listOf("01", "03")
         val cpCycles = listOf(
                 CPCycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0,  0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0,  0, ZoneId.of("UTC")))
                         .id("01")
                         .status("COMPLETED")
                         .build(),
                 CPCycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 15, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 18, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0,  0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 18, 10, 0,  0, ZoneId.of("UTC")))
                         .id("03")
                         .status(null)
                         .build())

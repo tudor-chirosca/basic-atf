@@ -12,7 +12,6 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -46,8 +45,8 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
           "limit": 20,
           "priorities": [ "high"
           ],
-          "dateFrom": "2020-10-23T10:39:39.215",
-          "dateTo": "2020-10-28T10:39:39.215",
+          "dateFrom": "2020-10-23T10:39:39Z",
+          "dateTo": "2020-10-28T10:39:39Z",
           "alertTypes": [
           ],
           "entities": [

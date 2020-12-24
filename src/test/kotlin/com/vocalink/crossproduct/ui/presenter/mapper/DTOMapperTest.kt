@@ -30,24 +30,24 @@ import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
-import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.Month
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class DTOMapperTest {
 
     @Test
     fun `should map all fields`() {
         val id = "anyId"
-        val cutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val settlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val cutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val settlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val status = CycleStatus.COMPLETED
 
         val cycle = Cycle.builder()
@@ -72,7 +72,7 @@ class DTOMapperTest {
         val name = "any_name"
         val fundingBic = "any_funding_bic"
         val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
+        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
 
         val credit = BigDecimal.TEN
         val debit = BigDecimal.TEN
@@ -96,8 +96,8 @@ class DTOMapperTest {
                 .build()
 
         val currentCycleId = "anyId"
-        val currentCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val currentCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val currentCycleStatus = CycleStatus.COMPLETED
 
         val currentCycle = Cycle.builder()
@@ -109,8 +109,8 @@ class DTOMapperTest {
                 .build()
 
         val previousCycleId = "anyId"
-        val previousCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val previousCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val previousCycleStatus = CycleStatus.COMPLETED
 
         val previousCycle = Cycle.builder()
@@ -145,7 +145,7 @@ class DTOMapperTest {
         val name = "any_name"
         val fundingBic = "any_funding_bic"
         val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
+        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
 
         val credit = BigDecimal.TEN
         val debit = BigDecimal.TEN
@@ -169,8 +169,8 @@ class DTOMapperTest {
                 .build()
 
         val currentCycleId = "anyId"
-        val currentCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val currentCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val currentCycleStatus = CycleStatus.COMPLETED
 
         val currentCycle = Cycle.builder()
@@ -182,8 +182,8 @@ class DTOMapperTest {
                 .build()
 
         val previousCycleId = "anyId"
-        val previousCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val previousCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val previousCycleStatus = CycleStatus.COMPLETED
 
         val previousCycle = Cycle.builder()
@@ -233,7 +233,7 @@ class DTOMapperTest {
         val name = "any_name"
         val fundingBic = "any_funding_bic"
         val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
+        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
 
         val credit = BigDecimal.TEN
         val debit = BigDecimal.TEN
@@ -272,8 +272,8 @@ class DTOMapperTest {
         )
 
         val currentCycleId = "any_id"
-        val currentCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val currentCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val currentCycleStatus = CycleStatus.COMPLETED
 
         val currentCycle = Cycle.builder()
@@ -285,8 +285,8 @@ class DTOMapperTest {
                 .build()
 
         val previousCycleId = "anyId"
-        val previousCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val previousCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val previousCycleStatus = CycleStatus.OPEN
 
         val previousCycle = Cycle.builder()
@@ -329,7 +329,7 @@ class DTOMapperTest {
         val name = "any_name"
         val fundingBic = "any_funding_bic"
         val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = LocalDateTime.of(2020, Month.JULY, 10, 10, 10)
+        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
 
         val credit = BigDecimal.TEN
         val debit = BigDecimal.TEN
@@ -404,8 +404,8 @@ class DTOMapperTest {
         )
 
         val currentCycleId = "any_id"
-        val currentCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val currentCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val currentCycleStatus = CycleStatus.COMPLETED
 
         val currentCycle = Cycle.builder()
@@ -417,8 +417,8 @@ class DTOMapperTest {
                 .build()
 
         val previousCycleId = "anyId"
-        val previousCycleCutoffTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
-        val previousCycleSettlementTime = LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12)
+        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         val previousCycleStatus = CycleStatus.OPEN
 
         val previousCycle = Cycle.builder()
@@ -537,7 +537,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map Alerts fields`() {
-        val dateRaised = LocalDateTime.now()
+        val dateRaised = ZonedDateTime.now()
         val alert = Alert.builder()
                 .alertId(3141)
                 .priority("high")
@@ -584,7 +584,7 @@ class DTOMapperTest {
                 .entityBic("sender_bic")
                 .build()
         val file = File.builder()
-                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .createdAt(ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")))
                 .messageType("message_type")
                 .fileName("name")
                 .nrOfBatches(12)
@@ -621,7 +621,7 @@ class DTOMapperTest {
                 .fileSize(23423423423)
                 .settlementCycleId("01")
                 .settlementDate(LocalDate.of(2020, Month.AUGUST, 12))
-                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .createdAt(ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")))
                 .status("status")
                 .reasonCode(null)
                 .messageType("message_type")
@@ -654,7 +654,7 @@ class DTOMapperTest {
                 .build()
         val batch = Batch.builder()
                 .fileName("filename")
-                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .createdAt(ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")))
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
@@ -685,7 +685,7 @@ class DTOMapperTest {
                 .build()
         val batch = Batch.builder()
                 .fileName("filename")
-                .createdAt(LocalDateTime.of(2020, Month.AUGUST, 12, 12, 12))
+                .createdAt(ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")))
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
@@ -718,11 +718,11 @@ class DTOMapperTest {
                 "counterpartyId", "settlementCounterpartyId",
                 BigDecimal.TEN, BigDecimal.TEN
         )
-        val settlement = ParticipantSettlement("cycleId", LocalDateTime.of(2020, 10, 10, 10, 10, 10),
+        val settlement = ParticipantSettlement("cycleId", ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
                 SettlementStatus.PARTIAL, "participantId", Page(1, listOf(instruction)))
         val cycle = Cycle("cycleId",
-                LocalDateTime.of(2020, 10, 10, 10, 10, 10),
-                LocalDateTime.of(2020, 10, 10, 12, 10, 10),
+                ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
                 CycleStatus.COMPLETED,
                 emptyList()
         )

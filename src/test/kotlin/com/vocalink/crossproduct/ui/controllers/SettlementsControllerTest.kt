@@ -9,9 +9,6 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade
-import java.math.BigDecimal
-import java.nio.charset.Charset
-import java.time.LocalDateTime
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -24,6 +21,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
+import java.nio.charset.Charset
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @WebMvcTest(SettlementsController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -41,7 +42,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         const val VALID_DETAILS_RESPONSE = """{
             "cycleId": "20201209001",
-            "settlementTime": "2020-12-09T15:58:19",
+            "settlementTime": "2020-12-09T15:58:19Z",
             "status": "PARTIAL",
             "participant": {
                 "participantIdentifier": "HANDSESS",
@@ -93,7 +94,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .build()
         val details = ParticipantSettlementDetailsDto.builder()
                 .cycleId(cycleId)
-                .settlementTime(LocalDateTime.of(2020,12,9,15,58,19))
+                .settlementTime(ZonedDateTime.of(2020,12,9,15,58,19, 0, ZoneId.of("UTC")))
                 .status(SettlementStatus.PARTIAL)
                 .participant(participant)
                 .instructions(PageDto(1, listOf(instruction)))
