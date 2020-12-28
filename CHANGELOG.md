@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.31.0...v1.32.0) (2020-12-28)
+
+
+### Features
+
+* update to zoned date ([539b2e8](https://github.com/vocalink/cpp-international-suite-service/commit/539b2e89d2d9c1b765cb98c5fbe8f59a660c5ce1))
+
 # [1.31.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.30.0...v1.31.0) (2020-12-28)
 
 
