@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.config
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.ui.controllers.SettlementDashboardController
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import org.junit.jupiter.api.Test
@@ -10,6 +11,7 @@ import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
 @WebMvcTest(value = [SettlementDashboardController::class])
+@ContextConfiguration(classes=[TestConfig::class])
 class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
 
     @MockBean
@@ -37,7 +40,7 @@ class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
         mockMvc.perform(get("/settlement")
                 .header("client-type", "UI"))
                 .andExpect(status().is5xxServerError)
-                .andExpect(jsonPath("$.message")
+                .andExpect(jsonPath("$.Errors.Error[0].Description")
                         .value("Missing or invalid request header 'context': null"))
     }
 
@@ -46,7 +49,7 @@ class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
         mockMvc.perform(get("/settlement")
                 .header("context", "BPS"))
                 .andExpect(status().is5xxServerError)
-                .andExpect(jsonPath("$.message")
+                .andExpect(jsonPath("$.Errors.Error[0].Description")
                         .value("Missing or invalid request header 'client-type': null"))
     }
 }

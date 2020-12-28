@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
@@ -13,7 +14,9 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -24,6 +27,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ofPattern
 
 @WebMvcTest(FilesController::class)
+@ContextConfiguration(classes=[TestConfig::class])
 class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean

@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
@@ -9,12 +10,14 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(SettlementDashboardController::class)
+@ContextConfiguration(classes=[TestConfig::class])
 open class SettlementDashboardControllerTest {
 
     @Autowired

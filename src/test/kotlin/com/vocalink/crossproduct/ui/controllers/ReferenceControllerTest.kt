@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
@@ -18,6 +19,7 @@ import org.mockito.Mockito.anyString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -27,6 +29,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReferenceController::class)
+@ContextConfiguration(classes=[TestConfig::class])
 class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
