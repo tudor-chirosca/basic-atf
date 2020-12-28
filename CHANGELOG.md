@@ -1,3 +1,15 @@
+# [1.31.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.30.0...v1.31.0) (2020-12-28)
+
+
+### Bug Fixes
+
+* s1768652 response type fix to problem+json ([76cf64f](https://github.com/vocalink/cpp-international-suite-service/commit/76cf64fdf84041b7edaf83b0c6435f6506f9b488))
+
+
+### Features
+
+* s1768652 exception handling for XML gateway and RFC7807 ([772dd10](https://github.com/vocalink/cpp-international-suite-service/commit/772dd1062191fad43e859319346f8759769a428f))
+
 # [1.30.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.29.0...v1.30.0) (2020-12-23)
 
 
