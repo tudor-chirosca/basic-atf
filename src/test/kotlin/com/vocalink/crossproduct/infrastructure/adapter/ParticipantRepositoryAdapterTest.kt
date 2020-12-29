@@ -7,8 +7,9 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.infrastructure.factory.ClientFactory
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -57,10 +58,10 @@ class ParticipantRepositoryAdapterTest {
 
         `when`(clientFactory.getParticipantClient(CONTEXT))
                 .thenReturn(participantClient)
-        `when`(participantClient.findById(participantId))
-                .thenReturn(MockParticipants().cpParticipants)
+        `when`(participantClient.findBy(participantId))
+                .thenReturn(Optional.of(MockParticipants().cpParticipants[0]))
 
-        val optionalResult = participantRepositoryAdapter.findByParticipantId(CONTEXT, participantId)
+        val optionalResult = participantRepositoryAdapter.findBy(CONTEXT, participantId)
 
         assertTrue(optionalResult.isPresent)
 
@@ -79,9 +80,9 @@ class ParticipantRepositoryAdapterTest {
 
         `when`(clientFactory.getParticipantClient(CONTEXT))
                 .thenReturn(participantClient)
-        `when`(participantClient.findById(participantId)).thenReturn(emptyList())
+        `when`(participantClient.findBy(participantId)).thenReturn(Optional.empty())
 
-        val optionalResult = participantRepositoryAdapter.findByParticipantId(CONTEXT, participantId)
+        val optionalResult = participantRepositoryAdapter.findBy(CONTEXT, participantId)
 
         assertFalse(optionalResult.isPresent)
     }

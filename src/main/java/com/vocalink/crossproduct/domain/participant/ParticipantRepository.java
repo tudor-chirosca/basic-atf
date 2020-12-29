@@ -7,5 +7,8 @@ public interface ParticipantRepository {
 
   List<Participant> findAll(String context);
 
-  Optional<Participant> findByParticipantId(String context, String participantId);
+  Optional<Participant> findBy(String context, String participantId);
+
+  List<Participant> findBy(String context, String connectingParty, String participantType);
+
 }

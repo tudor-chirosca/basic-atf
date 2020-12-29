@@ -1,11 +1,8 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -52,7 +49,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .findSettlements(context, request);
 
     List<Participant> participants = request.getParticipants().stream()
-        .map(participantId -> participantRepository.findByParticipantId(context, participantId)
+        .map(participantId -> participantRepository.findBy(context, participantId)
             .orElseThrow(() -> new EntityNotFoundException(
                 "There is no Participant with id: " + participantId)))
         .collect(toList());

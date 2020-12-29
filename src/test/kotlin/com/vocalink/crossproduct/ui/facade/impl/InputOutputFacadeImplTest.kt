@@ -11,17 +11,17 @@ import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import java.time.LocalDate
-import java.util.Optional
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.LocalDate
+import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class InputOutputFacadeImplTest {
 
@@ -106,7 +106,7 @@ class InputOutputFacadeImplTest {
         val participantId = "NDEASESSXXX"
 
         `when`(participantRepository
-                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .findBy(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
 
         `when`(ioDetailsRepository
@@ -123,7 +123,7 @@ class InputOutputFacadeImplTest {
                 .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
 
         verify(uiPresenter).presentIoDetails(any(), any(), any())
-        verify(participantRepository).findByParticipantId(any(), any())
+        verify(participantRepository).findBy(any(), any())
         verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
 
         assertNotNull(result)
@@ -134,7 +134,7 @@ class InputOutputFacadeImplTest {
         val participantId = "fake_id"
         val date = LocalDate.now()
 
-        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.empty())
         assertThrows(EntityNotFoundException::class.java) {
             inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
@@ -147,7 +147,7 @@ class InputOutputFacadeImplTest {
         val date = LocalDate.now()
 
         `when`(participantRepository
-                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .findBy(TestConstants.CONTEXT, participantId))
                 .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
 
         `when`(ioDetailsRepository

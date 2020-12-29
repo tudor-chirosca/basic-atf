@@ -57,7 +57,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
       throw new NonConsistentDataException("Expected at least two cycles!");
     }
 
-    Participant fundingParticipant = participantRepository.findByParticipantId(context, participantId)
+    Participant fundingParticipant = participantRepository.findBy(context, participantId)
         .orElseThrow(() -> new EntityNotFoundException(
             "There is no Participant with id: " + participantId));
 
@@ -82,7 +82,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   public ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId) {
 
-    Participant participant = participantRepository.findByParticipantId(context, participantId)
+    Participant participant = participantRepository.findBy(context, participantId)
         .orElseThrow(() -> new EntityNotFoundException(
             "There is no Participant with id: " + participantId));
 
@@ -114,7 +114,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     if (participant.getFundingBic() != null && !participant.getFundingBic().equals("NA")) {
       fundingParticipant = participantRepository
-          .findByParticipantId(context, participant.getFundingBic())
+          .findBy(context, participant.getFundingBic())
           .orElseThrow(() -> new EntityNotFoundException(
               "There is no Funding Participant with id: " + participant.getFundingBic()));
 
