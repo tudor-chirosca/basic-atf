@@ -1,3 +1,10 @@
+## [1.32.1](https://github.com/vocalink/cpp-international-suite-service/compare/v1.32.0...v1.32.1) (2020-12-29)
+
+
+### Bug Fixes
+
+* update participant ([bd9ed39](https://github.com/vocalink/cpp-international-suite-service/commit/bd9ed39040944ace01b438618c520a59d4293eea))
+
 # [1.32.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.31.0...v1.32.0) (2020-12-28)
 
 
