@@ -4,8 +4,8 @@ import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPP
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
+import com.vocalink.crossproduct.infrastructure.factory.ClientFactory;
 import com.vocalink.crossproduct.shared.cycle.CyclesClient;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,7 +37,7 @@ public class CycleRepositoryAdapter implements CycleRepository {
     log.info("Fetching cycle by cycleIds {} from context {} ... ", cycleIds, context);
     CyclesClient client = clientFactory.getCyclesClient(context);
 
-    return client.findByIds(cycleIds)
+    return client.findBy(cycleIds)
         .stream()
         .map(MAPPER::toEntity)
         .collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class CycleRepositoryAdapter implements CycleRepository {
     log.info("Fetching cycles by date {} from context {} ... ", date, context);
     CyclesClient client = clientFactory.getCyclesClient(context.toUpperCase());
 
-    return client.findByDate(date)
+    return client.findBy(date)
         .stream()
         .map(MAPPER::toEntity)
         .collect(toList());

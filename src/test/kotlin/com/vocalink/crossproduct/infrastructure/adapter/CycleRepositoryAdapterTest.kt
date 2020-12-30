@@ -61,7 +61,7 @@ class CycleRepositoryAdapterTest {
                         .status(null)
                         .build())
 
-        `when`(cyclesClient.findByIds(cycleIds)).thenReturn(cpCycles)
+        `when`(cyclesClient.findBy(cycleIds)).thenReturn(cpCycles)
 
         val result = cycleRepositoryAdapter.findByIds(TestConstants.CONTEXT, cycleIds)
 
@@ -81,11 +81,11 @@ class CycleRepositoryAdapterTest {
 
         `when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
                 .thenReturn(cyclesClient)
-        `when`(cyclesClient.findByDate(date)).thenReturn(listOf())
+        `when`(cyclesClient.findBy(date)).thenReturn(listOf())
 
         cycleRepositoryAdapter.findCyclesByDate(TestConstants.CONTEXT, date)
 
         verify(clientFactory).getCyclesClient(TestConstants.CONTEXT)
-        verify(cyclesClient).findByDate(date)
+        verify(cyclesClient).findBy(date)
     }
 }

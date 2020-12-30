@@ -724,6 +724,8 @@ class DTOMapperTest {
                 ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
                 ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
                 CycleStatus.COMPLETED,
+                false,
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
                 emptyList()
         )
         val participant = Participant("participantId", "participantId", "name",

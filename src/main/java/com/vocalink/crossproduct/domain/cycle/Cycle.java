@@ -16,6 +16,7 @@ public class Cycle {
   private final ZonedDateTime settlementTime;
   private final ZonedDateTime cutOffTime;
   private final CycleStatus status;
+  private final Boolean isNextDayCycle;
+  private final ZonedDateTime settlementConfirmationTime;
   private final List<ParticipantPosition> totalPositions;
-
 }
