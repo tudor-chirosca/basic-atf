@@ -7,9 +7,8 @@ import com.vocalink.crossproduct.shared.CPPage
 import com.vocalink.crossproduct.shared.alert.CPAlert
 import com.vocalink.crossproduct.shared.alert.CPAlertParams
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData
-import com.vocalink.crossproduct.shared.alert.CPAlertRequest
 import com.vocalink.crossproduct.shared.alert.CPAlertStats
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -57,13 +56,13 @@ class AlertsAdapterTest {
     @Test
     fun `should invoke get alerts client`() {
         val alerts = CPPage<CPAlert>(2, listOf(CPAlert.builder().build()))
-        val alertSearchRequest = mock(AlertSearchRequest::class.java)
-        val cpAlertSearchRequest = mock(CPAlertRequest::class.java)
+        val alertSearchParams = mock(AlertSearchParams::class.java)
+        val cpAlertParams = mock(CPAlertParams::class.java)
 
         `when`(clientFactory.getAlertsClient(TestConstants.CONTEXT)).thenReturn(client)
-        `when`(client.findAlerts(cpAlertSearchRequest)).thenReturn(alerts)
+        `when`(client.findAlerts(cpAlertParams)).thenReturn(alerts)
 
-        alertsAdapter.findAlerts(TestConstants.CONTEXT, alertSearchRequest)
+        alertsAdapter.findAlerts(TestConstants.CONTEXT, alertSearchParams)
 
         verify(clientFactory, atLeastOnce()).getAlertsClient(TestConstants.CONTEXT)
     }
