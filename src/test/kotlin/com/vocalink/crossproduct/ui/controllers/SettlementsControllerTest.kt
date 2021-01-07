@@ -55,7 +55,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "items": [
         	    {
                     "reference": "538264950",
-                    "status": "rejected",
+                    "status": "PARTIAL",
                     "counterparty": {
                         "participantIdentifier": "HANDSESS",
                         "name": "Svenska Handelsbanken",
@@ -86,7 +86,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         participant.connectingParticipantId = "NDEASESSXXX"
         val instruction = ParticipantInstructionDto.builder()
                 .reference("538264950")
-                .status("rejected")
+                .status(SettlementStatus.PARTIAL)
                 .counterparty(participant)
                 .settlementCounterparty(participant)
                 .totalCredit(BigDecimal.TEN)
