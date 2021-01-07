@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -11,12 +12,14 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.http.MediaType
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
 
 @WebMvcTest(AlertsController::class)
+@ContextConfiguration(classes=[TestConfig::class])
 class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
@@ -35,14 +39,14 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     private companion object {
         const val VALID_REQUEST = "{}"
-        const val VALID_PARTIAL_ALERT_REQUEST: String = """ 
+        const val VALID_PARTIAL_ALERT_REQUEST: String = """
         {
           "offset": 0,
           "limit": 20,
           "priorities": [ "high"
           ],
-          "dateFrom": "2020-10-23T10:39:39.215",
-          "dateTo": "2020-10-28T10:39:39.215",
+          "dateFrom": "2020-10-23T10:39:39Z",
+          "dateTo": "2020-10-28T10:39:39Z",
           "alertTypes": [
           ],
           "entities": [

@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.domain.participant;
 
 import com.vocalink.crossproduct.shared.participant.ParticipantStatus;
 import com.vocalink.crossproduct.shared.participant.ParticipantType;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class Participant {
   private final String name;
   private final String fundingBic;
   private final ParticipantStatus status;
-  private final LocalDateTime suspendedTime;
+  private final ZonedDateTime suspendedTime;
   private final ParticipantType participantType;
   private final String schemeCode;
 }

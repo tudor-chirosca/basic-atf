@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.domain.cycle;
 
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +13,10 @@ import lombok.Getter;
 public class Cycle {
 
   private final String id;
-  private final LocalDateTime settlementTime;
-  private final LocalDateTime cutOffTime;
+  private final ZonedDateTime settlementTime;
+  private final ZonedDateTime cutOffTime;
   private final CycleStatus status;
+  private final Boolean isNextDayCycle;
+  private final ZonedDateTime settlementConfirmationTime;
   private final List<ParticipantPosition> totalPositions;
-
 }

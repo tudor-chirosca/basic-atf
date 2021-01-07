@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers
 
+import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
@@ -13,17 +14,21 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter.ofPattern
 
 @WebMvcTest(FilesController::class)
+@ContextConfiguration(classes=[TestConfig::class])
 class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
@@ -41,7 +46,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "items": [
                 {
                     "name": "D27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800105.gz",
-                    "createdAt": "2020-10-30T10:10:10",
+                    "createdAt": "2020-10-30T10:10:10Z",
                     "senderBic": "HANDSESS",
                     "messageType": "admi.004",
                     "nrOfBatches": 12,
@@ -56,7 +61,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "fileSize": 3245234523,
             "settlementDate": "2020-11-03",
             "settlementCycleId": "04",
-            "createdAt": "2020-10-30T10:10:10",
+            "createdAt": "2020-10-30T10:10:10Z",
             "status": "Accepted",
             "messageType": "prtp.001SO",
             "sender": {
@@ -116,7 +121,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     fun `should return 200 when required msg_direction param is specified in request`() {
         val file = FileDto.builder()
                 .name("D27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800105.gz")
-                .createdAt(LocalDateTime.of(2020, 10, 30, 10, 10, 10))
+                .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
                 .senderBic("HANDSESS")
                 .messageType("admi.004")
                 .nrOfBatches(12)
@@ -270,7 +275,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .fileSize(3245234523)
                 .settlementDate(LocalDate.of(2020, 11, 3))
                 .settlementCycleId("04")
-                .createdAt(LocalDateTime.of(2020, 10, 30, 10, 10, 10))
+                .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
                 .status("Accepted")
                 .messageType("prtp.001SO")
                 .sender(EnquirySenderDetailsDto.builder()

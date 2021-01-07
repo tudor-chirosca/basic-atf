@@ -8,8 +8,9 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.SORT;
 import static java.lang.Integer.parseInt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 
@@ -21,8 +22,8 @@ public class AlertSearchRequest implements Serializable {
   private final int offset;
   private final int limit;
   private final List<String> priorities;
-  private final LocalDateTime dateFrom;
-  private final LocalDateTime dateTo;
+  private final ZonedDateTime dateFrom;
+  private final ZonedDateTime dateTo;
   private final List<String> alertTypes;
   private final List<String> entities;
   private final String alertId;
@@ -30,10 +31,16 @@ public class AlertSearchRequest implements Serializable {
   private final String order;
 
   @JsonCreator
-  public AlertSearchRequest(Integer offset, Integer limit,
-      List<String> priorities, LocalDateTime dateFrom, LocalDateTime dateTo,
-      List<String> alertTypes, List<String> entities, String alertId, String sort,
-      String order) {
+  public AlertSearchRequest(@JsonProperty("offset") Integer offset,
+      @JsonProperty("limit") Integer limit,
+      @JsonProperty("priorities") List<String> priorities,
+      @JsonProperty("dateFrom") ZonedDateTime dateFrom,
+      @JsonProperty("dateTo") ZonedDateTime dateTo,
+      @JsonProperty("alertTypes") List<String> alertTypes,
+      @JsonProperty("entities") List<String> entities,
+      @JsonProperty("alertId") String alertId,
+      @JsonProperty("sort") String sort,
+      @JsonProperty("order") String order) {
     this.offset = offset == null ? parseInt(getDefault(OFFSET)) : offset;
     this.limit = limit == null ? parseInt(getDefault(LIMIT)) : limit;
     this.priorities = priorities;

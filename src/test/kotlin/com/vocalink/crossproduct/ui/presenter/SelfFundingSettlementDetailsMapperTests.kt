@@ -8,7 +8,8 @@ import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.shared.participant.ParticipantStatus
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -105,8 +106,8 @@ class SelfFundingSettlementDetailsMapperTests {
     fun `should get Self Funding Settlement Details DTO for 1 cycle`() {
         val cycles = listOf(
                 Cycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                         .id("01")
                         .status(CycleStatus.COMPLETED)
                         .build())
@@ -140,8 +141,8 @@ class SelfFundingSettlementDetailsMapperTests {
     fun `should get Self Funding Settlement Details DTO for 1 cycle if funding participant or intraday position gross not null`() {
         val cycles = listOf(
                 Cycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                         .id("01")
                         .status(CycleStatus.COMPLETED)
                         .build())

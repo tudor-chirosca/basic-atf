@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.shared.participant.ParticipantStatus;
 import com.vocalink.crossproduct.shared.participant.ParticipantType;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,15 +20,13 @@ public class ParticipantDto {
   private final String name;
   private final String fundingBic;
   private final ParticipantStatus status;
-  @JsonInclude(Include.NON_EMPTY)
-  private final LocalDateTime suspendedTime;
+  private final ZonedDateTime suspendedTime;
   private final ParticipantType participantType;
 
   @JsonProperty("participantType")
   public String getParticipantType() {
     return participantType.getDescription();
   }
-
 }
 
 

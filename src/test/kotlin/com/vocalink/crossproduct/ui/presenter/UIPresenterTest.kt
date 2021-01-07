@@ -34,7 +34,8 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -286,8 +287,8 @@ class UIPresenterTest {
     fun `should get Self Funding Settlement Details DTO for 1 cycle`() {
         val cycles = listOf(
                 Cycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
                         .id("01")
                         .status(CycleStatus.COMPLETED)
                         .build())
@@ -544,14 +545,14 @@ class UIPresenterTest {
                 Alert.builder()
                         .alertId(3141)
                         .priority("high")
-                        .dateRaised(LocalDateTime.now())
+                        .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
                         .entities(listOf(ParticipantReference(id, nordea, participantType, null, null)))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
                         .priority("high")
-                        .dateRaised(LocalDateTime.now())
+                        .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
                         .entities(listOf(ParticipantReference(id, seb, participantType, null, null)))
                         .build())

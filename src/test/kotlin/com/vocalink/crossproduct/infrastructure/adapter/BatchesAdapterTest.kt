@@ -7,13 +7,13 @@ import com.vocalink.crossproduct.shared.CPPage
 import com.vocalink.crossproduct.shared.batch.CPBatch
 import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
-import java.time.LocalDateTime
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
+import java.time.ZonedDateTime
 
 class BatchesAdapterTest {
 
@@ -38,7 +38,7 @@ class BatchesAdapterTest {
 
     @Test
     fun `should invoke batches client when finding batch by id`() {
-        val cycle = CPCycle.builder().settlementTime(LocalDateTime.now()).build()
+        val cycle = CPCycle.builder().settlementTime(ZonedDateTime.now()).build()
         val batch = CPBatch.builder().cycle(cycle).build();
 
         `when`(clientFactory.getBatchesClient(any()))

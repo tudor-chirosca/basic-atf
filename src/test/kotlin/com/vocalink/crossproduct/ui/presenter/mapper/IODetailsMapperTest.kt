@@ -10,8 +10,9 @@ import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Month.APRIL
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class IODetailsMapperTest {
 
@@ -43,7 +44,7 @@ class IODetailsMapperTest {
                 .fundingBic("fundingBic")
                 .name("name")
                 .status(ParticipantStatus.ACTIVE)
-                .suspendedTime(LocalDateTime.of(2020, APRIL, 1, 1, 1))
+                .suspendedTime(ZonedDateTime.of(2020, APRIL.value, 1, 1, 1, 0, 0, ZoneId.of("UTC")))
                 .build()
 
         val date = LocalDate.of(2020, APRIL, 1)

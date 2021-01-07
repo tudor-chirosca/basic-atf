@@ -44,7 +44,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -115,7 +115,7 @@ public interface EntityMapper {
   File toEntity(CPFile file);
 
   @Named("convertToDate")
-  default LocalDate convertToDate(LocalDateTime date) {
+  default LocalDate convertToDate(ZonedDateTime date) {
     return date.toLocalDate();
   }
 }

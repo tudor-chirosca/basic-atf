@@ -18,7 +18,7 @@ pipeline {
                 setVars()
                 cleanWorkspace()
                 dir("${WORKSPACE}") {
-                    git url: "${GIT_URL}", branch: "${BRANCH_NAME}", credentialsId: githubCredentialsId
+                    checkout scm
                 }
             }
         }

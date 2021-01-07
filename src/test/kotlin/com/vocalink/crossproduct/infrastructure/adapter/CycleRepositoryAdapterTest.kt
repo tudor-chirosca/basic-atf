@@ -12,7 +12,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -48,19 +49,19 @@ class CycleRepositoryAdapterTest {
         val cycleIds = listOf("01", "03")
         val cpCycles = listOf(
                 CPCycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 10, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 12, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0,  0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0,  0, ZoneId.of("UTC")))
                         .id("01")
                         .status("COMPLETED")
                         .build(),
                 CPCycle.builder()
-                        .cutOffTime(LocalDateTime.of(2019, 12, 10, 15, 10))
-                        .settlementTime(LocalDateTime.of(2019, 12, 10, 18, 10))
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0,  0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 18, 10, 0,  0, ZoneId.of("UTC")))
                         .id("03")
                         .status(null)
                         .build())
 
-        `when`(cyclesClient.findByIds(cycleIds)).thenReturn(cpCycles)
+        `when`(cyclesClient.findBy(cycleIds)).thenReturn(cpCycles)
 
         val result = cycleRepositoryAdapter.findByIds(TestConstants.CONTEXT, cycleIds)
 
@@ -80,11 +81,11 @@ class CycleRepositoryAdapterTest {
 
         `when`(clientFactory.getCyclesClient(TestConstants.CONTEXT))
                 .thenReturn(cyclesClient)
-        `when`(cyclesClient.findByDate(date)).thenReturn(listOf())
+        `when`(cyclesClient.findBy(date)).thenReturn(listOf())
 
         cycleRepositoryAdapter.findCyclesByDate(TestConstants.CONTEXT, date)
 
         verify(clientFactory).getCyclesClient(TestConstants.CONTEXT)
-        verify(cyclesClient).findByDate(date)
+        verify(cyclesClient).findBy(date)
     }
 }

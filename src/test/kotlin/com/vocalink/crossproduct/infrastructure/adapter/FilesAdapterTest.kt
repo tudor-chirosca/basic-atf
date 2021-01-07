@@ -8,7 +8,6 @@ import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.shared.files.CPFile
 import com.vocalink.crossproduct.shared.files.CPFileReference
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
-import java.time.LocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -16,6 +15,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.ZonedDateTime
 
 class FilesAdapterTest {
 
@@ -40,7 +40,7 @@ class FilesAdapterTest {
 
     @Test
     fun `should invoke files client when finding file by id`() {
-        val cycle = CPCycle.builder().settlementTime(LocalDateTime.now()).build()
+        val cycle = CPCycle.builder().settlementTime(ZonedDateTime.now()).build()
         val file = CPFile.builder().cycle(cycle).build();
 
         `when`(clientFactory.getFilesClient(any()))

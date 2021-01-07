@@ -1,3 +1,43 @@
+## [1.32.2](https://github.com/vocalink/cpp-international-suite-service/compare/v1.32.1...v1.32.2) (2020-12-30)
+
+
+### Bug Fixes
+
+* update cycle ([de7fea5](https://github.com/vocalink/cpp-international-suite-service/commit/de7fea5ddd716017e4af01b342c89621876ff0de))
+
+## [1.32.1](https://github.com/vocalink/cpp-international-suite-service/compare/v1.32.0...v1.32.1) (2020-12-29)
+
+
+### Bug Fixes
+
+* update participant ([bd9ed39](https://github.com/vocalink/cpp-international-suite-service/commit/bd9ed39040944ace01b438618c520a59d4293eea))
+
+# [1.32.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.31.0...v1.32.0) (2020-12-28)
+
+
+### Features
+
+* update to zoned date ([539b2e8](https://github.com/vocalink/cpp-international-suite-service/commit/539b2e89d2d9c1b765cb98c5fbe8f59a660c5ce1))
+
+# [1.31.0](https://github.com/vocalink/cpp-international-suite-service/compare/v1.30.0...v1.31.0) (2020-12-28)
+
+
+### Bug Fixes
+
+* s1768652 response type fix to problem+json ([76cf64f](https://github.com/vocalink/cpp-international-suite-service/commit/76cf64fdf84041b7edaf83b0c6435f6506f9b488))
+
+
+### Features
+
+* s1768652 exception handling for XML gateway and RFC7807 ([772dd10](https://github.com/vocalink/cpp-international-suite-service/commit/772dd1062191fad43e859319346f8759769a428f))
+
+# [1.30.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.29.0...v1.30.0) (2020-12-23)
+
+
+### Features
+
+* Added  settlement enquiry endpoint ([b91f155](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/commit/b91f1559d1bf21e74b6877f183dcfe60d74dd6b8))
+
 # [1.29.0](https://github-api.mcvl-engineering.com/vocalink-portal/international-suite-service/compare/v1.28.1...v1.29.0) (2020-12-23)
 
 
