@@ -1,12 +1,12 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.IODetailsRepository;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
 import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
+import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.domain.io.IODetailsRepository;
+import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
@@ -40,10 +40,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODetailsDto getInputOutputDetails(String context, ClientType clientType, LocalDate date,
       String participantId) {
-    Participant participant = participantRepository
-        .findBy(context, participantId)
-        .orElseThrow(() -> new EntityNotFoundException(
-                "There is Participant with id: " + participantId));
+    Participant participant = participantRepository.findByParticipantId(context, participantId);
 
     IODetails ioDetails = ioDetailsRepository.findIODetailsFor(context, participantId, date)
         .stream().findFirst().orElseThrow(

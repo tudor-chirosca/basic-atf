@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.dto.participant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus;
 import com.vocalink.crossproduct.shared.participant.ParticipantType;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;

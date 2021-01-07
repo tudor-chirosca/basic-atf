@@ -11,6 +11,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
+import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -36,8 +37,9 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String context,
       ClientType clientType) {
-    List<ParticipantReference> participantReferences = participantRepository.findAll(context)
-        .stream().map(MAPPER::toReference).collect(toList());
+    List<ParticipantReference> participantReferences = participantRepository
+        .findAll(context).stream()
+        .map(MAPPER::toReference).collect(toList());
 
     return presenterFactory.getPresenter(clientType)
         .presentParticipantReferences(participantReferences);

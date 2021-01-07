@@ -121,11 +121,13 @@ public interface DTOMapper {
         .add(details.getPaymentReturn().getNetPosition());
   }
 
+  @Mapping(target = "participant", source = "participant")
   @Mapping(target = "currentPosition", source = "currentCycle.totalPositions", qualifiedByName = "generatePosition")
   @Mapping(target = "previousPosition", source = "previousCycle.totalPositions", qualifiedByName = "generatePosition")
   TotalPositionDto toDto(Participant participant, Cycle currentCycle, Cycle previousCycle,
       @Context String participantID);
 
+  @Mapping(target = "participant", source = "participant")
   @Mapping(target = "currentPosition", source = "currentCycle.totalPositions", qualifiedByName = "generatePosition")
   @Mapping(target = "previousPosition", source = "previousCycle.totalPositions", qualifiedByName = "generatePosition")
   @Mapping(target = "intraDayPositionGross", source = "intraDays", qualifiedByName = "generateIntraDays")
@@ -158,6 +160,7 @@ public interface DTOMapper {
         .orElse(IntraDayPositionGrossDto.builder().build());
   }
 
+  @Mapping(target = "positions", source = "positions")
   @Mapping(target = "currentCycle", source = "currentCycle")
   @Mapping(target = "previousCycle", source = "previousCycle")
   SettlementDashboardDto toDto(Cycle currentCycle, Cycle previousCycle,
@@ -166,6 +169,7 @@ public interface DTOMapper {
   @Mapping(target = "currentCycle", source = "currentCycle")
   @Mapping(target = "previousCycle", source = "previousCycle")
   @Mapping(target = "positions", source = "positions")
+  @Mapping(target = "fundingParticipant", source = "fundingParticipant")
   @Mapping(target = "currentPositionTotals", source = "positions", qualifiedByName = "countCurrentPositionTotals")
   @Mapping(target = "previousPositionTotals", source = "positions", qualifiedByName = "countPreviousPositionTotals")
   @Mapping(target = "intraDayPositionTotals", source = "intraDays", qualifiedByName = "countIntraDayTotals")

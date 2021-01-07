@@ -111,13 +111,4 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(VALID_PARTIAL_ALERT_REQUEST))
                 .andExpect(status().isOk)
     }
-
-    @Test
-    fun `should fail with 400 when request body missing`() {
-        mockMvc.perform(post("/alerts")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
-                .andExpect(status().is4xxClientError)
-    }
 }

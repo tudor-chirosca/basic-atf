@@ -1,20 +1,20 @@
 package com.vocalink.crossproduct.ui.dto.position;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 public class TotalPositionDto {
-  private ParticipantDto participant;
-  private ParticipantPositionDto previousPosition;
-  private ParticipantPositionDto currentPosition;
-  private IntraDayPositionGrossDto intraDayPositionGross;
+
+  private final ParticipantDto participant;
+  private final ParticipantPositionDto previousPosition;
+  private final ParticipantPositionDto currentPosition;
+  @JsonInclude(Include.NON_EMPTY)
+  private final IntraDayPositionGrossDto intraDayPositionGross;
 }

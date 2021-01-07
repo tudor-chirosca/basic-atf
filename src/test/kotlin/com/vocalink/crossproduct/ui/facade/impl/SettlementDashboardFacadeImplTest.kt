@@ -5,7 +5,6 @@ import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
 import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.domain.position.PositionDetailsRepository
@@ -15,9 +14,15 @@ import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.math.BigDecimal
+import java.util.stream.Collectors
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -25,12 +30,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.math.BigDecimal
-import java.util.*
-import java.util.stream.Collectors
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 open class SettlementDashboardFacadeImplTest {
 
@@ -62,7 +61,7 @@ open class SettlementDashboardFacadeImplTest {
     @Test
     fun `should get settlement dto for all participants`() {
         val mockModel = MockDashboardModels().getAllParticipantsSettlementDashboardDto()
-        `when`(participantRepository.findAll(TestConstants.CONTEXT))
+        `when`(participantRepository.findAll(any()))
                 .thenReturn(MockParticipants().participants)
         `when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockCycles().cycles)
@@ -112,9 +111,9 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(MockCycles().cycles)
         `when`(participantRepository
-                .findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
-        `when`(participantRepository.findAll(TestConstants.CONTEXT))
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(MockParticipants().getParticipant(false))
+        `when`(participantRepository.findWith(any(), any(), any()))
                 .thenReturn(MockParticipants().participants)
         `when`(intraDayPositionGrossRepository
                 .findIntraDayPositionGrossByParticipantId(TestConstants.CONTEXT, listOf(fundedParticipantId)))
@@ -144,8 +143,8 @@ open class SettlementDashboardFacadeImplTest {
         val positionsDetails = MockPositions().positionDetails
         val activeCycleIds = positionsDetails.stream().map { obj: PositionDetails -> obj.sessionCode }
                 .collect(Collectors.toList())
-        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(MockParticipants().getParticipant(false))
         `when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(positionsDetails)
         `when`(cycleRepository.findByIds(TestConstants.CONTEXT, activeCycleIds))
@@ -186,7 +185,7 @@ open class SettlementDashboardFacadeImplTest {
 
     @Test
     fun `should throw error on cycles less than 2`() {
-        `when`(participantRepository.findAll(TestConstants.CONTEXT))
+        `when`(participantRepository.findAll(any()))
                 .thenReturn(MockParticipants().participants)
         `when`(cycleRepository.findAll(TestConstants.CONTEXT))
                 .thenReturn(emptyList())
@@ -196,20 +195,10 @@ open class SettlementDashboardFacadeImplTest {
     }
 
     @Test
-    fun `should throw error on settlement details if no participants for given id`() {
-        val participantId = "fake_id"
-        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.empty())
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
-        }
-    }
-
-    @Test
     fun `should throw error on settlements details if cycles size and position details size are different`() {
         val participantId = "HANDSESS"
-        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(MockParticipants().getParticipant(false))
         `when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(emptyList())
         `when`(cycleRepository.findByIds(TestConstants.CONTEXT, emptyList()))
@@ -224,8 +213,8 @@ open class SettlementDashboardFacadeImplTest {
         val participantId = "HANDSESS"
         val positionsDetails = MockPositions().positionDetails
         `when`(participantRepository
-                .findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
+                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(MockParticipants().getParticipant(false))
         `when`(positionDetailsRepository
                 .findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(positionsDetails)
@@ -237,40 +226,6 @@ open class SettlementDashboardFacadeImplTest {
     }
 
     @Test
-    fun `should throw error if given fundingId does not have funded users`() {
-        val participantId = "NDEASESSXXX"
-        `when`(participantRepository.findAll(TestConstants.CONTEXT))
-                .thenReturn(listOf(MockParticipants().getParticipant(true)))
-        `when`(cycleRepository.findAll(TestConstants.CONTEXT))
-                .thenReturn(MockCycles().cycles)
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
-        }
-    }
-
-    @Test
-    fun `should throw error if no funded participants for given id`() {
-        val participantId = "NDEASESSXXX"
-        val fundedParticipantId = MockParticipants().getParticipant(false).id
-        val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf(fundedParticipantId))
-
-        `when`(cycleRepository.findAll(TestConstants.CONTEXT))
-                .thenReturn(MockCycles().cycles)
-        `when`(participantRepository
-                .findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(false)))
-        `when`(participantRepository.findAll(TestConstants.CONTEXT))
-                .thenReturn(emptyList())
-        `when`(intraDayPositionGrossRepository
-                .findIntraDayPositionGrossByParticipantId(TestConstants.CONTEXT, listOf(fundedParticipantId)))
-                .thenReturn(intraDayPositionsGross)
-
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
-        }
-    }
-
-    @Test
     fun `should throw error if no funding Participant with given id`() {
         val participantId = "HANDSESS"
         val positionsDetails = MockPositions().positionDetails
@@ -278,8 +233,8 @@ open class SettlementDashboardFacadeImplTest {
         val activeCycleIds = positionsDetails.stream().map { obj: PositionDetails -> obj.sessionCode }
                 .collect(Collectors.toList())
 
-        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(MockParticipants().getParticipant(true)))
+        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(MockParticipants().getParticipant(true))
         `when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(positionsDetails)
         `when`(cycleRepository.findByIds(TestConstants.CONTEXT, activeCycleIds))
@@ -302,8 +257,8 @@ open class SettlementDashboardFacadeImplTest {
         val activeCycleIds = positionsDetails.stream().map { obj: PositionDetails -> obj.sessionCode }
                 .collect(Collectors.toList())
 
-        `when`(participantRepository.findBy(TestConstants.CONTEXT, participantId))
-                .thenReturn(Optional.of(selfFundingParticipant))
+        `when`(participantRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
+                .thenReturn(selfFundingParticipant)
         `when`(positionDetailsRepository.findByParticipantId(TestConstants.CONTEXT, participantId))
                 .thenReturn(positionsDetails)
         `when`(cycleRepository.findByIds(TestConstants.CONTEXT, activeCycleIds))

@@ -12,13 +12,13 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
+import com.vocalink.crossproduct.shared.participant.ParticipantStatus
 import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
@@ -543,7 +543,8 @@ class DTOMapperTest {
                 .priority("high")
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
-                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea", ParticipantType.DIRECT_ONLY, null, null)))
+                .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea",
+                        ParticipantType.DIRECT_ONLY, null, null)))
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))

@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -49,9 +49,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .findSettlements(context, request);
 
     List<Participant> participants = request.getParticipants().stream()
-        .map(participantId -> participantRepository.findBy(context, participantId)
-            .orElseThrow(() -> new EntityNotFoundException(
-                "There is no Participant with id: " + participantId)))
+        .map(participantId -> participantRepository.findByParticipantId(context, participantId))
         .collect(toList());
 
     return presenterFactory.getPresenter(clientType)

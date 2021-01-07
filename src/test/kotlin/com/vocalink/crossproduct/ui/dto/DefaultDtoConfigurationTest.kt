@@ -19,7 +19,7 @@ class DefaultDtoConfigurationTest {
         val default30Days = LocalDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
         assertThat(alertSearchParams.limit).isEqualTo(20)
         assertThat(alertSearchParams.offset).isEqualTo(0)
-        assertThat(alertSearchParams.dateFrom).isEqualTo(default30Days)
+        assertThat(alertSearchParams.dateFrom.toLocalDate()).isEqualTo(default30Days)
     }
 
     @Test
