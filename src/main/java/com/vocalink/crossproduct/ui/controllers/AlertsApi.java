@@ -4,7 +4,6 @@ import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
@@ -27,15 +26,6 @@ public interface AlertsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<AlertStatsDto> getAlertStats(ClientType clientType, String context);
-
-  @Deprecated
-  @ApiOperation("Fetches alerts based on filters")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Alerts successfully", response = PageDto.class),
-      @ApiResponse(code = 400, message = "Some of the request params are invalid")
-  })
-  ResponseEntity<PageDto<AlertDto>> getAlerts(ClientType clientType, String context,
-      AlertSearchRequest request);
 
   @ApiOperation("Fetches alerts based on filters")
   @ApiResponses({

@@ -5,7 +5,7 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
@@ -14,15 +14,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
@@ -43,14 +41,11 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         {
           "offset": 0,
           "limit": 20,
-          "priorities": [ "high"
-          ],
+          "priorities": [ "high"],
           "dateFrom": "2020-10-23T10:39:39Z",
           "dateTo": "2020-10-28T10:39:39Z",
-          "alertTypes": [
-          ],
-          "entities": [
-          ],
+          "alertTypes": [],
+          "entities": [],
           "alertId": "142"
         }"""
 
@@ -96,9 +91,9 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        `when`(facade.getAlerts(any(), any(), any(AlertSearchRequest::class.java))).thenReturn(PageDto(0, null))
+        `when`(facade.getAlerts(any(), any(), any(AlertSearchParams::class.java))).thenReturn(PageDto(0, null))
 
-        mockMvc.perform(post("/alerts")
+        mockMvc.perform(get("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
@@ -109,20 +104,11 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if some criteria specified in request`() {
-        mockMvc.perform(post("/alerts")
+        mockMvc.perform(get("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_PARTIAL_ALERT_REQUEST))
                 .andExpect(status().isOk)
-    }
-
-    @Test
-    fun `should fail with 400 when request body missing`() {
-        mockMvc.perform(post("/alerts")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
-                .andExpect(status().is4xxClientError)
     }
 }

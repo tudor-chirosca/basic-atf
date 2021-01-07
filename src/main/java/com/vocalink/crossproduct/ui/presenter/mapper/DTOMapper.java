@@ -25,7 +25,6 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -73,8 +72,6 @@ public interface DTOMapper {
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
   ParticipantPositionDto toDto(ParticipantPosition participant);
-
-  CPAlertRequest toDto(AlertSearchRequest searchRequest);
 
   CPAlertParams toDto(AlertSearchParams searchParams);
 
