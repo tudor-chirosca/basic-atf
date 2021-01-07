@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 
 class DefaultDtoConfigurationTest {
@@ -16,10 +16,10 @@ class DefaultDtoConfigurationTest {
     fun `should load default properties for alert request`() {
         val alertSearchParams = AlertSearchParams()
 
-        val default30Days = LocalDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+        val default30Days = ZonedDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
         assertThat(alertSearchParams.limit).isEqualTo(20)
         assertThat(alertSearchParams.offset).isEqualTo(0)
-        assertThat(alertSearchParams.dateFrom.toLocalDate()).isEqualTo(default30Days)
+        assertThat(alertSearchParams.dateFrom.toLocalDate()).isEqualTo(default30Days.toLocalDate())
     }
 
     @Test
