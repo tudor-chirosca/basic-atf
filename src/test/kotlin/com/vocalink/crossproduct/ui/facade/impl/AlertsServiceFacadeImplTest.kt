@@ -5,12 +5,12 @@ import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.domain.alert.AlertsRepository
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -86,7 +86,7 @@ class AlertsServiceFacadeImplTest {
 
     @Test
     fun `should get alerts`() {
-        val searchRequest = AlertSearchRequest(null,null,null,null,null,null,null,null,null,null)
+        val searchRequest = AlertSearchParams()
         val alerts = Page<Alert>(2, listOf())
         val alertsDto = PageDto<AlertDto>(2, listOf<AlertDto>())
 
@@ -123,5 +123,29 @@ class AlertsServiceFacadeImplTest {
         Assertions.assertThrows(EntityNotFoundException::class.java) {
             alertsServiceFacadeImpl.getAlertStats(TestConstants.CONTEXT, ClientType.UI)
         }
+    }
+
+    @Test
+    fun `should invoke presenter and repository on get alerts`() {
+        val page = Page<Alert>(1, listOf(Alert.builder().build()))
+        val pageDto = PageDto<AlertDto>(1, listOf(AlertDto.builder().build()))
+        val request = AlertSearchParams()
+
+        `when`(alertsRepository.findAlerts(any(), any()))
+                .thenReturn(page)
+
+        `when`(presenterFactory.getPresenter(any()))
+                .thenReturn(uiPresenter)
+
+        `when`(uiPresenter.presentAlert(any()))
+                .thenReturn(pageDto)
+
+        val result = alertsServiceFacadeImpl.getAlerts(TestConstants.CONTEXT, ClientType.UI, request)
+
+        verify(alertsRepository).findAlerts(any(), any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentAlert(any())
+
+        assertNotNull(result)
     }
 }

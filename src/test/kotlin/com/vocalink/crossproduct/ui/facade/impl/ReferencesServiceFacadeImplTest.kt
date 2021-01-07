@@ -9,9 +9,11 @@ import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
+import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -42,16 +44,17 @@ class ReferencesServiceFacadeImplTest {
 
     @Test
     fun `should get participants name and bic`() {
-        `when`(participantRepository.findAll(CONTEXT))
+        `when`(participantRepository.findAll(any()))
                 .thenReturn(MockParticipants().participants)
-        `when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(any()))
                 .thenReturn(uiPresenter)
         `when`(uiPresenter.presentParticipantReferences(any()))
-                .thenReturn(any())
+                .thenReturn(listOf(ParticipantReferenceDto(
+                        "", "", ParticipantType.FUNDED, "")))
 
         referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI)
 
-        verify(participantRepository, atLeastOnce()).findAll(CONTEXT)
+        verify(participantRepository, atLeastOnce()).findAll(any())
         verify(presenterFactory, atLeastOnce()).getPresenter(any())
         verify(uiPresenter, atLeastOnce()).presentParticipantReferences(any())
     }

@@ -1,21 +1,25 @@
 package com.vocalink.crossproduct.ui.dto;
 
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.ZonedDateTime
 
 
 class DefaultDtoConfigurationTest {
 
     @Test
     fun `should load default properties for alert request`() {
-        val alertSearchRequest = AlertSearchRequest(0, null, null, null, null, null, null, null, null, null)
+        val alertSearchParams = AlertSearchParams()
 
-        assertThat(alertSearchRequest.order).isEqualTo("DESC")
+        val default30Days = ZonedDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+        assertThat(alertSearchParams.limit).isEqualTo(20)
+        assertThat(alertSearchParams.offset).isEqualTo(0)
+        assertThat(alertSearchParams.dateFrom.toLocalDate()).isEqualTo(default30Days.toLocalDate())
     }
 
     @Test

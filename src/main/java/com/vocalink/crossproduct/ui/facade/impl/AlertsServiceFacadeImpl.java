@@ -10,7 +10,6 @@ import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -43,16 +42,6 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertStats(alertStats);
-  }
-
-  @Deprecated
-  @Override
-  public PageDto<AlertDto> getAlerts(String context, ClientType clientType,
-      AlertSearchRequest request) {
-
-    Page<Alert> alerts = alertsRepository.findAlerts(context, request);
-
-    return presenterFactory.getPresenter(clientType).presentAlert(alerts);
   }
 
   @Override

@@ -1,31 +1,29 @@
 package com.vocalink.crossproduct.ui.dto;
 
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Getter
+@AllArgsConstructor
 public class ParticipantDashboardSettlementDetailsDto {
 
-  private ParticipantDto participant;
-  private CycleDto currentCycle;
-  private CycleDto previousCycle;
-  private PositionDetailsDto currentPosition;
-  private PositionDetailsDto previousPosition;
-  private PositionDetailsTotalsDto previousPositionTotals;
-  private PositionDetailsTotalsDto currentPositionTotals;
+  private final ParticipantDto participant;
+  private final CycleDto currentCycle;
+  private final CycleDto previousCycle;
+  private final PositionDetailsDto currentPosition;
+  private final PositionDetailsDto previousPosition;
+  private final PositionDetailsTotalsDto previousPositionTotals;
+  private final PositionDetailsTotalsDto currentPositionTotals;
 
-  private ParticipantDto settlementBank;
-  private IntraDayPositionGrossDto intraDayPositionGross;
+  private final ParticipantDto settlementBank;
+  private final IntraDayPositionGrossDto intraDayPositionGross;
 }
 
 
