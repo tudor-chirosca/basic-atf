@@ -9,10 +9,9 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
-import com.vocalink.crossproduct.domain.position.PositionDetailsRepository;
+import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
-import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.shared.participant.ParticipantType;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -32,7 +31,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   private final ParticipantRepository participantRepository;
   private final CycleRepository cycleRepository;
   private final PresenterFactory presenterFactory;
-  private final PositionDetailsRepository positionDetailsRepository;
+  private final PositionRepository positionDetailsRepository;
   private final IntraDayPositionGrossRepository intraDayPositionGrossRepository;
 
   @Override

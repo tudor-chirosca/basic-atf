@@ -1,3 +1,10 @@
+## [1.32.3](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.2...v1.32.3) (2021-01-07)
+
+
+### Bug Fixes
+
+* refactor BPS contract update ([981d08e](https://github.com/vocalink/cp-international-suite-service/commit/981d08e65d67d07fb4c8ab000fed3d84e8dec950))
+
 ## [1.32.2](https://github.com/vocalink/cpp-international-suite-service/compare/v1.32.1...v1.32.2) (2020-12-30)
 
 
