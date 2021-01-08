@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
 import com.vocalink.crossproduct.domain.position.PositionDetails
-import com.vocalink.crossproduct.domain.position.PositionDetailsRepository
+import com.vocalink.crossproduct.domain.position.PositionRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException
 import com.vocalink.crossproduct.mocks.MockCycles
@@ -35,7 +35,7 @@ open class SettlementDashboardFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
-    private val positionDetailsRepository = mock(PositionDetailsRepository::class.java)!!
+    private val positionDetailsRepository = mock(PositionRepository::class.java)!!
     private val cycleRepository = mock(CycleRepository::class.java)!!
     private val intraDayPositionGrossRepository = mock(IntraDayPositionGrossRepository::class.java)!!
 

@@ -12,7 +12,7 @@ import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class PositionDetailsRepositoryAdapterTest {
+class PositionRepositoryAdapterTest {
 
     private val clientFactory = mock(ClientFactory::class.java)!!
     private val positionClient = mock(BPSPositionClient::class.java)!!

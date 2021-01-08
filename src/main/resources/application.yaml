@@ -1,0 +1,71 @@
+bps:
+  retryCount: 3
+  timeoutDuration: 5000
+
+  base-urls:
+    MOCK: http://localhost:9999/positions-mock-server
+    BPS: http://snow-den:0909/
+
+  paths:
+    intra-day-position-gross-path:
+      path: /intraDayPosition
+      base: MOCK
+    settlement-position-path:
+      path: /settlementPositions/readAll
+      base: MOCK
+    position-details-path:
+      path: /positionDetails
+      base: MOCK
+    participants-path:
+      path: /participants/{schemeCode}/readAll
+      base: MOCK
+    participant-path:
+      path: /participants/{schemeCode}/read
+      base: MOCK
+    cycles-path:
+      path: /cycles/readAll
+      base: MOCK
+    file-enquiries-path:
+      path: /enquiry/files
+      base: MOCK
+    io-participants-path:
+      path: /io
+      base: MOCK
+    io-details-path:
+      path: /io-details
+      base: MOCK
+    alerts-path:
+      path: /alerts
+      base: MOCK
+    message-direction-references-path:
+      path: /reference/messages
+      base: MOCK
+    alert-threshold-path:
+      path: /reference/alerts
+      base: MOCK
+    alert-stats-path:
+      path: /alerts/stats
+      base: MOCK
+    file-references-path:
+      path: /reference/files
+      base: MOCK
+    batch-enquiries-path:
+      path: /enquiry/batches
+      base: MOCK
+    single-file-path:
+      path: /enquiry/files/read
+      base: MOCK
+    single-batch-path:
+      path: /enquiry/batches/read
+      base: MOCK
+    single-settlement-path:
+      path: /enquiry/settlements/read
+      base: MOCK
+    instruction-enquiries-path:
+      path: /enquiry/instructions
+      base: MOCK
+    settlement-enquiries-path:
+      path: /enquiry/settlements
+      base: MOCK
+
+  retryable: 404, 429
