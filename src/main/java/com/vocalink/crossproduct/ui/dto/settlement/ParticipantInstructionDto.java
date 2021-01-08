@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.dto.settlement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.vocalink.crossproduct.shared.settlement.SettlementStatus;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
