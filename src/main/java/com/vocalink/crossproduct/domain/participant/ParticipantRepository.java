@@ -1,12 +1,13 @@
 package com.vocalink.crossproduct.domain.participant;
 
+import com.vocalink.crossproduct.domain.CrossproductRepository;
 import java.util.List;
 
-public interface ParticipantRepository {
+public interface ParticipantRepository extends CrossproductRepository {
 
-  List<Participant> findAll(String context);
+  List<Participant> findAll();
 
-  List<Participant> findWith(String context, String connectingParty, String participantType);
+  List<Participant> findWith(String connectingParty, String participantType);
 
-  Participant findByParticipantId(String context, String participantId);
+  Participant findById(String participantId);
 }
