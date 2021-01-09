@@ -116,7 +116,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(participantRepository.findWith(any(), any(), any()))
                 .thenReturn(MockParticipants().participants)
         `when`(intraDayPositionGrossRepository
-                .findIntraDayPositionGrossByParticipantId(TestConstants.CONTEXT, listOf(fundedParticipantId)))
+                .findIntraDayPositionGrossByParticipantIds(TestConstants.CONTEXT, listOf(fundedParticipantId)))
                 .thenReturn(intraDayPositionsGross)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
@@ -125,7 +125,7 @@ open class SettlementDashboardFacadeImplTest {
 
         val result = settlementServiceFacadeImpl.getSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
 
-        verify(intraDayPositionGrossRepository, atLeastOnce()).findIntraDayPositionGrossByParticipantId(any(), any())
+        verify(intraDayPositionGrossRepository, atLeastOnce()).findIntraDayPositionGrossByParticipantIds(any(), any())
         verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
 
         assertNotNull(result.fundingParticipant)

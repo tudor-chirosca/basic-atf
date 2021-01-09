@@ -6,14 +6,13 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.P
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANT_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
+import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
-import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -32,8 +31,8 @@ public class BPSParticipantRepository implements ParticipantRepository {
   private final WebClient webClient;
 
   @Override
-  public List<Participant> findWith(Map<String, Object> participantSearchCriteria) {
-    final BPSParticipantsSearchRequest bpsRequest = BPSMAPPER.toBps(participantSearchCriteria);
+  public List<Participant> findWith(String connectingParty, String participantType) {
+    final BPSParticipantsSearchRequest bpsRequest = BPSMAPPER.toBps(connectingParty, participantType);
     return findParticipantsWith(bpsRequest);
   }
 
@@ -41,11 +40,6 @@ public class BPSParticipantRepository implements ParticipantRepository {
   public List<Participant> findAll() {
     final BPSParticipantsSearchRequest bpsRequest = new BPSParticipantsSearchRequest();
     return findParticipantsWith(bpsRequest);
-  }
-
-  @Override
-  public List<Participant> findWith(String connectingParty, String participantType) {
-    return null;
   }
 
   @Override

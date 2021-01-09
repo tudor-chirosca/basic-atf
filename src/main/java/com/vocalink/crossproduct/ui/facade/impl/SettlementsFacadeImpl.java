@@ -35,7 +35,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     final ParticipantSettlement participantSettlement = settlementsRepository
         .findSettlement(context, request, cycleId, participantId);
 
-    final List<Participant> participants = participantRepository.findAll(context);
+    final List<Participant> participants = participantRepository.findAll();
 
     return presenterFactory.getPresenter(clientType)
         .presentSettlementDetails(participantSettlement, participants);
@@ -49,7 +49,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .findSettlements(context, request);
 
     List<Participant> participants = request.getParticipants().stream()
-        .map(participantId -> participantRepository.findByParticipantId(context, participantId))
+        .map(participantRepository::findById)
         .collect(toList());
 
     return presenterFactory.getPresenter(clientType)

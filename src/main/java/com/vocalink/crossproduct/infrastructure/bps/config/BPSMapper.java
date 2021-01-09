@@ -10,7 +10,6 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import java.math.BigDecimal;
-import java.util.Map;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -33,8 +32,6 @@ public interface BPSMapper {
 
   IntraDayPositionGross toCp(BPSIntraDayPositionGross intraDay);
 
-  BPSParticipantsSearchRequest toBps(Map<String, Object> participantSearchCriteria);
-
   @Mappings({
       @Mapping(target = "id", source = "schemeParticipantIdentifier"),
       @Mapping(target = "bic", source = "schemeParticipantIdentifier"),
@@ -42,59 +39,13 @@ public interface BPSMapper {
       @Mapping(target = "fundingBic", source = "participantConnectionId"),
       @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
   })
-  Participant toCp(BPSParticipant stats);
+  Participant toCp(BPSParticipant bpsParticipant);
 
-  @Named("castParticipantSettlementStatus")
-  default SettlementStatus castParticipantSettlementStatus(String status) {
-    return SettlementStatus.valueOf(status.replaceAll("[_+-]", "_").toUpperCase());
-  }
-
-  CPPage<CPParticipantSettlement> toCp(BPSPage<BPSParticipantSettlement> settlement);
-
-  @Mapping(target = "cycleId", source = "cycleId")
-  @Mapping(target = "participantId", source = "participantId")
-  BPSInstructionEnquiryRequest toBps(CPInstructionEnquiryRequest request, String cycleId,
-      String participantId);
-
-  @Mapping(target = "cycleId", source = "cycleId")
-  @Mapping(target = "participantId", source = "participantId")
-  BPSParticipantSettlementRequest toBps(String cycleId, String participantId);
-
-  CPPage<CPAlert> toCpAlert(BPSPage<BPSAlert> alert);
-
-  @Deprecated
-  BPSAlertsRequest toBps(CPAlertRequest request);
-
-  BPSAlertsSearchParam toBps(CPAlertParams params);
-
-
-
-  CPAlert toCp(BPSAlert reference);
-
-  CPAlertStats toCp(BPSAlertStats stats);
-
-  CPAlertReferenceData toCp(BPSAlertReferenceData referenceData);
-
-
-
-  CPMessageDirectionReference toCp(BPSMessageDirectionReference reference);
-
-
-
-  CPParticipantIOData toCp(BPSParticipantIOData participantIOData);
-
-  CPIOData toCp(BPSIOData ioData);
-
-  CPIODetails toCp(BPSIODetails ioDetails);
-
-  CPIODataDetails toCp(BPSIODataDetails ioDataDetails);
-
-  CPIODataAmountDetails toCp(BPSIODataAmountDetails ioDataDetails);
-
-  CPIOBatchesMessageTypes toCp(BPSIOBatchesMessageTypes ioBatchMessageType);
-
-  CPIOTransactionsMessageTypes toCp(BPSIOTransactionsMessageTypes ioTransactionMessageType);
-
+  @Mappings({
+      @Mapping(target = "connectingParty", source = "connectingParty"),
+      @Mapping(target = "participantType", source = "participantType")
+  })
+  BPSParticipantsSearchRequest toBps(String connectingParty, String participantType);
 
   @Named("countCredit")
   default BigDecimal countCredit(BPSSettlementPosition position) {
@@ -107,4 +58,5 @@ public interface BPSMapper {
     return position.getPaymentSent().getAmount().getAmount()
         .add(position.getReturnSent().getAmount().getAmount());
   }
+
 }
