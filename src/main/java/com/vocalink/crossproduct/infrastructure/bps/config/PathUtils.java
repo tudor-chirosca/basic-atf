@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
+import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.adapter.bps.BPSProperties.Detail;
 import java.net.URI;
 import lombok.AccessLevel;
@@ -17,6 +18,6 @@ public final class PathUtils {
 
     return UriComponentsBuilder.fromUriString(baseUrl)
         .path(detail.getPath())
-        .build(Constants.SCHEME_CODE);
+        .build(BPSConstants.SCHEME_CODE);
   }
 }

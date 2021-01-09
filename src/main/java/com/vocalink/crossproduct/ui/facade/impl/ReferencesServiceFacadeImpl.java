@@ -38,7 +38,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   public List<ParticipantReferenceDto> getParticipantReferences(String context,
       ClientType clientType) {
     List<ParticipantReference> participantReferences = participantRepository
-        .findAll(context).stream()
+        .findAll().stream()
         .map(MAPPER::toReference).collect(toList());
 
     return presenterFactory.getPresenter(clientType)
@@ -67,7 +67,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<CycleDto> getCyclesByDate(String context, ClientType clientType,
       LocalDate date) {
-    List<Cycle> cycles = cycleRepository.findCyclesByDate(context, date);
+    List<Cycle> cycles = cycleRepository.findByDate(date);
 
     return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);
   }

@@ -1,7 +1,5 @@
 package com.vocalink.crossproduct.domain.participant;
 
-import com.vocalink.crossproduct.shared.participant.ParticipantStatus;
-import com.vocalink.crossproduct.shared.participant.ParticipantType;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class Participant {
-
   private final String id;
   private final String bic;
   private final String name;

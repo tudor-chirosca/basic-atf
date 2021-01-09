@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.exceptions.wrapper;
 
 import com.vocalink.crossproduct.domain.error.RFCError;
 import com.vocalink.crossproduct.infrastructure.exception.ErrorConstants;
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.shared.exception.AdapterException;
 import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
 import com.vocalink.crossproduct.ui.exceptions.RFCErrorDescription;
@@ -25,6 +26,29 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
       AdapterException exception) {
 
     // TODO handle different adapter exception causes when those are propagated
+    RFCErrorDescription error = RFCErrorDescription.builder()
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .errorDetails(Collections.singletonList((
+            RFCError.builder()
+                .source(exception.getLocation())
+                .reason(ErrorConstants.ERROR_REASON_INTERNAL_ERROR)
+                .message(exception.getMessage())
+                .recoverable(false)
+                .build()
+        )))
+        .build();
+
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
+  }
+
+  @Override
+  public ResponseEntity<ErrorDescriptionResponse> wrapException(
+      InfrastructureException exception) {
+
     RFCErrorDescription error = RFCErrorDescription.builder()
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
         .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())

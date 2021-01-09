@@ -1,11 +1,14 @@
 package com.vocalink.crossproduct.domain.cycle;
 
+import com.vocalink.crossproduct.domain.CrossproductRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface CycleRepository {
+public interface CycleRepository extends CrossproductRepository {
 
-  List<Cycle> findAll(String context);
-  List<Cycle> findByIds(String context, List<String> cycleIds);
-  List<Cycle> findCyclesByDate(String context, LocalDate date);
+  List<Cycle> findAll();
+
+  List<Cycle> findByIds(List<String> cycleIds);
+
+  List<Cycle> findByDate(LocalDate date);
 }

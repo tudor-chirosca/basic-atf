@@ -24,8 +24,8 @@
     <kotlin.version>1.3.72</kotlin.version>
     <kotlin-test-runner.version>3.4.2</kotlin-test-runner.version>
     <java-faker.version>1.0.2</java-faker.version>
-<!--    <cp-shared-api.version>1.21.3</cp-shared-api.version>-->
-<!--    <cp-adapter-bps.version>1.26.3</cp-adapter-bps.version>-->
+    <cp-shared-api.version>1.21.3</cp-shared-api.version>
+    <cp-adapter-bps.version>1.26.3</cp-adapter-bps.version>
     <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
     <lombok.version>1.18.16</lombok.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
@@ -55,11 +55,11 @@
       <scope>provided</scope>
     </dependency>
 
-<!--    <dependency>-->
-<!--      <groupId>com.vocalink.crossproduct</groupId>-->
-<!--      <artifactId>cp-shared-api</artifactId>-->
-<!--      <version>${cp-shared-api.version}</version>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>com.vocalink.crossproduct</groupId>
+      <artifactId>cp-shared-api</artifactId>
+      <version>${cp-shared-api.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -245,11 +245,11 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <dependencies>
-<!--        <dependency>-->
-<!--          <groupId>com.vocalink.crossproduct</groupId>-->
-<!--          <artifactId>cp-adapter-bps</artifactId>-->
-<!--          <version>${cp-adapter-bps.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+          <groupId>com.vocalink.crossproduct</groupId>
+          <artifactId>cp-adapter-bps</artifactId>
+          <version>${cp-adapter-bps.version}</version>
+        </dependency>
       </dependencies>
     </profile>
     <profile>

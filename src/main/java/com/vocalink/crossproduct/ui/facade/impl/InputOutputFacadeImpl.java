@@ -30,7 +30,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODashboardDto getInputOutputDashboard(String context, ClientType clientType,
       LocalDate date) {
-    List<Participant> participants = participantRepository.findAll(context);
+    List<Participant> participants = participantRepository.findAll();
     List<ParticipantIOData> ioData = participantIODataRepository.findByTimestamp(context, date);
 
     Presenter presenter = presenterFactory.getPresenter(clientType);
@@ -40,7 +40,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODetailsDto getInputOutputDetails(String context, ClientType clientType, LocalDate date,
       String participantId) {
-    Participant participant = participantRepository.findByParticipantId(context, participantId);
+    Participant participant = participantRepository.findById(participantId);
 
     IODetails ioDetails = ioDetailsRepository.findIODetailsFor(context, participantId, date)
         .stream().findFirst().orElseThrow(

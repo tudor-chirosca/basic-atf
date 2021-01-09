@@ -89,7 +89,7 @@ class ReferencesServiceFacadeImplTest {
         val cycles = listOf(Cycle.builder().build())
         val cyclesDto = listOf(CycleDto.builder().build())
 
-        `when`(cycleRepository.findCyclesByDate(CONTEXT, date)).thenReturn(cycles)
+        `when`(cycleRepository.findByDate(CONTEXT, date)).thenReturn(cycles)
 
         `when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)
 
@@ -97,7 +97,7 @@ class ReferencesServiceFacadeImplTest {
 
         val result = referenceServiceFacadeImpl.getCyclesByDate(CONTEXT, ClientType.UI, date)
 
-        verify(cycleRepository).findCyclesByDate(CONTEXT, date)
+        verify(cycleRepository).findByDate(CONTEXT, date)
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentCycleDateReferences(cycles)
 

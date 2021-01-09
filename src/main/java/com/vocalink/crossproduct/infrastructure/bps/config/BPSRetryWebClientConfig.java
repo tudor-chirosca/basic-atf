@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
 
+import com.vocalink.crossproduct.adapter.bps.BPSProperties;
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -17,7 +19,7 @@ public class BPSRetryWebClientConfig {
         .filter(this::worthRetrying)
         .onRetryExhaustedThrow(
             (retryBackoffSpec, retrySignal) ->
-              new AdapterException("Timeout!", retrySignal.failure(), "BPS"));
+              new InfrastructureException("Timeout!", retrySignal.failure(), BPSConstants.PRODUCT));
   }
 
   private boolean worthRetrying(Throwable throwable) {

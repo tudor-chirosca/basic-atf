@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.domain.reference;
 
-import com.vocalink.crossproduct.shared.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
