@@ -44,7 +44,7 @@ class ReferencesServiceFacadeImplTest {
 
     @Test
     fun `should get participants name and bic`() {
-        `when`(participantRepository.findAll(any()))
+        `when`(participantRepository.findAll())
                 .thenReturn(MockParticipants().participants)
         `when`(presenterFactory.getPresenter(any()))
                 .thenReturn(uiPresenter)
@@ -54,7 +54,7 @@ class ReferencesServiceFacadeImplTest {
 
         referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI)
 
-        verify(participantRepository, atLeastOnce()).findAll(any())
+        verify(participantRepository, atLeastOnce()).findAll()
         verify(presenterFactory, atLeastOnce()).getPresenter(any())
         verify(uiPresenter, atLeastOnce()).presentParticipantReferences(any())
     }
@@ -89,7 +89,7 @@ class ReferencesServiceFacadeImplTest {
         val cycles = listOf(Cycle.builder().build())
         val cyclesDto = listOf(CycleDto.builder().build())
 
-        `when`(cycleRepository.findByDate(CONTEXT, date)).thenReturn(cycles)
+        `when`(cycleRepository.findByDate(date)).thenReturn(cycles)
 
         `when`(presenterFactory.getPresenter(ClientType.UI)).thenReturn(uiPresenter)
 
@@ -97,7 +97,7 @@ class ReferencesServiceFacadeImplTest {
 
         val result = referenceServiceFacadeImpl.getCyclesByDate(CONTEXT, ClientType.UI, date)
 
-        verify(cycleRepository).findByDate(CONTEXT, date)
+        verify(cycleRepository).findByDate(date)
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentCycleDateReferences(cycles)
 
