@@ -8,7 +8,7 @@ public interface SettlementDashboardFacade {
 
   SettlementDashboardDto getSettlement(String context, ClientType clientType);
 
-  SettlementDashboardDto getSettlement(String context, ClientType clientType, String participantId);
+  SettlementDashboardDto getParticipantSettlement(String context, ClientType clientType, String participantId);
 
   ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId);

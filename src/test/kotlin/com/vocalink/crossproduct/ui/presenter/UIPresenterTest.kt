@@ -17,8 +17,8 @@ import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
-import com.vocalink.crossproduct.shared.participant.ParticipantStatus
-import com.vocalink.crossproduct.shared.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
 import org.assertj.core.api.Assertions.assertThat
