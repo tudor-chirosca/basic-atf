@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.vocalink.crossproduct.adapter.bps.BPSProperties
 import com.vocalink.crossproduct.adapter.bps.BPSProperties.Detail
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import java.time.Duration
 
-@TestConfiguration
 open class BPSTestConfig {
 
     @Bean
