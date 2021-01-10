@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(value = [SettlementDashboardController::class])
 @ContextConfiguration(classes=[TestConfig::class])
-class WebFilerTest @Autowired constructor(var mockMvc: MockMvc) {
+class WebFilterTest @Autowired constructor(var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var dashboard: SettlementDashboardFacade
