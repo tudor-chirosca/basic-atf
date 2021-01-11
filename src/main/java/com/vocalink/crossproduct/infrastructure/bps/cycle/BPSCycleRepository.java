@@ -55,7 +55,7 @@ public class BPSCycleRepository implements CycleRepository {
 
     return getCycles(request).getCycles().stream()
         .filter(c -> cycleIds.contains(c.getCycleId()))
-        .map(BPSMAPPER::toCp)
+        .map(BPSMAPPER::toEntity)
         .collect(toList());
   }
 
@@ -72,7 +72,7 @@ public class BPSCycleRepository implements CycleRepository {
                 .isNextDayCycle(bpsCycle.getIsNextDayCycle())
                 .totalPositions(positions.stream()
                     .filter(pos -> pos.getCycleId().equals(bpsCycle.getCycleId()))
-                    .map(BPSMAPPER::toCp)
+                    .map(BPSMAPPER::toEntity)
                     .collect(toList()))
                 .build())
         .collect(toList());
@@ -84,7 +84,7 @@ public class BPSCycleRepository implements CycleRepository {
 
     return getCycles(request).getCycles().stream()
         .filter(c -> date.equals(c.getFileSubmissionCutOffTime().toLocalDate()))
-        .map(BPSMAPPER::toCp)
+        .map(BPSMAPPER::toEntity)
         .collect(toList());
   }
 

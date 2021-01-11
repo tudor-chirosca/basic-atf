@@ -52,7 +52,7 @@ class BPSIntraDayPositionRepositoryTest @Autowired constructor(
                                 .withBody(VALID_INTRA_DAY_POSITION_RESPONSE))
                         .withRequestBody(equalToJson(REQUEST_JSON_INTRA_DAY_POSITION)))
 
-        val result = intradayPositionRepository.findIntraDayPositionGrossByParticipantIds(listOf("HANDSESS", "ESSESESS"))
+        val result = intradayPositionRepository.findByIds(listOf("HANDSESS", "ESSESESS"))
 
         assertTrue(result.isNotEmpty())
         assertEquals("HANDSESS", result[0].participantId)

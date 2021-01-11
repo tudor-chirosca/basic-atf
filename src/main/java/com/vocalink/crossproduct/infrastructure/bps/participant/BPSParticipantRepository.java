@@ -31,7 +31,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
   private final WebClient webClient;
 
   @Override
-  public List<Participant> findWith(String connectingParty, String participantType) {
+  public List<Participant> findByConnectingPartyAndType(String connectingParty, String participantType) {
     final BPSParticipantsSearchRequest bpsRequest = BPSMAPPER.toBps(connectingParty, participantType);
     return findParticipantsWith(bpsRequest);
   }
@@ -53,7 +53,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .bodyToMono(BPSParticipant.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toCp)
+        .map(BPSMAPPER::toEntity)
         .block();
   }
 
@@ -66,7 +66,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .bodyToFlux(BPSParticipant.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toCp)
+        .map(BPSMAPPER::toEntity)
         .collectList()
         .block();
   }

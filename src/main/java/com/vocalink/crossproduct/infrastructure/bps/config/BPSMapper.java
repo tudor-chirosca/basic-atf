@@ -23,14 +23,14 @@ public interface BPSMapper {
 
   @Mapping(target = "id", source = "cycleId")
   @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime")
-  Cycle toCp(BPSCycle cycle);
+  Cycle toEntity(BPSCycle cycle);
 
   @Mapping(target = "credit", source = "position", qualifiedByName = "countCredit")
   @Mapping(target = "debit", source = "position", qualifiedByName = "countDebit")
   @Mapping(target = "netPosition", source = "netPositionAmount.amount")
-  ParticipantPosition toCp(BPSSettlementPosition position);
+  ParticipantPosition toEntity(BPSSettlementPosition position);
 
-  IntraDayPositionGross toCp(BPSIntraDayPositionGross intraDay);
+  IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDay);
 
   @Mappings({
       @Mapping(target = "id", source = "schemeParticipantIdentifier"),
@@ -39,7 +39,7 @@ public interface BPSMapper {
       @Mapping(target = "fundingBic", source = "participantConnectionId"),
       @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
   })
-  Participant toCp(BPSParticipant bpsParticipant);
+  Participant toEntity(BPSParticipant bpsParticipant);
 
   @Mappings({
       @Mapping(target = "connectingParty", source = "connectingParty"),

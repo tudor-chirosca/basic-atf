@@ -9,8 +9,6 @@ import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
@@ -27,8 +25,6 @@ import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
-import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
-import com.vocalink.crossproduct.shared.positions.CPPositionDetails;
 import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import com.vocalink.crossproduct.shared.settlement.CPInstructionEnquiryRequest;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantInstruction;
@@ -53,10 +49,6 @@ public interface EntityMapper {
   IODetails toEntity(CPIODetails input);
 
   ParticipantIOData toEntity(CPParticipantIOData input);
-
-  PositionDetails toEntity(CPPositionDetails input);
-
-  Participant toEntity(CPParticipant input);
 
   FileReference toEntity(CPFileReference cpFileReference);
 
@@ -91,10 +83,6 @@ public interface EntityMapper {
   CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
 
   CPInstructionEnquiryRequest toCp(ParticipantSettlementRequest request);
-
-  @Mapping(target = "connectingParty", source = "connectingParty")
-  @Mapping(target = "participantType", source = "participantType")
-  CPParticipantsSearchRequest toCp(String connectingParty, String participantType);
 
   @Mapping(target = "cycleIds", source = "cycleIds")
   @Mapping(target = "participants", source = "participants")

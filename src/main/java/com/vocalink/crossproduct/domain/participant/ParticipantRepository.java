@@ -7,7 +7,7 @@ public interface ParticipantRepository extends CrossproductRepository {
 
   List<Participant> findAll();
 
-  List<Participant> findWith(String connectingParty, String participantType);
+  List<Participant> findByConnectingPartyAndType(String connectingParty, String participantType);
 
   Participant findById(String participantId);
 }

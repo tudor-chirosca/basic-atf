@@ -16,9 +16,7 @@ public interface ResourcePath {
   String MESSAGE_DIRECTION_REFERENCES_PATH = "message-direction-references-path";
   String ALERT_THRESHOLD_PATH = "alert-threshold-path";
   String ALERT_STATS_PATH = "alert-stats-path";
-  @Deprecated
   String ALERTS_PATH = "alerts-path";
-  String ALERTS_NEW = "alerts-new";
   String SINGLE_FILE_PATH = "single-file-path";
   String SINGLE_BATCH_PATH = "single-batch-path";
   String SINGLE_SETTLEMENT_PATH = "single-settlement-path";

@@ -33,7 +33,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
   }
 
   @Override
-  public List<IntraDayPositionGross> findIntraDayPositionGrossByParticipantIds(
+  public List<IntraDayPositionGross> findByIds(
       List<String> participantIds) {
     IntraDayPositionRequest body = IntraDayPositionRequest.builder()
         .schemeCode(BPSConstants.SCHEME_CODE)
@@ -48,7 +48,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
         .bodyToFlux(BPSIntraDayPositionGross.class)
         .retryWhen(BPSRetryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toCp)
+        .map(BPSMAPPER::toEntity)
         .collectList()
         .block();
   }

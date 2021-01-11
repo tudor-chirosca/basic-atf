@@ -127,7 +127,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
                                 .withBody(VALID_PARTICIPANTS_RESPONSE))
                         .withRequestBody(equalToJson(VALID_PARTICIPANTS_REQUEST)))
 
-        val result = participantRepository.findWith("NDEASESSXXX", "FUNDING")
+        val result = participantRepository.findByConnectingPartyAndType("NDEASESSXXX", "FUNDING")
 
         assertThat(result.size).isEqualTo(2)
         assertThat(result[0].bic).isEqualTo("NDEASESSXXX")

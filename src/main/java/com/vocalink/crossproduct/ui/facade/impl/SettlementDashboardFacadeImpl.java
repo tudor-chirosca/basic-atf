@@ -58,11 +58,11 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
     Participant fundingParticipant = repositoryFactory.getParticipantRepository(product).findById(participantId);
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product)
-        .findWith(participantId, ParticipantType.FUNDED.getDescription());
+        .findByConnectingPartyAndType(participantId, ParticipantType.FUNDED.getDescription());
 
     List<IntraDayPositionGross> intraDays = repositoryFactory
         .getIntradayPositionGrossRepository(product)
-        .findIntraDayPositionGrossByParticipantIds(participants.stream()
+        .findByIds(participants.stream()
             .map(Participant::getBic).collect(toList()));
 
     return presenterFactory.getPresenter(clientType)
@@ -114,7 +114,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     if (participant.getFundingBic() != null && !participant.getFundingBic().equals(NOT_AVAILABLE)) {
       intraDayPositionGross = repositoryFactory.getIntradayPositionGrossRepository(product)
-          .findIntraDayPositionGrossByParticipantIds(singletonList(participant.getBic()))
+          .findByIds(singletonList(participant.getBic()))
           .stream()
           .findFirst()
           .orElseThrow(() -> new EntityNotFoundException(
