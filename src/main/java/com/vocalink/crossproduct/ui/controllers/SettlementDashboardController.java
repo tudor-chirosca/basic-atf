@@ -24,7 +24,7 @@ public class SettlementDashboardController implements SettlementDashboardApi {
       @PathVariable String participantId) {
 
     SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
-        .getSettlement(context.toUpperCase(), clientType, participantId);
+        .getParticipantSettlement(context.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(settlementDashboardDto);
   }

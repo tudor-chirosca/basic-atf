@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
-import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -35,7 +34,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     final ParticipantSettlement participantSettlement = settlementsRepository
         .findSettlement(context, request, cycleId, participantId);
 
-    final List<Participant> participants = participantRepository.findAll(context);
+    final List<Participant> participants = participantRepository.findAll();
 
     return presenterFactory.getPresenter(clientType)
         .presentSettlementDetails(participantSettlement, participants);
@@ -49,7 +48,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .findSettlements(context, request);
 
     List<Participant> participants = request.getParticipants().stream()
-        .map(participantId -> participantRepository.findByParticipantId(context, participantId))
+        .map(participantRepository::findById)
         .collect(toList());
 
     return presenterFactory.getPresenter(clientType)

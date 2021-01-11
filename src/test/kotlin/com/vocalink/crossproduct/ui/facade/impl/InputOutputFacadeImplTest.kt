@@ -7,13 +7,11 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest
-import com.vocalink.crossproduct.shared.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import java.time.LocalDate
-import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -43,7 +41,7 @@ class InputOutputFacadeImplTest {
     fun `should get participant IO data`() {
         val mockModel = MockIOData().ioDashboardDto
         val time = LocalDate.now()
-        `when`(participantRepository.findAll(any()))
+        `when`(participantRepository.findAll())
                 .thenReturn(MockParticipants().participants)
         `when`(participantIODataRepository.findByTimestamp(TestConstants.CONTEXT, time))
                 .thenReturn(MockIOData().getParticipantsIOData())
@@ -107,7 +105,7 @@ class InputOutputFacadeImplTest {
         val participantId = "NDEASESSXXX"
 
         `when`(participantRepository
-                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .findById(participantId))
                 .thenReturn(MockParticipants().getParticipant(false))
 
         `when`(ioDetailsRepository
@@ -124,7 +122,7 @@ class InputOutputFacadeImplTest {
                 .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
 
         verify(uiPresenter).presentIoDetails(any(), any(), any())
-        verify(participantRepository).findByParticipantId(any(), any())
+        verify(participantRepository).findById(any())
         verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
 
         assertNotNull(result)
@@ -136,7 +134,7 @@ class InputOutputFacadeImplTest {
         val date = LocalDate.now()
 
         `when`(participantRepository
-                .findByParticipantId(TestConstants.CONTEXT, participantId))
+                .findById(participantId))
                 .thenReturn(MockParticipants().getParticipant(false))
 
         `when`(ioDetailsRepository

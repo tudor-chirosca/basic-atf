@@ -20,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
@@ -41,7 +40,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         {
           "offset": 0,
           "limit": 20,
-          "priorities": [ "high"],
+          "priorities": [ "high" ],
           "dateFrom": "2020-10-23T10:39:39Z",
           "dateTo": "2020-10-28T10:39:39Z",
           "alertTypes": [],

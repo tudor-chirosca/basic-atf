@@ -11,7 +11,7 @@ import lombok.Getter;
 public class ParticipantPosition {
 
   private final String participantId;
-  public final BigDecimal credit;
+  private final BigDecimal credit;
   private final BigDecimal debit;
   private final BigDecimal netPosition;
 }

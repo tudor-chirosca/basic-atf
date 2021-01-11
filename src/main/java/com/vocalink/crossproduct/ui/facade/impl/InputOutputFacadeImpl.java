@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundExceptio
 import com.vocalink.crossproduct.domain.io.IODetailsRepository;
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
-import com.vocalink.crossproduct.shared.participant.CPParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;
@@ -31,9 +30,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODashboardDto getInputOutputDashboard(String context, ClientType clientType,
       LocalDate date) {
-
-    List<Participant> participants = participantRepository.findAll(context);
-
+    List<Participant> participants = participantRepository.findAll();
     List<ParticipantIOData> ioData = participantIODataRepository.findByTimestamp(context, date);
 
     Presenter presenter = presenterFactory.getPresenter(clientType);
@@ -43,7 +40,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODetailsDto getInputOutputDetails(String context, ClientType clientType, LocalDate date,
       String participantId) {
-    Participant participant = participantRepository.findByParticipantId(context, participantId);
+    Participant participant = participantRepository.findById(participantId);
 
     IODetails ioDetails = ioDetailsRepository.findIODetailsFor(context, participantId, date)
         .stream().findFirst().orElseThrow(

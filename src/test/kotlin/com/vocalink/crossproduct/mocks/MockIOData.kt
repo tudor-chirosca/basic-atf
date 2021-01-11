@@ -14,8 +14,8 @@ import com.vocalink.crossproduct.shared.io.CPIODataDetails
 import com.vocalink.crossproduct.shared.io.CPIODetails
 import com.vocalink.crossproduct.shared.io.CPIOTransactionsMessageTypes
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData
-import com.vocalink.crossproduct.shared.participant.ParticipantStatus
-import com.vocalink.crossproduct.shared.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.IODashboardDto
 import com.vocalink.crossproduct.ui.dto.io.IODataDetailsDto
 import com.vocalink.crossproduct.ui.dto.io.IODataDto
