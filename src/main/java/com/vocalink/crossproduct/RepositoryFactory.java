@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.exception.RepositoryNotAvailableExceptio
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
+import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -22,11 +23,13 @@ public class RepositoryFactory {
   private final List<CycleRepository> cycleRepositories;
   private final List<PositionRepository> positionRepositories;
   private final List<IntraDayPositionGrossRepository> intraDayPositionGrossRepositories;
+  private final List<ReferencesRepository> referencesRepository;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
   private Map<String, PositionRepository> positionRepositoriesByProduct;
   private Map<String, IntraDayPositionGrossRepository> intraDayPositionGrossRepositoriesByProduct;
+  private Map<String, ReferencesRepository> referencesRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -38,6 +41,8 @@ public class RepositoryFactory {
         .collect(toMap(PositionRepository::getProduct, Function.identity()));
     intraDayPositionGrossRepositoriesByProduct = intraDayPositionGrossRepositories.stream()
         .collect(toMap(IntraDayPositionGrossRepository::getProduct, Function.identity()));
+    referencesRepositoriesByProduct = referencesRepository.stream()
+        .collect(toMap(ReferencesRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -70,5 +75,13 @@ public class RepositoryFactory {
           "Intraday position gross repository not available for product " + product);
     }
     return intraDayPositionGrossRepositoriesByProduct.get(product);
+  }
+
+  public ReferencesRepository getReferencesRepository(String product) {
+    if (referencesRepositoriesByProduct.get(product) == null) {
+      throw new RepositoryNotAvailableException(
+          "References Repository not available for product " + product);
+    }
+    return referencesRepositoriesByProduct.get(product);
   }
 }

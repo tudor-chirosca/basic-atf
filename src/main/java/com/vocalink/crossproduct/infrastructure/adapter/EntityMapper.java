@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
@@ -25,7 +26,6 @@ import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.shared.participant.CPParticipant;
-import com.vocalink.crossproduct.shared.reference.CPMessageDirectionReference;
 import com.vocalink.crossproduct.shared.settlement.CPInstructionEnquiryRequest;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantInstruction;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantSettlement;
@@ -61,7 +61,7 @@ public interface EntityMapper {
 
   AlertStats toEntity(CPAlertStats alertReferenceData);
 
-  MessageDirectionReference toEntity(CPMessageDirectionReference alertReferenceData);
+  MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
 
   Page<File> toEntityFile(CPPage<CPFile> files);
 

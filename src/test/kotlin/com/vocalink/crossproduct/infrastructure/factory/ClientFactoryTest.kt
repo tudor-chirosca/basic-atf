@@ -14,11 +14,11 @@ import com.vocalink.crossproduct.shared.files.FilesClient
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
 import com.vocalink.crossproduct.shared.reference.ReferencesClient
 import com.vocalink.crossproduct.shared.settlement.SettlementsClient
-import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import kotlin.test.assertTrue
 
 class ClientFactoryTest {
 
@@ -33,7 +33,6 @@ class ClientFactoryTest {
             listOf(participantIOClient),
             listOf(alertsClient),
             listOf(filesClient),
-            listOf(referencesClient),
             listOf(batchesClient),
             listOf(settlementsClient)
     )
@@ -57,15 +56,6 @@ class ClientFactoryTest {
     }
 
     @Test
-    fun `should get reference client`() {
-        `when`(referencesClient.context).thenReturn(TestConstants.CONTEXT)
-        clientFactory.init()
-
-        val result = clientFactory.getReferencesClient(TestConstants.CONTEXT)
-        assertTrue(result is ReferencesClient)
-    }
-
-    @Test
     fun `should throw participant IO client not available for wrong context`() {
         clientFactory.init()
         assertThrows(ClientNotAvailableException::class.java) {
@@ -86,14 +76,6 @@ class ClientFactoryTest {
         clientFactory.init()
         assertThrows(ClientNotAvailableException::class.java) {
             clientFactory.getFilesClient(TestConstants.CONTEXT)
-        }
-    }
-
-    @Test
-    fun `should throw references client not available for wrong context`() {
-        clientFactory.init()
-        assertThrows(ClientNotAvailableException::class.java) {
-            clientFactory.getReferencesClient(TestConstants.CONTEXT)
         }
     }
 }

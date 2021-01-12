@@ -3,14 +3,14 @@ package com.vocalink.crossproduct.ui.facade.impl;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.files.FileReference;
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
+import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
-import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   private final ParticipantRepository participantRepository;
-  private final ReferencesRepository referencesRepository;
+  private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
   private final FileRepository fileRepository;
   private final CycleRepository cycleRepository;
@@ -45,11 +45,11 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   }
 
   @Override
-  public List<MessageDirectionReferenceDto> getMessageDirectionReferences(String context,
+  public List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType) {
 
-    List<MessageDirectionReference> messageDirectionReferences = referencesRepository
-        .findMessageDirectionReferences(context);
+    List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
+        .getReferencesRepository(product).findAll();
     return presenterFactory.getPresenter(clientType)
         .presentMessageDirectionReferences(messageDirectionReferences);
   }

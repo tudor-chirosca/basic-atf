@@ -1,14 +1,16 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
+import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.Cycle
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
+import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.shared.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
@@ -34,6 +36,7 @@ class ReferencesServiceFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val referencesRepository = mock(ReferencesRepository::class.java)!!
+    private val repositoryFactory = mock(RepositoryFactory::class.java)!!
     private val fileRepository = mock(FileRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
@@ -64,8 +67,10 @@ class ReferencesServiceFacadeImplTest {
         val messageRefs = listOf(MessageDirectionReference.builder().build())
         val messageRefsDto = listOf(MessageDirectionReferenceDto.builder().build())
 
-        `when`(referencesRepository
-                .findMessageDirectionReferences(CONTEXT))
+        `when`(repositoryFactory.getReferencesRepository(PRODUCT))
+                .thenReturn(referencesRepository)
+
+        `when`(referencesRepository.findAll())
                 .thenReturn(messageRefs)
 
         `when`(presenterFactory.getPresenter(ClientType.UI))
@@ -74,9 +79,9 @@ class ReferencesServiceFacadeImplTest {
         `when`(uiPresenter.presentMessageDirectionReferences(any()))
                 .thenReturn(messageRefsDto)
 
-        val result = referenceServiceFacadeImpl.getMessageDirectionReferences(CONTEXT, ClientType.UI)
+        val result = referenceServiceFacadeImpl.getMessageDirectionReferences(PRODUCT, ClientType.UI)
 
-        verify(referencesRepository).findMessageDirectionReferences(any())
+        verify(referencesRepository).findAll()
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentMessageDirectionReferences(any())
 
