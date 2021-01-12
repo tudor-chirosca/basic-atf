@@ -14,7 +14,6 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -76,7 +75,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
         val dateTo = LocalDate.now().minusDays(5).format(ofPattern("yyyy-MM-dd"))
 
-        `when`(filesFacade.getFiles(any(), any(), any()))
+        `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -98,7 +97,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
         val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
-        `when`(filesFacade.getFiles(any(), any(), any()))
+        `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -127,7 +126,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .nrOfBatches(12)
                 .status("Accepted")
                 .build()
-        `when`(filesFacade.getFiles(any(), any(), any()))
+        `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(1, listOf(file)))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -254,7 +253,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when has reason code and status is Rejected`() {
-        `when`(filesFacade.getFiles(any(), any(), any()))
+        `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)

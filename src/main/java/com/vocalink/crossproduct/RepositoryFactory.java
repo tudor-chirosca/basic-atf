@@ -2,11 +2,14 @@ package com.vocalink.crossproduct;
 
 import static java.util.stream.Collectors.toMap;
 
+import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.exception.RepositoryNotAvailableException;
+import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
+import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +27,16 @@ public class RepositoryFactory {
   private final List<PositionRepository> positionRepositories;
   private final List<IntraDayPositionGrossRepository> intraDayPositionGrossRepositories;
   private final List<ReferencesRepository> referencesRepository;
+  private final List<BatchRepository> batchClientList;
+  private final List<FileRepository> fileClientList;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
   private Map<String, PositionRepository> positionRepositoriesByProduct;
   private Map<String, IntraDayPositionGrossRepository> intraDayPositionGrossRepositoriesByProduct;
   private Map<String, ReferencesRepository> referencesRepositoriesByProduct;
+  private Map<String, BatchRepository> batchRepositoriesByProduct;
+  private Map<String, FileRepository> fileRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -43,6 +50,10 @@ public class RepositoryFactory {
         .collect(toMap(IntraDayPositionGrossRepository::getProduct, Function.identity()));
     referencesRepositoriesByProduct = referencesRepository.stream()
         .collect(toMap(ReferencesRepository::getProduct, Function.identity()));
+    batchRepositoriesByProduct = batchClientList.stream()
+        .collect(toMap(BatchRepository::getProduct, Function.identity()));
+    fileRepositoriesByProduct = fileClientList.stream()
+        .collect(toMap(FileRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -83,5 +94,19 @@ public class RepositoryFactory {
           "References Repository not available for product " + product);
     }
     return referencesRepositoriesByProduct.get(product);
+  }
+
+  public BatchRepository getBatchRepository(String product) {
+    if (batchRepositoriesByProduct.get(product) == null) {
+      throw new ClientNotAvailableException("Batch repository not available for product " + product);
+    }
+    return batchRepositoriesByProduct.get(product);
+  }
+
+  public FileRepository getFileRepository(String product) {
+    if (fileRepositoriesByProduct.get(product) == null) {
+      throw new ClientNotAvailableException("Files repository not available for context " + product);
+    }
+    return fileRepositoriesByProduct.get(product);
   }
 }

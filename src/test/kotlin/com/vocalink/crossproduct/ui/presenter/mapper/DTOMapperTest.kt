@@ -20,11 +20,14 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
 import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
+import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
+import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
@@ -650,7 +653,7 @@ class DTOMapperTest {
     @Test
     fun `should map Batch fields`() {
         val totalResults = 1
-        val sender =  EnquirySenderDetails.builder()
+        val sender = EnquirySenderDetails.builder()
                 .entityBic("sender_bic")
                 .build()
         val batch = Batch.builder()
@@ -758,5 +761,65 @@ class DTOMapperTest {
         assertThat(instructionResult.settlementCounterparty.name).isEqualTo(settlementCounterparty.name)
         assertThat(instructionResult.settlementCounterparty.connectingParticipantId).isEqualTo(settlementCounterparty.fundingBic)
         assertThat(instructionResult.settlementCounterparty.participantType).isEqualTo(settlementCounterparty.participantType.description)
+    }
+
+    @Test
+    fun `should map FileEnquirySearchCriteria fields`() {
+        val request = FileEnquirySearchRequest()
+        request.sort = listOf("sort")
+        request.status = "status"
+        request.id = "id"
+        request.setDate_to(LocalDate.now().toString())
+        request.setMsg_direction("msg_direction")
+        request.setMsg_type("msg_type")
+        request.setSend_bic("send_bic")
+        request.setRecv_bic("rcvng_bic")
+        request.setReason_code("reason_code")
+        request.setCycle_ids(listOf("cycle1, cycle2"))
+
+        val entity = EntityMapper.MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageType).isEqualTo(request.messageType)
+        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.status).isEqualTo(request.status)
+        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(entity.id).isEqualTo(request.id)
+    }
+
+    @Test
+    fun `should map BatchEnquirySearchCriteria fields`() {
+        val request = BatchEnquirySearchRequest()
+        request.sort = listOf("sort")
+        request.status = "status"
+        request.id = "id"
+        request.setDate_to(LocalDate.now().toString())
+        request.setMsg_direction("msg_direction")
+        request.setMsg_type("msg_type")
+        request.setSend_bic("send_bic")
+        request.setRecv_bic("rcvng_bic")
+        request.setReason_code("reason_code")
+        request.setCycle_ids(listOf("cycle1, cycle2"))
+
+        val entity = EntityMapper.MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageType).isEqualTo(request.messageType)
+        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.status).isEqualTo(request.status)
+        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(entity.id).isEqualTo(request.id)
     }
 }

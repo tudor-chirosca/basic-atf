@@ -1,8 +1,11 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
+import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.batch.Batch;
-import com.vocalink.crossproduct.domain.batch.BatchRepository;
+import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -18,21 +21,23 @@ import org.springframework.stereotype.Component;
 public class BatchesFacadeImpl implements BatchesFacade {
 
   private final PresenterFactory presenterFactory;
-  private final BatchRepository batchRepository;
-  
-  @Override
-  public PageDto<BatchDto> getBatches(String context, ClientType clientType,
-      BatchEnquirySearchRequest request) {
+  private final RepositoryFactory repositoryFactory;
 
-    final Page<Batch> batches = batchRepository.findBatchesPaginated(context, request);
+  @Override
+  public PageDto<BatchDto> getPaginated(String product, ClientType clientType,
+      BatchEnquirySearchRequest requestDto) {
+
+    final BatchEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
+    final Page<Batch> batches = repositoryFactory.getBatchRepository(product)
+        .findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentBatches(batches);
   }
 
   @Override
-  public BatchDetailsDto getDetailsById(String context, ClientType clientType, String id) {
+  public BatchDetailsDto getDetailsById(String product, ClientType clientType, String id) {
 
-    final Batch batch = batchRepository.findBatchById(context, id);
+    final Batch batch = repositoryFactory.getBatchRepository(product).findById(id);
     
     return presenterFactory.getPresenter(clientType).presentBatchDetails(batch);
   }

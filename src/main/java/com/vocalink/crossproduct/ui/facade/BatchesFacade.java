@@ -8,9 +8,9 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface BatchesFacade {
 
-  PageDto<BatchDto> getBatches(String context, ClientType clientType,
+  PageDto<BatchDto> getPaginated(String product, ClientType clientType,
       BatchEnquirySearchRequest request);
 
-  BatchDetailsDto getDetailsById(String context, ClientType clientType, String id);
+  BatchDetailsDto getDetailsById(String product, ClientType clientType, String id);
 
 }

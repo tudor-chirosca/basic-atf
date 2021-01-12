@@ -77,7 +77,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val dateFrom = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         val dateTo = LocalDate.now().minusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        `when`(batchesFacade.getBatches(any(), any(), any()))
+        `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -99,7 +99,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
         val dateFrom = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        `when`(batchesFacade.getBatches(any(), any(), any()))
+        `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -128,7 +128,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .nrOfTransactions(12)
                 .status("Accepted")
                 .build()
-        `when`(batchesFacade.getBatches(any(), any(), any()))
+        `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(1, listOf(batch)))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -254,7 +254,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when has reason code and status is pre-rejected`() {
-        `when`(batchesFacade.getBatches(any(), any(), any()))
+        `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -268,7 +268,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when has reason code and status is post-rejected`() {
-        `when`(batchesFacade.getBatches(any(), any(), any()))
+        `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)

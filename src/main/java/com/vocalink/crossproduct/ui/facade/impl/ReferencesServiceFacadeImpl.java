@@ -5,10 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.files.FileReference;
-import com.vocalink.crossproduct.domain.files.FileRepository;
-import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -23,20 +20,18 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
-  private final ParticipantRepository participantRepository;
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
-  private final FileRepository fileRepository;
-  private final CycleRepository cycleRepository;
 
   @Override
-  public List<ParticipantReferenceDto> getParticipantReferences(String context,
+  public List<ParticipantReferenceDto> getParticipantReferences(String product,
       ClientType clientType) {
-    List<ParticipantReference> participantReferences = participantRepository
+    final List<ParticipantReference> participantReferences = repositoryFactory
+        .getParticipantRepository(product)
         .findAll().stream()
         .map(MAPPER::toReference).collect(toList());
 
@@ -48,25 +43,25 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   public List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType) {
 
-    List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
+    final List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
         .getReferencesRepository(product).findAll();
     return presenterFactory.getPresenter(clientType)
         .presentMessageDirectionReferences(messageDirectionReferences);
   }
 
   @Override
-  public List<FileStatusesTypeDto> getFileReferences(String context, ClientType clientType,
+  public List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
       String enquiryType) {
-    final List<FileReference> fileReferences = fileRepository
-        .findFileReferences(context, enquiryType);
+    final List<FileReference> fileReferences = repositoryFactory.getFileRepository(product)
+        .findFileReferences(enquiryType);
 
     return presenterFactory.getPresenter(clientType).presentFileReferencesFor(fileReferences);
   }
 
   @Override
-  public List<CycleDto> getCyclesByDate(String context, ClientType clientType,
+  public List<CycleDto> getCyclesByDate(String product, ClientType clientType,
       LocalDate date) {
-    List<Cycle> cycles = cycleRepository.findByDate(date);
+    final List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date);
 
     return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);
   }

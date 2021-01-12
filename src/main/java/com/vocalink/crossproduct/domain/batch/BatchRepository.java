@@ -1,13 +1,12 @@
 package com.vocalink.crossproduct.domain.batch;
 
+import com.vocalink.crossproduct.domain.CrossproductRepository;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
-import java.util.List;
 
-public interface BatchRepository {
+public interface BatchRepository extends CrossproductRepository {
 
-  Page<Batch> findBatchesPaginated(String context, BatchEnquirySearchRequest request);
+  Page<Batch> findPaginated(BatchEnquirySearchCriteria criteria);
 
-  Batch findBatchById(String context, String id);
+  Batch findById(String id);
 
 }

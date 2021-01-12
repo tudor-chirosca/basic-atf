@@ -1,4 +1,6 @@
 package com.vocalink.crossproduct.ui.facade.impl
+
+import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.batch.Batch
@@ -11,8 +13,10 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import kotlin.test.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -22,11 +26,20 @@ class BatchesFacadeImplTest {
     private val batchRepository = mock(BatchRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
+    private val repositoryFactory = mock(RepositoryFactory::class.java)
 
     private val batchesServiceFacadeImpl = BatchesFacadeImpl(
             presenterFactory,
-            batchRepository
+            repositoryFactory
     )
+
+    @BeforeEach
+    fun init() {
+        `when`(repositoryFactory.getBatchRepository(anyString()))
+                .thenReturn(batchRepository)
+        `when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+    }
 
     @Test
     fun `should invoke presenter and repository on get batches`() {
@@ -34,18 +47,15 @@ class BatchesFacadeImplTest {
         val pageDto = PageDto<BatchDto>(1, listOf(BatchDto.builder().build()))
         val request = BatchEnquirySearchRequest()
 
-        `when`(batchRepository.findBatchesPaginated(any(), any()))
+        `when`(batchRepository.findPaginated(any()))
                 .thenReturn(page)
-
-        `when`(presenterFactory.getPresenter(any()))
-                .thenReturn(uiPresenter)
 
         `when`(uiPresenter.presentBatches(any()))
                 .thenReturn(pageDto)
 
-        val result = batchesServiceFacadeImpl.getBatches(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = batchesServiceFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
 
-        verify(batchRepository).findBatchesPaginated(any(), any())
+        verify(batchRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentBatches(any())
 
@@ -58,18 +68,15 @@ class BatchesFacadeImplTest {
         val batchDetailsDto = BatchDetailsDto.builder().build()
 
         `when`(batchRepository
-                .findBatchById(any(), any()))
+                .findById(any()))
                 .thenReturn(batch)
-
-        `when`(presenterFactory.getPresenter(any()))
-                .thenReturn(uiPresenter)
 
         `when`(uiPresenter.presentBatchDetails(any()))
                 .thenReturn(batchDetailsDto)
 
         val result = batchesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
-        verify(batchRepository).findBatchById(any(), any())
+        verify(batchRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentBatchDetails(any())
 

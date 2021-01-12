@@ -10,12 +10,12 @@ import java.util.List;
 
 public interface ReferencesServiceFacade {
 
-  List<ParticipantReferenceDto> getParticipantReferences(String context, ClientType clientType);
+  List<ParticipantReferenceDto> getParticipantReferences(String product, ClientType clientType);
 
-  List<MessageDirectionReferenceDto> getMessageDirectionReferences(String context,
+  List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType);
 
-  List<FileStatusesTypeDto> getFileReferences(String context, ClientType clientType, String enquiryType);
+  List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType, String enquiryType);
 
-  List<CycleDto> getCyclesByDate(String context, ClientType clientType, LocalDate date);
+  List<CycleDto> getCyclesByDate(String product, ClientType clientType, LocalDate date);
 }

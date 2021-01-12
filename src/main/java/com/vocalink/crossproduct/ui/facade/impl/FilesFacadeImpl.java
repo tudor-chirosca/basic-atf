@@ -1,11 +1,12 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import static java.util.Collections.singletonList;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
+import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileRepository;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -16,26 +17,27 @@ import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class FilesFacadeImpl implements FilesFacade {
 
   private final PresenterFactory presenterFactory;
-  private final FileRepository fileRepository;
+  private final RepositoryFactory repositoryFactory;
 
   @Override
-  public PageDto<FileDto> getFiles(String context, ClientType clientType,
-      FileEnquirySearchRequest request) {
+  public PageDto<FileDto> getPaginated(String product, ClientType clientType,
+      FileEnquirySearchRequest requestDto) {
 
-    final Page<File> files = fileRepository.findFilesPaginated(context, request);
+    final FileEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
+    final Page<File> files = repositoryFactory.getFileRepository(product).findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentFiles(files);
   }
 
   @Override
-  public FileDetailsDto getDetailsById(String context, ClientType clientType, String id) {
+  public FileDetailsDto getDetailsById(String product, ClientType clientType, String id) {
 
-    final File file = fileRepository.findFileById(context, id);
+    final File file = repositoryFactory.getFileRepository(product).findById(id);
 
     return presenterFactory.getPresenter(clientType).presentFileDetails(file);
   }

@@ -25,7 +25,7 @@ public class BatchesController implements BatchesApi {
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context, BatchEnquirySearchRequest request) {
 
-    PageDto<BatchDto> batchesDto = batchesFacade.getBatches(context, clientType, request);
+    PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, request);
 
     return ResponseEntity.ok().body(batchesDto);
   }

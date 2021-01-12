@@ -4,8 +4,8 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.batch.Batch;
-import com.vocalink.crossproduct.domain.files.File;
+import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
@@ -18,10 +18,6 @@ import com.vocalink.crossproduct.shared.CPPage;
 import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
 import com.vocalink.crossproduct.shared.alert.CPAlertStats;
-import com.vocalink.crossproduct.shared.batch.CPBatch;
-import com.vocalink.crossproduct.shared.batch.CPBatchEnquirySearchRequest;
-import com.vocalink.crossproduct.shared.files.CPFile;
-import com.vocalink.crossproduct.shared.files.CPFileEnquirySearchRequest;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
@@ -34,11 +30,8 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -63,24 +56,11 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
 
-  Page<File> toEntityFile(CPPage<CPFile> files);
-
-  Page<Batch> toEntityBatch(CPPage<CPBatch> batches);
-
   Page<ParticipantInstruction> toEntityInstruction(CPPage<CPParticipantInstruction> batches);
 
   ParticipantSettlement toEntity(CPParticipantSettlement settlement);
 
   Page<ParticipantSettlement> toEntity(CPPage<CPParticipantSettlement> settlements);
-
-  @Mapping(target = "fileName", source = "name")
-  @Mapping(target = "settlementCycleId", source = "cycle.id")
-  @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
-  Batch toEntity(CPBatch file);
-
-  CPFileEnquirySearchRequest toCp(FileEnquirySearchRequest request);
-
-  CPBatchEnquirySearchRequest toCp(BatchEnquirySearchRequest request);
 
   CPInstructionEnquiryRequest toCp(ParticipantSettlementRequest request);
 
@@ -88,13 +68,8 @@ public interface EntityMapper {
   @Mapping(target = "participants", source = "participants")
   CPSettlementEnquiryRequest toCp(SettlementEnquiryRequest request);
 
-  @Mapping(target = "fileName", source = "name")
-  @Mapping(target = "settlementCycleId", source = "cycle.id")
-  @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
-  File toEntity(CPFile file);
+  BatchEnquirySearchCriteria toEntity(BatchEnquirySearchRequest request);
 
-  @Named("convertToDate")
-  default LocalDate convertToDate(ZonedDateTime date) {
-    return date.toLocalDate();
-  }
+  FileEnquirySearchCriteria toEntity(FileEnquirySearchRequest request);
+
 }

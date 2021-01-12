@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
+import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.files.FileRepository
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
@@ -13,9 +13,10 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -26,10 +27,20 @@ class FilesFacadeImplTest {
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
 
+    private val repositoryFactory = mock(RepositoryFactory::class.java)
+
     private val filesServiceFacadeImpl = FilesFacadeImpl(
             presenterFactory,
-            fileRepository
+            repositoryFactory
     )
+
+    @BeforeEach
+    fun init() {
+        `when`(repositoryFactory.getFileRepository(anyString()))
+                .thenReturn(fileRepository)
+        `when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+    }
 
     @Test
     fun `should invoke presenter and repository on get files`() {
@@ -37,18 +48,15 @@ class FilesFacadeImplTest {
         val pageDto = PageDto<FileDto>(1, listOf(FileDto.builder().build()))
         val request = FileEnquirySearchRequest()
 
-        `when`(fileRepository.findFilesPaginated(any(), any()))
+        `when`(fileRepository.findPaginated(any()))
                 .thenReturn(page)
-
-        `when`(presenterFactory.getPresenter(any()))
-                .thenReturn(uiPresenter)
 
         `when`(uiPresenter.presentFiles(any()))
                 .thenReturn(pageDto)
 
-        val result = filesServiceFacadeImpl.getFiles(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = filesServiceFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
 
-        verify(fileRepository).findFilesPaginated(any(), any())
+        verify(fileRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentFiles(any())
 
@@ -60,19 +68,15 @@ class FilesFacadeImplTest {
         val file = File.builder().build()
         val detailsDto = FileDetailsDto.builder().build()
 
-        `when`(fileRepository
-                .findFileById(any(), any()))
+        `when`(fileRepository.findById(any()))
                 .thenReturn(file)
-
-        `when`(presenterFactory.getPresenter(any()))
-                .thenReturn(uiPresenter)
 
         `when`(uiPresenter.presentFileDetails(any()))
                 .thenReturn(detailsDto)
 
         val result = filesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
-        verify(fileRepository).findFileById(any(), any())
+        verify(fileRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentFileDetails(any())
 

@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.shared.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto

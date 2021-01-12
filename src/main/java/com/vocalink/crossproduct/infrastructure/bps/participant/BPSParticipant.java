@@ -1,36 +1,51 @@
 package com.vocalink.crossproduct.infrastructure.bps.participant;
 
-import com.vocalink.crossproduct.shared.participant.ParticipantType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.ZonedDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Getter
-@Builder
 public class BPSParticipant {
 
-  private String schemeCode;
-  private String schemeParticipantIdentifier;
-  private String countryCode;
-  private String partyCode;
-  private ParticipantType participantType;
-  private String connectingParty;
-  private String status;
-  private ZonedDateTime effectiveFromDate;
-  private ZonedDateTime effectiveTillDate;
-  private String participantName;
-  private String rcvngParticipantConnectionId;
-  private String participantConnectionId;
+  private final String schemeCode;
+  private final String schemeParticipantIdentifier;
+  private final String countryCode;
+  private final String partyCode;
+  private final String participantType;
+  private final String connectingParty;
+  private final String status;
+  private final ZonedDateTime effectiveFromDate;
+  private final ZonedDateTime effectiveTillDate;
+  private final String participantName;
+  private final String rcvngParticipantConnectionId;
+  private final String participantConnectionId;
 
-  public void setParticipantType(String participantType) {
-    this.participantType = ParticipantType.valueOf(participantType.replaceAll("[_+-]", "_"));
+  @JsonCreator
+  public BPSParticipant(
+      @JsonProperty(value = "schemeCode", required = true) String schemeCode,
+      @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier,
+      @JsonProperty(value = "countryCode", required = true) String countryCode,
+      @JsonProperty(value = "partyCode", required = true) String partyCode,
+      @JsonProperty(value = "participantType", required = true) String participantType,
+      @JsonProperty(value = "connectingParty", required = true) String connectingParty,
+      @JsonProperty(value = "status", required = true) String status,
+      @JsonProperty(value = "effectiveFromDate", required = true) ZonedDateTime effectiveFromDate,
+      @JsonProperty(value = "effectiveTillDate", required = true) ZonedDateTime effectiveTillDate,
+      @JsonProperty(value = "participantName", required = true) String participantName,
+      @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
+      @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId) {
+    this.schemeCode = schemeCode;
+    this.schemeParticipantIdentifier = schemeParticipantIdentifier;
+    this.countryCode = countryCode;
+    this.partyCode = partyCode;
+    this.participantType = participantType;
+    this.connectingParty = connectingParty;
+    this.status = status;
+    this.effectiveFromDate = effectiveFromDate;
+    this.effectiveTillDate = effectiveTillDate;
+    this.participantName = participantName;
+    this.rcvngParticipantConnectionId = rcvngParticipantConnectionId;
+    this.participantConnectionId = participantConnectionId;
   }
 }

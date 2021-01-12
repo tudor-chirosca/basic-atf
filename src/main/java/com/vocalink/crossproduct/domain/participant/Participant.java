@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class Participant {
+
   private final String id;
   private final String bic;
   private final String name;
