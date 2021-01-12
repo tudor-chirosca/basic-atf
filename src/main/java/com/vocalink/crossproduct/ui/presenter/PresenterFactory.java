@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PresenterFactory {
+
   private final List<Presenter> participantClientList;
 
   private Map<ClientType, Presenter> presenterByUserAgent = new HashMap<>();
@@ -23,7 +24,7 @@ public class PresenterFactory {
         .collect(Collectors.toMap(Presenter::getClientType, Function.identity()));
   }
 
-  public Presenter getPresenter(ClientType clientType){
+  public Presenter getPresenter(ClientType clientType) {
     if (presenterByUserAgent.get(clientType) == null) {
       throw new PresenterNotAvailableForClientTypeException("Presenter not available for client type " + clientType);
     }

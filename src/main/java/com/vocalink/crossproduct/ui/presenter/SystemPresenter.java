@@ -34,7 +34,6 @@ import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
-import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +57,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+  public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
+      List<Cycle> cycles,
       List<PositionDetails> positionsDetails,
       Participant participant,
       Participant fundingParticipant,

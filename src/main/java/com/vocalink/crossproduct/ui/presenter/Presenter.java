@@ -34,7 +34,6 @@ import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
-import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import java.time.LocalDate;
 import java.util.List;
 
