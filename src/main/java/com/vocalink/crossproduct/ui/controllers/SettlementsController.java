@@ -32,10 +32,10 @@ public class SettlementsController implements SettlementsApi {
       final @PathVariable String participantId,
       final ParticipantSettlementRequest request) {
 
-    ParticipantSettlementDetailsDto participantSettlementDetailsDto = settlementsFacade.getDetailsBy(context,
+    ParticipantSettlementDetailsDto settlementDetails = settlementsFacade.getSettlementDetails(context,
         clientType, request, cycleId, participantId);
 
-    return ResponseEntity.ok().body(participantSettlementDetailsDto);
+    return ResponseEntity.ok().body(settlementDetails);
   }
 
   @GetMapping(value = "/enquiry/settlements", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,9 +48,9 @@ public class SettlementsController implements SettlementsApi {
       throw new InvalidRequestParameterException("participants is missing in request params");
     }
 
-    PageDto<ParticipantSettlementCycleDto> settlementsDto =
+    PageDto<ParticipantSettlementCycleDto> settlements =
         settlementsFacade.getSettlements(context, clientType, request);
 
-    return ResponseEntity.ok().body(settlementsDto);
+    return ResponseEntity.ok().body(settlements);
   }
 }

@@ -99,7 +99,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .participant(participant)
                 .instructions(PageDto(1, listOf(instruction)))
                 .build()
-        `when`(settlementsFacade.getDetailsBy(any(), any(), any(), any(), any())).thenReturn(details)
+        `when`(settlementsFacade.getSettlementDetails(any(), any(), any(), any(), any())).thenReturn(details)
         mockMvc.perform(get("/enquiry/settlements/$cycleId/$participantId")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)

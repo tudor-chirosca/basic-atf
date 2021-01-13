@@ -1,12 +1,13 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
+import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
-import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -17,35 +18,46 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SettlementsFacadeImpl implements SettlementsFacade {
 
   private final PresenterFactory presenterFactory;
-  private final SettlementsRepository settlementsRepository;
-  private final ParticipantRepository participantRepository;
+  private final RepositoryFactory repositoryFactory;
 
   @Override
-  public ParticipantSettlementDetailsDto getDetailsBy(String context, ClientType clientType,
+  public ParticipantSettlementDetailsDto getSettlementDetails(String product, ClientType clientType,
       ParticipantSettlementRequest request, String cycleId, String participantId) {
+    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", cycleId,
+        participantId, product);
 
-    final ParticipantSettlement participantSettlement = settlementsRepository
-        .findSettlement(context, request, cycleId, participantId);
+    final ParticipantSettlement participantSettlement = repositoryFactory
+        .getSettlementsRepository(product)
+        .findBy(MAPPER.toEntity(request, cycleId, participantId));
 
-    final List<Participant> participants = participantRepository.findAll();
+    final List<Participant> participants = repositoryFactory
+        .getParticipantRepository(product)
+        .findAll();
 
     return presenterFactory.getPresenter(clientType)
         .presentSettlementDetails(participantSettlement, participants);
   }
 
   @Override
-  public PageDto<ParticipantSettlementCycleDto> getSettlements(String context,
+  public PageDto<ParticipantSettlementCycleDto> getSettlements(String product,
       ClientType clientType, SettlementEnquiryRequest request) {
+    log.info("Fetching settlements from: {}", product);
 
-    final Page<ParticipantSettlement> participantSettlements = settlementsRepository
-        .findSettlements(context, request);
+    final Page<ParticipantSettlement> participantSettlements = repositoryFactory
+        .getSettlementsRepository(product)
+        .findBy(MAPPER.toEntity(request));
+
+    final ParticipantRepository participantRepository = repositoryFactory
+        .getParticipantRepository(product);
 
     List<Participant> participants = request.getParticipants().stream()
         .map(participantRepository::findById)

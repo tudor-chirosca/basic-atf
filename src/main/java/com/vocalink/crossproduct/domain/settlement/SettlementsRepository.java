@@ -1,12 +1,11 @@
 package com.vocalink.crossproduct.domain.settlement;
 
+import com.vocalink.crossproduct.domain.CrossproductRepository;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
-import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 
-public interface SettlementsRepository {
+public interface SettlementsRepository extends CrossproductRepository {
 
-  ParticipantSettlement findSettlement(String context, ParticipantSettlementRequest request, String cycleId, String participantId);
+  ParticipantSettlement findBy(BPSInstructionEnquirySearchCriteria request);
 
-  Page<ParticipantSettlement> findSettlements(String context, SettlementEnquiryRequest request);
+  Page<ParticipantSettlement> findBy(BPSSettlementEnquirySearchCriteria request);
 }

@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.shared.alert.CPAlertParams;
+import com.vocalink.crossproduct.shared.settlement.SettlementStatus;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
@@ -249,7 +250,13 @@ public interface DTOMapper {
 
   @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
   @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
+  @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
   ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction, @Context List<Participant> participants);
+
+  @Named("toStatus")
+  default SettlementStatus convertStatusType(String status) {
+    return SettlementStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
+  }
 
   @Named("findParticipant")
   default ParticipantReferenceDto findParticipant(String participantId, @Context List<Participant> participants) {

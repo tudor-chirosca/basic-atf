@@ -17,5 +17,4 @@ public class ParticipantSettlement {
   private final SettlementStatus status;
   private final String participantId;
   private final Page<ParticipantInstruction> instructions;
-
 }

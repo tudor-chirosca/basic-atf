@@ -18,6 +18,8 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
@@ -35,6 +37,8 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -162,4 +166,8 @@ public interface BPSMapper {
   default LocalDate convertToDate(ZonedDateTime date) {
     return date.toLocalDate();
   }
+
+  BPSInstructionEnquiryRequest toBps(BPSInstructionEnquirySearchCriteria criteria);
+
+  BPSSettlementEnquiryRequest toBps(BPSSettlementEnquirySearchCriteria criteria);
 }

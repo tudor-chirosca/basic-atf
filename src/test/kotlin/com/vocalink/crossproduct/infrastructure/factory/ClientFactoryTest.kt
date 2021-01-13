@@ -5,21 +5,21 @@ import com.vocalink.crossproduct.adapter.bps.io.BPSParticipantIODataClient
 import com.vocalink.crossproduct.adapter.bps.settlement.BPSSettlementsClient
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException
 import com.vocalink.crossproduct.shared.io.ParticipantIODataClient
+import org.junit.jupiter.api.Assertions.assertThrows
 import com.vocalink.crossproduct.shared.settlement.SettlementsClient
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import kotlin.test.assertTrue
 
 class ClientFactoryTest {
 
     private val participantIOClient: ParticipantIODataClient = mock(BPSParticipantIODataClient::class.java)!!
-    private val settlementsClient: SettlementsClient = mock(BPSSettlementsClient::class.java)!!
 
     private val clientFactory: ClientFactory = ClientFactory(
-            listOf(participantIOClient),
-            listOf(settlementsClient)
+            listOf(participantIOClient)
     )
 
     @Test

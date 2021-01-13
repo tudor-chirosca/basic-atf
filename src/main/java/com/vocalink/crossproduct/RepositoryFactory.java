@@ -11,6 +11,8 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
+import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
+import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class RepositoryFactory {
   private final List<ReferencesRepository> referencesRepository;
   private final List<BatchRepository> batchClientList;
   private final List<FileRepository> fileClientList;
+  private final List<SettlementsRepository> settlementsRepositories;
   private final List<AlertRepository> alertClientList;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
@@ -39,6 +42,7 @@ public class RepositoryFactory {
   private Map<String, ReferencesRepository> referencesRepositoriesByProduct;
   private Map<String, BatchRepository> batchRepositoriesByProduct;
   private Map<String, FileRepository> fileRepositoriesByProduct;
+  private Map<String, SettlementsRepository> settlementsRepositoriesByProduct;
   private Map<String, AlertRepository> alertRepositoriesByProduct;
 
   @PostConstruct
@@ -57,6 +61,8 @@ public class RepositoryFactory {
         .collect(toMap(BatchRepository::getProduct, Function.identity()));
     fileRepositoriesByProduct = fileClientList.stream()
         .collect(toMap(FileRepository::getProduct, Function.identity()));
+    settlementsRepositoriesByProduct = settlementsRepositories.stream()
+        .collect(toMap(SettlementsRepository::getProduct, Function.identity()));
     alertRepositoriesByProduct = alertClientList.stream()
         .collect(toMap(AlertRepository::getProduct, Function.identity()));
   }
@@ -113,6 +119,13 @@ public class RepositoryFactory {
       throw new ClientNotAvailableException("Files repository not available for context " + product);
     }
     return fileRepositoriesByProduct.get(product);
+  }
+
+  public SettlementsRepository getSettlementsRepository(String product) {
+    if (settlementsRepositoriesByProduct.get(product) == null) {
+      throw new ClientNotAvailableException("Settlement repository not available for context " + product);
+    }
+    return settlementsRepositoriesByProduct.get(product);
   }
 
   public AlertRepository getAlertsClient(String product) {

@@ -38,8 +38,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
 
   @Override
   public List<Participant> findAll() {
-    final BPSParticipantsSearchRequest bpsRequest = new BPSParticipantsSearchRequest();
-    return findParticipantsWith(bpsRequest);
+    return findParticipantsWith(new BPSParticipantsSearchRequest());
   }
 
   @Override
