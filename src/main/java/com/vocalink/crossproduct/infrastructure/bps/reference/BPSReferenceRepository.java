@@ -1,13 +1,13 @@
 package com.vocalink.crossproduct.infrastructure.bps.reference;
 
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
-import static com.vocalink.crossproduct.infrastructure.bps.config.PathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.MESSAGE_DIRECTION_REFERENCES_PATH;
 
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;

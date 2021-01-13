@@ -3,8 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.vocalink.crossproduct.adapter.bps.BPSProperties
-import com.vocalink.crossproduct.adapter.bps.BPSProperties.Detail
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail
 import org.springframework.context.annotation.Bean
 import java.time.Duration
 

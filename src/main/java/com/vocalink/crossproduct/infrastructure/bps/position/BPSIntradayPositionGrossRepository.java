@@ -1,14 +1,14 @@
 package com.vocalink.crossproduct.infrastructure.bps.position;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
-import static com.vocalink.crossproduct.infrastructure.bps.config.PathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.INTRA_DAY_POSITION_GROSS_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;

@@ -1,18 +1,18 @@
 package com.vocalink.crossproduct.infrastructure.bps.batch;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
-import static com.vocalink.crossproduct.infrastructure.bps.config.PathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BATCH_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_BATCH_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import lombok.RequiredArgsConstructor;

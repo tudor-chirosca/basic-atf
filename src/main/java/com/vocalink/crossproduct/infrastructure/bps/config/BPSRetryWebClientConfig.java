@@ -1,7 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
-
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

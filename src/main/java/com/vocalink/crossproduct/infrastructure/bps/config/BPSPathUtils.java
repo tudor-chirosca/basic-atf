@@ -1,15 +1,13 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
-import com.vocalink.crossproduct.adapter.bps.BPSProperties.Detail;
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail;
 import java.net.URI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PathUtils {
+public final class BPSPathUtils {
 
   public static URI resolve(String path, BPSProperties properties) {
 

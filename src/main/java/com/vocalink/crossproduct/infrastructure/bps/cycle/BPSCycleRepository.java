@@ -2,17 +2,17 @@ package com.vocalink.crossproduct.infrastructure.bps.cycle;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.SCHEME_CODE;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
-import static com.vocalink.crossproduct.infrastructure.bps.config.PathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.CYCLES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_POSITION_PATH;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.adapter.bps.BPSProperties;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionRequest;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
