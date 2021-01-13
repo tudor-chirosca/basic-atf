@@ -1,3 +1,10 @@
+## [1.32.7](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.6...v1.32.7) (2021-01-13)
+
+
+### Bug Fixes
+
+* moved BPS properties ([275fedb](https://github.com/vocalink/cp-international-suite-service/commit/275fedb5148cffd950c7a12c07d1e710fff16e9c))
+
 ## [1.32.6](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.5...v1.32.6) (2021-01-13)
 
 
