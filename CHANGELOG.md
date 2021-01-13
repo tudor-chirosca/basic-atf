@@ -1,3 +1,10 @@
+## [1.32.6](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.5...v1.32.6) (2021-01-13)
+
+
+### Bug Fixes
+
+* updated adapter for batch and files ([8cd5fb6](https://github.com/vocalink/cp-international-suite-service/commit/8cd5fb603aae5515fd0bb775996a72bd9e93ab97))
+
 ## [1.32.5](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.4...v1.32.5) (2021-01-13)
 
 
