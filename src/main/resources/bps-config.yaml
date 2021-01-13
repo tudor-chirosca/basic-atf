@@ -8,7 +8,7 @@ bps-config:
 
   paths:
     intra-day-position-gross-path:
-      path: /intraDayPosition
+      path: /settlement/runningDebitCapPositions/readAll
       base: MOCK
     settlement-position-path:
       path: /settlementPositions/readAll

@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface IntraDayPositionGrossRepository extends CrossproductRepository {
 
-  List<IntraDayPositionGross> findByIds(List<String> participantIds);
+  List<IntraDayPositionGross> findById(String participantId);
 
 }

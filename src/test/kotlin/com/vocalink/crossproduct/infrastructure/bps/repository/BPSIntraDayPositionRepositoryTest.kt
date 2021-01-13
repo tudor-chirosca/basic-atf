@@ -22,21 +22,50 @@ class BPSIntraDayPositionRepositoryTest @Autowired constructor(
         const val REQUEST_JSON_INTRA_DAY_POSITION: String = """ 
         {
             "schemeCode" : "P27-SEK",
-            "schemeParticipantIdentifiers" :["HANDSESS", "ESSESESS"]
+            "participantId" : "NDEASESSXXX"
         } 
         """
 
         const val VALID_INTRA_DAY_POSITION_RESPONSE: String = """
         [    
             {
-                "participantId": "HANDSESS",
-                "debitCap": 10000.00,
-                "debitPosition": 9877.53
+                "schemeId": "P27-SEK",
+                "debitParticipantId": "HANDSESS",
+                "settlementDate": "2021-01-13",
+                "debitCapAmount": {
+                    "amount": 10000.00,
+                    "currency": "SEK"
+                },
+                "debitPositionAmount": {
+                    "amount": 9877.53,
+                    "currency": "SEK"
+                }
             },
             {
-                "participantId": "ESSESESS",
-                "debitCap": 10001.00,
-                "debitPosition": 9878.53
+                "schemeId": "P27-SEK",
+                "debitParticipantId": "SWCTSES1",
+                "settlementDate": "2021-01-13",
+                "debitCapAmount": {
+                    "amount": 10003.00,
+                    "currency": "SEK"
+                },
+                "debitPositionAmount": {
+                    "amount": 9880.53,
+                    "currency": "SEK"
+                }
+            },
+            {
+                "schemeId": "P27-SEK",
+                "debitParticipantId": "ELLFSESS",
+                "settlementDate": "2021-01-13",
+                "debitCapAmount": {
+                    "amount": 10004.00,
+                    "currency": "SEK"
+                },
+                "debitPositionAmount": {
+                    "amount": 9881.53,
+                    "currency": "SEK"
+                }
             }
         ]    
         """
@@ -45,17 +74,16 @@ class BPSIntraDayPositionRepositoryTest @Autowired constructor(
     @Test
     fun `should pass intra-day position with success`() {
         mockServer.stubFor(
-                post(urlEqualTo("/intraDayPosition"))
+                post(urlEqualTo("/settlement/runningDebitCapPositions/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_INTRA_DAY_POSITION_RESPONSE))
                         .withRequestBody(equalToJson(REQUEST_JSON_INTRA_DAY_POSITION)))
 
-        val result = intradayPositionRepository.findByIds(listOf("HANDSESS", "ESSESESS"))
+        val result = intradayPositionRepository.findById("NDEASESSXXX")
 
         assertTrue(result.isNotEmpty())
-        assertEquals("HANDSESS", result[0].participantId)
-        assertEquals("ESSESESS", result[1].participantId)
+        assertEquals("HANDSESS", result[0].debitParticipantId)
     }
 }

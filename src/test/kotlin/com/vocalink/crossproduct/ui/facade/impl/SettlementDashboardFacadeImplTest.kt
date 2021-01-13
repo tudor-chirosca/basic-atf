@@ -123,14 +123,14 @@ open class SettlementDashboardFacadeImplTest {
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
                 .thenReturn(MockParticipants().participants)
         `when`(intraDayPositionGrossRepository
-                .findByIds(listOf(fundedParticipantId)))
+                .findById(fundedParticipantId))
                 .thenReturn(intraDayPositionsGross)
         `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any()))
                 .thenReturn(mockModel)
 
         val result = settlementServiceFacadeImpl.getParticipantSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
 
-        verify(intraDayPositionGrossRepository, atLeastOnce()).findByIds(any())
+        verify(intraDayPositionGrossRepository, atLeastOnce()).findById(any())
         verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
 
         assertNotNull(result.fundingParticipant)

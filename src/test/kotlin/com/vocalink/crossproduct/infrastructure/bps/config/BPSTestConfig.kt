@@ -23,7 +23,7 @@ open class BPSTestConfig {
                 Pair("cycles-path", Detail("MOCK", "/cycles/readAll")),
                 Pair("position-details-path", Detail("MOCK", "/positionDetails")),
                 Pair("io-participants-path", Detail("MOCK", "/io")),
-                Pair("intra-day-position-gross-path", Detail("MOCK", "/intraDayPosition")),
+                Pair("intra-day-position-gross-path", Detail("MOCK", "/settlement/runningDebitCapPositions/readAll")),
                 Pair("settlement-position-path", Detail("MOCK", "/settlementPositions/readAll")),
                 Pair("io-details-path", Detail("MOCK", "/io-details")),
                 Pair("alerts-path", Detail("MOCK", "/alerts")),

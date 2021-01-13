@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -62,8 +61,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     List<IntraDayPositionGross> intraDays = repositoryFactory
         .getIntradayPositionGrossRepository(product)
-        .findByIds(participants.stream()
-            .map(Participant::getBic).collect(toList()));
+        .findById(participantId);
 
     return presenterFactory.getPresenter(clientType)
         .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
@@ -114,7 +112,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     if (participant.getFundingBic() != null && !participant.getFundingBic().equals(NOT_AVAILABLE)) {
       intraDayPositionGross = repositoryFactory.getIntradayPositionGrossRepository(product)
-          .findByIds(singletonList(participant.getBic()))
+          .findById(participant.getBic())
           .stream()
           .findFirst()
           .orElseThrow(() -> new EntityNotFoundException(

@@ -102,6 +102,10 @@ public interface DTOMapper {
 
   PositionDetailsDto toDto(PositionDetails positionDetails);
 
+  @Mappings({
+      @Mapping(target = "debitCap", source = "debitCapAmount.amount"),
+      @Mapping(target = "debitPosition", source = "debitPositionAmount.amount")
+  })
   IntraDayPositionGrossDto toDto(IntraDayPositionGross intraDayPositionGross);
 
   @Named("countCredit")
@@ -155,7 +159,7 @@ public interface DTOMapper {
       return IntraDayPositionGrossDto.builder().build();
     }
     return intraDays.stream()
-        .filter(pos -> pos.getParticipantId().equals(participantId))
+        .filter(pos -> pos.getDebitParticipantId().equals(participantId))
         .findFirst()
         .map(MAPPER::toDto)
         .orElse(IntraDayPositionGrossDto.builder().build());
@@ -212,11 +216,11 @@ public interface DTOMapper {
     }
     return IntraDayPositionTotalDto.builder()
         .totalDebitCap(intraDays.stream()
-            .map(IntraDayPositionGross::getDebitCap)
+            .map(i -> i.getDebitCapAmount().getAmount())
             .filter(Objects::nonNull)
             .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .totalDebitPosition(intraDays.stream()
-            .map(IntraDayPositionGross::getDebitPosition)
+            .map(i -> i.getDebitPositionAmount().getAmount())
             .filter(Objects::nonNull)
             .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .build();
