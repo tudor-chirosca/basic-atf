@@ -1,3 +1,10 @@
+## [1.32.5](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.4...v1.32.5) (2021-01-13)
+
+
+### Bug Fixes
+
+* deleted unused ([21f7436](https://github.com/vocalink/cp-international-suite-service/commit/21f7436c674c776257501f517779227b70ba403d))
+
 ## [1.32.4](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.3...v1.32.4) (2021-01-11)
 
 
