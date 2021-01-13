@@ -64,7 +64,7 @@ pipeline {
                     stages {
                         stage('Create release') {
                             steps {
-                                sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release"
+                                sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
                                 createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
                             }
                         }
