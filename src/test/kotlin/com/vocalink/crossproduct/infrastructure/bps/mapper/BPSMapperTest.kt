@@ -1,11 +1,19 @@
 package com.vocalink.crossproduct.infrastructure.bps.mapper
 
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType
+import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
@@ -15,8 +23,6 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
-import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
-import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -291,5 +297,85 @@ class BPSMapperTest {
         assertThat(entity.isHasReason).isEqualTo(bps.isHasReason)
         assertThat(entity.enquiryType).isEqualTo(bps.enquiryType)
         assertThat(entity.reasonCodes).isEqualTo(bps.reasonCodes)
+    }
+
+    @Test
+    fun `should map Alert fields`() {
+        val bpsParticipant = BPSParticipant(
+                "schemeCode",
+                "schemeParticipantIdentifier",
+                "countryCode",
+                "partyCode",
+                "DIRECT+ONLY",
+                "connectingParty",
+                "SUSPENDED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "participantName",
+                "rcvngParticipantConnectionId",
+                "participantConnectionId"
+        )
+        val bps = BPSAlert(
+                23423, "high", ZonedDateTime.now(), "type", listOf(bpsParticipant)
+        )
+        val entity = BPSMAPPER.toEntity(bps)
+        assertThat(entity.alertId).isEqualTo(bps.alertId)
+        assertThat(entity.priority).isEqualTo(AlertPriorityType.HIGH)
+        assertThat(entity.dateRaised).isEqualTo(bps.dateRaised)
+        assertThat(entity.type).isEqualTo(bps.type)
+
+        assertThat(entity.entities[0].participantIdentifier).isEqualTo(bps.entities[0].schemeParticipantIdentifier)
+        assertThat(entity.entities[0].name).isEqualTo(bps.entities[0].participantName)
+        assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT_ONLY)
+        assertThat(entity.entities[0].connectingParticipantId).isEqualTo(bps.entities[0].connectingParty)
+        assertThat(entity.entities[0].schemeCode).isEqualTo(bps.entities[0].schemeCode)
+    }
+
+    @Test
+    fun `should map AlertStats fields`() {
+        val alertStatsData = BPSAlertStatsData(
+                "high", 20
+        )
+        val bps = BPSAlertStats(
+                1, listOf(alertStatsData)
+        )
+        val entity = BPSMAPPER.toEntity(bps)
+        assertThat(entity.total).isEqualTo(1)
+        assertThat(entity.items.size).isEqualTo(1)
+        assertThat(entity.items[0].count).isEqualTo(20)
+        assertThat(entity.items[0].priority).isEqualTo(AlertPriorityType.HIGH)
+    }
+
+    @Test
+    fun `should map AlertReferenceData fields`() {
+        val alertPriority = BPSAlertPriority("name", 100, true)
+        val alertReferenceData = BPSAlertReferenceData(
+                listOf(alertPriority), listOf("alertType")
+        )
+        val entity = BPSMAPPER.toEntity(alertReferenceData)
+        assertThat(entity.alertTypes.size).isEqualTo(1)
+        assertThat(entity.priorities.size).isEqualTo(1)
+        assertThat(entity.priorities[0].highlight).isEqualTo(true)
+        assertThat(entity.priorities[0].threshold).isEqualTo(100)
+        assertThat(entity.priorities[0].name).isEqualTo("name")
+    }
+
+    @Test
+    fun `should map BPSAlertSearchRequest fields`() {
+        val criteria = AlertSearchCriteria(
+                0 ,20, listOf("priority"), ZonedDateTime.now(), null,
+                listOf("types"), listOf("entities"), "alertId", listOf("sort")
+        )
+
+        val request = BPSMAPPER.toBps(criteria)
+        assertThat(request.offset).isEqualTo(criteria.offset)
+        assertThat(request.limit).isEqualTo(criteria.limit)
+        assertThat(request.sort).isEqualTo(criteria.sort)
+        assertThat(request.priorities).isEqualTo(criteria.priorities)
+        assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(request.dateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.types).isEqualTo(criteria.types)
+        assertThat(request.entities).isEqualTo(criteria.entities)
+        assertThat(request.alertId).isEqualTo(criteria.alertId)
     }
 }

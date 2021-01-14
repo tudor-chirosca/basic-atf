@@ -2,10 +2,11 @@ package com.vocalink.crossproduct.ui.presenter
 
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
-import com.vocalink.crossproduct.domain.alert.AlertData
-import com.vocalink.crossproduct.domain.alert.AlertPriority
+import com.vocalink.crossproduct.domain.alert.AlertPriorityData
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -20,7 +21,17 @@ import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
+import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -32,15 +43,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class])
@@ -417,20 +419,13 @@ class UIPresenterTest {
         val priorityName = "Priority1"
         val threshold = 10
         val alertType = "alertType1"
-        val model = AlertReferenceData.builder()
-                .alertTypes(listOf(alertType, "alertType2"))
-                .priorities(listOf(
-                        AlertPriority.builder()
-                                .name(priorityName)
-                                .threshold(threshold)
-                                .build(),
-                        AlertPriority.builder()
-                                .name("Priority2")
-                                .threshold(100)
-                                .build()
-                ))
-                .build()
+        val priority1 = AlertPriorityData(priorityName, threshold, true)
+        val priority2 = AlertPriorityData("Priority2", 100, false)
 
+        val model = AlertReferenceData(
+                listOf(priority1, priority2),
+                listOf(alertType, "alertType2")
+        )
         val result = uiPresenter.presentAlertReference(model)
 
         assertEquals(2, result.alertTypes.size)
@@ -443,18 +438,12 @@ class UIPresenterTest {
 
     @Test
     fun `should get alert stats`() {
-        val priority = "high"
+        val priority = AlertPriorityType.HIGH
         val count = 10
         val total = 100
-        val model = AlertStats.builder()
-                .total(total)
-                .items(listOf(AlertData.builder()
-                        .count(count)
-                        .priority(priority)
-                        .build()))
-                .build()
-        val result = uiPresenter.presentAlertStats(model)
-
+        val alertData = AlertStatsData(priority, count)
+        val model = AlertStats(total, listOf(alertData))
+        val result = DTOMapper.MAPPER.toDto(model)
 
         assertEquals(1, result.items.size)
         assertEquals(total, result.total)
@@ -544,14 +533,14 @@ class UIPresenterTest {
         val alerts = listOf(
                 Alert.builder()
                         .alertId(3141)
-                        .priority("high")
+                        .priority(AlertPriorityType.HIGH)
                         .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
                         .entities(listOf(ParticipantReference(id, nordea, participantType, null, null)))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
-                        .priority("high")
+                        .priority(AlertPriorityType.HIGH)
                         .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
                         .entities(listOf(ParticipantReference(id, seb, participantType, null, null)))

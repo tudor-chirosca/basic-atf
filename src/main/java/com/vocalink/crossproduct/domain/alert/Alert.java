@@ -13,7 +13,7 @@ import lombok.Getter;
 public class Alert {
 
   private final Integer alertId;
-  private final String priority;
+  private final AlertPriorityType priority;
   private final ZonedDateTime dateRaised;
   private final String type;
   private final List<ParticipantReference> entities;

@@ -7,13 +7,12 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.files.File
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class SystemPresenterTests {
 
@@ -56,7 +55,7 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present alert references for System`() {
-        val alertRef = AlertReferenceData.builder().build()
+        val alertRef = AlertReferenceData(null, null)
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentAlertReference(alertRef)
         }
@@ -127,7 +126,7 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present alert stats for System`() {
-        val alertStats = AlertStats.builder().build()
+        val alertStats = AlertStats(0, null)
         assertThrows(RuntimeException::class.java) {
             systemPresenter.presentAlertStats(alertStats)
         }

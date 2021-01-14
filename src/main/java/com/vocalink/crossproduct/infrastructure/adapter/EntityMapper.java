@@ -1,9 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
-import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileReference;
@@ -15,9 +14,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.shared.CPPage;
-import com.vocalink.crossproduct.shared.alert.CPAlert;
 import com.vocalink.crossproduct.shared.alert.CPAlertReferenceData;
-import com.vocalink.crossproduct.shared.alert.CPAlertStats;
 import com.vocalink.crossproduct.shared.files.CPFileReference;
 import com.vocalink.crossproduct.shared.io.CPIODetails;
 import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
@@ -26,6 +23,7 @@ import com.vocalink.crossproduct.shared.settlement.CPInstructionEnquiryRequest;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantInstruction;
 import com.vocalink.crossproduct.shared.settlement.CPParticipantSettlement;
 import com.vocalink.crossproduct.shared.settlement.CPSettlementEnquiryRequest;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
@@ -47,12 +45,8 @@ public interface EntityMapper {
 
   AlertReferenceData toEntity(CPAlertReferenceData alertReferenceData);
 
-  Page<Alert> toEntityAlert(CPPage<CPAlert> input);
-
   @Mapping(target = "participantIdentifier", source = "id")
   ParticipantReference toCpReference(CPParticipant input);
-
-  AlertStats toEntity(CPAlertStats alertReferenceData);
 
   MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
 
@@ -72,4 +66,5 @@ public interface EntityMapper {
 
   FileEnquirySearchCriteria toEntity(FileEnquirySearchRequest request);
 
+  AlertSearchCriteria toEntity(AlertSearchRequest request);
 }

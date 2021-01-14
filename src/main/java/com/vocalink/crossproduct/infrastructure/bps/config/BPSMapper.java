@@ -1,6 +1,12 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.alert.Alert;
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
+import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
+import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -12,7 +18,13 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
@@ -63,6 +75,14 @@ public interface BPSMapper {
   })
   Participant toEntity(BPSParticipant bpsParticipant);
 
+  @Mappings({
+      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "participantName"),
+      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
+      @Mapping(target = "connectingParticipantId", source = "connectingParty"),
+  })
+  ParticipantReference toReference(BPSParticipant bpsParticipant);
+
   @Named("convertParticipantType")
   default ParticipantType convertParticipantType(String participantType) {
     return ParticipantType.valueOf(participantType.replaceAll("[_+-]", "_"));
@@ -79,15 +99,38 @@ public interface BPSMapper {
   })
   BPSParticipantsSearchRequest toBps(String connectingParty, String participantType);
 
-  BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria request);
+  BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
 
-  BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria request);
+  BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
 
   Page<Batch> toBatchPageEntity(BPSPage<BPSBatch> batches);
 
   Page<File> toFilePageEntity(BPSPage<BPSFile> files);
 
   FileReference toEntity(BPSFileReference reference);
+
+  BPSAlertSearchRequest toBps(AlertSearchCriteria criteria);
+
+  Page<Alert> toAlertPageEntity(BPSPage<BPSAlert> alerts);
+
+  AlertStats toEntity(BPSAlertStats alertStats);
+
+  AlertReferenceData toEntity(BPSAlertReferenceData alertReferenceData);
+
+  @Mappings({
+      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
+  })
+  Alert toEntity(BPSAlert alert);
+
+  @Mappings({
+      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
+  })
+  AlertStatsData toEntity(BPSAlertStatsData alertStatsData);
+
+  @Named("convertAlertPriorityType")
+  default AlertPriorityType convertAlertPriorityType(String alertPriorityType) {
+    return AlertPriorityType.valueOf(alertPriorityType.toUpperCase());
+  }
 
   @Mappings({
       @Mapping(target = "fileName", source = "name"),

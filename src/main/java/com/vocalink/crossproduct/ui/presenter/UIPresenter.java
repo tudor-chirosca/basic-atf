@@ -67,11 +67,6 @@ public class UIPresenter implements Presenter {
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
       List<Participant> participants) {
 
-    cycles = cycles.stream()
-        .sorted(Comparator.comparing(Cycle::getId))
-        .limit(2)
-        .collect(toList());
-
     Cycle currentCycle = cycles.get(1);
     Cycle previousCycle = cycles.get(0);
 

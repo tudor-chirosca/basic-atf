@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.controllers;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
@@ -33,5 +33,5 @@ public interface AlertsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<AlertDto>> getAlerts(final ClientType clientType, final String context,
-      final AlertSearchParams searchParams);
+      final AlertSearchRequest request);
 }

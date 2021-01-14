@@ -1,13 +1,13 @@
 package com.vocalink.crossproduct.domain.alert;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AlertStats {
+public class AlertPriorityData {
 
-  private final int total;
-  private final List<AlertStatsData> items;
+  private final String name;
+  private final int threshold;
+  private final Boolean highlight;
 }

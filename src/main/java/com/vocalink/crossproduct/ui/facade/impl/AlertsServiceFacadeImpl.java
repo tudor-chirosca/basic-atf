@@ -1,15 +1,17 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
+import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
+import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
-import com.vocalink.crossproduct.domain.alert.AlertsRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams;
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -21,34 +23,34 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
-  private final AlertsRepository alertsRepository;
   private final PresenterFactory presenterFactory;
+  private final RepositoryFactory repositoryFactory;
 
   @Override
-  public AlertReferenceDataDto getAlertsReference(String context, ClientType clientType) {
+  public AlertReferenceDataDto getAlertsReference(String product, ClientType clientType) {
 
-    AlertReferenceData alertReferenceData = alertsRepository.findReferenceAlerts(context)
-        .orElseThrow(() -> new EntityNotFoundException("No alert references were found"));
+    final AlertReferenceData alertReferenceData = repositoryFactory.getAlertsClient(product)
+        .findAlertsReferenceData();
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertReference(alertReferenceData);
   }
 
   @Override
-  public AlertStatsDto getAlertStats(String context, ClientType clientType) {
+  public AlertStatsDto getAlertStats(String product, ClientType clientType) {
 
-    AlertStats alertStats = alertsRepository.findAlertStats(context)
-        .orElseThrow(() -> new EntityNotFoundException("No alert stats were found"));
+    final AlertStats alertStats = repositoryFactory.getAlertsClient(product).findAlertStats();
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertStats(alertStats);
   }
 
   @Override
-  public PageDto<AlertDto> getAlerts(String context, ClientType clientType,
-      AlertSearchParams searchParams) {
+  public PageDto<AlertDto> getAlerts(String product, ClientType clientType,
+      AlertSearchRequest requestDto) {
 
-    Page<Alert> alerts = alertsRepository.findAlerts(context, searchParams);
+    final AlertSearchCriteria request = MAPPER.toEntity(requestDto);
+    final Page<Alert> alerts = repositoryFactory.getAlertsClient(product).findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentAlert(alerts);
   }

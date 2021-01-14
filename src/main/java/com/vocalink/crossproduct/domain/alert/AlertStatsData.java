@@ -1,12 +1,11 @@
-package com.vocalink.crossproduct.ui.dto.alert;
+package com.vocalink.crossproduct.domain.alert;
 
-import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AlertStatsDataDto {
+public class AlertStatsData {
 
   private final AlertPriorityType priority;
   private final int count;

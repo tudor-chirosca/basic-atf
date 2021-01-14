@@ -13,19 +13,24 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
-@Setter
-public class AlertSearchParams implements Serializable {
+public class AlertSearchRequest implements Serializable {
 
-  private final int offset = parseInt(getDefault(OFFSET));
-  private final int limit = parseInt(getDefault(LIMIT));
+  @Setter
+  private int offset = parseInt(getDefault(OFFSET));
+  @Setter
+  private int limit = parseInt(getDefault(LIMIT));
+  @Setter
   private List<String> priorities;
   private ZonedDateTime dateFrom = ZonedDateTime.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private ZonedDateTime dateTo;
+  @Setter
   private List<String> types;
+  @Setter
   private List<String> entities;
+  @Setter
   private String alertId;
+  @Setter
   private List<String> sort;
 
   public void setDate_from(String dateFrom) {

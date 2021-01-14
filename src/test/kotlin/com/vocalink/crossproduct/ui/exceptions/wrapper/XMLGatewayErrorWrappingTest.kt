@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.exceptions.wrapper
 
 import com.vocalink.crossproduct.infrastructure.exception.ErrorConstants
-import com.vocalink.crossproduct.shared.exception.AdapterException
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.exceptions.GatewayErrorDescription
 import org.junit.jupiter.api.Test
@@ -46,7 +46,7 @@ class XMLGatewayErrorWrappingTest {
 
     @Test
     fun `Adapter exception should be treated as internal error`() {
-        val exception = AdapterException(RuntimeException(), ErrorConstants.ERROR_SOURCE_BPS)
+        val exception = InfrastructureException(RuntimeException(), ErrorConstants.ERROR_SOURCE_BPS)
         val wrappedError = xmlErrorWrappingStrategy.wrapException(exception)
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), wrappedError.statusCode.value())
         val body: GatewayErrorDescription? = wrappedError.body as? GatewayErrorDescription
@@ -56,7 +56,7 @@ class XMLGatewayErrorWrappingTest {
 
     @Test
     fun `Adapter exception should propagate the source of the error`() {
-        val exception = AdapterException(RuntimeException(), ErrorConstants.ERROR_SOURCE_BPS)
+        val exception = InfrastructureException(RuntimeException(), ErrorConstants.ERROR_SOURCE_BPS)
         val wrappedError = xmlErrorWrappingStrategy.wrapException(exception)
         val body: GatewayErrorDescription? = wrappedError.body as? GatewayErrorDescription
         assertNotNull(body)

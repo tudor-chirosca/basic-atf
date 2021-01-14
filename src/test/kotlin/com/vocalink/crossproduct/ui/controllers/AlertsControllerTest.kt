@@ -5,10 +5,11 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchParams
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import java.nio.charset.Charset
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -22,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.nio.charset.Charset
 
 @WebMvcTest(AlertsController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -55,14 +55,12 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "totalResults": 0,
             "items": []
         }"""
-
-
     }
 
     @Test
     @Throws(Exception::class)
     fun `should get Alert References`() {
-        val alertReferenceDataDto = AlertReferenceDataDto.builder().build()
+        val alertReferenceDataDto = AlertReferenceDataDto(null, null)
         `when`(facade.getAlertsReference(CONTEXT, ClientType.UI))
                 .thenReturn(alertReferenceDataDto)
         mockMvc.perform(get("/reference/alerts")
@@ -76,7 +74,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     @Throws(Exception::class)
     fun `should get Alert Stats`() {
-        val alertStatsDto = AlertStatsDto.builder().build()
+        val alertStatsDto = AlertStatsDto(0, null)
 
         `when`(facade.getAlertStats(CONTEXT, ClientType.UI))
                 .thenReturn(alertStatsDto)
@@ -90,7 +88,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        `when`(facade.getAlerts(any(), any(), any(AlertSearchParams::class.java))).thenReturn(PageDto(0, null))
+        `when`(facade.getAlerts(any(), any(), any(AlertSearchRequest::class.java))).thenReturn(PageDto(0, null))
 
         mockMvc.perform(get("/alerts")
                 .contentType(UTF8_CONTENT_TYPE)

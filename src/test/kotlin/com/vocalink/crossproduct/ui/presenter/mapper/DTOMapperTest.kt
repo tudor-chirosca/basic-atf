@@ -2,27 +2,29 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
-import com.vocalink.crossproduct.domain.alert.AlertData
-import com.vocalink.crossproduct.domain.alert.AlertPriority
+import com.vocalink.crossproduct.domain.alert.AlertPriorityData
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
+import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
 import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
@@ -34,8 +36,6 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -43,6 +43,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -484,42 +486,34 @@ class DTOMapperTest {
         val priorityName = "Priority1"
         val threshold = 10
         val alertType = "alertType1"
-        val model = AlertReferenceData.builder()
-                .alertTypes(listOf(alertType))
-                .priorities(listOf(
-                        AlertPriority.builder()
-                                .name(priorityName)
-                                .threshold(threshold)
-                                .build()
-                ))
-                .build()
+        val alertPriority = AlertPriorityData(priorityName, threshold, true)
+        val model = AlertReferenceData(
+                listOf(alertPriority),
+                listOf(alertType)
+        )
         val result = MAPPER.toDto(model)
 
-        assertEquals(1, result.alertTypes.size)
-        assertEquals(1, result.priorities.size)
-        assertEquals(alertType, result.alertTypes[0])
-        assertEquals(priorityName, result.priorities[0].name)
-        assertEquals(threshold, result.priorities[0].threshold)
+        assertThat(result.alertTypes.size).isEqualTo(1)
+        assertThat(result.priorities.size).isEqualTo(1)
+        assertThat(result.alertTypes[0]).isEqualTo(alertType)
+        assertThat(result.priorities[0].name).isEqualTo(priorityName)
+        assertThat(result.priorities[0].threshold).isEqualTo(threshold)
+        assertThat(result.priorities[0].highlight).isEqualTo(true)
     }
 
     @Test
     fun `should map all Alert stats fields`() {
-        val priority = "high"
+        val priority = AlertPriorityType.HIGH
         val count = 10
         val total = 100
-        val model = AlertStats.builder()
-                .total(total)
-                .items(listOf(AlertData.builder()
-                        .count(count)
-                        .priority(priority)
-                        .build()))
-                .build()
+        val alertData = AlertStatsData(priority, count)
+        val model = AlertStats(total, listOf(alertData))
         val result = MAPPER.toDto(model)
 
-        assertEquals(1, result.items.size)
-        assertEquals(total, result.total)
-        assertEquals(priority, result.items[0].priority)
-        assertEquals(count, result.items[0].count)
+        assertThat(result.items.size).isEqualTo(1)
+        assertThat(result.total).isEqualTo(total)
+        assertThat(result.items[0].priority).isEqualTo(priority)
+        assertThat(result.items[0].count).isEqualTo(count)
     }
 
     @Test
@@ -543,7 +537,7 @@ class DTOMapperTest {
         val dateRaised = ZonedDateTime.now()
         val alert = Alert.builder()
                 .alertId(3141)
-                .priority("high")
+                .priority(AlertPriorityType.HIGH)
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
                 .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea",
@@ -821,5 +815,27 @@ class DTOMapperTest {
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
+    }
+
+    @Test
+    fun `should map AlertSearchCriteria fields`() {
+        val request = AlertSearchRequest()
+        request.priorities = listOf("priority")
+        request.types = listOf("types")
+        request.entities = listOf("entities")
+        request.alertId = "alertId"
+        request.sort = listOf("sort")
+
+
+        val entity = EntityMapper.MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.priorities).isEqualTo(request.priorities)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.types).isEqualTo(request.types)
+        assertThat(entity.entities).isEqualTo(request.entities)
+        assertThat(entity.alertId).isEqualTo(request.alertId)
     }
 }
