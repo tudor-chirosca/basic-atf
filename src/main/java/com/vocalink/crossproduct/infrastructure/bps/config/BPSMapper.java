@@ -13,6 +13,13 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileReference;
+import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes;
+import com.vocalink.crossproduct.domain.io.IOData;
+import com.vocalink.crossproduct.domain.io.IODataAmountDetails;
+import com.vocalink.crossproduct.domain.io.IODataDetails;
+import com.vocalink.crossproduct.domain.io.IODetails;
+import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
+import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
@@ -34,6 +41,13 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
@@ -149,6 +163,20 @@ public interface BPSMapper {
       @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
   })
   File toEntity(BPSFile file);
+
+  IOBatchesMessageTypes toEntity(BPSIOBatchesMessageTypes batchesMessageTypes);
+
+  IOData toEntity(BPSIOData ioData);
+
+  IODataAmountDetails toEntity(BPSIODataAmountDetails ioDataAmountDetails);
+
+  IODataDetails toEntity(BPSIODataDetails ioDataDetails);
+
+  IODetails toEntity(BPSIODetails ioDetails);
+
+  IOTransactionsMessageTypes toEntity(BPSIOTransactionsMessageTypes transactionsMessageTypes);
+
+  ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
 
   @Named("countCredit")
   default BigDecimal countCredit(BPSSettlementPosition position) {

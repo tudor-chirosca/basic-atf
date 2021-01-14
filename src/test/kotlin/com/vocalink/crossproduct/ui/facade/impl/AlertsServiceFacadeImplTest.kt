@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertRepository
-import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
@@ -88,8 +87,6 @@ class AlertsServiceFacadeImplTest {
 
     @Test
     fun `should get alerts`() {
-        val searchCriteria = AlertSearchCriteria(0, 0, null, null,
-                null, null, null, null, null)
         val alerts = Page<Alert>(2, listOf())
         val alertsDto = PageDto<AlertDto>(2, listOf<AlertDto>())
 

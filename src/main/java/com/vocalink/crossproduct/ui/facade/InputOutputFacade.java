@@ -7,8 +7,8 @@ import java.time.LocalDate;
 
 public interface InputOutputFacade {
 
-  IODashboardDto getInputOutputDashboard(String context, ClientType clientType, LocalDate date);
+  IODashboardDto getInputOutputDashboard(String product, ClientType clientType, LocalDate date);
 
-  IODetailsDto getInputOutputDetails(String context, ClientType clientType, LocalDate date,
+  IODetailsDto getInputOutputDetails(String product, ClientType clientType, LocalDate date,
       String participantId);
 }

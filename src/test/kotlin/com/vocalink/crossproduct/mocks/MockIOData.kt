@@ -7,13 +7,6 @@ import com.vocalink.crossproduct.domain.io.IODataDetails
 import com.vocalink.crossproduct.domain.io.IODetails
 import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes
 import com.vocalink.crossproduct.domain.io.ParticipantIOData
-import com.vocalink.crossproduct.shared.io.CPIOBatchesMessageTypes
-import com.vocalink.crossproduct.shared.io.CPIOData
-import com.vocalink.crossproduct.shared.io.CPIODataAmountDetails
-import com.vocalink.crossproduct.shared.io.CPIODataDetails
-import com.vocalink.crossproduct.shared.io.CPIODetails
-import com.vocalink.crossproduct.shared.io.CPIOTransactionsMessageTypes
-import com.vocalink.crossproduct.shared.io.CPParticipantIOData
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.IODashboardDto
@@ -47,33 +40,6 @@ class MockIOData {
             .files(IODataDetailsDto.builder().build())
             .build()
 
-    fun getCPIODetails() = listOf(
-            CPIODetails.builder()
-                    .files(getCPIODataDetails())
-                    .schemeParticipantIdentifier("NDEASESSXXX")
-                    .batches(getCPIOBatchesMessageTypes())
-                    .transactions(getCPIOTransactionsMessageTypes())
-                    .build()
-    )
-
-    fun getCPIOBatchesMessageTypes() = listOf(
-            CPIOBatchesMessageTypes.builder()
-                    .name("Customer Credit Transfer")
-                    .code("Pacs.008")
-                    .data(getCPIODataDetails())
-                    .build(),
-            CPIOBatchesMessageTypes.builder()
-                    .name("Payment Return")
-                    .code("Pacs.004")
-                    .data(getCPIODataDetails())
-                    .build(),
-            CPIOBatchesMessageTypes.builder()
-                    .name("Payment Reversal")
-                    .code("Pacs.002")
-                    .data(getCPIODataDetails())
-                    .build()
-    )
-
     fun getIOBatchesMessageTypes() = listOf(
             IOBatchesMessageTypes.builder()
                     .name("Customer Credit Transfer")
@@ -89,24 +55,6 @@ class MockIOData {
                     .name("Payment Reversal")
                     .code("Pacs.002")
                     .data(getIODataDetails())
-                    .build()
-    )
-
-    fun getCPIOTransactionsMessageTypes() = listOf(
-            CPIOTransactionsMessageTypes.builder()
-                    .name("Customer Credit Transfer")
-                    .code("Pacs.008")
-                    .data(getCPIODataAmountDetails())
-                    .build(),
-            CPIOTransactionsMessageTypes.builder()
-                    .name("Payment Return")
-                    .code("Pacs.004")
-                    .data(getCPIODataAmountDetails())
-                    .build(),
-            CPIOTransactionsMessageTypes.builder()
-                    .name("Payment Reversal")
-                    .code("Pacs.002")
-                    .data(getCPIODataAmountDetails())
                     .build()
     )
 
@@ -128,22 +76,6 @@ class MockIOData {
                     .build()
     )
 
-    fun getCPIODataAmountDetails() = CPIODataAmountDetails.builder()
-            .amountAccepted(10)
-            .amountOutput(10)
-            .accepted(10)
-            .output(10)
-            .rejected(1.50)
-            .submitted(10)
-            .build()
-
-    fun getCPIODataDetails() = CPIODataDetails.builder()
-            .accepted(10)
-            .output(10)
-            .rejected(1.50)
-            .submitted(10)
-            .build()
-
     fun getIODataAmountDetails() = IODataAmountDetails.builder()
             .amountAccepted(10)
             .amountOutput(10)
@@ -159,53 +91,6 @@ class MockIOData {
             .rejected(1.50)
             .submitted(10)
             .build()
-
-    val cpParticipantIOData = listOf(
-            CPParticipantIOData.builder()
-                    .participantId("ESSESESS")
-                    .batches(CPIOData.builder()
-                            .submitted(1)
-                            .rejected(1.00)
-                            .build())
-                    .files(CPIOData.builder()
-                            .submitted(1)
-                            .rejected(1.00)
-                            .build())
-                    .transactions(CPIOData.builder()
-                            .submitted(1)
-                            .rejected(1.00)
-                            .build())
-                    .build(),
-            CPParticipantIOData.builder()
-                    .participantId("HANDSESS")
-                    .batches(CPIOData.builder()
-                            .submitted(10)
-                            .rejected(1.00)
-                            .build())
-                    .files(CPIOData.builder()
-                            .submitted(10)
-                            .rejected(1.00)
-                            .build())
-                    .transactions(CPIOData.builder()
-                            .submitted(10)
-                            .rejected(1.00)
-                            .build())
-                    .build(),
-            CPParticipantIOData.builder()
-                    .participantId("NDEASESSXXX")
-                    .batches(CPIOData.builder()
-                            .submitted(0)
-                            .rejected(0.00)
-                            .build())
-                    .files(CPIOData.builder()
-                            .submitted(0)
-                            .rejected(0.00)
-                            .build())
-                    .transactions(CPIOData.builder()
-                            .submitted(0)
-                            .rejected(0.00)
-                            .build())
-                    .build())
 
     fun getParticipantsIODataDto() = listOf(
             ParticipantIODataDto.builder()

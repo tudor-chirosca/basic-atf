@@ -13,11 +13,11 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
-import com.vocalink.crossproduct.shared.io.CPIODetails;
-import com.vocalink.crossproduct.shared.io.CPParticipantIOData;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
@@ -36,11 +36,11 @@ public interface EntityMapper {
 
   EntityMapper MAPPER = Mappers.getMapper(EntityMapper.class);
 
-  IODetails toEntity(CPIODetails input);
+  IODetails toEntity(BPSIODetails input);
 
-  ParticipantIOData toEntity(CPParticipantIOData input);
+  ParticipantIOData toEntity(BPSParticipantIOData input);
 
-  MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
+   MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
 
   @Mappings(
       @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")

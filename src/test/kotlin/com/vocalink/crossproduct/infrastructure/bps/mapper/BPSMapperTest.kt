@@ -13,7 +13,6 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
-import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
@@ -22,14 +21,21 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -104,7 +110,7 @@ class BPSMapperTest {
     @Test
     fun `should map Participant fields`() {
         val bps = BPSParticipant(
-             "schemeCode",
+                "schemeCode",
                 "schemeParticipantIdentifier",
                 "countryCode",
                 "partyCode",
@@ -166,7 +172,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields`() {
         val request = FileEnquirySearchCriteria(
-               0, 20, listOf("sort"), LocalDate.now(), null,
+                0, 20, listOf("sort"), LocalDate.now(), null,
                 listOf("cycle1, cycle2"), "msg_direction", "msg_type",
                 "send_bic", "rcvng_bic", "status", "reasonCode",
                 "id"
@@ -363,7 +369,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSAlertSearchRequest fields`() {
         val criteria = AlertSearchCriteria(
-                0 ,20, listOf("priority"), ZonedDateTime.now(), null,
+                0, 20, listOf("priority"), ZonedDateTime.now(), null,
                 listOf("types"), listOf("entities"), "alertId", listOf("sort")
         )
 
@@ -377,5 +383,63 @@ class BPSMapperTest {
         assertThat(request.types).isEqualTo(criteria.types)
         assertThat(request.entities).isEqualTo(criteria.entities)
         assertThat(request.alertId).isEqualTo(criteria.alertId)
+    }
+
+    @Test
+    fun `should map all fields on CPParticipantIOData`() {
+        val ioData = BPSIOData(20, 20.00)
+//        val bps = BPSParticipantIOData.builder()
+//                .participantId("id")
+//                .batches(ioData)
+//                .files(ioData)
+//                .transactions(ioData)
+//                .build()
+        val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
+
+        val entity = BPSMAPPER.toEntity(bps)
+
+        assertThat(entity.participantId).isEqualTo(bps.participantId)
+        assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
+        assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
+        assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
+        assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
+        assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
+        assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
+    }
+
+    @Test
+    fun `should map all fields on CPIODetails`() {
+        val ioDataDetails = BPSIODataDetails(1, 2, 3, 4.00)
+
+        val ioDataAmountDetails = BPSIODataAmountDetails(5, 6, 7, 8.00, 9, 10)
+
+        val batches = BPSIOBatchesMessageTypes("batch_code", "batch_name", ioDataDetails)
+
+        val transactions = BPSIOTransactionsMessageTypes("transaction_code", "transaction_name", ioDataAmountDetails)
+
+        val bps = BPSIODetails("ident", ioDataDetails, listOf(batches), listOf(transactions))
+
+        val entity = BPSMAPPER.toEntity(bps)
+
+        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
+        assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
+        assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
+        assertThat(entity.files.accepted).isEqualTo(bps.files.accepted)
+        assertThat(entity.files.output).isEqualTo(bps.files.output)
+        assertThat(entity.batches[0].name).isEqualTo(bps.batches[0].name)
+        assertThat(entity.batches[0].code).isEqualTo(bps.batches[0].code)
+        assertThat(entity.batches[0].data.rejected).isEqualTo(bps.batches[0].data.rejected)
+        assertThat(entity.batches[0].data.submitted).isEqualTo(bps.batches[0].data.submitted)
+        assertThat(entity.batches[0].data.accepted).isEqualTo(bps.batches[0].data.accepted)
+        assertThat(entity.batches[0].data.output).isEqualTo(bps.batches[0].data.output)
+
+        assertThat(entity.transactions[0].name).isEqualTo(bps.transactions[0].name)
+        assertThat(entity.transactions[0].code).isEqualTo(bps.transactions[0].code)
+        assertThat(entity.transactions[0].data.rejected).isEqualTo(bps.transactions[0].data.rejected)
+        assertThat(entity.transactions[0].data.submitted).isEqualTo(bps.transactions[0].data.submitted)
+        assertThat(entity.transactions[0].data.accepted).isEqualTo(bps.transactions[0].data.accepted)
+        assertThat(entity.transactions[0].data.output).isEqualTo(bps.transactions[0].data.output)
+        assertThat(entity.transactions[0].data.amountAccepted).isEqualTo(bps.transactions[0].data.amountAccepted)
+        assertThat(entity.transactions[0].data.amountOutput).isEqualTo(bps.transactions[0].data.amountOutput)
     }
 }

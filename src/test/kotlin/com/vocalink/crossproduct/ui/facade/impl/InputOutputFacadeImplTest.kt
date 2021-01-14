@@ -1,148 +1,204 @@
 package com.vocalink.crossproduct.ui.facade.impl
 
+import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.io.IODetailsRepository
+import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes
+import com.vocalink.crossproduct.domain.io.IOData
+import com.vocalink.crossproduct.domain.io.IODataDetails
+import com.vocalink.crossproduct.domain.io.IODetails
+import com.vocalink.crossproduct.domain.io.ParticipantIOData
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository
+import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
-import com.vocalink.crossproduct.mocks.MockIOData
-import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
+import com.vocalink.crossproduct.ui.dto.IODashboardDto
+import com.vocalink.crossproduct.ui.dto.io.IOBatchesMessageTypesDto
+import com.vocalink.crossproduct.ui.dto.io.IODataDetailsDto
+import com.vocalink.crossproduct.ui.dto.io.IODataDto
+import com.vocalink.crossproduct.ui.dto.io.IODetailsDto
+import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.LocalDate
 
 class InputOutputFacadeImplTest {
 
     private val participantIODataRepository = mock(ParticipantIODataRepository::class.java)!!
-    private val ioDetailsRepository = mock(IODetailsRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
+    private val repositoryFactory = mock(RepositoryFactory::class.java)
 
-    private val inputOutputFacadeImpl = InputOutputFacadeImpl(
-            participantIODataRepository,
-            ioDetailsRepository,
-            participantRepository,
-            presenterFactory
+    private var inputOutputFacadeImpl = InputOutputFacadeImpl(
+            presenterFactory,
+            repositoryFactory
     )
+
+    @BeforeEach
+    fun init() {
+        `when`(repositoryFactory.getParticipantRepository(anyString()))
+                .thenReturn(participantRepository)
+        `when`(repositoryFactory.getParticipantsIODataRepository(anyString()))
+                .thenReturn(participantIODataRepository)
+        `when`(presenterFactory.getPresenter(ClientType.UI))
+                .thenReturn(uiPresenter)
+    }
 
     @Test
     fun `should get participant IO data`() {
-        val mockModel = MockIOData().ioDashboardDto
-        val time = LocalDate.now()
+
+        val participant = Participant.builder().id("id").name("Name").build()
+
+        val participantIOData = ParticipantIOData.builder()
+                .participantId("ESSESESS")
+                .batches(IOData.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build())
+                .files(IOData.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build())
+                .transactions(IOData.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build())
+                .build()
+
+        val participantIODataDto = ParticipantIODataDto.builder()
+                .participant(ParticipantDto.builder()
+                        .id("ESSESESS")
+                        .bic("ESSESESS")
+                        .name("SEB Bank")
+                        .suspendedTime(null)
+                        .status(ParticipantStatus.ACTIVE)
+                        .participantType(ParticipantType.DIRECT_ONLY)
+                        .build())
+                .batches(IODataDto.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build())
+                .files(IODataDto.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build()).transactions(IODataDto.builder()
+                        .submitted(1)
+                        .rejected(1.00)
+                        .build())
+                .build()
+
+        val ioDashboardDto = IODashboardDto.builder()
+                .rows(listOf(participantIODataDto))
+                .batchesRejected("2.00")
+                .filesRejected("2.00")
+                .transactionsRejected("2.00")
+                .dateFrom(LocalDate.now())
+                .build()
+
         `when`(participantRepository.findAll())
-                .thenReturn(MockParticipants().participants)
-        `when`(participantIODataRepository.findByTimestamp(TestConstants.CONTEXT, time))
-                .thenReturn(MockIOData().getParticipantsIOData())
+                .thenReturn(listOf(participant))
+        `when`(participantIODataRepository.findByTimestamp(LocalDate.now()))
+                .thenReturn(listOf(participantIOData))
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
         `when`(uiPresenter.presentInputOutput(any(), any(), any()))
-                .thenReturn(mockModel)
+                .thenReturn(ioDashboardDto)
 
-        val result = inputOutputFacadeImpl.getInputOutputDashboard(TestConstants.CONTEXT, ClientType.UI, time)
+        val result = inputOutputFacadeImpl.getInputOutputDashboard(PRODUCT, ClientType.UI, LocalDate.now())
 
-        assertEquals("2.00", result.batchesRejected)
-        assertEquals("2.00", result.filesRejected)
-        assertEquals("2.00", result.transactionsRejected)
-
-        assertEquals(3, result.rows.size)
-
-        assertEquals("ESSESESS", result.rows[0].participant.id)
-        assertEquals("ESSESESS", result.rows[0].participant.bic)
-        assertEquals("SEB Bank", result.rows[0].participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.rows[0].participant.status)
-        assertNull(result.rows[0].participant.suspendedTime)
-
-        assertEquals(1, result.rows[0].batches.submitted)
-        assertEquals(1.00, result.rows[0].batches.rejected)
-        assertEquals(1, result.rows[0].files.submitted)
-        assertEquals(1.00, result.rows[0].files.rejected)
-        assertEquals(1, result.rows[0].transactions.submitted)
-        assertEquals(1.00, result.rows[0].transactions.rejected)
-
-        assertEquals("HANDSESS", result.rows[1].participant.id)
-        assertEquals("HANDSESS", result.rows[1].participant.bic)
-        assertEquals("Svenska Handelsbanken", result.rows[1].participant.name)
-        assertEquals(ParticipantStatus.SUSPENDED, result.rows[1].participant.status)
-        assertNotNull(result.rows[1].participant.suspendedTime)
-
-        assertEquals(10, result.rows[1].batches.submitted)
-        assertEquals(1.00, result.rows[1].batches.rejected)
-        assertEquals(10, result.rows[1].files.submitted)
-        assertEquals(1.00, result.rows[1].files.rejected)
-        assertEquals(10, result.rows[1].transactions.submitted)
-        assertEquals(1.00, result.rows[1].transactions.rejected)
-
-        assertEquals("NDEASESSXXX", result.rows[2].participant.id)
-        assertEquals("NDEASESSXXX", result.rows[2].participant.bic)
-        assertEquals("Nordea", result.rows[2].participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.rows[2].participant.status)
-        assertNull(result.rows[2].participant.suspendedTime)
-
-        assertEquals(0, result.rows[2].batches.submitted)
-        assertEquals(0.00, result.rows[2].batches.rejected)
-        assertEquals(0, result.rows[2].files.submitted)
-        assertEquals(0.00, result.rows[2].files.rejected)
-        assertEquals(0, result.rows[2].transactions.submitted)
-        assertEquals(0.00, result.rows[2].transactions.rejected)
+        assertThat(result).isNotNull
     }
 
     @Test
-    fun `should get participant IO Details data`() {
-        val mockModel = MockIOData().getIODetailsDto()
-        val date = LocalDate.now()
-        val participantId = "NDEASESSXXX"
+    fun `should get participant IO details`() {
 
-        `when`(participantRepository
-                .findById(participantId))
-                .thenReturn(MockParticipants().getParticipant(false))
+        val participant = Participant.builder().id("id").name("Name").build()
 
-        `when`(ioDetailsRepository
-                .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
-                .thenReturn(listOf(MockIOData().getIODetails()))
+        val ioDetails = IODetails.builder()
+                .batches(listOf(IOBatchesMessageTypes.builder()
+                        .code("Pacs.008")
+                        .name("Customer Credit Transfer")
+                        .build()))
+                .transactions(emptyList())
+                .schemeParticipantIdentifier("SCHEMA")
+                .files(IODataDetails.builder().build())
+                .build()
 
-        `when`(presenterFactory.getPresenter(ClientType.UI))
-                .thenReturn(uiPresenter)
+        val ioDetailsDto = IODetailsDto.builder()
+                .participant(ParticipantDto.builder()
+                        .build())
+                .dateFrom(null)
+                .batches(listOf(IOBatchesMessageTypesDto.builder()
+                        .build()))
+                .transactions(emptyList())
+                .files(IODataDetailsDto.builder().build())
+                .build()
 
-        `when`(uiPresenter.presentIoDetails(any(), any(), any()))
-                .thenReturn(mockModel)
+        `when`(participantRepository.findById("id"))
+                .thenReturn(participant)
+        `when`(participantIODataRepository.findIODetailsFor("id", LocalDate.now()))
+                .thenReturn(listOf(ioDetails))
+        `when`(uiPresenter.presentIoDetails(participant, ioDetails, LocalDate.now()))
+                .thenReturn(ioDetailsDto)
 
-        val result = inputOutputFacadeImpl
-                .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+        val result = inputOutputFacadeImpl.getInputOutputDetails(PRODUCT, ClientType.UI, LocalDate.now(), "id")
 
-        verify(uiPresenter).presentIoDetails(any(), any(), any())
-        verify(participantRepository).findById(any())
-        verify(ioDetailsRepository).findIODetailsFor(any(), any(), any())
+        verify(participantRepository, atLeastOnce()).findById(any())
+        verify(participantIODataRepository, atLeastOnce()).findIODetailsFor(any(), any())
+        verify(uiPresenter, atLeastOnce()).presentIoDetails(any(), any(), any())
 
-        assertNotNull(result)
+        assertThat(result).isNotNull
     }
 
     @Test
-    fun `should throw error on io details if no io details for given id or date`() {
-        val participantId = "NDEASESSXXX"
-        val date = LocalDate.now()
+    fun `should throw EntityNotFoundException for participant id`() {
 
-        `when`(participantRepository
-                .findById(participantId))
-                .thenReturn(MockParticipants().getParticipant(false))
+        val participant = Participant.builder().id("HANDSESS").name("Name").build()
 
-        `when`(ioDetailsRepository
-                .findIODetailsFor(TestConstants.CONTEXT, participantId, date))
-                .thenReturn(emptyList())
+        val ioDetails = IODetails.builder()
+                .batches(listOf(IOBatchesMessageTypes.builder()
+                        .code("Pacs.008")
+                        .name("Customer Credit Transfer")
+                        .build()))
+                .transactions(emptyList())
+                .schemeParticipantIdentifier("SCHEMA")
+                .files(IODataDetails.builder().build())
+                .build()
+
+        val ioDetailsDto = IODetailsDto.builder()
+                .participant(ParticipantDto.builder()
+                        .build())
+                .dateFrom(null)
+                .batches(listOf(IOBatchesMessageTypesDto.builder()
+                        .build()))
+                .transactions(emptyList())
+                .files(IODataDetailsDto.builder().build())
+                .build()
+
+        `when`(participantRepository.findById("HANDSESS"))
+                .thenReturn(participant)
+        `when`(participantIODataRepository.findIODetailsFor("id", LocalDate.now()))
+                .thenReturn(listOf(ioDetails))
+        `when`(uiPresenter.presentIoDetails(participant, ioDetails, LocalDate.now()))
+                .thenReturn(ioDetailsDto)
 
         assertThrows(EntityNotFoundException::class.java) {
-            inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, date, participantId)
+            inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, LocalDate.now(), participant.id)
         }
     }
 }
