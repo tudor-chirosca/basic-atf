@@ -23,8 +23,8 @@ public class ValidStatusValidator implements
 
   @Override
   public boolean isValid(Object obj, ConstraintValidatorContext context) {
-    String status = tryGetFieldValue(obj, statusFieldName, String.class);
-    String reasonCode = tryGetFieldValue(obj, reasonCodeFieldName, String.class);
+    String status = tryGetFieldValue(obj, statusFieldName);
+    String reasonCode = tryGetFieldValue(obj, reasonCodeFieldName);
 
     if (reasonCode == null) {
       return true;

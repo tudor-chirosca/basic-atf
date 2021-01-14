@@ -13,7 +13,6 @@ import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
-import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

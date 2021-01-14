@@ -21,9 +21,9 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
+import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
 import com.vocalink.crossproduct.infrastructure.bps.position.Amount
-import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -37,6 +37,8 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -44,8 +46,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 

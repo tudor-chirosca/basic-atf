@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.dto.settlement;
 
-import com.vocalink.crossproduct.shared.settlement.SettlementStatus;
+import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;

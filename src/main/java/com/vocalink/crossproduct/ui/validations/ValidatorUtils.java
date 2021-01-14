@@ -13,8 +13,8 @@ public class ValidatorUtils {
       final Field field = obj.getClass().getDeclaredField(name);
       field.setAccessible(true);
 
-      return (T) field.get(obj);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
+      return type.cast(field.get(obj));
+    } catch (NoSuchFieldException | IllegalAccessException| ClassCastException e) {
       return null;
     }
   }

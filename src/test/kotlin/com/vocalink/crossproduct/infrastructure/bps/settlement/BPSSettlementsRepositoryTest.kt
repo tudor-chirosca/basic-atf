@@ -4,8 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import com.vocalink.crossproduct.shared.settlement.SettlementStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
