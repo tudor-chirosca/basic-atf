@@ -1,3 +1,10 @@
+## [1.32.8](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.7...v1.32.8) (2021-01-14)
+
+
+### Bug Fixes
+
+* Alert dates bump, minor changes in cycles data ([c46c417](https://github.com/vocalink/cp-international-suite-service/commit/c46c417ce95f26fb020b38dde26c6f59da7f7a74))
+
 ## [1.32.7](https://github.com/vocalink/cp-international-suite-service/compare/v1.32.6...v1.32.7) (2021-01-13)
 
 
