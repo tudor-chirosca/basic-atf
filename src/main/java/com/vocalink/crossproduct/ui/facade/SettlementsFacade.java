@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface SettlementsFacade {
@@ -17,4 +18,7 @@ public interface SettlementsFacade {
       SettlementEnquiryRequest request);
 
   LatestSettlementCyclesDto getLatestCycles(String context, ClientType clientType);
+
+  SettlementScheduleDto getSettlementsSchedule(String product,
+      ClientType clientType);
 }

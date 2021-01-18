@@ -67,5 +67,8 @@ bps-config:
     settlement-enquiries-path:
       path: /enquiry/settlements
       base: MOCK
+    settlement-schedule-path:
+      path: /enquiry/settlements-schedule/readAll
+      base: MOCK
 
   retryable: 404, 429

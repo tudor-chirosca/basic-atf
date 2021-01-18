@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSM
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.INSTRUCTION_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_ENQUIRIES_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_SCHEDULE_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_SETTLEMENT_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -12,6 +13,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
@@ -84,6 +86,20 @@ public class BPSSettlementsRepository implements SettlementsRepository {
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipantSettlement>>() {
         })
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .doOnError(ExceptionUtils::raiseException)
+        .map(MAPPER::toEntity)
+        .block();
+  }
+
+  @Override
+  public SettlementSchedule findSchedule() {
+    return webClient.post()
+        .uri(resolve(SETTLEMENT_SCHEDULE_ENQUIRIES_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just("{}"), String.class))
+        .retrieve()
+        .bodyToMono(BPSSettlementSchedule.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)

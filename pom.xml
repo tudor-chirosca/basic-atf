@@ -70,6 +70,10 @@
       <artifactId>mapstruct</artifactId>
       <version>${org.mapstruct.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.springfox</groupId>
@@ -131,11 +135,6 @@
       <artifactId>kotlin-test</artifactId>
       <version>${kotlin.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.javafaker</groupId>
-      <artifactId>javafaker</artifactId>
-      <version>${java-faker.version}</version>
     </dependency>
   </dependencies>
 

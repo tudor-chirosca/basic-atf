@@ -8,4 +8,6 @@ public interface SettlementsRepository extends CrossproductRepository {
   ParticipantSettlement findBy(BPSInstructionEnquirySearchCriteria request);
 
   Page<ParticipantSettlement> findBy(BPSSettlementEnquirySearchCriteria request);
+
+  SettlementSchedule findSchedule();
 }

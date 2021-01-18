@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class SettlementsController implements SettlementsApi {
       final @RequestHeader String context,
       final SettlementEnquiryRequest request) {
 
-    if(isNull(request.getParticipants()) || request.getParticipants().isEmpty()) {
+    if (isNull(request.getParticipants()) || request.getParticipants().isEmpty()) {
       throw new InvalidRequestParameterException("participants is missing in request params");
     }
 
@@ -62,5 +63,16 @@ public class SettlementsController implements SettlementsApi {
 
     LatestSettlementCyclesDto latestCycles = settlementsFacade.getLatestCycles(context, clientType);
     return ResponseEntity.ok().body(latestCycles);
+  }
+
+  @GetMapping(value = "/enquiry/settlements/schedule", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SettlementScheduleDto> getSettlementsSchedule(
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context) {
+
+    final SettlementScheduleDto settlementsSchedule = settlementsFacade
+        .getSettlementsSchedule(context, clientType);
+
+    return ResponseEntity.ok().body(settlementsSchedule);
   }
 }

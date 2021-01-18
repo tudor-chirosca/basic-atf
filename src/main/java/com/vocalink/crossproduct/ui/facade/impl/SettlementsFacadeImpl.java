@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
@@ -16,6 +17,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -81,5 +83,16 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     }
     return presenterFactory.getPresenter(clientType)
       .presentLatestCycles(latestCycles);
+  }
+
+  public SettlementScheduleDto getSettlementsSchedule(String product,
+      ClientType clientType) {
+    log.info("Fetching settlements schedule from: {}", product);
+
+    final SettlementSchedule schedule = repositoryFactory.getSettlementsRepository(product)
+        .findSchedule();
+
+    return presenterFactory.getPresenter(clientType)
+        .presentSchedule(schedule);
   }
 }

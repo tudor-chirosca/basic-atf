@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -35,6 +36,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -94,4 +96,6 @@ public interface Presenter {
       List<Participant> participants);
 
   LatestSettlementCyclesDto presentLatestCycles(List<Cycle> cycles);
+
+  SettlementScheduleDto presentSchedule(SettlementSchedule schedule);
 }

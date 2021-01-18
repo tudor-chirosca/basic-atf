@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -43,6 +44,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -285,5 +287,10 @@ public class UIPresenter implements Presenter {
   public List<FileStatusesTypeDto> presentFileReferencesFor
       (List<FileReference> fileReferences) {
     return MAPPER.toDtoType(fileReferences);
+  }
+
+  @Override
+  public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
+    return MAPPER.toDto(schedule);
   }
 }

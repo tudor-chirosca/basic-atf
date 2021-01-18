@@ -19,6 +19,7 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.shared.alert.CPAlertParams;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -46,6 +47,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -270,4 +272,6 @@ public interface DTOMapper {
         .map(this::toReferenceDto)
         .orElse(null);
   }
+
+  SettlementScheduleDto toDto(SettlementSchedule schedule);
 }
