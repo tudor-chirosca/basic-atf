@@ -390,7 +390,7 @@ class BPSMapperTest {
     }
 
     @Test
-    fun `should map all fields on CPParticipantIOData`() {
+    fun `should map all fields on ParticipantIOData`() {
         val ioData = BPSIOData(20, 20.00)
         val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
         val entity = BPSMAPPER.toEntity(bps)
@@ -405,7 +405,7 @@ class BPSMapperTest {
     }
 
     @Test
-    fun `should map all fields on CPIODetails`() {
+    fun `should map all fields on IODetails`() {
         val ioDataDetails = BPSIODataDetails(1, 2, 3, 4.00)
         val ioDataAmountDetails = BPSIODataAmountDetails(5, 6, 7, 8.00, 9, 10)
         val batches = BPSIOBatchesMessageTypes("batch_code", "batch_name", ioDataDetails)

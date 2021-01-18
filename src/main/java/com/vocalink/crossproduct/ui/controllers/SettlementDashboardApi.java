@@ -30,14 +30,6 @@ interface SettlementDashboardApi {
       @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = ParticipantDashboardSettlementDetailsDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSelfFundingSettlementDetails(
-      ClientType clientType, String context, String participantId);
-
-  @ApiOperation("Fetch self funded Settlement, including positions, participant info and cycles")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "Settlement retrieved successfully", response = ParticipantDashboardSettlementDetailsDto.class),
-      @ApiResponse(code = 400, message = "Some of the request params are invalid")
-  })
   ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSettlementDetails(
       ClientType clientType, String context, String participantId);
 }

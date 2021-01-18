@@ -67,7 +67,7 @@ open class SettlementDashboardControllerTest {
         val participantId = "NDEASESSXXX"
         `when`(settlementDashboardFacade.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
                 .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
-        mockMvc.perform(get("/settlementDetails/$participantId")
+        mockMvc.perform(get("/settlement-details/$participantId")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)

@@ -39,18 +39,6 @@ public class SettlementDashboardController implements SettlementDashboardApi {
     return ResponseEntity.ok().body(settlementDashboardDto);
   }
 
-  @GetMapping(value = "/settlementDetails/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @Deprecated
-  public ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSelfFundingSettlementDetails(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @PathVariable String participantId) {
-
-    ParticipantDashboardSettlementDetailsDto selfFundingDetailsDto = settlementDashboardFacade
-        .getParticipantSettlementDetails(context.toUpperCase(), clientType, participantId);
-
-    return ResponseEntity.ok().body(selfFundingDetailsDto);
-  }
-
   @GetMapping(value = "/settlement-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSettlementDetails(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
