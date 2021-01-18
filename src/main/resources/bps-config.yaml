@@ -11,7 +11,7 @@ bps-config:
       path: /settlement/runningDebitCapPositions/readAll
       base: MOCK
     settlement-position-path:
-      path: /settlementPositions/readAll
+      path: /settlement/runningSettlementPositions/readAll
       base: MOCK
     position-details-path:
       path: /positionDetails

@@ -388,12 +388,6 @@ class BPSMapperTest {
     @Test
     fun `should map all fields on CPParticipantIOData`() {
         val ioData = BPSIOData(20, 20.00)
-//        val bps = BPSParticipantIOData.builder()
-//                .participantId("id")
-//                .batches(ioData)
-//                .files(ioData)
-//                .transactions(ioData)
-//                .build()
         val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
 
         val entity = BPSMAPPER.toEntity(bps)

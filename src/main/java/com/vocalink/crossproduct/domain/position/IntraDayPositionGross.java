@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.domain.position;
 
-import com.vocalink.crossproduct.infrastructure.bps.position.Amount;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +18,6 @@ public class IntraDayPositionGross {
   private String schemeId;
   private String debitParticipantId;
   private LocalDate settlementDate;
-  private Amount debitCapAmount;
-  private Amount debitPositionAmount;
+  private BPSAmount debitCapAmount;
+  private BPSAmount debitPositionAmount;
 }

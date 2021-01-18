@@ -23,7 +23,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
-import com.vocalink.crossproduct.infrastructure.bps.position.Amount
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -206,8 +206,8 @@ class DTOMapperTest {
         val intraDays: List<IntraDayPositionGross> = listOf(
                 IntraDayPositionGross.builder()
                         .debitParticipantId(participantId)
-                        .debitCapAmount(Amount(debitCap, "SEK"))
-                        .debitPositionAmount(Amount(debitPosition, "SEK"))
+                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
+                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
                         .build()
         )
 
@@ -438,13 +438,13 @@ class DTOMapperTest {
         val intraDays: List<IntraDayPositionGross> = listOf(
                 IntraDayPositionGross.builder()
                         .debitParticipantId(participantId)
-                        .debitCapAmount(Amount(debitCap, "SEK"))
-                        .debitPositionAmount(Amount(debitPosition, "SEK"))
+                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
+                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
                         .build(),
                 IntraDayPositionGross.builder()
                         .debitParticipantId(secondParticipantId)
-                        .debitCapAmount(Amount(debitCap, "SEK"))
-                        .debitPositionAmount(Amount(debitPosition, "SEK"))
+                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
+                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
                         .build()
         )
 

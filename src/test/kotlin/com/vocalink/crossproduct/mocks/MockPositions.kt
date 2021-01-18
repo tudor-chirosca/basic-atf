@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.mocks
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionDetails
-import com.vocalink.crossproduct.infrastructure.bps.position.Amount
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.shared.positions.CPParticipantPosition
 import com.vocalink.crossproduct.shared.positions.CPPositionDetails
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto
@@ -21,8 +21,8 @@ class MockPositions {
                 .map {
                     IntraDayPositionGross.builder()
                             .debitParticipantId(it)
-                            .debitCapAmount(Amount( BigDecimal.TEN, "SEK"))
-                            .debitPositionAmount(Amount(BigDecimal.ONE, "SEK"))
+                            .debitCapAmount(BPSAmount(BigDecimal.TEN, "SEK"))
+                            .debitPositionAmount(BPSAmount(BigDecimal.ONE, "SEK"))
                             .build()
                 }.collect(toList())
     }

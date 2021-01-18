@@ -25,6 +25,13 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
                     "schemeCode": "P27-SEK"
                 }"""
 
+        const val VALID_SETTLEMENT_REQUEST_JSON: String = """{
+                    "schemeCode": "P27-SEK",
+                    "currency": null,
+                    "participantIds": null,
+                    "numberOfCycles": null
+                }"""
+
         const val VALID_CYCLE_RESPONSE: String = """{
             "currency": "SEK",
             "schemeCode": "P27-SEK",
@@ -48,43 +55,50 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
              ]
              }"""
 
-        const val VALID_SETTLEMENT_RESPONSE: String = """{
-                      "participantId": "01",
-                      "cycleId": "01",
-                      "currency": "SEK",
-                      "paymentSent": {
-                        "count": 0,
-                        "amount": {
-                          "amount": 0,
-                          "currency": "SEK"
-                        }
-                      },
-                      "paymentReceived": {
-                        "count": 0,
-                        "amount": {
-                          "amount": 0,
-                          "currency": "SEK"
-                        }
-                      },
-                      "returnSent": {
-                        "count": 0,
-                        "amount": {
-                          "amount": 0,
-                          "currency": "SEK"
-                        }
-                      },
-                      "returnReceived": {
-                        "count": 0,
-                        "amount": {
-                          "amount": 0,
-                          "currency": "SEK"
-                        }
-                      },
-                      "netPositionAmount": {
-                        "amount": 0,
-                        "currency": "SEK"
-                      }
-                    }"""
+        const val VALID_SETTLEMENT_RESPONSE: String =
+                """{
+                        "schemeId": "P27-SEK",
+                        "mlSettlementPositions": [
+                            {
+                                "settlementDate": "2021-01-15",
+                                "participantId": "HANDSESS",
+                                "cycleId": "20201209001",
+                                "currency": "SEK",
+                                "paymentSent": {
+                                    "count": 2,
+                                    "amount": {
+                                        "amount": 2145.41,
+                                        "currency": "SEK"
+                                    }
+                                },
+                                "paymentReceived": {
+                                    "count": 2,
+                                    "amount": {
+                                        "amount": 2145.41,
+                                        "currency": "SEK"
+                                    }
+                                },
+                                "returnSent": {
+                                    "count": 2,
+                                    "amount": {
+                                        "amount": 2145.41,
+                                        "currency": "SEK"
+                                    }
+                                },
+                                "returnReceived": {
+                                    "count": 2,
+                                    "amount": {
+                                        "amount": 2145.41,
+                                        "currency": "SEK"
+                                    }
+                                },
+                                "netPositionAmount": {
+                                    "amount": 2145.41,
+                                    "currency": "SEK"
+                                }
+                            }
+                        ]
+                }"""
     }
 
     @AfterEach
@@ -95,11 +109,12 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
     @Test
     fun `should pass with success`() {
         mockServer.stubFor(
-                post(urlEqualTo("/settlementPositions/readAll"))
+                post(urlEqualTo("/settlement/runningSettlementPositions/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json; charset=utf-8")
-                                .withBody(VALID_SETTLEMENT_RESPONSE)))
+                                .withBody(VALID_SETTLEMENT_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_SETTLEMENT_REQUEST_JSON)))
 
         mockServer.stubFor(
                 post(urlEqualTo("/cycles/readAll"))

@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.cycle;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,6 +10,7 @@ import lombok.Getter;
 @Builder
 public class BPSSettlementPosition {
 
+  private final LocalDate settlementDate;
   private final String participantId;
   private final String cycleId;
   private final String currency;
@@ -19,7 +21,9 @@ public class BPSSettlementPosition {
   private final BPSAmount netPositionAmount;
 
   @JsonCreator
-  public BPSSettlementPosition(@JsonProperty(value = "participantId") String participantId,
+  public BPSSettlementPosition(
+      @JsonProperty(value = "settlementDate") LocalDate settlementDate,
+      @JsonProperty(value = "participantId") String participantId,
       @JsonProperty(value = "cycleId") String cycleId,
       @JsonProperty(value = "currency") String currency,
       @JsonProperty(value = "paymentSent") BPSPayment paymentSent,
@@ -27,6 +31,8 @@ public class BPSSettlementPosition {
       @JsonProperty(value = "returnSent") BPSPayment returnSent,
       @JsonProperty(value = "returnReceived") BPSPayment returnReceived,
       @JsonProperty(value = "netPositionAmount") BPSAmount netPositionAmount) {
+
+    this.settlementDate = settlementDate;
     this.participantId = participantId;
     this.cycleId = cycleId;
     this.currency = currency;

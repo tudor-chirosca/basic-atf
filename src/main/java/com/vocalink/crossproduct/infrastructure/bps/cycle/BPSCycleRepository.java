@@ -14,7 +14,8 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionRequest;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSGetPositionsRequest;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,8 +44,10 @@ public class BPSCycleRepository implements CycleRepository {
     final List<String> cycleIds = bpsCycles.stream()
         .map(BPSCycle::getCycleId).collect(toList());
 
-    final List<BPSSettlementPosition> positions = getSettlementPositions().stream()
-        .filter(p -> cycleIds.contains(p.getCycleId())).collect(toList());
+    final List<BPSSettlementPosition> positions = getSettlementPositions()
+        .getMlSettlementPositions().stream()
+        .filter(p -> cycleIds.contains(p.getCycleId()))
+        .collect(toList());
 
     return collectCycles(bpsCycles, positions);
   }
@@ -60,7 +63,7 @@ public class BPSCycleRepository implements CycleRepository {
   }
 
   private List<Cycle> collectCycles(List<BPSCycle> bpsCycles,
-                                    List<BPSSettlementPosition> positions) {
+      List<BPSSettlementPosition> positions) {
     return bpsCycles.stream()
         .map(bpsCycle ->
             Cycle.builder()
@@ -100,21 +103,19 @@ public class BPSCycleRepository implements CycleRepository {
         .block();
   }
 
-  private List<BPSSettlementPosition> getSettlementPositions() {
-    final BPSPositionRequest request = BPSPositionRequest.builder()
-        .settlementDate(LocalDate.now().toString())
+  private BPSSettlementPositionWrapper getSettlementPositions() {
+    final BPSGetPositionsRequest request = BPSGetPositionsRequest.builder()
         .schemeCode(SCHEME_CODE)
         .build();
 
     return webClient.post()
         .uri(resolve(SETTLEMENT_POSITION_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(request), BPSPositionRequest.class))
+        .body(fromPublisher(Mono.just(request), BPSGetPositionsRequest.class))
         .retrieve()
-        .bodyToFlux(BPSSettlementPosition.class)
+        .bodyToMono(BPSSettlementPositionWrapper.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .collectList()
         .block();
   }
 
