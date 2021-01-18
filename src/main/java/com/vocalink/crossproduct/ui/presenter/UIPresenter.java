@@ -40,6 +40,7 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
@@ -236,6 +237,22 @@ public class UIPresenter implements Presenter {
   public PageDto<ParticipantSettlementCycleDto> presentSettlements(
       Page<ParticipantSettlement> settlements, List<Participant> participants) {
     return MAPPER.toDto(settlements, participants);
+  }
+
+  @Override
+  public LatestSettlementCyclesDto presentLatestCycles(
+      List<Cycle> cycles) {
+     List<CycleDto> localCycles = cycles.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
+
+     assert localCycles.size() > 1;
+
+     return LatestSettlementCyclesDto
+         .builder()
+         .previousCycle(localCycles.get(1))
+         .currentCycle(localCycles.get(0))
+         .build();
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(

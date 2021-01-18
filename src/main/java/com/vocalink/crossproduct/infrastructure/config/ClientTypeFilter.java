@@ -19,11 +19,14 @@ public class ClientTypeFilter extends AppFilter {
     throws ServletException, IOException {
     log.debug("Applying filter for : {}", request.getRequestURI());
 
-    String clientType = request.getHeader("client-type");
+    if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
+      String clientType = request.getHeader("client-type");
 
-    if (EnumUtils.getEnum(ClientType.class, clientType) == null) {
-      throw new IllegalArgumentException("Missing or invalid request header 'client-type': " + clientType);
+      if (EnumUtils.getEnum(ClientType.class, clientType) == null) {
+        throw new IllegalArgumentException("Missing or invalid request header 'client-type': " + clientType);
+      }
     }
+
     chain.doFilter(request, response);
   }
 }

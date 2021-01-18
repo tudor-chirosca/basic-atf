@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
@@ -34,4 +35,13 @@ public interface SettlementsApi {
   })
   ResponseEntity<PageDto<ParticipantSettlementCycleDto>> getSettlements(
       ClientType clientType, String context, SettlementEnquiryRequest request);
+
+  @ApiOperation("Fetch latest settlement cycles")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Settlements fetched successfully", response = LatestSettlementCyclesDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  ResponseEntity<LatestSettlementCyclesDto> getLatestSettlementCycles(
+      ClientType clientType, String context
+  );
 }

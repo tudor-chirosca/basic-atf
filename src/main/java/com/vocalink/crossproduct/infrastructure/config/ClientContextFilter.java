@@ -22,11 +22,14 @@ public class ClientContextFilter extends AppFilter {
     throws ServletException, IOException {
     log.debug("Applying filter for : {}", request.getRequestURI());
 
-    String contextHeader = request.getHeader("context");
+    if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
+      String contextHeader = request.getHeader("context");
 
-    if (!contexts.contains(contextHeader)) {
-      throw new IllegalArgumentException("Missing or invalid request header 'context': " + contextHeader);
+      if (!contexts.contains(contextHeader)) {
+        throw new IllegalArgumentException("Missing or invalid request header 'context': " + contextHeader);
+      }
     }
+
     chain.doFilter(request, response);
   }
 }

@@ -5,10 +5,13 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SettlementsFacadeImpl implements SettlementsFacade {
 
+  private static final int NR_OF_LATEST_CYCLES = 2;
   private final PresenterFactory presenterFactory;
   private final RepositoryFactory repositoryFactory;
 
@@ -65,5 +69,17 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
     return presenterFactory.getPresenter(clientType)
         .presentSettlements(participantSettlements, participants);
+  }
+
+  @Override
+  public LatestSettlementCyclesDto getLatestCycles(
+      String product, ClientType clientType) {
+    List<Cycle> latestCycles = repositoryFactory.getCycleRepository(product)
+        .findLatest(NR_OF_LATEST_CYCLES);
+    if (latestCycles.size() != NR_OF_LATEST_CYCLES) {
+      throw new NonConsistentDataException("Not enough cycles returned based on request parameters");
+    }
+    return presenterFactory.getPresenter(clientType)
+      .presentLatestCycles(latestCycles);
   }
 }

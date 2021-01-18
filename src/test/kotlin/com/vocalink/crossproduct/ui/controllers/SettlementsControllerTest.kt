@@ -2,10 +2,13 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
 import com.vocalink.crossproduct.ui.facade.SettlementsFacade
@@ -75,6 +78,22 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             }
         }
         """
+
+        const val VALID_CYCLES_RESPONSE = """{
+           "previousCycle": {
+               "id": "20210111002",
+               "settlementTime": "2021-01-11T12:00:00Z",
+               "cutOffTime": "2021-01-11T11:45:00Z",
+               "status": "COMPLETED"
+           },
+           "currentCycle": {
+               "id": "20210111003",
+               "settlementTime": "2021-01-11T15:00:00Z",
+               "cutOffTime": "2021-01-11T14:45:00Z",
+               "status": "OPEN"
+           }
+        }
+        """
     }
 
     @Test
@@ -106,6 +125,31 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+    }
+
+    @Test
+    fun `should return 200 on get settlement cycles and return exactly previous and current one` () {
+        val latestCycles = LatestSettlementCyclesDto.builder()
+                .previousCycle(CycleDto.builder()
+                        .id("20210111002")
+                        .settlementTime(ZonedDateTime.of(2021,1,11,12,0,0, 0, ZoneId.of("UTC")))
+                        .cutOffTime(ZonedDateTime.of(2021,1,11,11,45,0, 0, ZoneId.of("UTC")))
+                        .status(CycleStatus.COMPLETED)
+                        .build())
+                .currentCycle(CycleDto.builder()
+                        .id("20210111003")
+                        .settlementTime(ZonedDateTime.of(2021,1,11,15,0,0, 0, ZoneId.of("UTC")))
+                        .cutOffTime(ZonedDateTime.of(2021,1,11,14,45,0, 0, ZoneId.of("UTC")))
+                        .status(CycleStatus.OPEN)
+                        .build())
+                .build()
+        `when`(settlementsFacade.getLatestCycles(any(), any())).thenReturn(latestCycles)
+        mockMvc.perform(get("/enquiry/settlements/cycles")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_CYCLES_RESPONSE))
     }
 
 }

@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import java.time.LocalDate;
@@ -91,4 +92,6 @@ public interface Presenter {
 
   PageDto<ParticipantSettlementCycleDto> presentSettlements(Page<ParticipantSettlement> settlements,
       List<Participant> participants);
+
+  LatestSettlementCyclesDto presentLatestCycles(List<Cycle> cycles);
 }

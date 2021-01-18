@@ -91,6 +91,16 @@ public class BPSCycleRepository implements CycleRepository {
         .collect(toList());
   }
 
+  @Override
+  public List<Cycle> findLatest(int nrLatestCycles) {
+    BPSCycleRequest request = new BPSCycleRequest(SCHEME_CODE);
+    request.setNumberOfCycles(nrLatestCycles);
+
+    return getCycles(request).getCycles().stream()
+        .map(BPSMAPPER::toEntity)
+        .collect(toList());
+  }
+
   private BPSCycleWrapper getCycles(BPSCycleRequest request) {
     return webClient.post()
         .uri(resolve(CYCLES_PATH, bpsProperties))

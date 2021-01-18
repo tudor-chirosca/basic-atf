@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import java.time.LocalDate;
@@ -149,6 +150,12 @@ public class SystemPresenter implements Presenter {
   @Override
   public PageDto<ParticipantSettlementCycleDto> presentSettlements(
       Page<ParticipantSettlement> settlements, List<Participant> participants) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public LatestSettlementCyclesDto presentLatestCycles(
+      List<Cycle> cycles) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
@@ -52,5 +53,14 @@ public class SettlementsController implements SettlementsApi {
         settlementsFacade.getSettlements(context, clientType, request);
 
     return ResponseEntity.ok().body(settlements);
+  }
+
+  @GetMapping(value = "/enquiry/settlements/cycles", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<LatestSettlementCyclesDto> getLatestSettlementCycles(
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context) {
+
+    LatestSettlementCyclesDto latestCycles = settlementsFacade.getLatestCycles(context, clientType);
+    return ResponseEntity.ok().body(latestCycles);
   }
 }
