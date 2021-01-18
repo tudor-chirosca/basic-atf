@@ -26,7 +26,7 @@ public class FilesController implements FilesApi {
       final @RequestHeader String context,
       final FileEnquirySearchRequest request) {
 
-    PageDto<FileDto> fileDto = filesFacade.getPaginated(context, clientType, request);
+    final PageDto<FileDto> fileDto = filesFacade.getPaginated(context, clientType, request);
 
     return ResponseEntity.ok().body(fileDto);
   }
@@ -37,7 +37,7 @@ public class FilesController implements FilesApi {
       final @RequestHeader String context,
       final @PathVariable String fileId) {
 
-    FileDetailsDto fileDetails = filesFacade.getDetailsById(context, clientType, fileId);
+    final FileDetailsDto fileDetails = filesFacade.getDetailsById(context, clientType, fileId);
 
     return ResponseEntity.ok().body(fileDetails);
   }

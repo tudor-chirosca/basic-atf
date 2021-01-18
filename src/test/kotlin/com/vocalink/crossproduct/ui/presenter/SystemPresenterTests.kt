@@ -146,4 +146,11 @@ class SystemPresenterTests {
             systemPresenter.presentBatchDetails(batch)
         }
     }
+
+    @Test
+    fun `should throw RuntimeException on present transactions for System`() {
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentTransactions(null)
+        }
+    }
 }

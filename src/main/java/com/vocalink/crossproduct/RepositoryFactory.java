@@ -13,7 +13,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
 import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
-import com.vocalink.crossproduct.infrastructure.exception.ClientNotAvailableException;
+import com.vocalink.crossproduct.domain.transaction.TransactionRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,6 +35,7 @@ public class RepositoryFactory {
   private final List<SettlementsRepository> settlementsRepositories;
   private final List<AlertRepository> alertClientList;
   private final List<ParticipantIODataRepository> participantIODataRepositories;
+  private final List<TransactionRepository> transactionClientList;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -46,7 +47,7 @@ public class RepositoryFactory {
   private Map<String, SettlementsRepository> settlementsRepositoriesByProduct;
   private Map<String, AlertRepository> alertRepositoriesByProduct;
   private Map<String, ParticipantIODataRepository> participantIODataRepositoriesByProduct;
-
+  private Map<String, TransactionRepository> transactionRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -70,6 +71,8 @@ public class RepositoryFactory {
         .collect(toMap(AlertRepository::getProduct, Function.identity()));
     participantIODataRepositoriesByProduct = participantIODataRepositories.stream()
         .collect(toMap(ParticipantIODataRepository::getProduct, Function.identity()));
+    transactionRepositoriesByProduct = transactionClientList.stream()
+        .collect(toMap(TransactionRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -114,7 +117,7 @@ public class RepositoryFactory {
 
   public BatchRepository getBatchRepository(String product) {
     if (batchRepositoriesByProduct.get(product) == null) {
-      throw new ClientNotAvailableException(
+      throw new RepositoryNotAvailableException(
           "Batch repository not available for product " + product);
     }
     return batchRepositoriesByProduct.get(product);
@@ -122,7 +125,7 @@ public class RepositoryFactory {
 
   public FileRepository getFileRepository(String product) {
     if (fileRepositoriesByProduct.get(product) == null) {
-      throw new ClientNotAvailableException(
+      throw new RepositoryNotAvailableException(
           "Files repository not available for context " + product);
     }
     return fileRepositoriesByProduct.get(product);
@@ -130,14 +133,14 @@ public class RepositoryFactory {
 
   public SettlementsRepository getSettlementsRepository(String product) {
     if (settlementsRepositoriesByProduct.get(product) == null) {
-      throw new ClientNotAvailableException("Settlement repository not available for context " + product);
+      throw new RepositoryNotAvailableException("Settlement repository not available for context " + product);
     }
     return settlementsRepositoriesByProduct.get(product);
   }
 
   public AlertRepository getAlertsClient(String product) {
     if (alertRepositoriesByProduct.get(product) == null) {
-      throw new ClientNotAvailableException(
+      throw new RepositoryNotAvailableException(
           "Alerts repository not available for product " + product);
     }
     return alertRepositoriesByProduct.get(product);
@@ -150,5 +153,11 @@ public class RepositoryFactory {
     }
     return participantIODataRepositoriesByProduct.get(product);
   }
-}
 
+  public TransactionRepository getTransactionClient(String product) {
+    if (transactionRepositoriesByProduct.get(product) == null) {
+      throw new RepositoryNotAvailableException("Transaction repository not available for product " + product);
+    }
+    return transactionRepositoriesByProduct.get(product);
+  }
+}

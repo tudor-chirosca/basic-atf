@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -37,10 +38,20 @@ public class GlobalExceptionHandler {
     return errorWrapper.wrapException(exception);
   }
 
-  @ExceptionHandler(BindException.class)
+  @ExceptionHandler({BindException.class})
   public ResponseEntity<ErrorDescriptionResponse> handleBindException(
       final HttpServletRequest request,
       final BindException exception) {
+
+    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
+
+    return errorWrapper.wrapException(exception);
+  }
+
+  @ExceptionHandler({MethodArgumentNotValidException.class})
+  public ResponseEntity<ErrorDescriptionResponse> handleBindException(
+      final HttpServletRequest request,
+      final MethodArgumentNotValidException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 

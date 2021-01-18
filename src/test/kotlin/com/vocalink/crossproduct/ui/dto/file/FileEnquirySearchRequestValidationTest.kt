@@ -19,6 +19,7 @@ class FileEnquirySearchRequestValidationTest {
         const val DIFFERENT_BIC_ERROR = "send_bic and recv_bic should not be the same"
         const val OLDER_THEN_30_ERROR = "date_from can not be earlier than 30 days"
         const val CYCLE_OR_DATE_ERROR = "cycle_ids and date_to are both included in request params, exclude one of them"
+        const val LIMIT_LESS_THAN_ONE = "Limit should be equal or higher than 1"
     }
 
     @BeforeEach
@@ -101,5 +102,16 @@ class FileEnquirySearchRequestValidationTest {
 
         assertThat(result).isNotEmpty
         assertThat(result[0].message).isEqualTo(CYCLE_OR_DATE_ERROR)
+    }
+
+    @Test
+    fun `should fail if limit less than 1`() {
+        request.setMsg_direction("Sending")
+        request.limit = 0
+
+        val result = ArrayList(validator.validate(request))
+
+        assertThat(result).isNotEmpty
+        assertThat(result[0].message).isEqualTo(LIMIT_LESS_THAN_ONE)
     }
 }

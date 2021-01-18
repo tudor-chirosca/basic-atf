@@ -39,7 +39,9 @@ open class BPSTestConfig {
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
                 Pair("instruction-enquiries-path", Detail("MOCK", "/enquiry/instructions")),
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
-                Pair("settlement-enquiries-path", Detail("MOCK", "/enquiry/settlements"))
+                Pair("settlement-enquiries-path", Detail("MOCK", "/enquiry/settlements")),
+                Pair("transaction-enquiries-path", Detail("MOCK", "/enquiry/transactions/readAll"))
+
         )
         props.retryable = listOf(404)
 

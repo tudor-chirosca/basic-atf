@@ -21,6 +21,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
+import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.shared.alert.CPAlertParams;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -48,6 +49,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -274,4 +276,12 @@ public interface DTOMapper {
   }
 
   SettlementScheduleDto toDto(SettlementSchedule schedule);
+
+  PageDto<TransactionDto> toTransactionPageDto(Page<Transaction> transactions);
+
+  @Mappings({
+      @Mapping(target = "amount", source = "amount.amount"),
+      @Mapping(target = "senderBic", source = "senderEntityBic")
+  })
+  TransactionDto toDto(Transaction transaction);
 }

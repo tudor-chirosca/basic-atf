@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
@@ -29,6 +30,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -62,11 +64,11 @@ class BPSMapperTest {
 
     @Test
     fun `should map ParticipantPosition fields`() {
-        val amount10 = BPSAmount.builder().amount(BigDecimal.TEN).build()
-        val amount1 = BPSAmount.builder().amount(BigDecimal.ONE).build()
-        val amount100 = BPSAmount.builder().amount(BigDecimal.valueOf(100)).build()
-        val amount0 = BPSAmount.builder().amount(BigDecimal.ZERO).build()
-        val netAmount = BPSAmount.builder().amount(BigDecimal.valueOf(50)).build()
+        val amount10 = BPSAmount(BigDecimal.TEN, "SEK")
+        val amount1 = BPSAmount(BigDecimal.ONE, "SEK")
+        val amount100 = BPSAmount(BigDecimal.valueOf(100), "SEK")
+        val amount0 = BPSAmount(BigDecimal.ZERO, "SEK")
+        val netAmount = BPSAmount(BigDecimal.valueOf(50), "SEK")
 
         val paymentReceived = BPSPayment.builder()
                 .count(234)
@@ -389,7 +391,6 @@ class BPSMapperTest {
     fun `should map all fields on CPParticipantIOData`() {
         val ioData = BPSIOData(20, 20.00)
         val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
-
         val entity = BPSMAPPER.toEntity(bps)
 
         assertThat(entity.participantId).isEqualTo(bps.participantId)
@@ -404,15 +405,10 @@ class BPSMapperTest {
     @Test
     fun `should map all fields on CPIODetails`() {
         val ioDataDetails = BPSIODataDetails(1, 2, 3, 4.00)
-
         val ioDataAmountDetails = BPSIODataAmountDetails(5, 6, 7, 8.00, 9, 10)
-
         val batches = BPSIOBatchesMessageTypes("batch_code", "batch_name", ioDataDetails)
-
         val transactions = BPSIOTransactionsMessageTypes("transaction_code", "transaction_name", ioDataAmountDetails)
-
         val bps = BPSIODetails("ident", ioDataDetails, listOf(batches), listOf(transactions))
-
         val entity = BPSMAPPER.toEntity(bps)
 
         assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
@@ -435,5 +431,90 @@ class BPSMapperTest {
         assertThat(entity.transactions[0].data.output).isEqualTo(bps.transactions[0].data.output)
         assertThat(entity.transactions[0].data.amountAccepted).isEqualTo(bps.transactions[0].data.amountAccepted)
         assertThat(entity.transactions[0].data.amountOutput).isEqualTo(bps.transactions[0].data.amountOutput)
+    }
+
+    @Test
+    fun `should map BPSTransactionEnquirySearchRequest fields`() {
+        val date = LocalDate.of(2021, 1,15)
+        val criteria = TransactionEnquirySearchCriteria(
+                0, 0, listOf("sortBy"), date, date,
+                listOf("cycle_id"),
+                "messageDirection",
+                "messageType",
+                "sendingBic",
+                "receivingBic",
+                "status",
+                "reasonCode",
+                "id",
+                "sendingAccount",
+                "receivingAccount",
+                date, BigDecimal.TEN, BigDecimal.ONE
+        )
+
+        val request = BPSMAPPER.toBps(criteria)
+        assertThat(request.offset).isEqualTo(criteria.offset)
+        assertThat(request.limit).isEqualTo(criteria.limit)
+        assertThat(request.sort).isEqualTo(criteria.sort)
+        assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(request.dateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.cycleIds).isEqualTo(criteria.cycleIds)
+        assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
+        assertThat(request.messageType).isEqualTo(criteria.messageType)
+        assertThat(request.sendingBic).isEqualTo(criteria.sendingBic)
+        assertThat(request.receivingBic).isEqualTo(criteria.receivingBic)
+        assertThat(request.status).isEqualTo(criteria.status)
+        assertThat(request.reasonCode).isEqualTo(criteria.reasonCode)
+        assertThat(request.id).isEqualTo(criteria.id)
+        assertThat(request.sendingAccount).isEqualTo(criteria.sendingAccount)
+        assertThat(request.receivingAccount).isEqualTo(criteria.receivingAccount)
+        assertThat(request.valueDate).isEqualTo(criteria.valueDate)
+        assertThat(request.txnFrom).isEqualTo(criteria.txnFrom)
+        assertThat(request.txnTo).isEqualTo(request.txnTo)
+    }
+
+    @Test
+    fun `should map Transaction fields`() {
+        val amount = BPSAmount(BigDecimal.TEN, "SEK")
+        val bps = BPSTransaction(
+                "instructionId",
+                amount,
+                "fileName",
+                "batchId",
+                LocalDate.of(2021, 1,15),
+                "receiverEntityName",
+                "receiverEntityBic",
+                "receiverIban",
+                LocalDate.of(2021, 1,15),
+                "settlementCycleId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "status",
+                "reasonCode",
+                "messageType",
+                "senderEntityName",
+                "senderEntityBic",
+                "senderIban",
+                "senderFullName",
+                "messageDirection"
+        )
+        val entity = BPSMAPPER.toEntity(bps)
+        assertThat(entity.instructionId).isEqualTo(bps.instructionId)
+        assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
+        assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
+        assertThat(entity.batchId).isEqualTo(bps.batchId)
+        assertThat(entity.valueDate).isEqualTo(bps.valueDate)
+        assertThat(entity.receiverEntityName).isEqualTo(bps.receiverEntityName)
+        assertThat(entity.receiverEntityBic).isEqualTo(bps.receiverEntityBic)
+        assertThat(entity.receiverIban).isEqualTo(bps.receiverIban)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
+        assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycleId)
+        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.status).isEqualTo(bps.status)
+        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.senderEntityName).isEqualTo(bps.senderEntityName)
+        assertThat(entity.senderEntityBic).isEqualTo(bps.senderEntityBic)
+        assertThat(entity.senderIban).isEqualTo(bps.senderIban)
+        assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
+        assertThat(entity.messageDirection).isEqualTo(bps.messageDirection)
     }
 }

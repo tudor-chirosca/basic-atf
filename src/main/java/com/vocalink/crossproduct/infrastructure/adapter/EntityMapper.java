@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
+import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
@@ -25,6 +26,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
@@ -101,4 +103,6 @@ public interface EntityMapper {
       @Mapping(target = "weekendCycles", source = "weekendCycles")
   })
   SettlementSchedule toEntity(BPSSettlementSchedule bpsSettlementSchedule);
+
+  TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 }

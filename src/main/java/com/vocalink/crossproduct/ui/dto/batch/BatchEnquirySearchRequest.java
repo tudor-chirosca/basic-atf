@@ -11,6 +11,7 @@ import com.vocalink.crossproduct.ui.validations.NotEqual;
 import com.vocalink.crossproduct.ui.validations.ValidDateOrCycle;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
+import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class BatchEnquirySearchRequest {
   @Setter
   private int offset = parseInt(getDefault(OFFSET));
   @Setter
+  @ValidLimit
   private int limit = parseInt(getDefault(LIMIT));
   @Setter
   private List<String> sort;

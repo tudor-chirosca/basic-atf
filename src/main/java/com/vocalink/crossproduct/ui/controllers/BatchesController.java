@@ -23,9 +23,10 @@ public class BatchesController implements BatchesApi {
   @GetMapping(value = "/enquiry/batches", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<BatchDto>> getBatches(
       final @RequestHeader("client-type") ClientType clientType,
-      final @RequestHeader String context, BatchEnquirySearchRequest request) {
+      final @RequestHeader String context,
+      final BatchEnquirySearchRequest request) {
 
-    PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, request);
+    final PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, request);
 
     return ResponseEntity.ok().body(batchesDto);
   }
@@ -36,7 +37,7 @@ public class BatchesController implements BatchesApi {
       final @RequestHeader String context,
       final @PathVariable String batchId) {
 
-    BatchDetailsDto batchDetailsDto = batchesFacade.getDetailsById(context, clientType, batchId);
+    final BatchDetailsDto batchDetailsDto = batchesFacade.getDetailsById(context, clientType, batchId);
 
     return ResponseEntity.ok().body(batchDetailsDto);
   }

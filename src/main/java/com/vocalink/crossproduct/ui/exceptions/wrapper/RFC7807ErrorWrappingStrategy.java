@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Component
 @ConditionalOnProperty(name = "app.error.wrapping", havingValue = "rfc")
@@ -71,6 +72,34 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
   @Override
   public ResponseEntity<ErrorDescriptionResponse> wrapException(
       BindException exception) {
+
+    List<RFCError> errorDetails = new ArrayList<>();
+    exception.getBindingResult().getAllErrors().forEach((err) -> errorDetails
+        .add(RFCError
+            .builder()
+            .source(ErrorConstants.ERROR_SOURCE_ISS)
+            .reason(ErrorConstants.ERROR_REASON_INVALID_INPUT)
+            .message(err.getDefaultMessage())
+            .recoverable(false)
+            .build()
+        ));
+
+    RFCErrorDescription error = RFCErrorDescription.builder()
+        .status(HttpStatus.BAD_REQUEST.value())
+        .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
+        .detail(ErrorConstants.ERROR_REASON_INVALID_INPUT)
+        .errorDetails(errorDetails)
+        .build();
+
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
+  }
+
+  @Override
+  public ResponseEntity<ErrorDescriptionResponse> wrapException(
+      MethodArgumentNotValidException exception) {
 
     List<RFCError> errorDetails = new ArrayList<>();
     exception.getBindingResult().getAllErrors().forEach((err) -> errorDetails

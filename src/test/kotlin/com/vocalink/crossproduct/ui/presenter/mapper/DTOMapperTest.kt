@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import com.vocalink.crossproduct.domain.Amount
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData
@@ -22,6 +23,7 @@ import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
+import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
@@ -36,9 +38,8 @@ import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -46,6 +47,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -838,5 +841,77 @@ class DTOMapperTest {
         assertThat(entity.types).isEqualTo(request.types)
         assertThat(entity.entities).isEqualTo(request.entities)
         assertThat(entity.alertId).isEqualTo(request.alertId)
+    }
+
+    @Test
+    fun `should map TransactionDto fields`() {
+        val amount = Amount(BigDecimal.TEN, "SEK")
+        val transaction = Transaction(
+            "instructionId",
+                amount,
+                "fileName",
+                "batchId",
+                LocalDate.of(2021, 1,15),
+                "receiverEntityName",
+                "receiverEntityBic",
+                "receiverIban",
+                LocalDate.of(2021, 1,15),
+                "settlementCycleId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "status",
+                "reasonCode",
+                "messageType",
+                "senderEntityName",
+                "senderEntityBic",
+                "senderIban",
+                "senderFullName",
+                "messageDirection"
+        )
+        val result = MAPPER.toDto(transaction)
+        assertThat(result.instructionId).isEqualTo(transaction.instructionId)
+        assertThat(result.amount).isEqualTo(transaction.amount.amount)
+        assertThat(result.createdAt).isEqualTo(transaction.createdAt)
+        assertThat(result.messageType).isEqualTo(transaction.messageType)
+        assertThat(result.senderBic).isEqualTo(transaction.senderEntityBic)
+        assertThat(result.status).isEqualTo(transaction.status)
+    }
+
+    @Test
+    fun `should map TransactionEnquirySearchCriteria fields`() {
+        val date = LocalDate.of(2021, 1,15)
+        val request = TransactionEnquirySearchRequest(
+                0, 0, listOf("sortBy"), date, date,
+                listOf("cycle_id"),
+                "messageDirection",
+                "messageType",
+                "sendingBic",
+                "receivingBic",
+                "status",
+                "reasonCode",
+                "id",
+                "sendingAccount",
+                "receivingAccount",
+                date, BigDecimal.TEN, BigDecimal.ONE
+        )
+
+        val criteria = EntityMapper.MAPPER.toEntity(request)
+        assertThat(criteria.offset).isEqualTo(request.offset)
+        assertThat(criteria.limit).isEqualTo(request.limit)
+        assertThat(criteria.sort).isEqualTo(request.sort)
+        assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(criteria.dateTo).isEqualTo(request.dateTo)
+        assertThat(criteria.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(criteria.messageType).isEqualTo(request.messageType)
+        assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(criteria.status).isEqualTo(request.status)
+        assertThat(criteria.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(criteria.id).isEqualTo(request.id)
+        assertThat(criteria.sendingAccount).isEqualTo(request.sendingAccount)
+        assertThat(criteria.receivingAccount).isEqualTo(request.receivingAccount)
+        assertThat(criteria.valueDate).isEqualTo(request.valueDate)
+        assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
+        assertThat(criteria.txnTo).isEqualTo(request.txnTo)
     }
 }

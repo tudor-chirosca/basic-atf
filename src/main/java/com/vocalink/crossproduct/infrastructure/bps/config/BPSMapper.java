@@ -28,6 +28,8 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.transaction.Transaction;
+import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
@@ -53,6 +55,8 @@ import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPosition
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -121,9 +125,15 @@ public interface BPSMapper {
 
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
 
+  BPSTransactionEnquirySearchRequest toBps(TransactionEnquirySearchCriteria criteria);
+
   Page<Batch> toBatchPageEntity(BPSPage<BPSBatch> batches);
 
   Page<File> toFilePageEntity(BPSPage<BPSFile> files);
+
+  Page<Transaction> toTransactionPageEntity(BPSPage<BPSTransaction> transactions);
+
+  Transaction toEntity(BPSTransaction transaction);
 
   FileReference toEntity(BPSFileReference reference);
 

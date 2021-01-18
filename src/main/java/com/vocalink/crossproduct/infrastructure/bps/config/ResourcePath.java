@@ -23,4 +23,5 @@ public interface ResourcePath {
   String INSTRUCTION_ENQUIRIES_PATH = "instruction-enquiries-path";
   String SETTLEMENT_ENQUIRIES_PATH = "settlement-enquiries-path";
   String SETTLEMENT_SCHEDULE_ENQUIRIES_PATH = "settlement-schedule-path";
+  String TRANSACTION_ENQUIRIES_PATH = "transaction-enquiries-path";
 }
