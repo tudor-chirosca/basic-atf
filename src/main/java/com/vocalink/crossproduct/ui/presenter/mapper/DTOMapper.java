@@ -17,6 +17,7 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
@@ -262,8 +263,8 @@ public interface DTOMapper {
   ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction, @Context List<Participant> participants);
 
   @Named("toStatus")
-  default SettlementStatus convertStatusType(String status) {
-    return SettlementStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
+  default InstructionStatus convertStatusType(String status) {
+    return InstructionStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
   }
 
   @Named("findParticipant")

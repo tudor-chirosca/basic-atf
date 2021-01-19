@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
@@ -58,7 +59,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "items": [
         	    {
                     "reference": "538264950",
-                    "status": "PARTIAL",
+                    "status": "REJECTED",
                     "counterparty": {
                         "participantIdentifier": "HANDSESS",
                         "name": "Svenska Handelsbanken",
@@ -105,7 +106,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         participant.connectingParticipantId = "NDEASESSXXX"
         val instruction = ParticipantInstructionDto.builder()
                 .reference("538264950")
-                .status(SettlementStatus.PARTIAL)
+                .status(InstructionStatus.REJECTED)
                 .counterparty(participant)
                 .settlementCounterparty(participant)
                 .totalCredit(BigDecimal.TEN)

@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
@@ -80,8 +81,13 @@ public interface EntityMapper {
     return instructions.stream().map(this::toEntity).collect(Collectors.toList());
   }
 
-  @Mapping(source = "status", target = "status", qualifiedByName = "toStatus")
+  @Mapping(source = "status", target = "status", qualifiedByName = "toInstructionStatus")
   ParticipantInstruction toEntity(BPSParticipantInstruction instruction);
+
+  @Named("toInstructionStatus")
+  default InstructionStatus convertInstructionStatusType(String status) {
+    return InstructionStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
+  }
 
   BatchEnquirySearchCriteria toEntity(BatchEnquirySearchRequest request);
 

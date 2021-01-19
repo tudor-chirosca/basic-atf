@@ -716,7 +716,7 @@ class DTOMapperTest {
     @Test
     fun `should map ParticipantSettlementDto fields`() {
         val instruction = ParticipantInstruction(
-                "cycleId", "participantId", "reference", "COMPLETED",
+                "cycleId", "participantId", "reference", "ACCEPTED",
                 "counterpartyId", "settlementCounterpartyId",
                 BigDecimal.TEN, BigDecimal.TEN
         )
