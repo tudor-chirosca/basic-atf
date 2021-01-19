@@ -141,7 +141,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_FILE_REFERENCES_RESPONSE)))
 
-        val result = fileRepository.findFileReferences("type")
+        val result = fileRepository.findFileReferences()
 
         assertThat(result).isNotEmpty
         assertThat(result[0].status).isEqualTo("Rejected")

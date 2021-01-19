@@ -52,10 +52,12 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
       String enquiryType) {
-    final List<FileReference> fileReferences = repositoryFactory.getFileRepository(product)
-        .findFileReferences(enquiryType);
 
-    return presenterFactory.getPresenter(clientType).presentFileReferencesFor(fileReferences);
+    final List<FileReference> fileReferences = repositoryFactory.getFileRepository(product)
+        .findFileReferences();
+
+    return presenterFactory.getPresenter(clientType)
+        .presentFileReferencesFor(fileReferences, enquiryType);
   }
 
   @Override

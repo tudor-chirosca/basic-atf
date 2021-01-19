@@ -98,7 +98,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences) {
+  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences,
+      String enquiryType) {
     throw new RuntimeException("System API not implemented yet");
   }
 

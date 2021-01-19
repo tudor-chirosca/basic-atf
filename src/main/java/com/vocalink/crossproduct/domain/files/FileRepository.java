@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FileRepository extends CrossproductRepository {
 
-  List<FileReference> findFileReferences(String enquiryType);
+  List<FileReference> findFileReferences();
 
   Page<File> findPaginated(FileEnquirySearchCriteria criteria);
 

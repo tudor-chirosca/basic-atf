@@ -120,17 +120,17 @@ class ReferencesServiceFacadeImplTest {
         val fileStatsDto = listOf(FileStatusesTypeDto.builder().build())
 
         `when`(fileRepository
-                .findFileReferences(any()))
+                .findFileReferences())
                 .thenReturn(fileRefs)
 
-        `when`(uiPresenter.presentFileReferencesFor(any()))
+        `when`(uiPresenter.presentFileReferencesFor(any(), any()))
                 .thenReturn(fileStatsDto)
 
         val result = referenceServiceFacadeImpl.getFileReferences(CONTEXT, ClientType.UI, "")
 
-        verify(fileRepository).findFileReferences(any())
+        verify(fileRepository).findFileReferences()
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentFileReferencesFor(any())
+        verify(uiPresenter).presentFileReferencesFor(any(), any())
 
         assertNotNull(result)
     }

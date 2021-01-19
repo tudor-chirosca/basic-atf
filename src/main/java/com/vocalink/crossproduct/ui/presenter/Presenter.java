@@ -74,7 +74,8 @@ public interface Presenter {
 
   List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants);
 
-  List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences);
+  List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences,
+      String enquiryType);
 
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences);

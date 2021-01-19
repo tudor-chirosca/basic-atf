@@ -28,7 +28,6 @@ public class AlertSearchRequest implements Serializable {
   private List<String> types;
   @Setter
   private List<String> entities;
-  @Setter
   private String alertId;
   @Setter
   private List<String> sort;
@@ -40,4 +39,9 @@ public class AlertSearchRequest implements Serializable {
   public void setDate_to(String dateTo) {
     this.dateTo = ZonedDateTime.parse(dateTo);
   }
+
+  public void setAlert_id(String alertId) {
+    this.alertId = alertId;
+  }
+
 }

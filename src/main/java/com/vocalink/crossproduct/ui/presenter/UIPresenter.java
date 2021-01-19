@@ -284,9 +284,12 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<FileStatusesTypeDto> presentFileReferencesFor
-      (List<FileReference> fileReferences) {
-    return MAPPER.toDtoType(fileReferences);
+  public List<FileStatusesTypeDto> presentFileReferencesFor(
+      List<FileReference> fileReferences, String enquiryType) {
+    List<FileReference> filteredReferences = fileReferences.stream()
+        .filter(f -> f.getEnquiryType().equalsIgnoreCase(enquiryType))
+        .collect(toList());
+    return MAPPER.toDtoType(filteredReferences);
   }
 
   @Override

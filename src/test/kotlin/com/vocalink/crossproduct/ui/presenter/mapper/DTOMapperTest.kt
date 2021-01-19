@@ -824,7 +824,7 @@ class DTOMapperTest {
         request.priorities = listOf("priority")
         request.types = listOf("types")
         request.entities = listOf("entities")
-        request.alertId = "alertId"
+        request.setAlert_id("alertId")
         request.sort = listOf("sort")
 
 

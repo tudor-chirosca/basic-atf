@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -557,5 +558,18 @@ class UIPresenterTest {
 
         assertThat((result.items.elementAt(1) as AlertDto).alertId).isEqualTo(3142)
         assertThat((result.items.elementAt(1) as AlertDto).entities[0].name).isEqualTo("SEB Bank")
+    }
+
+    @Test
+    fun `should present filtered File references by enquiryType`() {
+        val batchType = "BATCH"
+        val fileReferences = listOf(
+                FileReference.builder().enquiryType(batchType).build(),
+                FileReference.builder().enquiryType("TRANSACTION").build(),
+                FileReference.builder().enquiryType("FILES").build()
+        )
+        val result = uiPresenter.presentFileReferencesFor(fileReferences, batchType)
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].enquiryType).isEqualTo(batchType)
     }
 }

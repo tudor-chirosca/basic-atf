@@ -35,7 +35,7 @@ public class BPSFileRepository implements FileRepository {
   private final WebClient webClient;
 
   @Override
-  public List<FileReference> findFileReferences(String enquiryType) {
+  public List<FileReference> findFileReferences() {
     return webClient.post()
         .uri(resolve(FILE_REFERENCES_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
