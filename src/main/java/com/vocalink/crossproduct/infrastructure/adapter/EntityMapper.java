@@ -69,6 +69,7 @@ public interface EntityMapper {
   }
 
   @Mappings({
+      @Mapping(target = "instructions.totalResults", source = "instructions.totalResults"),
       @Mapping(target = "instructions", source = "instructions"),
       @Mapping(target = "instructions.items", source = "instructions.items", qualifiedByName = "doInstructions"),
       @Mapping(target = "status", source = "settlement.status", qualifiedByName = "toStatus")
