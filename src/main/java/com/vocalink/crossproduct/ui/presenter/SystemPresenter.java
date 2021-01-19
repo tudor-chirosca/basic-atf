@@ -37,6 +37,8 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.time.LocalDate;
@@ -171,6 +173,11 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

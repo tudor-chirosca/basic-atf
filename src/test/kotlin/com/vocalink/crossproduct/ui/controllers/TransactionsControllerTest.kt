@@ -3,10 +3,13 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto
 import com.vocalink.crossproduct.ui.facade.TransactionsFacade
 import java.math.BigDecimal
 import java.nio.charset.Charset
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.hamcrest.CoreMatchers.containsString
@@ -20,6 +23,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -142,6 +146,31 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "status": "accepted"
                 }
             ]
+        }"""
+
+        const val VALID_DETAILS_RESPONSE = """{
+            "instructionId": "20210115SCADSE21B2191",
+            "amount": 11112222.33,
+            "fileName": "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
+            "batchId": "P27ISTXBANKSESS",
+            "valueDate": "2021-01-14",
+            "receiver": {
+                "entityName": "Meetoo",
+                "entityBic": "MEEOSES1",
+                "iban": "SE23 9999 9999 9999 9999 2193"
+            },
+            "settlementDate": "2021-01-14",
+            "settlementCycleId": "20201209001",
+            "createdAt": "2021-01-14T15:02:14Z",
+            "status": "rejected",
+            "reasonCode": "004",
+            "messageType": "pacs.002",
+            "sender": {
+                "entityName": "Scandem",
+                "entityBic": "SCADSE21",
+                "iban": "SE23 9999 9999 9999 9999 2194",
+                "fullName": "Vallery Valtez"
+            }
         }"""
     }
 
@@ -301,5 +330,39 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_LIMIT_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
+    }
+
+    @Test
+    fun `should return 200 with valid response on fetch with id`() {
+        val id = "20210115SVEASES1B2215"
+        val date = LocalDate.of(2021, 1, 14)
+        val receiver = EnquirySenderDetailsDto(
+                "Meetoo", "MEEOSES1", "SE23 9999 9999 9999 9999 2193", null
+        )
+        val sender = EnquirySenderDetailsDto(
+                "Scandem", "SCADSE21", "SE23 9999 9999 9999 9999 2194", "Vallery Valtez"
+        )
+        val detailsDto = TransactionDetailsDto(
+                "20210115SCADSE21B2191",
+                BigDecimal.valueOf(11112222.33),
+                "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
+                "P27ISTXBANKSESS",
+                date, receiver, date,
+                "20201209001",
+                ZonedDateTime.of(2021, 1, 14, 15, 2, 14 ,0, ZoneId.of("UTC")),
+                "rejected",
+                "004",
+                "pacs.002",
+                sender
+        )
+
+        `when`(transactionsFacade.getDetailsById(any(), any(), any()))
+                .thenReturn(detailsDto)
+        mockMvc.perform(get("/enquiry/transactions/${id}")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_DETAILS_RESPONSE))
     }
 }

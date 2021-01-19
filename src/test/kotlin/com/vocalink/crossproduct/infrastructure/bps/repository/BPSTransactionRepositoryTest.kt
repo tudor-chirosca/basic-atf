@@ -48,6 +48,11 @@ class BPSTransactionRepositoryTest  @Autowired constructor(var transactionReposi
             "txnTo": null
         }"""
 
+        const val VALID_TRANSACTION_REQUEST: String = """ 
+        {
+            "instructionId": "20210115SVEASES1B2215"
+        }"""
+
         const val VALID_TRANSACTION_RESULT_LIST_RESPONSE: String = """
             {
              "totalResults": 1,
@@ -78,10 +83,36 @@ class BPSTransactionRepositoryTest  @Autowired constructor(var transactionReposi
                 }
             ]
         }"""
+
+        const val VALID_TRANSACTION_DETAILS_RESPONSE: String = """
+            {
+                "instructionId": "20210115SVEASES1B2215",
+                "amount": {
+                    "amount": 4563456345.43,
+                    "currency": "SEK"
+                },
+                "fileName": "P27ISTXSVEASES1201911320191113135321990NCTSEK_PACS0082216",
+                "batchId": "P27ISTXBANKSESS",
+                "valueDate": "2021-01-14",
+                "receiverEntityName": "Swedbank 2",
+                "receiverEntityBic": "SWEDSES1",
+                "receiverIban": "SE23 9999 9999 9999 9999 2217",
+                "settlementDate": "2021-01-14",
+                "settlementCycleId": "20201209002",
+                "createdAt": "2021-01-14T15:02:14Z",
+                "status": "accepted",
+                "reasonCode": null,
+                "messageType": "camt.056",
+                "senderEntityName": "Svea Bank",
+                "senderEntityBic": "SVEASES1",
+                "senderIban": "SE23 9999 9999 9999 9999 2218",
+                "senderFullName": null,
+                "messageDirection": "sending"
+        }"""
     }
 
     @Test
-    fun `should return the list of batches`() {
+    fun `should return the list of transactions`() {
         mockServer.stubFor(
                 post(urlEqualTo("/enquiry/transactions/readAll"))
                         .willReturn(aResponse()
@@ -98,7 +129,6 @@ class BPSTransactionRepositoryTest  @Autowired constructor(var transactionReposi
         )
 
         val result = transactionRepository.findPaginated(request)
-
         assertThat(result).isNotNull
         assertThat(result.totalResults).isEqualTo(1)
         assertThat(result.items).isNotEmpty
@@ -122,6 +152,36 @@ class BPSTransactionRepositoryTest  @Autowired constructor(var transactionReposi
         assertThat(item.senderEntityBic).isEqualTo("SVEASES1")
         assertThat(item.senderIban).isEqualTo("SE23 9999 9999 9999 9999 2218")
         assertThat(item.senderFullName).isEqualTo(null)
-        assertThat(item.messageDirection).isEqualTo("sending")
+    }
+
+    @Test
+    fun `should return transaction by id`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/enquiry/transactions/read"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_TRANSACTION_DETAILS_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_TRANSACTION_REQUEST)))
+
+        val result = transactionRepository.findById("20210115SVEASES1B2215")
+        assertThat(result.instructionId).isEqualTo("20210115SVEASES1B2215")
+        assertThat(result.amount.amount).isEqualTo(BigDecimal.valueOf(4563456345.43))
+        assertThat(result.amount.currency).isEqualTo("SEK")
+        assertThat(result.batchId).isEqualTo("P27ISTXBANKSESS")
+        assertThat(result.valueDate).isEqualTo(LocalDate.of(2021, 1, 14))
+        assertThat(result.receiverEntityName).isEqualTo("Swedbank 2")
+        assertThat(result.receiverEntityBic).isEqualTo("SWEDSES1")
+        assertThat(result.receiverIban).isEqualTo("SE23 9999 9999 9999 9999 2217")
+        assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, 1, 14))
+        assertThat(result.settlementCycleId).isEqualTo("20201209002")
+        assertThat(result.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.JANUARY.value, 14, 15, 2, 14, 0, ZoneId.of("UTC")))
+        assertThat(result.status).isEqualTo("accepted")
+        assertThat(result.reasonCode).isEqualTo(null)
+        assertThat(result.messageType).isEqualTo("camt.056")
+        assertThat(result.senderEntityName).isEqualTo("Svea Bank")
+        assertThat(result.senderEntityBic).isEqualTo("SVEASES1")
+        assertThat(result.senderIban).isEqualTo("SE23 9999 9999 9999 9999 2218")
+        assertThat(result.senderFullName).isEqualTo(null)
     }
 }

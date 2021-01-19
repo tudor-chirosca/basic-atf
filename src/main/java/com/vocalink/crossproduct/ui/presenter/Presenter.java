@@ -38,6 +38,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -107,4 +108,6 @@ public interface Presenter {
   LatestSettlementCyclesDto presentLatestCycles(List<Cycle> cycles);
 
   SettlementScheduleDto presentSchedule(SettlementSchedule schedule);
+
+  TransactionDetailsDto presentTransactionDetails(Transaction transaction);
 }

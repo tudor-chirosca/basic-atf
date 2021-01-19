@@ -39,7 +39,7 @@ class AlertsServiceFacadeImplTest {
 
     @BeforeEach
     fun init() {
-        `when`(repositoryFactory.getAlertsClient(anyString()))
+        `when`(repositoryFactory.getAlertsRepository(anyString()))
                 .thenReturn(alertsRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)

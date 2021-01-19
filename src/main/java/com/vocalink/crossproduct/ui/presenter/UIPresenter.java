@@ -47,6 +47,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -327,5 +328,10 @@ public class UIPresenter implements Presenter {
   @Override
   public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
     return MAPPER.toDto(schedule);
+  }
+
+  @Override
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
+    return MAPPER.toDetailsDto(transaction);
   }
 }

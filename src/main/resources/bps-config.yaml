@@ -70,5 +70,8 @@ bps-config:
     transaction-enquiries-path:
       path: /enquiry/transactions/readAll
       base: MOCK
+    single-transaction-path:
+      path: /enquiry/transactions/read
+      base: MOCK
 
   retryable: 404, 429

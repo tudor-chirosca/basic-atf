@@ -17,8 +17,10 @@ import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
@@ -28,8 +30,9 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
   @Override
   public AlertReferenceDataDto getAlertsReference(String product, ClientType clientType) {
+    log.info("Fetching alert references from: {}", product);
 
-    final AlertReferenceData alertReferenceData = repositoryFactory.getAlertsClient(product)
+    final AlertReferenceData alertReferenceData = repositoryFactory.getAlertsRepository(product)
         .findAlertsReferenceData();
 
     return presenterFactory.getPresenter(clientType)
@@ -38,8 +41,9 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
   @Override
   public AlertStatsDto getAlertStats(String product, ClientType clientType) {
+    log.info("Fetching alert stats from: {}", product);
 
-    final AlertStats alertStats = repositoryFactory.getAlertsClient(product).findAlertStats();
+    final AlertStats alertStats = repositoryFactory.getAlertsRepository(product).findAlertStats();
 
     return presenterFactory.getPresenter(clientType)
         .presentAlertStats(alertStats);
@@ -48,9 +52,10 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
   @Override
   public PageDto<AlertDto> getAlerts(String product, ClientType clientType,
       AlertSearchRequest requestDto) {
+    log.info("Fetching alerts from: {}", product);
 
     final AlertSearchCriteria request = MAPPER.toEntity(requestDto);
-    final Page<Alert> alerts = repositoryFactory.getAlertsClient(product).findPaginated(request);
+    final Page<Alert> alerts = repositoryFactory.getAlertsRepository(product).findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentAlert(alerts);
   }

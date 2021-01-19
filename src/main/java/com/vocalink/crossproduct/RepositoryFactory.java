@@ -138,7 +138,7 @@ public class RepositoryFactory {
     return settlementsRepositoriesByProduct.get(product);
   }
 
-  public AlertRepository getAlertsClient(String product) {
+  public AlertRepository getAlertsRepository(String product) {
     if (alertRepositoriesByProduct.get(product) == null) {
       throw new RepositoryNotAvailableException(
           "Alerts repository not available for product " + product);
@@ -154,7 +154,7 @@ public class RepositoryFactory {
     return participantIODataRepositoriesByProduct.get(product);
   }
 
-  public TransactionRepository getTransactionClient(String product) {
+  public TransactionRepository getTransactionRepository(String product) {
     if (transactionRepositoriesByProduct.get(product) == null) {
       throw new RepositoryNotAvailableException("Transaction repository not available for product " + product);
     }

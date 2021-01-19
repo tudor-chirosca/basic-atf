@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -24,4 +25,15 @@ public interface TransactionsApi {
       final String context,
       @Valid final TransactionEnquirySearchRequest request
   );
+
+  @ApiOperation("Fetch Transaction Details")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Transaction details fetched successfully", response = TransactionDetailsDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  ResponseEntity<TransactionDetailsDto> getTransactionDetails(
+      final ClientType clientType,
+      final String context,
+      final String transactionId);
+
 }

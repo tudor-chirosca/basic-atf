@@ -14,8 +14,10 @@ import com.vocalink.crossproduct.ui.facade.BatchesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class BatchesFacadeImpl implements BatchesFacade {
@@ -26,6 +28,7 @@ public class BatchesFacadeImpl implements BatchesFacade {
   @Override
   public PageDto<BatchDto> getPaginated(String product, ClientType clientType,
       BatchEnquirySearchRequest requestDto) {
+    log.info("Fetching batches from: {}", product);
 
     final BatchEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
     final Page<Batch> batches = repositoryFactory.getBatchRepository(product)
@@ -36,6 +39,7 @@ public class BatchesFacadeImpl implements BatchesFacade {
 
   @Override
   public BatchDetailsDto getDetailsById(String product, ClientType clientType, String id) {
+    log.info("Fetching batch details for id: {} from: {}", id, product);
 
     final Batch batch = repositoryFactory.getBatchRepository(product).findById(id);
     

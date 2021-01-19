@@ -1,8 +1,9 @@
 package com.vocalink.crossproduct.infrastructure.bps.transaction;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BATCH_ENQUIRIES_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_TRANSACTION_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.TRANSACTION_ENQUIRIES_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -42,7 +43,22 @@ public class BPSTransactionRepository implements TransactionRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSTransaction>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toTransactionPageEntity)
+        .map(MAPPER::toTransactionPageEntity)
+        .block();
+  }
+
+  @Override
+  public Transaction findById(String id) {
+    final BPSSingleTransactionRequest bpsRequest = new BPSSingleTransactionRequest(id);
+    return webClient.post()
+        .uri(resolve(SINGLE_TRANSACTION_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(bpsRequest), BPSSingleTransactionRequest.class))
+        .retrieve()
+        .bodyToMono(BPSTransaction.class)
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .doOnError(ExceptionUtils::raiseException)
+        .map(MAPPER::toEntity)
         .block();
   }
 

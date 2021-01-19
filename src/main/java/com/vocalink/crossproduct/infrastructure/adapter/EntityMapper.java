@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
+import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
@@ -33,6 +34,7 @@ import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectio
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
@@ -129,6 +131,10 @@ public interface EntityMapper {
   SettlementSchedule toEntity(BPSSettlementSchedule bpsSettlementSchedule);
 
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
+
+  Page<Transaction> toTransactionPageEntity(BPSPage<BPSTransaction> transactions);
+
+  Transaction toEntity(BPSTransaction transaction);
 
   AlertPriorityData toEntity(BPSAlertPriority priorityData);
 

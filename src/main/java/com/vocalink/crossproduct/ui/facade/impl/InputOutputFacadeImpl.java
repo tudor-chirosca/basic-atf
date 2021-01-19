@@ -13,8 +13,10 @@ import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InputOutputFacadeImpl implements InputOutputFacade {
@@ -25,6 +27,8 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODashboardDto getInputOutputDashboard(String product, ClientType clientType,
       LocalDate date) {
+    log.info("Fetching IO Dashboard from: {}", product);
+
     List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
     List<ParticipantIOData> ioData = repositoryFactory.getParticipantsIODataRepository(product)
         .findByTimestamp(date);
@@ -35,6 +39,9 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODetailsDto getInputOutputDetails(String product, ClientType clientType, LocalDate date,
       String participantId) {
+
+    log.info("Fetching IO Details for participantId: {} from: {}", participantId, product);
+
     Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);
 

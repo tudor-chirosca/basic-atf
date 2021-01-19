@@ -168,7 +168,7 @@ class DTOMapperTest {
     @Test
     fun `should map File fields`() {
         val totalResults = 1
-        val sender =  EnquirySenderDetails.builder()
+        val sender = EnquirySenderDetails.builder()
                 .entityBic("sender_bic")
                 .build()
         val file = File.builder()
@@ -450,8 +450,7 @@ class DTOMapperTest {
                 "senderEntityName",
                 "senderEntityBic",
                 "senderIban",
-                "senderFullName",
-                "messageDirection"
+                "senderFullName"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -499,6 +498,52 @@ class DTOMapperTest {
         assertThat(criteria.valueDate).isEqualTo(request.valueDate)
         assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
         assertThat(criteria.txnTo).isEqualTo(request.txnTo)
+    }
+
+    @Test
+    fun `should map TransactionDetailsDto fields`() {
+        val amount = Amount(BigDecimal.TEN, "SEK")
+        val transaction = Transaction(
+                "instructionId",
+                amount,
+                "fileName",
+                "batchId",
+                LocalDate.of(2021, 1,15),
+                "receiverEntityName",
+                "receiverEntityBic",
+                "receiverIban",
+                LocalDate.of(2021, 1,15),
+                "settlementCycleId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "status",
+                "reasonCode",
+                "messageType",
+                "senderEntityName",
+                "senderEntityBic",
+                "senderIban",
+                "senderFullName"
+        )
+        val result = MAPPER.toDetailsDto(transaction)
+        assertThat(result.instructionId).isEqualTo(transaction.instructionId)
+        assertThat(result.amount).isEqualTo(transaction.amount.amount)
+        assertThat(result.fileName).isEqualTo(transaction.fileName)
+        assertThat(result.batchId).isEqualTo(transaction.batchId)
+        assertThat(result.valueDate).isEqualTo(transaction.valueDate)
+        assertThat(result.settlementDate).isEqualTo(transaction.settlementDate)
+        assertThat(result.settlementCycleId).isEqualTo(transaction.settlementCycleId)
+        assertThat(result.createdAt).isEqualTo(transaction.createdAt)
+        assertThat(result.status).isEqualTo(transaction.status)
+        assertThat(result.reasonCode).isEqualTo(transaction.reasonCode)
+        assertThat(result.messageType).isEqualTo(transaction.messageType)
+
+        assertThat(result.sender.entityName).isEqualTo(transaction.senderEntityName)
+        assertThat(result.sender.entityBic).isEqualTo(transaction.senderEntityBic)
+        assertThat(result.sender.iban).isEqualTo(transaction.senderIban)
+        assertThat(result.sender.fullName).isEqualTo(transaction.senderFullName)
+
+        assertThat(result.receiver.entityName).isEqualTo(transaction.receiverEntityName)
+        assertThat(result.receiver.entityBic).isEqualTo(transaction.receiverEntityBic)
+        assertThat(result.receiver.iban).isEqualTo(transaction.receiverIban)
     }
 
     @Test

@@ -499,7 +499,7 @@ class BPSMapperTest {
                 "senderFullName",
                 "messageDirection"
         )
-        val entity = BPSMAPPER.toEntity(bps)
+        val entity = EntityMapper.MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
         assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
@@ -518,7 +518,6 @@ class BPSMapperTest {
         assertThat(entity.senderEntityBic).isEqualTo(bps.senderEntityBic)
         assertThat(entity.senderIban).isEqualTo(bps.senderIban)
         assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
-        assertThat(entity.messageDirection).isEqualTo(bps.messageDirection)
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
-
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -15,8 +14,10 @@ import com.vocalink.crossproduct.ui.facade.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FilesFacadeImpl implements FilesFacade {
@@ -27,6 +28,7 @@ public class FilesFacadeImpl implements FilesFacade {
   @Override
   public PageDto<FileDto> getPaginated(String product, ClientType clientType,
       FileEnquirySearchRequest requestDto) {
+    log.info("Fetching files from: {}", product);
 
     final FileEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
     final Page<File> files = repositoryFactory.getFileRepository(product).findPaginated(request);
@@ -36,6 +38,7 @@ public class FilesFacadeImpl implements FilesFacade {
 
   @Override
   public FileDetailsDto getDetailsById(String product, ClientType clientType, String id) {
+    log.info("Fetching file details for id: {} from: {}", id, product);
 
     final File file = repositoryFactory.getFileRepository(product).findById(id);
 

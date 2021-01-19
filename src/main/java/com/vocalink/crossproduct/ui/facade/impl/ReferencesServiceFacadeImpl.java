@@ -18,8 +18,10 @@ import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
@@ -30,6 +32,8 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String product,
       ClientType clientType) {
+    log.info("Fetching participant references from: {}", product);
+
     final List<ParticipantReference> participantReferences = repositoryFactory
         .getParticipantRepository(product)
         .findAll().stream()
@@ -42,6 +46,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType) {
+    log.info("Fetching message direction references from: {}", product);
 
     final List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
         .getReferencesRepository(product).findAll();
@@ -52,6 +57,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
       String enquiryType) {
+    log.info("Fetching file references with type: {} from: {}", enquiryType, product);
 
     final List<FileReference> fileReferences = repositoryFactory.getFileRepository(product)
         .findFileReferences();
@@ -63,6 +69,8 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<CycleDto> getCyclesByDate(String product, ClientType clientType,
       LocalDate date) {
+    log.info("Fetching cycles by date from: {}", product);
+
     final List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date);
 
     return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);

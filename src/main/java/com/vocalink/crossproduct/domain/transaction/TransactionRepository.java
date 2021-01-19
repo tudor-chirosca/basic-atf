@@ -7,4 +7,5 @@ public interface TransactionRepository extends CrossproductRepository {
 
   Page<Transaction> findPaginated(TransactionEnquirySearchCriteria criteria);
 
+  Transaction findById(String id);
 }

@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.domain.transaction.TransactionRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
@@ -34,7 +35,7 @@ class TransactionsFacadeImplTest {
 
     @BeforeEach
     fun init() {
-        `when`(repositoryFactory.getTransactionClient(anyString()))
+        `when`(repositoryFactory.getTransactionRepository(anyString()))
                 .thenReturn(transactionRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
@@ -47,7 +48,7 @@ class TransactionsFacadeImplTest {
                         null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null, null, null
+                        null, null
                 )
         ))
         val pageDto = PageDto<TransactionDto>(1, listOf(
@@ -73,6 +74,35 @@ class TransactionsFacadeImplTest {
         verify(transactionRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentTransactions(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke presenter and repository on get transaction details`() {
+        val transaction = Transaction(
+                null,null,null,null,null,
+                null,null,null,null,
+                null,null,null,null,null,
+                null,null,null,null
+        )
+        val batchDetailsDto = TransactionDetailsDto(
+                null,null,null,null,null,null,
+                null,null,null,null,null,
+                null,null
+        )
+
+        `when`(transactionRepository.findById(any()))
+                .thenReturn(transaction)
+
+        `when`(uiPresenter.presentTransactionDetails(any()))
+                .thenReturn(batchDetailsDto)
+
+        val result = transactionsServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
+
+        verify(transactionRepository).findById(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentTransactionDetails(any())
 
         assertNotNull(result)
     }

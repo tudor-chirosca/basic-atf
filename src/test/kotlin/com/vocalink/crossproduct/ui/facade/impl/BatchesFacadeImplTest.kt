@@ -67,8 +67,7 @@ class BatchesFacadeImplTest {
         val batch = Batch.builder().build()
         val batchDetailsDto = BatchDetailsDto.builder().build()
 
-        `when`(batchRepository
-                .findById(any()))
+        `when`(batchRepository.findById(any()))
                 .thenReturn(batch)
 
         `when`(uiPresenter.presentBatchDetails(any()))
