@@ -4,8 +4,6 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionDetails
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
-import com.vocalink.crossproduct.shared.positions.CPParticipantPosition
-import com.vocalink.crossproduct.shared.positions.CPPositionDetails
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
@@ -53,16 +51,6 @@ class MockPositions {
                     .build()
     )
 
-    val cpPositionDetails = listOf(
-            CPPositionDetails.builder()
-                    .customerCreditTransfer(getCPParticipantPosition(false))
-                    .paymentReturn(getCPParticipantPosition(true))
-                    .build(),
-            CPPositionDetails.builder()
-                    .customerCreditTransfer(getCPParticipantPosition(true))
-                    .paymentReturn(getCPParticipantPosition(false))
-                    .build())
-
     val positionDetails = listOf(
             PositionDetails.builder()
                     .customerCreditTransfer(getParticipantPosition(false))
@@ -88,22 +76,6 @@ class MockPositions {
                     .netPosition(BigDecimal.ZERO)
                     .build()
         else ParticipantPosition.builder()
-                .participantId("NDEASESSXXX")
-                .credit(BigDecimal.ONE)
-                .debit(BigDecimal.TEN)
-                .netPosition(BigDecimal.valueOf(9))
-                .build()
-    }
-
-    fun getCPParticipantPosition(isNetZero: Boolean): CPParticipantPosition {
-        return if (isNetZero)
-            CPParticipantPosition.builder()
-                    .participantId("HANDSESS")
-                    .credit(BigDecimal.TEN)
-                    .debit(BigDecimal.TEN)
-                    .netPosition(BigDecimal.ZERO)
-                    .build()
-        else CPParticipantPosition.builder()
                 .participantId("NDEASESSXXX")
                 .credit(BigDecimal.ONE)
                 .debit(BigDecimal.TEN)

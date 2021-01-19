@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
-import static com.vocalink.crossproduct.shared.participant.ParticipantType.SCHEME;
+import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
@@ -20,8 +20,8 @@ import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
-import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
+import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -108,7 +108,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
+  public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
+      List<Cycle> cycles,
       List<PositionDetails> positionsDetails, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
@@ -251,17 +252,17 @@ public class UIPresenter implements Presenter {
   @Override
   public LatestSettlementCyclesDto presentLatestCycles(
       List<Cycle> cycles) {
-     List<CycleDto> localCycles = cycles.stream()
+    List<CycleDto> localCycles = cycles.stream()
         .map(MAPPER::toDto)
         .collect(toList());
 
-     assert localCycles.size() > 1;
+    assert localCycles.size() > 1;
 
-     return LatestSettlementCyclesDto
-         .builder()
-         .previousCycle(localCycles.get(1))
-         .currentCycle(localCycles.get(0))
-         .build();
+    return LatestSettlementCyclesDto
+        .builder()
+        .previousCycle(localCycles.get(1))
+        .currentCycle(localCycles.get(0))
+        .build();
   }
 
   private List<MessageDirectionReferenceDto> setDefaultDirection(

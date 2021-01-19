@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.mocks
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
-import com.vocalink.crossproduct.shared.cycle.CPCycle
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import java.math.BigDecimal
 import java.time.ZoneId
@@ -72,17 +71,4 @@ class MockCycles {
                     ))
                     .build())
 
-    var cpCycles = listOf(
-            CPCycle.builder()
-                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
-                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                    .id("01")
-                    .status("COMPLETED")
-                    .build(),
-            CPCycle.builder()
-                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
-                    .id("02")
-                    .status("OPEN")
-                    .build())
 }

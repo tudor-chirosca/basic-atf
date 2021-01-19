@@ -21,14 +21,11 @@ import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
-import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
-import com.vocalink.crossproduct.shared.alert.CPAlertParams;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -78,8 +75,6 @@ public interface DTOMapper {
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
   ParticipantPositionDto toDto(ParticipantPosition participant);
-
-  CPAlertParams toDto(AlertSearchRequest searchParams);
 
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);

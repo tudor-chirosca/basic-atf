@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
-import com.vocalink.crossproduct.shared.exception.AdapterException;
 import com.vocalink.crossproduct.ui.exceptions.wrapper.ErrorWrappingStrategy;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -52,16 +51,6 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDescriptionResponse> handleBindException(
       final HttpServletRequest request,
       final MethodArgumentNotValidException exception) {
-
-    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
-
-    return errorWrapper.wrapException(exception);
-  }
-
-  @ExceptionHandler(AdapterException.class)
-  public ResponseEntity<ErrorDescriptionResponse> handleAdapterExceptions(
-      final HttpServletRequest request,
-      final AdapterException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
