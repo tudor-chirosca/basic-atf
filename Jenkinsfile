@@ -16,6 +16,11 @@ pipeline {
         stage("Clean workspace and Prepare params") {
             steps {
                 setVars()
+                script{
+                    if ( BRANCH == RELEASE_BRANCH ) {
+                        setGithubStatus("pending")
+                    }
+                }
                 cleanWorkspace()
                 dir("${WORKSPACE}") {
                     checkout scm
@@ -96,7 +101,7 @@ pipeline {
                 stage("Publish docker") {
                     steps {
                         script {
-                            if (GIT_BRANCH == RELEASE_BRANCH) {
+                            if ( BRANCH == RELEASE_BRANCH ) {
                                 repoType = "release"
                             }
                             publishDockerImage(containerName: projectName, repoType: repoType)
@@ -125,4 +130,14 @@ pipeline {
             }//stages
         }//stage
     }//stages
+    post {
+        always {
+            script{ 
+                if ( BRANCH == RELEASE_BRANCH ) {
+                    setGithubStatus("success")
+                }
+            }
+        }
+    }
+    
 }//pipeline
