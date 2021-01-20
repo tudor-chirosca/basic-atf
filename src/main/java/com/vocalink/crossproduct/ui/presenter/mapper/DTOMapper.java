@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
+import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
@@ -25,6 +26,7 @@ import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
+import com.vocalink.crossproduct.ui.dto.alert.AlertPriorityDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
@@ -280,4 +282,6 @@ public interface DTOMapper {
       @Mapping(target = "senderBic", source = "senderEntityBic")
   })
   TransactionDto toDto(Transaction transaction);
+
+  AlertPriorityDataDto toDto(AlertPriorityData priorityData);
 }

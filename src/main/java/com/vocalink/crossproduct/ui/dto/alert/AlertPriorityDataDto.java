@@ -8,6 +8,6 @@ import lombok.Getter;
 public class AlertPriorityDataDto {
 
   private final String name;
-  private final int threshold;
+  private final Integer threshold;
   private final Boolean highlight;
 }

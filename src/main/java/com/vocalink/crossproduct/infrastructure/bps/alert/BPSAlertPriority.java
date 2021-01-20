@@ -8,13 +8,13 @@ import lombok.Getter;
 public class BPSAlertPriority {
 
   private final String name;
-  private final int threshold;
+  private final Integer threshold;
   private final Boolean highlight;
 
   @JsonCreator
   public BPSAlertPriority(
       @JsonProperty(value = "name") String name,
-      @JsonProperty(value = "threshold") int threshold,
+      @JsonProperty(value = "threshold") Integer threshold,
       @JsonProperty(value = "highlight") Boolean highlight) {
     this.name = name;
     this.threshold = threshold;

@@ -48,6 +48,7 @@ import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
@@ -913,5 +914,21 @@ class DTOMapperTest {
         assertThat(criteria.valueDate).isEqualTo(request.valueDate)
         assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
         assertThat(criteria.txnTo).isEqualTo(request.txnTo)
+    }
+
+    @Test
+    fun `should map AlertPriorityDataDto fields`() {
+        val bps = AlertPriorityData("name", 234234, true)
+        val entity = MAPPER.toDto(bps)
+        assertThat(entity.name).isEqualTo(bps.name)
+        assertThat(entity.threshold).isEqualTo(bps.threshold)
+        assertThat(entity.highlight).isEqualTo(bps.highlight)
+    }
+
+    @Test
+    fun `should map AlertPriorityDataDto fields with null threshold`() {
+        val bps = AlertPriorityData("name", null, true)
+        val entity = MAPPER.toDto(bps)
+        assertNull(entity.threshold)
     }
 }

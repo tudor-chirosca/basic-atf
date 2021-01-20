@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
+import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
@@ -38,6 +39,7 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.junit.jupiter.api.Assertions.assertNull
 
 class BPSMapperTest {
 
@@ -516,5 +518,21 @@ class BPSMapperTest {
         assertThat(entity.senderIban).isEqualTo(bps.senderIban)
         assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
         assertThat(entity.messageDirection).isEqualTo(bps.messageDirection)
+    }
+
+    @Test
+    fun `should map AlertPriorityData fields`() {
+        val bps = BPSAlertPriority("name", 234234, true)
+        val entity = EntityMapper.MAPPER.toEntity(bps)
+        assertThat(entity.name).isEqualTo(bps.name)
+        assertThat(entity.threshold).isEqualTo(bps.threshold)
+        assertThat(entity.highlight).isEqualTo(bps.highlight)
+    }
+
+    @Test
+    fun `should map AlertPriorityData fields with null threshold`() {
+        val bps = BPSAlertPriority("name", null, true)
+        val entity = EntityMapper.MAPPER.toEntity(bps)
+        assertNull(entity.threshold)
     }
 }
