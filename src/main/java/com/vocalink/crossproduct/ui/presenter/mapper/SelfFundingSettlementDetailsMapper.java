@@ -26,11 +26,12 @@ public class SelfFundingSettlementDetailsMapper {
 
     ParticipantDto participantDto = MAPPER.toDto(participant);
 
-    CycleDto currentCycleDto = MAPPER.toDto(cycles.get(1));
-    CycleDto previousCycleDto = MAPPER.toDto(cycles.get(0));
+    // Cycles are always in descending order
+    CycleDto currentCycleDto = MAPPER.toDto(cycles.get(0));
+    CycleDto previousCycleDto = MAPPER.toDto(cycles.get(1));
 
-    PositionDetailsDto currentPositionDetailsDto = MAPPER.toDto(positionsDetails.get(1));
-    PositionDetailsDto previousPositionDetailsDto = MAPPER.toDto(positionsDetails.get(0));
+    PositionDetailsDto currentPositionDetailsDto = MAPPER.toDto(positionsDetails.get(0));
+    PositionDetailsDto previousPositionDetailsDto = MAPPER.toDto(positionsDetails.get(1));
 
     PositionDetailsTotalsDto currentPositionDetailsTotalsDto = MAPPER.toDto(currentPositionDetailsDto);
     PositionDetailsTotalsDto previousPositionDetailsTotalsDto = MAPPER.toDto(previousPositionDetailsDto);

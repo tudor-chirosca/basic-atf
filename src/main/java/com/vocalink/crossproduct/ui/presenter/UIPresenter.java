@@ -72,8 +72,9 @@ public class UIPresenter implements Presenter {
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
       List<Participant> participants) {
 
-    Cycle currentCycle = cycles.get(1);
-    Cycle previousCycle = cycles.get(0);
+    // Cycles are always in descending order
+    Cycle currentCycle = cycles.get(0);
+    Cycle previousCycle = cycles.get(1);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->
@@ -88,13 +89,9 @@ public class UIPresenter implements Presenter {
       List<Participant> participants, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays) {
 
-    cycles = cycles.stream()
-        .sorted(Comparator.comparing(Cycle::getId))
-        .limit(2)
-        .collect(toList());
-
-    Cycle currentCycle = cycles.get(1);
-    Cycle previousCycle = cycles.get(0);
+    // Cycles are always in descending order
+    Cycle currentCycle = cycles.get(0);
+    Cycle previousCycle = cycles.get(1);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->

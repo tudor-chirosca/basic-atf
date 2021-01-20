@@ -65,7 +65,7 @@ class MockPositions {
             PositionDetailsDto.builder()
                     .customerCreditTransfer(getPositionDto(false))
                     .paymentReturn(getPositionDto(true))
-                    .build();
+                    .build()
 
     fun getParticipantPosition(isNetZero: Boolean): ParticipantPosition {
         return if (isNetZero)

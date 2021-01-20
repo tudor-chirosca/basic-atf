@@ -178,14 +178,14 @@ class UIPresenterTest {
 
         val cycles = listOf(
                 Cycle.builder()
-                        .id("01")
-                        .status(CycleStatus.COMPLETED)
-                        .totalPositions(previousPositions)
-                        .build(),
-                Cycle.builder()
                         .id("02")
                         .status(CycleStatus.OPEN)
                         .totalPositions(currentPositions)
+                        .build(),
+                Cycle.builder()
+                        .id("01")
+                        .status(CycleStatus.COMPLETED)
+                        .totalPositions(previousPositions)
                         .build()
         )
 

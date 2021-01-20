@@ -38,7 +38,8 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
       throw new NonConsistentDataException("Expected at least two cycles!");
     }
 
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+    List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll()
+        .stream().filter(p -> p.getParticipantType() != ParticipantType.SCHEME).collect(toList());
 
     return presenterFactory.getPresenter(clientType)
         .presentAllParticipantsSettlement(cycles, participants);
