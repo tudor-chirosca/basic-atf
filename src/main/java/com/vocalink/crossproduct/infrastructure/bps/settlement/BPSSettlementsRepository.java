@@ -96,6 +96,7 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   public SettlementSchedule findSchedule() {
     return webClient.post()
         .uri(resolve(SETTLEMENT_SCHEDULE_ENQUIRIES_PATH, bpsProperties))
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just("{}"), String.class))
         .retrieve()
