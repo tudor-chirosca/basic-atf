@@ -5,10 +5,10 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -84,6 +84,21 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "participantConnectionId": "NA"
         } 
         """
+
+        const val VALID_PARTICIPANTS_WO_CONN_EFFECTIVE_TILL: String = """ 
+        {
+            "schemeCode": "P27-SEK",
+            "schemeParticipantIdentifier": "NDEASESSXXX",
+            "countryCode": "SWE",
+            "partyCode": "NDEASESSXXX",
+            "participantType": "DIRECT+ONLY",
+            "status": "ACTIVE",
+            "effectiveFromDate": "2020-05-22T14:09:05Z",
+            "participantName": "Nordea",
+            "rcvngParticipantConnectionId": "NA",
+            "participantConnectionId": "NA"
+        } 
+        """
     }
 
     @AfterEach
@@ -152,6 +167,27 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_PARTICIPANTS_BY_ID_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_PARTICIPANTS_WITH_ID_REQUEST)))
+
+        val result = participantRepository.findById(participantId)
+
+        assertThat(result.bic).isEqualTo("NDEASESSXXX")
+        assertThat(result.id).isEqualTo("NDEASESSXXX")
+        assertThat(result.name).isEqualTo("Nordea")
+        assertThat(result.status).isEqualTo(ParticipantStatus.ACTIVE)
+        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT_ONLY)
+        assertThat(result.suspendedTime).isNull()
+    }
+
+    @Test
+    fun `should return 200, participant w-o connecting_party and effective_till`() {
+        val participantId = "NDEASESSXXX"
+        mockServer.stubFor(
+                post(urlEqualTo("/participants/P27-SEK/read"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_PARTICIPANTS_WO_CONN_EFFECTIVE_TILL))
                         .withRequestBody(equalToJson(VALID_PARTICIPANTS_WITH_ID_REQUEST)))
 
         val result = participantRepository.findById(participantId)

@@ -28,10 +28,10 @@ public class BPSParticipant {
       @JsonProperty(value = "countryCode", required = true) String countryCode,
       @JsonProperty(value = "partyCode", required = true) String partyCode,
       @JsonProperty(value = "participantType", required = true) String participantType,
-      @JsonProperty(value = "connectingParty", required = true) String connectingParty,
+      @JsonProperty(value = "connectingParty") String connectingParty,
       @JsonProperty(value = "status", required = true) String status,
       @JsonProperty(value = "effectiveFromDate", required = true) ZonedDateTime effectiveFromDate,
-      @JsonProperty(value = "effectiveTillDate", required = true) ZonedDateTime effectiveTillDate,
+      @JsonProperty(value = "effectiveTillDate") ZonedDateTime effectiveTillDate,
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
       @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId) {
