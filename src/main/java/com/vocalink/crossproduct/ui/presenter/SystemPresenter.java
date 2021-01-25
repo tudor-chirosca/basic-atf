@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -37,9 +38,8 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
-import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
-import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -177,7 +177,14 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender, EnquirySenderDetails receiver) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

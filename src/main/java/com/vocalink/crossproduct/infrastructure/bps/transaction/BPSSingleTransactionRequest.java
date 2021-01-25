@@ -7,11 +7,11 @@ import lombok.Getter;
 @Getter
 public class BPSSingleTransactionRequest {
 
-  private final String instructionId;
+  private final String txnsInstructionId;
 
   @JsonCreator
   public BPSSingleTransactionRequest(
-      @JsonProperty(value = "instructionId") String instructionId) {
-    this.instructionId = instructionId;
+      @JsonProperty(value = "txnsInstructionId") String txnsInstructionId) {
+    this.txnsInstructionId = txnsInstructionId;
   }
 }

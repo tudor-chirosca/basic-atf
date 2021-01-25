@@ -15,17 +15,12 @@ public class Transaction {
   private final String fileName;
   private final String batchId;
   private final LocalDate valueDate;
-  private final String receiverEntityName;
-  private final String receiverEntityBic;
-  private final String receiverIban;
+  private final String receiverParticipantIdentifier;
   private final LocalDate settlementDate;
   private final String settlementCycleId;
   private final ZonedDateTime createdAt;
   private final String status;
   private final String reasonCode;
   private final String messageType;
-  private final String senderEntityName;
-  private final String senderEntityBic;
-  private final String senderIban;
-  private final String senderFullName;
+  private final String senderParticipantIdentifier;
 }

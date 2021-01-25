@@ -3,12 +3,14 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -254,33 +256,25 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "amount", source = "amount.amount"),
-      @Mapping(target = "senderBic", source = "senderEntityBic")
+      @Mapping(target = "senderBic", source = "senderParticipantIdentifier")
   })
   TransactionDto toDto(Transaction transaction);
 
   @Mappings({
-      @Mapping(target = "amount", source = "amount.amount"),
-      @Mapping(target = "sender", source = "transaction", qualifiedByName = "toSender"),
-      @Mapping(target = "receiver", source = "transaction", qualifiedByName = "toReceiver")
+      @Mapping(target = "amount", source = "transaction.amount.amount"),
+      @Mapping(target = "sender", source = "sender"),
   })
-  TransactionDetailsDto toDetailsDto(Transaction transaction);
+  TransactionDetailsDto toDetailsDto(Transaction transaction, EnquirySenderDetails sender);
 
-  @Named("toReceiver")
   @Mappings({
-      @Mapping(target = "entityName", source = "receiverEntityName"),
-      @Mapping(target = "entityBic", source = "receiverEntityBic"),
-      @Mapping(target = "iban", source = "receiverIban")
+      @Mapping(target = "amount", source = "transaction.amount.amount"),
+      @Mapping(target = "sender", source = "sender"),
+      @Mapping(target = "receiver", source = "receiver")
   })
-  EnquirySenderDetailsDto toReceiver(Transaction transaction);
+  TransactionDetailsDto toDetailsDto(Transaction transaction, EnquirySenderDetails sender,
+      EnquirySenderDetails receiver);
 
-  @Named("toSender")
-  @Mappings({
-      @Mapping(target = "entityName", source = "senderEntityName"),
-      @Mapping(target = "entityBic", source = "senderEntityBic"),
-      @Mapping(target = "iban", source = "senderIban"),
-      @Mapping(target = "fullName", source = "senderFullName")
-  })
-  EnquirySenderDetailsDto toSender(Transaction transaction);
+  EnquirySenderDetailsDto toDto(EnquirySenderDetails senderDetails);
 
   AlertPriorityDataDto toDto(AlertPriorityData priorityData);
 

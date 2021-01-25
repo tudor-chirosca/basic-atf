@@ -4,12 +4,15 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -23,6 +26,7 @@ import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
@@ -142,4 +146,12 @@ public interface EntityMapper {
 
   Amount toEntity(BPSAmount amount);
 
+  Account toEntity(BPSAccount priorityData);
+
+  @Mappings({
+      @Mapping(target = "entityName", source = "participant.name"),
+      @Mapping(target = "entityBic", source = "account.partyCode"),
+      @Mapping(target = "iban", source = "account.iban")
+  })
+  EnquirySenderDetails toEntity(Account account, Participant participant);
 }

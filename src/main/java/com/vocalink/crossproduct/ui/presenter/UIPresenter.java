@@ -5,11 +5,13 @@ import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -331,7 +333,15 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
-    return MAPPER.toDetailsDto(transaction);
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender) {
+    return MAPPER.toDetailsDto(transaction, sender);
   }
+
+  @Override
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender, EnquirySenderDetails receiver) {
+    return MAPPER.toDetailsDto(transaction, sender, receiver);
+  }
+
 }

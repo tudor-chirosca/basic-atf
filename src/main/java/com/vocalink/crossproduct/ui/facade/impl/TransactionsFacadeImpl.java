@@ -4,6 +4,9 @@ import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPP
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -13,6 +16,7 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.facade.TransactionsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,6 +47,23 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
 
     final Transaction transaction = repositoryFactory.getTransactionRepository(product)
         .findById(id);
-    return presenterFactory.getPresenter(clientType).presentTransactionDetails(transaction);
+    final Account senderAccount = repositoryFactory.getAccountRepository(product)
+        .findByPartyCode(transaction.getSenderParticipantIdentifier());
+    final Participant senderParticipant = repositoryFactory.getParticipantRepository(product)
+        .findById(transaction.getSenderParticipantIdentifier());
+    final EnquirySenderDetails sender = MAPPER.toEntity(senderAccount, senderParticipant);
+
+    if (Objects.nonNull(transaction.getReceiverParticipantIdentifier())) {
+      final Account receiverAccount = repositoryFactory.getAccountRepository(product)
+          .findByPartyCode(transaction.getReceiverParticipantIdentifier());
+      final Participant receiverParticipant = repositoryFactory.getParticipantRepository(product)
+          .findById(transaction.getReceiverParticipantIdentifier());
+      final EnquirySenderDetails receiver = MAPPER.toEntity(receiverAccount, receiverParticipant);
+
+      return presenterFactory.getPresenter(clientType)
+          .presentTransactionDetails(transaction, sender, receiver);
+    }
+
+    return presenterFactory.getPresenter(clientType).presentTransactionDetails(transaction, sender);
   }
 }

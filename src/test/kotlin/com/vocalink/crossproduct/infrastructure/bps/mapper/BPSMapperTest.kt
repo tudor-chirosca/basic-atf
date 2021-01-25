@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
+import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
@@ -484,9 +485,7 @@ class BPSMapperTest {
                 "fileName",
                 "batchId",
                 LocalDate.of(2021, 1,15),
-                "receiverEntityName",
                 "receiverEntityBic",
-                "receiverIban",
                 LocalDate.of(2021, 1,15),
                 "settlementCycleId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
@@ -494,10 +493,7 @@ class BPSMapperTest {
                 "reasonCode",
                 "messageType",
                 "senderEntityName",
-                "senderEntityBic",
-                "senderIban",
-                "senderFullName",
-                "messageDirection"
+                "senderEntityBic"
         )
         val entity = EntityMapper.MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
@@ -505,19 +501,12 @@ class BPSMapperTest {
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
         assertThat(entity.batchId).isEqualTo(bps.batchId)
         assertThat(entity.valueDate).isEqualTo(bps.valueDate)
-        assertThat(entity.receiverEntityName).isEqualTo(bps.receiverEntityName)
-        assertThat(entity.receiverEntityBic).isEqualTo(bps.receiverEntityBic)
-        assertThat(entity.receiverIban).isEqualTo(bps.receiverIban)
         assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
         assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycleId)
         assertThat(entity.createdAt).isEqualTo(bps.createdAt)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
-        assertThat(entity.senderEntityName).isEqualTo(bps.senderEntityName)
-        assertThat(entity.senderEntityBic).isEqualTo(bps.senderEntityBic)
-        assertThat(entity.senderIban).isEqualTo(bps.senderIban)
-        assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
     }
 
     @Test
@@ -534,5 +523,14 @@ class BPSMapperTest {
         val bps = BPSAlertPriority("name", null, true)
         val entity = EntityMapper.MAPPER.toEntity(bps)
         assertNull(entity.threshold)
+    }
+
+    @Test
+    fun `should map Account fields`() {
+        val bps = BPSAccount("partyCode", 234234, "iban")
+        val entity = EntityMapper.MAPPER.toEntity(bps)
+        assertThat(entity.partyCode).isEqualTo(bps.partyCode)
+        assertThat(entity.iban).isEqualTo(bps.iban)
+        assertThat(entity.accountNo).isEqualTo(bps.accountNo)
     }
 }

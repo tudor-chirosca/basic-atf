@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 
 import com.vocalink.crossproduct.domain.Amount
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
@@ -438,26 +439,21 @@ class DTOMapperTest {
                 "fileName",
                 "batchId",
                 LocalDate.of(2021, 1, 15),
-                "receiverEntityName",
                 "receiverEntityBic",
-                "receiverIban",
                 LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "status",
                 "reasonCode",
                 "messageType",
-                "senderEntityName",
-                "senderEntityBic",
-                "senderIban",
-                "senderFullName"
+                "senderEntityBic"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
-        assertThat(result.senderBic).isEqualTo(transaction.senderEntityBic)
+        assertThat(result.senderBic).isEqualTo(transaction.senderParticipantIdentifier)
         assertThat(result.status).isEqualTo(transaction.status)
     }
 
@@ -503,27 +499,34 @@ class DTOMapperTest {
     @Test
     fun `should map TransactionDetailsDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
+        val sender = EnquirySenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                null
+        )
+        val receiver = EnquirySenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                null
+        )
         val transaction = Transaction(
                 "instructionId",
                 amount,
                 "fileName",
                 "batchId",
                 LocalDate.of(2021, 1,15),
-                "receiverEntityName",
                 "receiverEntityBic",
-                "receiverIban",
                 LocalDate.of(2021, 1,15),
                 "settlementCycleId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "status",
                 "reasonCode",
                 "messageType",
-                "senderEntityName",
-                "senderEntityBic",
-                "senderIban",
-                "senderFullName"
+                "senderEntityBic"
         )
-        val result = MAPPER.toDetailsDto(transaction)
+        val result = MAPPER.toDetailsDto(transaction, sender, receiver)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.fileName).isEqualTo(transaction.fileName)
@@ -536,30 +539,41 @@ class DTOMapperTest {
         assertThat(result.reasonCode).isEqualTo(transaction.reasonCode)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
 
-        assertThat(result.sender.entityName).isEqualTo(transaction.senderEntityName)
-        assertThat(result.sender.entityBic).isEqualTo(transaction.senderEntityBic)
-        assertThat(result.sender.iban).isEqualTo(transaction.senderIban)
-        assertThat(result.sender.fullName).isEqualTo(transaction.senderFullName)
+        assertThat(result.sender.entityName).isEqualTo(sender.entityName)
+        assertThat(result.sender.entityBic).isEqualTo(sender.entityBic)
+        assertThat(result.sender.iban).isEqualTo(sender.iban)
 
-        assertThat(result.receiver.entityName).isEqualTo(transaction.receiverEntityName)
-        assertThat(result.receiver.entityBic).isEqualTo(transaction.receiverEntityBic)
-        assertThat(result.receiver.iban).isEqualTo(transaction.receiverIban)
+        assertThat(result.receiver.entityName).isEqualTo(receiver.entityName)
+        assertThat(result.receiver.entityBic).isEqualTo(receiver.entityBic)
+        assertThat(result.receiver.iban).isEqualTo(receiver.iban)
     }
 
     @Test
     fun `should map AlertPriorityDataDto fields`() {
-        val bps = AlertPriorityData("name", 234234, true)
-        val entity = MAPPER.toDto(bps)
-        assertThat(entity.name).isEqualTo(bps.name)
-        assertThat(entity.threshold).isEqualTo(bps.threshold)
-        assertThat(entity.highlight).isEqualTo(bps.highlight)
+        val entity = AlertPriorityData("name", 234234, true)
+        val result = MAPPER.toDto(entity)
+        assertThat(result.name).isEqualTo(entity.name)
+        assertThat(result.threshold).isEqualTo(entity.threshold)
+        assertThat(result.highlight).isEqualTo(entity.highlight)
     }
 
     @Test
     fun `should map AlertPriorityDataDto fields with null threshold`() {
-        val bps = AlertPriorityData("name", null, true)
-        val entity = MAPPER.toDto(bps)
-        assertNull(entity.threshold)
+        val entity = AlertPriorityData("name", null, true)
+        val result = MAPPER.toDto(entity)
+        assertNull(result.threshold)
+    }
+
+    @Test
+    fun `should map EnquirySenderDetailsDto from Account and Participant`() {
+        val account = Account("partyCode", 234234, "iban")
+        val participant = Participant("participantId", "participantId", "name",
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+
+        val result = EntityMapper.MAPPER.toEntity(account, participant)
+        assertThat(result.entityBic).isEqualTo(account.partyCode)
+        assertThat(result.entityName).isEqualTo(participant.name)
+        assertThat(result.iban).isEqualTo(account.iban)
     }
 
     @Test

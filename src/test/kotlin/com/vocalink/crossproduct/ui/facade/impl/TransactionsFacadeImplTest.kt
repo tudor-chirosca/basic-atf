@@ -3,6 +3,10 @@ package com.vocalink.crossproduct.ui.facade.impl
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.account.Account
+import com.vocalink.crossproduct.domain.account.AccountRepository
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.domain.transaction.TransactionRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -24,6 +28,8 @@ import org.mockito.Mockito.verify
 class TransactionsFacadeImplTest {
 
     private val transactionRepository = Mockito.mock(TransactionRepository::class.java)!!
+    private val accountRepository = Mockito.mock(AccountRepository::class.java)!!
+    private val participantRepository = Mockito.mock(ParticipantRepository::class.java)!!
     private val presenterFactory = Mockito.mock(PresenterFactory::class.java)!!
     private val uiPresenter = Mockito.mock(UIPresenter::class.java)!!
     private val repositoryFactory = Mockito.mock(RepositoryFactory::class.java)
@@ -37,6 +43,10 @@ class TransactionsFacadeImplTest {
     fun init() {
         `when`(repositoryFactory.getTransactionRepository(anyString()))
                 .thenReturn(transactionRepository)
+        `when`(repositoryFactory.getAccountRepository(anyString()))
+                .thenReturn(accountRepository)
+        `when`(repositoryFactory.getParticipantRepository(anyString()))
+                .thenReturn(participantRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }
@@ -47,8 +57,7 @@ class TransactionsFacadeImplTest {
                 Transaction(null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null, null, null, null,
-                        null, null
+                        null
                 )
         ))
         val pageDto = PageDto<TransactionDto>(1, listOf(
@@ -83,7 +92,6 @@ class TransactionsFacadeImplTest {
         val transaction = Transaction(
                 null,null,null,null,null,
                 null,null,null,null,
-                null,null,null,null,null,
                 null,null,null,null
         )
         val batchDetailsDto = TransactionDetailsDto(
@@ -91,18 +99,28 @@ class TransactionsFacadeImplTest {
                 null,null,null,null,null,
                 null,null
         )
+        val account = Account(null,null,null)
+
+        val participant = Participant(null,null,null, null, null,
+                null, null, null)
 
         `when`(transactionRepository.findById(any()))
                 .thenReturn(transaction)
 
-        `when`(uiPresenter.presentTransactionDetails(any()))
+        `when`(accountRepository.findByPartyCode(any()))
+                .thenReturn(account)
+
+        `when`(participantRepository.findById(any()))
+                .thenReturn(participant)
+
+        `when`(uiPresenter.presentTransactionDetails(any(), any()))
                 .thenReturn(batchDetailsDto)
 
         val result = transactionsServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(transactionRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentTransactionDetails(any())
+        verify(uiPresenter).presentTransactionDetails(any(), any())
 
         assertNotNull(result)
     }

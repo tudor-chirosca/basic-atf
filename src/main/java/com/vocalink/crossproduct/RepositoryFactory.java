@@ -2,6 +2,7 @@ package com.vocalink.crossproduct;
 
 import static java.util.stream.Collectors.toMap;
 
+import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
@@ -36,6 +37,7 @@ public class RepositoryFactory {
   private final List<AlertRepository> alertClientList;
   private final List<ParticipantIODataRepository> participantIODataRepositories;
   private final List<TransactionRepository> transactionClientList;
+  private final List<AccountRepository> accountClientList;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -48,6 +50,7 @@ public class RepositoryFactory {
   private Map<String, AlertRepository> alertRepositoriesByProduct;
   private Map<String, ParticipantIODataRepository> participantIODataRepositoriesByProduct;
   private Map<String, TransactionRepository> transactionRepositoriesByProduct;
+  private Map<String, AccountRepository> accountRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -73,6 +76,8 @@ public class RepositoryFactory {
         .collect(toMap(ParticipantIODataRepository::getProduct, Function.identity()));
     transactionRepositoriesByProduct = transactionClientList.stream()
         .collect(toMap(TransactionRepository::getProduct, Function.identity()));
+    accountRepositoriesByProduct = accountClientList.stream()
+        .collect(toMap(AccountRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -159,5 +164,12 @@ public class RepositoryFactory {
       throw new RepositoryNotAvailableException("Transaction repository not available for product " + product);
     }
     return transactionRepositoriesByProduct.get(product);
+  }
+
+  public AccountRepository getAccountRepository(String product) {
+    if (accountRepositoriesByProduct.get(product) == null) {
+      throw new RepositoryNotAvailableException("Account repository not available for product " + product);
+    }
+    return accountRepositoriesByProduct.get(product);
   }
 }

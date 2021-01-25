@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -109,5 +111,9 @@ public interface Presenter {
 
   SettlementScheduleDto presentSchedule(SettlementSchedule schedule);
 
-  TransactionDetailsDto presentTransactionDetails(Transaction transaction);
+  TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender);
+  TransactionDetailsDto presentTransactionDetails(Transaction transaction,
+      EnquirySenderDetails sender, EnquirySenderDetails receiver);
+
 }

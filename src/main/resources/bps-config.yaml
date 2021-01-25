@@ -68,10 +68,13 @@ bps-config:
       path: /enquiry/settlements-schedule/readAll
       base: MOCK
     transaction-enquiries-path:
-      path: /enquiry/transactions/readAll
+      path: /enquiry/transactions/{schemeCode}/readAll
       base: MOCK
     single-transaction-path:
-      path: /enquiry/transactions/read
+      path: /enquiry/transactions/{schemeCode}/read
+      base: MOCK
+    single-account-path:
+      path: /account/read
       base: MOCK
 
   retryable: 404, 429
