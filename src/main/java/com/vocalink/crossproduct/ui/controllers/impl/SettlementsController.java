@@ -1,8 +1,9 @@
-package com.vocalink.crossproduct.ui.controllers;
+package com.vocalink.crossproduct.ui.controllers.impl;
 
 import static java.util.Objects.isNull;
 
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
+import com.vocalink.crossproduct.ui.controllers.SettlementsApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;

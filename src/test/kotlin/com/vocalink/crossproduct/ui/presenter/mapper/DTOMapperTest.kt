@@ -9,6 +9,11 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
+import com.vocalink.crossproduct.domain.approval.ApprovalDetails
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus
+import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.approval.RejectionReason
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
@@ -47,6 +52,7 @@ import kotlin.test.assertFalse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 class DTOMapperTest {
 
@@ -736,5 +742,39 @@ class DTOMapperTest {
         assertThat(result.previousPositionTotals.totalDebit).isEqualTo(prevTotalDebit)
 
         assertThat(result.previousPositionTotals.totalNetPosition).isEqualTo(previousPosition.netPositionAmount.amount)
+    }
+
+    @Test
+    fun `should map ApprovalDetails to ApprovalDetailsDto`() {
+        val approvalUser = ApprovalUser("John Doe", "12a514")
+        val jobId = "10000020"
+        val createdAt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
+        val rejectionReason = RejectionReason(approvalUser,
+                "Please check ticket number...")
+        val requestedChange = mapOf("status" to "suspended")
+
+        val approvalDetails = ApprovalDetails(
+                ApprovalStatus.APPROVED,
+                approvalUser, approvalUser,
+                createdAt, jobId,
+                ApprovalRequestType.UNSUSPEND,
+                "FORXSES1",
+                "Forex Bank",
+                rejectionReason,
+                requestedChange)
+
+        val result = MAPPER.toDto(approvalDetails)
+
+        assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
+        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedBy.id).isEqualTo("12a514")
+        assertThat(result.createdAt).isEqualTo(createdAt)
+        assertThat(result.jobId).isEqualTo(jobId)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.UNSUSPEND)
+        assertThat(result.participantIdentifier).isEqualTo("FORXSES1")
+        assertThat(result.participantName).isEqualTo("Forex Bank")
+        assertThat(result.rejectionReason.rejectedBy.name).isEqualTo("John Doe")
+        assertThat(result.rejectionReason.comment).isEqualTo("Please check ticket number...")
+        assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 }

@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.ui.controllers;
+package com.vocalink.crossproduct.ui.controllers.impl;
 
+import com.vocalink.crossproduct.ui.controllers.TransactionsApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;

@@ -2,6 +2,8 @@ package com.vocalink.crossproduct.infrastructure.bps.mapper
 
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
@@ -15,6 +17,9 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalDetails
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSRejectionReason
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
@@ -41,6 +46,7 @@ import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 class BPSMapperTest {
 
@@ -532,5 +538,40 @@ class BPSMapperTest {
         assertThat(entity.partyCode).isEqualTo(bps.partyCode)
         assertThat(entity.iban).isEqualTo(bps.iban)
         assertThat(entity.accountNo).isEqualTo(bps.accountNo)
+    }
+
+    @Test
+    fun `should map BPSApprovalDetails to ApprovalDetails`() {
+        val approvalUser = BPSApprovalUser("John Doe", "12a514")
+        val createdAt = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
+        val rejectionReason = BPSRejectionReason(approvalUser,
+                "Please check ticket number...")
+        val requestedChange = mapOf("status" to "Suspended")
+
+        val bpsApprovalDetails = BPSApprovalDetails(
+                "approved",
+                approvalUser,
+                approvalUser,
+                createdAt,
+                "10000006",
+                "unsuspend",
+                "FORXSES1",
+                "Forex Bank",
+                rejectionReason,
+                requestedChange)
+
+        val result = BPSMAPPER.toEntity(bpsApprovalDetails)
+
+        assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
+        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedBy.id).isEqualTo("12a514")
+        assertThat(result.createdAt).isEqualTo(createdAt)
+        assertThat(result.jobId).isEqualTo("10000006")
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.UNSUSPEND)
+        assertThat(result.participantIdentifier).isEqualTo("FORXSES1")
+        assertThat(result.participantName).isEqualTo("Forex Bank")
+        assertThat(result.rejectionReason.rejectedBy.name).isEqualTo("John Doe")
+        assertThat(result.rejectionReason.comment).isEqualTo("Please check ticket number...")
+        assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 }

@@ -3,6 +3,7 @@ package com.vocalink.crossproduct;
 import static java.util.stream.Collectors.toMap;
 
 import com.vocalink.crossproduct.domain.account.AccountRepository;
+import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
@@ -38,6 +39,7 @@ public class RepositoryFactory {
   private final List<ParticipantIODataRepository> participantIODataRepositories;
   private final List<TransactionRepository> transactionClientList;
   private final List<AccountRepository> accountClientList;
+  private final List<ApprovalRepository> approvalRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -51,6 +53,7 @@ public class RepositoryFactory {
   private Map<String, ParticipantIODataRepository> participantIODataRepositoriesByProduct;
   private Map<String, TransactionRepository> transactionRepositoriesByProduct;
   private Map<String, AccountRepository> accountRepositoriesByProduct;
+  private Map<String, ApprovalRepository> approvalRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -78,6 +81,8 @@ public class RepositoryFactory {
         .collect(toMap(TransactionRepository::getProduct, Function.identity()));
     accountRepositoriesByProduct = accountClientList.stream()
         .collect(toMap(AccountRepository::getProduct, Function.identity()));
+    approvalRepositoriesByProduct = approvalRepositories.stream()
+        .collect(toMap(ApprovalRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -171,5 +176,12 @@ public class RepositoryFactory {
       throw new RepositoryNotAvailableException("Account repository not available for product " + product);
     }
     return accountRepositoriesByProduct.get(product);
+  }
+
+  public ApprovalRepository getApprovalClient(String product) {
+    if(approvalRepositoriesByProduct.get(product) == null) {
+      throw new RepositoryNotAvailableException("Approval repository not available for product" + product);
+    }
+    return approvalRepositoriesByProduct.get(product);
   }
 }

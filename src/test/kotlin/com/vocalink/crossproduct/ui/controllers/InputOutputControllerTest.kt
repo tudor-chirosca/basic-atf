@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.mocks.MockIOData
+import com.vocalink.crossproduct.ui.controllers.impl.InputOutputController
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test

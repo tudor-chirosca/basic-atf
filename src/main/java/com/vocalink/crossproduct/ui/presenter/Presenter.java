@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
@@ -27,6 +27,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -113,7 +114,9 @@ public interface Presenter {
 
   TransactionDetailsDto presentTransactionDetails(Transaction transaction,
       EnquirySenderDetails sender);
+
   TransactionDetailsDto presentTransactionDetails(Transaction transaction,
       EnquirySenderDetails sender, EnquirySenderDetails receiver);
 
+  ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails);
 }

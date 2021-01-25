@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 
-interface SettlementDashboardApi {
+public interface SettlementDashboardApi {
 
   @ApiOperation("Fetch settlement, including positions, participants and cycles")
   @ApiResponses({

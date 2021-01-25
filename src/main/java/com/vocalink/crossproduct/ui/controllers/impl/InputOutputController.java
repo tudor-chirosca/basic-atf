@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.ui.controllers;
+package com.vocalink.crossproduct.ui.controllers.impl;
 
+import com.vocalink.crossproduct.ui.controllers.InputOutputApi;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.InputOutputFacade;

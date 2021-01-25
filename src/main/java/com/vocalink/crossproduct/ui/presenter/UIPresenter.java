@@ -5,10 +5,10 @@ import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -344,4 +345,8 @@ public class UIPresenter implements Presenter {
     return MAPPER.toDetailsDto(transaction, sender, receiver);
   }
 
+  @Override
+  public ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails) {
+    return MAPPER.toDto(approvalDetails);
+  }
 }

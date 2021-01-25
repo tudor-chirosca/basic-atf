@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.ui.controllers;
+package com.vocalink.crossproduct.ui.controllers.impl;
 
+import com.vocalink.crossproduct.ui.controllers.SettlementDashboardApi;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade;

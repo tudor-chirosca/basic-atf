@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.controllers.impl.FilesController
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto

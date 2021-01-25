@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.controllers.impl.AlertsController
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest

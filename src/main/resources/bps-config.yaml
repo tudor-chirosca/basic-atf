@@ -76,5 +76,8 @@ bps-config:
     single-account-path:
       path: /account/read
       base: MOCK
+    approval-details-path:
+      path: /approval/details
+      base: MOCK
 
   retryable: 404, 429

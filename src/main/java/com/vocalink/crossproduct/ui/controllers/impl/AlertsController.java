@@ -1,5 +1,6 @@
-package com.vocalink.crossproduct.ui.controllers;
+package com.vocalink.crossproduct.ui.controllers.impl;
 
+import com.vocalink.crossproduct.ui.controllers.AlertsApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;

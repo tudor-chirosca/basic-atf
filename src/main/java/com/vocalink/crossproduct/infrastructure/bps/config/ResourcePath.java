@@ -25,4 +25,5 @@ public interface ResourcePath {
   String TRANSACTION_ENQUIRIES_PATH = "transaction-enquiries-path";
   String SINGLE_TRANSACTION_PATH = "single-transaction-path";
   String SINGLE_ACCOUNT_PATH = "single-account-path";
+  String APPROVAL_DETAILS_PATH = "approval-details-path";
 }

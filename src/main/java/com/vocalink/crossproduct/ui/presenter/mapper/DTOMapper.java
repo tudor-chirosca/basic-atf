@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
@@ -31,6 +32,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertPriorityDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
@@ -368,4 +370,6 @@ public interface DTOMapper {
       ParticipantPosition currentPosition, ParticipantPosition previousPosition,
       Participant participant, Participant fundingParticipant,
       IntraDayPositionGross intradayPositionGross);
+
+  ApprovalDetailsDto toDto(ApprovalDetails approvalDetails);
 }

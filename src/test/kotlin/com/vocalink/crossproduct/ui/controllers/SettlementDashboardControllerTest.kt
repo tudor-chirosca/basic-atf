@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
+import com.vocalink.crossproduct.ui.controllers.impl.SettlementDashboardController
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import java.math.BigDecimal

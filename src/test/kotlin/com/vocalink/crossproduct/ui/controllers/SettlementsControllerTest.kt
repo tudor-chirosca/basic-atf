@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
+import com.vocalink.crossproduct.ui.controllers.impl.SettlementsController
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto

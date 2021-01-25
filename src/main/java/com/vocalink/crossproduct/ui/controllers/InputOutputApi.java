@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 
-interface InputOutputApi {
+public interface InputOutputApi {
 
   @ApiOperation("Fetch input output data")
   @ApiResponses({

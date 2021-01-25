@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.config
 
-import com.vocalink.crossproduct.ui.controllers.SettlementDashboardController
+import com.vocalink.crossproduct.ui.controllers.impl.SettlementDashboardController
 import com.vocalink.crossproduct.ui.exceptions.GlobalExceptionHandler
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import org.junit.jupiter.api.Test

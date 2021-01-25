@@ -7,6 +7,9 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
+import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -24,7 +27,6 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
@@ -35,10 +37,10 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalDetails;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
-import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference;
@@ -173,6 +175,22 @@ public interface BPSMapper {
   IOTransactionsMessageTypes toEntity(BPSIOTransactionsMessageTypes transactionsMessageTypes);
 
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
+
+  @Mappings({
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertApprovalStatus"),
+      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertApprovalRequestType")
+  })
+  ApprovalDetails toEntity(BPSApprovalDetails approvalDetails);
+
+  @Named("convertApprovalStatus")
+  default ApprovalStatus convertApprovalStatus(String approvalStatus) {
+    return ApprovalStatus.valueOf(approvalStatus.toUpperCase());
+  }
+
+  @Named("convertApprovalRequestType")
+  default ApprovalRequestType convertApprovalRequestType(String approvalRequestType) {
+    return ApprovalRequestType.valueOf(approvalRequestType.replaceAll("[_+-]", "_").toUpperCase());
+  }
 
   @Named("convertToDate")
   default LocalDate convertToDate(ZonedDateTime date) {
