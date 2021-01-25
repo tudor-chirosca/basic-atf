@@ -16,12 +16,13 @@ import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
+import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -47,7 +48,6 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
-import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -66,15 +66,15 @@ public class UIPresenter implements Presenter {
   @Value("${default.message.reference.name}")
   private String defaultMessageReferenceName;
 
-  private final SelfFundingSettlementDetailsMapper selfFundingDetailsMapper;
+  private String PREVIOUS_CYCLE = "PREVIOUS";
+  private String CURRENT_CYCLE = "CURRENT";
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
       List<Participant> participants) {
 
-    // Cycles are always in descending order
-    Cycle currentCycle = cycles.get(0);
-    Cycle previousCycle = cycles.get(1);
+    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
+    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->
@@ -89,9 +89,8 @@ public class UIPresenter implements Presenter {
       List<Participant> participants, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays) {
 
-    // Cycles are always in descending order
-    Cycle currentCycle = cycles.get(0);
-    Cycle previousCycle = cycles.get(1);
+    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
+    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->
@@ -106,18 +105,46 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
-      List<Cycle> cycles,
-      List<PositionDetails> positionsDetails, Participant participant,
+      List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant) {
+
+    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
+    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+
+    ParticipantPosition currentPosition = getPosition(positions, currentCycle);
+    ParticipantPosition previousPosition = getPosition(positions, previousCycle);
+
+    return MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition, participant);
+  }
+
+  @Override
+  public ParticipantDashboardSettlementDetailsDto presentFundedParticipantSettlementDetails(
+      List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
-    if (cycles.size() == 1) {
-      return selfFundingDetailsMapper
-          .presentOneCycleParticipantSettlementDetails(cycles, positionsDetails, participant,
-              fundingParticipant, intradayPositionGross);
+    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
+    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+
+    ParticipantPosition currentPosition = getPosition(positions, currentCycle);
+    ParticipantPosition previousPosition = getPosition(positions, previousCycle);
+
+    return MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
+        participant, fundingParticipant, intradayPositionGross);
+  }
+
+  private ParticipantPosition getPosition(List<ParticipantPosition> positions, Cycle cycle) {
+    return positions.stream()
+        .filter(f -> f.getCycleId().equalsIgnoreCase(cycle.getId())).findFirst()
+        .orElseThrow(() -> new NonConsistentDataException(
+            "Current position does not match current cycle id")
+        );
+  }
+
+  private Cycle getCycle(List<Cycle> cycles, String cycleType) {
+    // Cycles are always in descending order
+    if (cycleType.equals(CURRENT_CYCLE)) {
+      return cycles.get(0);
     }
-    return selfFundingDetailsMapper
-        .presentFullParticipantSettlementDetails(cycles, positionsDetails, participant,
-            fundingParticipant, intradayPositionGross);
+    return cycles.get(1);
   }
 
   @Override

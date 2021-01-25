@@ -57,7 +57,6 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnq
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.mapstruct.Mapper;
@@ -76,13 +75,6 @@ public interface BPSMapper {
       @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime")
   })
   Cycle toEntity(BPSCycle cycle);
-
-  @Mappings({
-      @Mapping(target = "credit", source = "position", qualifiedByName = "countCredit"),
-      @Mapping(target = "debit", source = "position", qualifiedByName = "countDebit"),
-      @Mapping(target = "netPosition", source = "netPositionAmount.amount")
-  })
-  ParticipantPosition toEntity(BPSSettlementPosition position);
 
   IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDay);
 
@@ -187,18 +179,6 @@ public interface BPSMapper {
   IOTransactionsMessageTypes toEntity(BPSIOTransactionsMessageTypes transactionsMessageTypes);
 
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
-
-  @Named("countCredit")
-  default BigDecimal countCredit(BPSSettlementPosition position) {
-    return position.getPaymentReceived().getAmount().getAmount()
-        .add(position.getReturnReceived().getAmount().getAmount());
-  }
-
-  @Named("countDebit")
-  default BigDecimal countDebit(BPSSettlementPosition position) {
-    return position.getPaymentSent().getAmount().getAmount()
-        .add(position.getReturnSent().getAmount().getAmount());
-  }
 
   @Named("convertToDate")
   default LocalDate convertToDate(ZonedDateTime date) {

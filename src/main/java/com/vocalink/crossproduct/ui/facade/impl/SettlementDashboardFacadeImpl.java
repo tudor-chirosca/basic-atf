@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -18,7 +18,6 @@ import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 
 @RequiredArgsConstructor
 @Component
@@ -75,51 +74,41 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
     Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);
 
-    List<PositionDetails> positionsDetails = repositoryFactory.getPositionRepository(product)
+    List<ParticipantPosition> positions = repositoryFactory.getPositionRepository(product)
         .findByParticipantId(participantId);
 
-    List<String> activeCycleIds = positionsDetails.stream().map(PositionDetails::getSessionCode)
-        .collect(toList());
-
-    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByIds(activeCycleIds);
+    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findLatest(2);
 
     if (cycles.isEmpty()) {
       throw new EntityNotFoundException("No cycles found for participantId: " + participantId);
     }
 
-    if (cycles.size() != positionsDetails.size()) {
+    if (cycles.size() != positions.size()) {
       throw new NonConsistentDataException(
           "Number of Cycles is not equal with number of Position Details");
     }
 
-    return presenterFactory.getPresenter(clientType)
-        .presentParticipantSettlementDetails(cycles, positionsDetails, participant,
-            getFundingParticipantFrom(product, participant),
-            getIntraDayPositionGross(product, participant));
-  }
-
-  private Participant getFundingParticipantFrom(String product, Participant participant) {
-    Participant fundingParticipant = null;
-
-    if (participant.getFundingBic() != null && !participant.getFundingBic().equals("NA")) {
-      fundingParticipant = repositoryFactory.getParticipantRepository(product)
+    if (participant.getParticipantType() == ParticipantType.FUNDED) {
+      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(participant.getFundingBic());
-    }
-    return fundingParticipant;
-  }
 
-  private IntraDayPositionGross getIntraDayPositionGross(String product, Participant participant) {
-    IntraDayPositionGross intraDayPositionGross = null;
-
-    if (participant.getFundingBic() != null && !participant.getFundingBic().equals(NOT_AVAILABLE)) {
-      intraDayPositionGross = repositoryFactory.getIntradayPositionGrossRepository(product)
-          .findById(participant.getBic())
+      IntraDayPositionGross intraDayPositionGross = repositoryFactory
+          .getIntradayPositionGrossRepository(product)
+          .findById(participant.getFundingBic())
           .stream()
+          .filter(f -> f.getDebitParticipantId().equals(participantId))
           .findFirst()
           .orElseThrow(() -> new EntityNotFoundException(
               "There is no Intra-Day Participant Position gross for participant id: "
                   + participant.getId()));
+
+      return presenterFactory.getPresenter(clientType)
+          .presentFundedParticipantSettlementDetails(cycles, positions, participant,
+              fundingParticipant,
+              intraDayPositionGross);
     }
-    return intraDayPositionGross;
+
+    return presenterFactory.getPresenter(clientType)
+        .presentParticipantSettlementDetails(cycles, positions, participant);
   }
 }

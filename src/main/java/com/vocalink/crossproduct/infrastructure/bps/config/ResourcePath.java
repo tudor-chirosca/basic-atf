@@ -12,7 +12,6 @@ public interface ResourcePath {
   String PARTICIPANTS_PATH = "participants-path";
   String PARTICIPANT_PATH = "participant-path";
   String INTRA_DAY_POSITION_GROSS_PATH = "intra-day-position-gross-path";
-  String POSITION_DETAILS_PATH = "position-details-path";
   String MESSAGE_DIRECTION_REFERENCES_PATH = "message-direction-references-path";
   String ALERT_THRESHOLD_PATH = "alert-threshold-path";
   String ALERT_STATS_PATH = "alert-stats-path";

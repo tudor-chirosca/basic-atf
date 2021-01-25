@@ -12,12 +12,12 @@ import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
-import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
+import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -37,8 +37,8 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
-import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,7 +55,11 @@ public interface Presenter {
       List<IntraDayPositionGross> intraDays);
 
   ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
-      List<PositionDetails> positionsDetails,
+      List<ParticipantPosition> positionsDetails,
+      Participant participant);
+
+  ParticipantDashboardSettlementDetailsDto presentFundedParticipantSettlementDetails(List<Cycle> cycles,
+      List<ParticipantPosition> positionsDetails,
       Participant participant,
       Participant fundingParticipant,
       IntraDayPositionGross intradayPositionGross);

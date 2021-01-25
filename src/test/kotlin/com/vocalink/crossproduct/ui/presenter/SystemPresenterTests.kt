@@ -42,7 +42,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present self funded settlement details for System`() {
         val participant = MockParticipants().getParticipant(true)
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentParticipantSettlementDetails(emptyList(), emptyList(), participant, null, null)
+            systemPresenter.presentParticipantSettlementDetails(emptyList(), emptyList(), participant)
         }
     }
 

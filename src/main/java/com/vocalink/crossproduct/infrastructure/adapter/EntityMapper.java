@@ -1,5 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.adapter;
 
+import static java.util.stream.Collectors.toList;
+
+import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
@@ -7,6 +10,8 @@ import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
@@ -18,8 +23,12 @@ import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
@@ -62,7 +71,7 @@ public interface EntityMapper {
   @Named("toEntity")
   default List<ParticipantSettlement> convertStatusType(
       List<BPSParticipantSettlement> settlements) {
-    return settlements.stream().map(this::toEntity).collect(Collectors.toList());
+    return settlements.stream().map(this::toEntity).collect(toList());
   }
 
   @Named("toStatus")
@@ -81,8 +90,14 @@ public interface EntityMapper {
 
   @Named("doInstructions")
   default List<ParticipantInstruction> doInstructions(List<BPSParticipantInstruction> instructions) {
-    return instructions.stream().map(this::toEntity).collect(Collectors.toList());
+    return instructions.stream().map(this::toEntity).collect(toList());
   }
+
+  default List<ParticipantPosition> toEntity(BPSSettlementPositionWrapper positionsWrapper) {
+    return positionsWrapper.getMlSettlementPositions().stream().map(this::toEntity).collect(toList());
+  }
+
+  ParticipantPosition toEntity(BPSSettlementPosition position);
 
   @Mapping(source = "status", target = "status", qualifiedByName = "toInstructionStatus")
   ParticipantInstruction toEntity(BPSParticipantInstruction instruction);
@@ -116,4 +131,9 @@ public interface EntityMapper {
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 
   AlertPriorityData toEntity(BPSAlertPriority priorityData);
+
+  Payment toEntity(BPSPayment payment);
+
+  Amount toEntity(BPSAmount amount);
+
 }

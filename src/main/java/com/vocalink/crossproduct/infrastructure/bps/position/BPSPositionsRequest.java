@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BPSGetPositionsRequest {
+public class BPSPositionsRequest {
 
   private final String schemeCode;
   private final String currency;

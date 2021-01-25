@@ -21,7 +21,6 @@ open class BPSTestConfig {
                 Pair("participants-path", Detail("MOCK", "/participants/P27-SEK/readAll")),
                 Pair("participant-path", Detail("MOCK", "/participants/P27-SEK/read")),
                 Pair("cycles-path", Detail("MOCK", "/cycles/readAll")),
-                Pair("position-details-path", Detail("MOCK", "/positionDetails")),
                 Pair("io-participants-path", Detail("MOCK", "/io")),
                 Pair("intra-day-position-gross-path", Detail("MOCK", "/settlement/runningDebitCapPositions/readAll")),
                 Pair("settlement-position-path", Detail("MOCK", "/settlement/runningSettlementPositions/readAll")),

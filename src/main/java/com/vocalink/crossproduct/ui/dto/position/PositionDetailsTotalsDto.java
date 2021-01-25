@@ -1,19 +1,19 @@
 package com.vocalink.crossproduct.ui.dto.position;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.math.BigDecimal;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-@Setter
+@RequiredArgsConstructor
 public class PositionDetailsTotalsDto {
-  private BigDecimal totalCredit;
-  private BigDecimal totalDebit;
+
+  private final BigDecimal totalCredit;
+  private final BigDecimal totalDebit;
+  @Setter
+  @JsonInclude(Include.NON_EMPTY)
   private BigDecimal totalNetPosition;
 }

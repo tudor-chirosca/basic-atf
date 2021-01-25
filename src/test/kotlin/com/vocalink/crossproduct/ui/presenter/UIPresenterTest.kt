@@ -7,26 +7,17 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
-import com.vocalink.crossproduct.domain.cycle.Cycle
-import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileReference
-import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.mocks.MockCycles
-import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import com.vocalink.crossproduct.mocks.MockPositions
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
-import com.vocalink.crossproduct.ui.presenter.mapper.SelfFundingSettlementDetailsMapper
-import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -36,11 +27,7 @@ import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -52,49 +39,6 @@ class UIPresenterTest {
 
     @Autowired
     private lateinit var uiPresenter: UIPresenter
-
-    @MockBean
-    private lateinit var selfFundingDetailsMapper: SelfFundingSettlementDetailsMapper
-
-    @Test
-    fun `should get All participants Settlement Dashboard DTO`() {
-        val cycles = MockCycles().cyclesWithPositions
-        val participants = MockParticipants().participants
-
-        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
-
-        assertEquals(3, result.positions.size)
-        assertEquals("02", result.currentCycle.id)
-        assertEquals(CycleStatus.OPEN, result.currentCycle.status)
-        assertEquals("01", result.previousCycle.id)
-        assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
-
-        assertEquals("HANDSESS", result.positions[0].participant.id)
-        assertEquals("HANDSESS", result.positions[0].participant.bic)
-        assertEquals("Svenska Handelsbanken", result.positions[0].participant.name)
-        assertEquals(ParticipantStatus.SUSPENDED, result.positions[0].participant.status)
-        assertNotNull(result.positions[0].participant.suspendedTime)
-
-        assertEquals(BigDecimal.TEN, result.positions[0].currentPosition.credit)
-        assertEquals(BigDecimal.TEN, result.positions[0].currentPosition.debit)
-        assertEquals(BigDecimal.ZERO, result.positions[0].currentPosition.netPosition)
-        assertEquals(BigDecimal.TEN, result.positions[0].previousPosition.credit)
-        assertEquals(BigDecimal.TEN, result.positions[0].previousPosition.debit)
-        assertEquals(BigDecimal.ZERO, result.positions[0].previousPosition.netPosition)
-
-        assertEquals("NDEASESSXXX", result.positions[1].participant.id)
-        assertEquals("NDEASESSXXX", result.positions[1].participant.bic)
-        assertEquals("Nordea", result.positions[1].participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.positions[1].participant.status)
-        assertNull(result.positions[1].participant.suspendedTime)
-
-        assertEquals(BigDecimal.ONE, result.positions[1].currentPosition.credit)
-        assertEquals(BigDecimal.TEN, result.positions[1].currentPosition.debit)
-        assertEquals(BigDecimal.valueOf(9), result.positions[1].currentPosition.netPosition)
-        assertEquals(BigDecimal.ONE, result.positions[1].previousPosition.credit)
-        assertEquals(BigDecimal.TEN, result.positions[1].previousPosition.debit)
-        assertEquals(BigDecimal.valueOf(9), result.positions[1].previousPosition.netPosition)
-    }
 
     @Test
     fun `should get Settlement Dashboard DTO for paramId with null values if missing IntraDay or Positions`() {
@@ -117,215 +61,6 @@ class UIPresenterTest {
         assertNull(result.positions[0].previousPosition.debit)
         assertNull(result.positions[0].intraDayPositionGross.debitCap)
         assertNull(result.positions[0].intraDayPositionGross.debitPosition)
-    }
-
-    @Test
-    fun `should calculate totals for debit and credit`() {
-        val fundingParticipant = Participant.builder()
-                .id("funding")
-                .bic("funding")
-                .build()
-
-        val currentCredit = BigDecimal.TEN
-        val currentDebit = BigDecimal.valueOf(7)
-        val currentNet = BigDecimal.valueOf(3)
-
-        val previousCredit = BigDecimal.valueOf(20)
-        val previousDebit = BigDecimal.ONE
-        val previousNet = BigDecimal.valueOf(19)
-
-        val currentPositions = listOf(
-                ParticipantPosition.builder()
-                        .participantId("funding")
-                        .credit(currentCredit)
-                        .debit(currentDebit)
-                        .netPosition(currentNet)
-                        .build(),
-                ParticipantPosition.builder()
-                        .participantId("funded_one")
-                        .credit(currentCredit)
-                        .debit(currentDebit)
-                        .netPosition(currentNet)
-                        .build(),
-                ParticipantPosition.builder()
-                        .participantId("funded-two")
-                        .credit(currentCredit)
-                        .debit(currentDebit)
-                        .netPosition(currentNet)
-                        .build()
-        )
-
-        val previousPositions = listOf(
-                ParticipantPosition.builder()
-                        .participantId("funding")
-                        .credit(previousCredit)
-                        .debit(previousDebit)
-                        .netPosition(previousNet)
-                        .build(),
-                ParticipantPosition.builder()
-                        .participantId("funded_one")
-                        .credit(previousCredit)
-                        .debit(previousDebit)
-                        .netPosition(previousNet)
-                        .build(),
-                ParticipantPosition.builder()
-                        .participantId("funded-two")
-                        .credit(previousCredit)
-                        .debit(previousDebit)
-                        .netPosition(previousNet)
-                        .build()
-        )
-
-        val cycles = listOf(
-                Cycle.builder()
-                        .id("02")
-                        .status(CycleStatus.OPEN)
-                        .totalPositions(currentPositions)
-                        .build(),
-                Cycle.builder()
-                        .id("01")
-                        .status(CycleStatus.COMPLETED)
-                        .totalPositions(previousPositions)
-                        .build()
-        )
-
-        val participants = listOf(
-                fundingParticipant,
-                Participant.builder()
-                        .id("funded_one")
-                        .bic("funded_one")
-                        .fundingBic("funding")
-                        .build(),
-                Participant.builder()
-                        .id("funded_two")
-                        .bic("funded_two")
-                        .fundingBic("funding")
-                        .build()
-        )
-
-        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants,
-                fundingParticipant, emptyList())
-
-        val currentCreditSum = currentCredit.add(currentCredit)
-        val currentDebitSum = currentDebit.add(currentDebit)
-
-        assertEquals(currentDebitSum, result.currentPositionTotals.totalDebit)
-        assertEquals(currentCreditSum, result.currentPositionTotals.totalCredit)
-
-        val previousCreditSum = previousCredit.add(previousCredit)
-        val previousDebitSum = previousDebit.add(previousDebit)
-
-        assertEquals(previousDebitSum, result.previousPositionTotals.totalDebit)
-        assertEquals(previousCreditSum, result.previousPositionTotals.totalCredit)
-    }
-
-    @Test
-    fun `should get Fun ding Participant Settlement Dashboard DTO`() {
-        val cycles = MockCycles().cyclesWithPositions
-        val participants = MockParticipants().participants
-        val fundingParticipant = MockParticipants().getParticipant(false)
-        val intraDayPositionsGross = MockPositions().getIntraDaysFor(listOf("NDEASESSXXX", "HANDSESS", "ESSESESS"))
-
-        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDayPositionsGross)
-        assertNotNull(result.fundingParticipant)
-        assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
-        assertNotNull(result.intraDayPositionTotals)
-
-        assertNotNull(result.intraDayPositionTotals)
-        assertNotNull(result.currentPositionTotals)
-        assertNotNull(result.previousPositionTotals)
-
-        assertEquals(BigDecimal.valueOf(30), result.intraDayPositionTotals.totalDebitCap)
-        assertEquals(BigDecimal.valueOf(3), result.intraDayPositionTotals.totalDebitPosition)
-        assertEquals(BigDecimal.valueOf(11), result.currentPositionTotals.totalCredit)
-        assertEquals(BigDecimal.valueOf(21), result.currentPositionTotals.totalDebit)
-        assertEquals(BigDecimal.valueOf(11), result.previousPositionTotals.totalCredit)
-        assertEquals(BigDecimal.valueOf(21), result.previousPositionTotals.totalDebit)
-    }
-
-    @Test
-    fun `should get Self Funding Settlement Details DTO for 2 cycles`() {
-        val cycles = MockCycles().cycles
-        val positionDetails = MockPositions().positionDetails
-        val participant = MockParticipants().getParticipant(true)
-
-        `when`(selfFundingDetailsMapper
-                .presentFullParticipantSettlementDetails(any(), any(), any(), any(), any()))
-                .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
-
-        val result = uiPresenter.presentParticipantSettlementDetails(cycles,
-                positionDetails, participant, null, null)
-        assertEquals("02", result.currentCycle.id)
-        assertEquals(CycleStatus.OPEN, result.currentCycle.status)
-        assertEquals("01", result.previousCycle.id)
-        assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
-        assertEquals(BigDecimal.ZERO, result.currentPositionTotals.totalCredit)
-        assertEquals(BigDecimal.TEN, result.currentPositionTotals.totalDebit)
-        assertEquals(BigDecimal.TEN, result.currentPositionTotals.totalNetPosition)
-        assertEquals(BigDecimal.TEN, result.previousPositionTotals.totalCredit)
-        assertEquals(BigDecimal.TEN, result.previousPositionTotals.totalDebit)
-        assertEquals(BigDecimal.ZERO, result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigDecimal.TEN, result.currentPosition.customerCreditTransfer.debit)
-        assertEquals(BigDecimal.ONE, result.currentPosition.customerCreditTransfer.credit)
-        assertEquals(BigDecimal.valueOf(9), result.currentPosition.customerCreditTransfer.netPosition)
-        assertEquals(BigDecimal.TEN, result.previousPosition.customerCreditTransfer.debit)
-        assertEquals(BigDecimal.ONE, result.previousPosition.customerCreditTransfer.credit)
-        assertEquals(BigDecimal.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
-        assertEquals(BigDecimal.TEN, result.currentPosition.paymentReturn.debit)
-        assertEquals(BigDecimal.TEN, result.currentPosition.paymentReturn.credit)
-        assertEquals(BigDecimal.ZERO, result.currentPosition.paymentReturn.netPosition)
-        assertEquals(BigDecimal.TEN, result.previousPosition.paymentReturn.debit)
-        assertEquals(BigDecimal.TEN, result.previousPosition.paymentReturn.credit)
-        assertEquals(BigDecimal.ZERO, result.previousPosition.paymentReturn.netPosition)
-        assertEquals("NDEASESSXXX", result.participant.bic)
-        assertEquals("NDEASESSXXX", result.participant.id)
-        assertEquals("Nordea", result.participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.participant.status)
-        assertNull(result.participant.suspendedTime)
-
-        verify(selfFundingDetailsMapper).presentFullParticipantSettlementDetails(any(), any(), any(), any(), any())
-    }
-
-    @Test
-    fun `should get Self Funding Settlement Details DTO for 1 cycle`() {
-        val cycles = listOf(
-                Cycle.builder()
-                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
-                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                        .id("01")
-                        .status(CycleStatus.COMPLETED)
-                        .build())
-        val positionDetails = MockPositions().positionDetails
-        val participant = MockParticipants().getParticipant(true)
-
-        `when`(selfFundingDetailsMapper
-                .presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any()))
-                .thenReturn(MockDashboardModels().getSelfFundingDetailsDtoForOneCycle())
-
-        val result = uiPresenter.presentParticipantSettlementDetails(cycles, positionDetails, participant,
-                null, null)
-        assertNull(result.currentCycle)
-        assertEquals("01", result.previousCycle.id)
-        assertEquals(CycleStatus.COMPLETED, result.previousCycle.status)
-        assertNull(result.currentPositionTotals)
-
-        assertEquals(BigDecimal.TEN, result.previousPositionTotals.totalCredit)
-        assertEquals(BigDecimal.TEN, result.previousPositionTotals.totalDebit)
-        assertEquals(BigDecimal.ZERO, result.previousPositionTotals.totalNetPosition)
-        assertEquals(BigDecimal.TEN, result.previousPosition.customerCreditTransfer.debit)
-        assertEquals(BigDecimal.ONE, result.previousPosition.customerCreditTransfer.credit)
-        assertEquals(BigDecimal.valueOf(9), result.previousPosition.customerCreditTransfer.netPosition)
-        assertEquals(BigDecimal.TEN, result.previousPosition.paymentReturn.debit)
-        assertEquals(BigDecimal.TEN, result.previousPosition.paymentReturn.credit)
-        assertEquals(BigDecimal.ZERO, result.previousPosition.paymentReturn.netPosition)
-
-        assertEquals("NDEASESSXXX", result.participant.bic)
-        assertEquals("NDEASESSXXX", result.participant.id)
-        assertEquals("Nordea", result.participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.participant.status)
-        assertNull(result.participant.suspendedTime)
-
-        verify(selfFundingDetailsMapper).presentOneCycleParticipantSettlementDetails(any(), any(), any(), any(), any())
     }
 
     @Test

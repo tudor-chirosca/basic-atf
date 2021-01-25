@@ -5,5 +5,6 @@ import java.util.List;
 
 public interface PositionRepository extends CrossproductRepository {
 
-  List<PositionDetails> findByParticipantId(String participantId);
+  List<ParticipantPosition> findByParticipantId(String schemeParticipantIdentifier);
+
 }

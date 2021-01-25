@@ -18,6 +18,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
+import com.vocalink.crossproduct.domain.position.Payment
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
@@ -25,7 +26,6 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
-import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -33,10 +33,6 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
-import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
-import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto
-import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
-import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
@@ -73,417 +69,6 @@ class DTOMapperTest {
         assertThat(dto.cutOffTime).isEqualTo(cutoffTime)
         assertThat(dto.settlementTime).isEqualTo(settlementTime)
         assertThat(dto.status).isEqualTo(status)
-    }
-
-    @Test
-    fun `should map all Total Position fields with no intra-days`() {
-        val bic = "any_bic"
-        val participantId = "any_id"
-        val name = "any_name"
-        val fundingBic = "any_funding_bic"
-        val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
-
-        val credit = BigDecimal.TEN
-        val debit = BigDecimal.TEN
-        val netPosition = BigDecimal.TEN
-
-        val totalPositions: List<ParticipantPosition> = listOf(
-                ParticipantPosition.builder()
-                        .participantId(participantId)
-                        .credit(credit)
-                        .debit(debit)
-                        .netPosition(netPosition)
-                        .build())
-
-        val participant = Participant.builder()
-                .id(participantId)
-                .bic(bic)
-                .status(participantStatus)
-                .name(name)
-                .suspendedTime(suspendedTime)
-                .fundingBic(fundingBic)
-                .build()
-
-        val currentCycleId = "anyId"
-        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleStatus = CycleStatus.COMPLETED
-
-        val currentCycle = Cycle.builder()
-                .id(currentCycleId)
-                .cutOffTime(currentCycleCutoffTime)
-                .settlementTime(currentCycleSettlementTime)
-                .status(currentCycleStatus)
-                .totalPositions(totalPositions)
-                .build()
-
-        val previousCycleId = "anyId"
-        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleStatus = CycleStatus.COMPLETED
-
-        val previousCycle = Cycle.builder()
-                .id(previousCycleId)
-                .cutOffTime(previousCycleCutoffTime)
-                .settlementTime(previousCycleSettlementTime)
-                .totalPositions(totalPositions)
-                .status(previousCycleStatus)
-                .build()
-
-        val dto = MAPPER.toDto(participant, currentCycle, previousCycle, participantId)
-        assertThat(dto.participant.bic).isEqualTo(bic)
-        assertThat(dto.participant.id).isEqualTo(participantId)
-        assertThat(dto.participant.name).isEqualTo(name)
-        assertThat(dto.participant.status).isEqualTo(participantStatus)
-        assertThat(dto.participant.suspendedTime).isEqualTo(suspendedTime)
-        assertThat(dto.participant.fundingBic).isEqualTo(fundingBic)
-
-        assertThat(dto.currentPosition.credit).isEqualTo(credit)
-        assertThat(dto.currentPosition.debit).isEqualTo(debit)
-        assertThat(dto.currentPosition.netPosition).isEqualTo(netPosition)
-
-        assertThat(dto.previousPosition.credit).isEqualTo(credit)
-        assertThat(dto.previousPosition.debit).isEqualTo(debit)
-        assertThat(dto.previousPosition.netPosition).isEqualTo(netPosition)
-    }
-
-    @Test
-    fun `should map all Total Position fields with intra-days`() {
-        val bic = "any_bic"
-        val participantId = "any_id"
-        val name = "any_name"
-        val fundingBic = "any_funding_bic"
-        val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
-
-        val credit = BigDecimal.TEN
-        val debit = BigDecimal.TEN
-        val netPosition = BigDecimal.TEN
-
-        val totalPositions: List<ParticipantPosition> = listOf(
-                ParticipantPosition.builder()
-                        .participantId(participantId)
-                        .credit(credit)
-                        .debit(debit)
-                        .netPosition(netPosition)
-                        .build())
-
-        val participant = Participant.builder()
-                .id(participantId)
-                .bic(bic)
-                .status(participantStatus)
-                .name(name)
-                .suspendedTime(suspendedTime)
-                .fundingBic(fundingBic)
-                .build()
-
-        val currentCycleId = "anyId"
-        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleStatus = CycleStatus.COMPLETED
-
-        val currentCycle = Cycle.builder()
-                .id(currentCycleId)
-                .cutOffTime(currentCycleCutoffTime)
-                .settlementTime(currentCycleSettlementTime)
-                .status(currentCycleStatus)
-                .totalPositions(totalPositions)
-                .build()
-
-        val previousCycleId = "anyId"
-        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleStatus = CycleStatus.COMPLETED
-
-        val previousCycle = Cycle.builder()
-                .id(previousCycleId)
-                .cutOffTime(previousCycleCutoffTime)
-                .settlementTime(previousCycleSettlementTime)
-                .totalPositions(totalPositions)
-                .status(previousCycleStatus)
-                .build()
-
-        val debitCap = BigDecimal.TEN
-        val debitPosition = BigDecimal.TEN
-
-        val intraDays: List<IntraDayPositionGross> = listOf(
-                IntraDayPositionGross.builder()
-                        .debitParticipantId(participantId)
-                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
-                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
-                        .build()
-        )
-
-        val dto = MAPPER.toDto(participant, currentCycle, previousCycle, intraDays, participantId)
-        assertThat(dto.participant.bic).isEqualTo(bic)
-        assertThat(dto.participant.id).isEqualTo(participantId)
-        assertThat(dto.participant.name).isEqualTo(name)
-        assertThat(dto.participant.status).isEqualTo(participantStatus)
-        assertThat(dto.participant.suspendedTime).isEqualTo(suspendedTime)
-        assertThat(dto.participant.fundingBic).isEqualTo(fundingBic)
-
-        assertThat(dto.currentPosition.credit).isEqualTo(credit)
-        assertThat(dto.currentPosition.debit).isEqualTo(debit)
-        assertThat(dto.currentPosition.netPosition).isEqualTo(netPosition)
-
-        assertThat(dto.previousPosition.credit).isEqualTo(credit)
-        assertThat(dto.previousPosition.debit).isEqualTo(debit)
-        assertThat(dto.previousPosition.netPosition).isEqualTo(netPosition)
-
-        assertThat(dto.intraDayPositionGross.debitCap).isEqualTo(debitCap)
-        assertThat(dto.intraDayPositionGross.debitPosition).isEqualTo(debitPosition)
-    }
-
-    @Test
-    fun `should map all Settlement Dashboard Dto fields with no intra-days`() {
-        val bic = "any_bic"
-        val participantId = "any_id"
-
-        val name = "any_name"
-        val fundingBic = "any_funding_bic"
-        val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
-
-        val credit = BigDecimal.TEN
-        val debit = BigDecimal.TEN
-        val netPosition = BigDecimal.TEN
-
-        val participant = ParticipantDto.builder()
-                .id(participantId)
-                .bic(bic)
-                .status(participantStatus)
-                .name(name)
-                .suspendedTime(suspendedTime)
-                .fundingBic(fundingBic)
-                .build()
-
-        val positions = listOf(
-                ParticipantPosition.builder()
-                        .participantId(participantId)
-                        .credit(credit)
-                        .debit(debit)
-                        .netPosition(netPosition)
-                        .build()
-        )
-
-        val position = ParticipantPositionDto.builder()
-                .credit(credit)
-                .debit(debit)
-                .netPosition(netPosition)
-                .build()
-
-        val positionsDto: List<TotalPositionDto> = listOf(
-                TotalPositionDto.builder()
-                        .participant(participant)
-                        .currentPosition(position)
-                        .previousPosition(position)
-                        .build()
-        )
-
-        val currentCycleId = "any_id"
-        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleStatus = CycleStatus.COMPLETED
-
-        val currentCycle = Cycle.builder()
-                .id(currentCycleId)
-                .cutOffTime(currentCycleCutoffTime)
-                .settlementTime(currentCycleSettlementTime)
-                .status(currentCycleStatus)
-                .totalPositions(positions)
-                .build()
-
-        val previousCycleId = "anyId"
-        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleStatus = CycleStatus.OPEN
-
-        val previousCycle = Cycle.builder()
-                .id(previousCycleId)
-                .cutOffTime(previousCycleCutoffTime)
-                .settlementTime(previousCycleSettlementTime)
-                .totalPositions(positions)
-                .status(previousCycleStatus)
-                .build()
-
-        val dto = MAPPER.toDto(currentCycle, previousCycle, positionsDto)
-
-        assertThat(dto.currentCycle.id).isEqualTo(currentCycleId)
-        assertThat(dto.currentCycle.cutOffTime).isEqualTo(currentCycleCutoffTime)
-        assertThat(dto.currentCycle.settlementTime).isEqualTo(currentCycleSettlementTime)
-        assertThat(dto.currentCycle.status).isEqualTo(currentCycleStatus)
-
-        assertThat(dto.previousCycle.id).isEqualTo(previousCycleId)
-        assertThat(dto.previousCycle.cutOffTime).isEqualTo(previousCycleCutoffTime)
-        assertThat(dto.previousCycle.settlementTime).isEqualTo(previousCycleSettlementTime)
-        assertThat(dto.previousCycle.status).isEqualTo(previousCycleStatus)
-
-        assertThat(dto.positions.size).isEqualTo(1)
-
-        assertThat(dto.positions[0].previousPosition.netPosition).isEqualTo(netPosition)
-        assertThat(dto.positions[0].previousPosition.credit).isEqualTo(netPosition)
-        assertThat(dto.positions[0].previousPosition.debit).isEqualTo(netPosition)
-
-        assertThat(dto.positions[0].currentPosition.netPosition).isEqualTo(netPosition)
-        assertThat(dto.positions[0].currentPosition.credit).isEqualTo(netPosition)
-        assertThat(dto.positions[0].currentPosition.debit).isEqualTo(netPosition)
-    }
-
-    @Test
-    fun `should map all Settlement Dashboard Dto fields with intra-days`() {
-        val bic = "any_bic"
-        val participantId = "any_id"
-        val secondParticipantId = "any_id_2"
-
-        val name = "any_name"
-        val fundingBic = "any_funding_bic"
-        val participantStatus = ParticipantStatus.ACTIVE
-        val suspendedTime = ZonedDateTime.of(2020, Month.JULY.value, 10, 10, 10, 0, 0, ZoneId.of("UTC"))
-
-        val credit = BigDecimal.TEN
-        val debit = BigDecimal.TEN
-        val netPosition = BigDecimal.TEN
-
-        val participant1 = ParticipantDto.builder()
-                .id(participantId)
-                .bic(bic)
-                .status(participantStatus)
-                .name(name)
-                .suspendedTime(suspendedTime)
-                .fundingBic(fundingBic)
-                .build()
-
-        val positions = listOf(
-                ParticipantPosition.builder()
-                        .participantId(participantId)
-                        .credit(credit)
-                        .debit(debit)
-                        .netPosition(netPosition)
-                        .build(),
-                ParticipantPosition.builder()
-                        .participantId(secondParticipantId)
-                        .credit(credit)
-                        .debit(debit)
-                        .netPosition(netPosition)
-                        .build()
-        )
-
-        val position1 = ParticipantPositionDto.builder()
-                .credit(credit)
-                .debit(debit)
-                .netPosition(netPosition)
-                .build()
-
-        val participant2 = ParticipantDto.builder()
-                .id(secondParticipantId)
-                .bic(bic)
-                .status(participantStatus)
-                .name(name)
-                .suspendedTime(suspendedTime)
-                .fundingBic(fundingBic)
-                .build()
-
-        val position2 = ParticipantPositionDto.builder()
-                .credit(credit)
-                .debit(debit)
-                .netPosition(netPosition)
-                .build()
-
-        val debitCap = BigDecimal.TEN
-        val debitPosition = BigDecimal.TEN
-
-        val intraDay = IntraDayPositionGrossDto.builder()
-                .debitCap(debitCap)
-                .debitPosition(debitPosition)
-                .build()
-
-        val positionsDto: List<TotalPositionDto> = listOf(
-                TotalPositionDto.builder()
-                        .participant(participant1)
-                        .currentPosition(position1)
-                        .previousPosition(position1)
-                        .intraDayPositionGross(intraDay)
-                        .build(),
-                TotalPositionDto.builder()
-                        .participant(participant2)
-                        .currentPosition(position2)
-                        .previousPosition(position2)
-                        .intraDayPositionGross(intraDay)
-                        .build()
-        )
-
-        val currentCycleId = "any_id"
-        val currentCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val currentCycleStatus = CycleStatus.COMPLETED
-
-        val currentCycle = Cycle.builder()
-                .id(currentCycleId)
-                .cutOffTime(currentCycleCutoffTime)
-                .settlementTime(currentCycleSettlementTime)
-                .status(currentCycleStatus)
-                .totalPositions(positions)
-                .build()
-
-        val previousCycleId = "anyId"
-        val previousCycleCutoffTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleSettlementTime = ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        val previousCycleStatus = CycleStatus.OPEN
-
-        val previousCycle = Cycle.builder()
-                .id(previousCycleId)
-                .cutOffTime(previousCycleCutoffTime)
-                .settlementTime(previousCycleSettlementTime)
-                .totalPositions(positions)
-                .status(previousCycleStatus)
-                .build()
-
-        val intraDays: List<IntraDayPositionGross> = listOf(
-                IntraDayPositionGross.builder()
-                        .debitParticipantId(participantId)
-                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
-                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
-                        .build(),
-                IntraDayPositionGross.builder()
-                        .debitParticipantId(secondParticipantId)
-                        .debitCapAmount(BPSAmount(debitCap, "SEK"))
-                        .debitPositionAmount(BPSAmount(debitPosition, "SEK"))
-                        .build()
-        )
-
-        val dto = MAPPER.toDto(currentCycle, previousCycle, positionsDto, participant1, intraDays)
-
-        assertThat(dto.currentCycle.id).isEqualTo(currentCycleId)
-        assertThat(dto.currentCycle.cutOffTime).isEqualTo(currentCycleCutoffTime)
-        assertThat(dto.currentCycle.settlementTime).isEqualTo(currentCycleSettlementTime)
-        assertThat(dto.currentCycle.status).isEqualTo(currentCycleStatus)
-
-        assertThat(dto.previousCycle.id).isEqualTo(previousCycleId)
-        assertThat(dto.previousCycle.cutOffTime).isEqualTo(previousCycleCutoffTime)
-        assertThat(dto.previousCycle.settlementTime).isEqualTo(previousCycleSettlementTime)
-        assertThat(dto.previousCycle.status).isEqualTo(previousCycleStatus)
-
-        assertThat(dto.positions.size).isEqualTo(2)
-
-        assertThat(dto.positions[0].previousPosition.netPosition).isEqualTo(netPosition)
-        assertThat(dto.positions[0].previousPosition.credit).isEqualTo(netPosition)
-        assertThat(dto.positions[0].previousPosition.debit).isEqualTo(netPosition)
-
-        assertThat(dto.positions[0].currentPosition.netPosition).isEqualTo(netPosition)
-        assertThat(dto.positions[0].currentPosition.credit).isEqualTo(netPosition)
-        assertThat(dto.positions[0].currentPosition.debit).isEqualTo(netPosition)
-        assertThat(dto.positions[0].previousPosition.debit).isEqualTo(netPosition)
-
-        assertThat(dto.positions[0].intraDayPositionGross.debitPosition).isEqualTo(debitPosition)
-        assertThat(dto.positions[0].intraDayPositionGross.debitCap).isEqualTo(debitCap)
-
-        assertThat(dto.fundingParticipant.bic).isEqualTo(bic)
-        assertThat(dto.fundingParticipant.id).isEqualTo(participantId)
-        assertThat(dto.fundingParticipant.name).isEqualTo(name)
-        assertThat(dto.fundingParticipant.status).isEqualTo(participantStatus)
-        assertThat(dto.fundingParticipant.suspendedTime).isEqualTo(suspendedTime)
-        assertThat(dto.fundingParticipant.fundingBic).isEqualTo(fundingBic)
     }
 
     @Test
@@ -732,7 +317,7 @@ class DTOMapperTest {
                 emptyList()
         )
         val participant = Participant("participantId", "participantId", "name",
-        "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
         val counterparty = Participant("counterpartyId", "counterpartyId", "counterpartyName",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
         val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
@@ -848,15 +433,15 @@ class DTOMapperTest {
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
         val transaction = Transaction(
-            "instructionId",
+                "instructionId",
                 amount,
                 "fileName",
                 "batchId",
-                LocalDate.of(2021, 1,15),
+                LocalDate.of(2021, 1, 15),
                 "receiverEntityName",
                 "receiverEntityBic",
                 "receiverIban",
-                LocalDate.of(2021, 1,15),
+                LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "status",
@@ -879,7 +464,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map TransactionEnquirySearchCriteria fields`() {
-        val date = LocalDate.of(2021, 1,15)
+        val date = LocalDate.of(2021, 1, 15)
         val request = TransactionEnquirySearchRequest(
                 0, 0, listOf("sortBy"), date, date,
                 listOf("cycle_id"),
@@ -930,5 +515,167 @@ class DTOMapperTest {
         val bps = AlertPriorityData("name", null, true)
         val entity = MAPPER.toDto(bps)
         assertNull(entity.threshold)
+    }
+
+    @Test
+    fun `should map ParticipantDashboardSettlementDetailsDto fields with null threshold`() {
+        val previousCycle = Cycle("cycleId",
+                ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                CycleStatus.COMPLETED,
+                false,
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                emptyList()
+        )
+        val currentCycle = Cycle("cycleId",
+                ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                CycleStatus.OPEN,
+                false,
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                emptyList()
+        )
+        val count: Long = 100
+        val paymentSentAmount = Amount(BigDecimal(100), "SEK")
+        val paymentSent = Payment(
+                count, paymentSentAmount
+        )
+        val paymentReceivedAmount = Amount(BigDecimal(500), "SEK")
+        val paymentReceived = Payment(
+                count, paymentReceivedAmount
+        )
+        val returnSentAmount = Amount(BigDecimal(300), "SEK")
+        val returnSent = Payment(
+                count, returnSentAmount
+        )
+        val returnReceivedAmount = Amount(BigDecimal(700), "SEK")
+        val returnReceived = Payment(
+                count, returnReceivedAmount
+        )
+        val netPositionAmount = Amount(BigDecimal(5000), "SEK")
+
+        val previousPosition = ParticipantPosition(
+                LocalDate.now(),
+                "participantId",
+                "cycleId",
+                "currency",
+                paymentSent, paymentReceived, returnSent, returnReceived, netPositionAmount
+        )
+
+        val currentPosition = ParticipantPosition(
+                LocalDate.now(),
+                "participantId",
+                "cycleId",
+                "currency",
+                paymentSent, paymentReceived, returnSent, returnReceived, netPositionAmount
+        )
+
+        val debitCapAmount = Amount(BigDecimal(1000), "SEK")
+        val debitPositionAmount = Amount(BigDecimal(2000), "SEK")
+
+        val intraDay = IntraDayPositionGross(
+                "schemeId",
+                "debitParticipantId",
+                LocalDate.now(), debitCapAmount, debitPositionAmount
+        )
+
+        val participant = Participant("participantId", "participantId", "name",
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+
+        val result = MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
+                participant, participant, intraDay)
+
+        assertThat(result.participant.bic).isEqualTo(participant.bic)
+        assertThat(result.participant.id).isEqualTo(participant.id)
+        assertThat(result.participant.name).isEqualTo(participant.name)
+        assertThat(result.participant.fundingBic).isEqualTo(participant.fundingBic)
+        assertThat(result.participant.suspendedTime).isEqualTo(participant.suspendedTime)
+        assertThat(result.participant.participantType).isEqualTo(participant.participantType.description)
+
+        assertThat(result.settlementBank.bic).isEqualTo(participant.bic)
+        assertThat(result.settlementBank.id).isEqualTo(participant.id)
+        assertThat(result.settlementBank.name).isEqualTo(participant.name)
+        assertThat(result.settlementBank.fundingBic).isEqualTo(participant.fundingBic)
+        assertThat(result.settlementBank.suspendedTime).isEqualTo(participant.suspendedTime)
+        assertThat(result.settlementBank.participantType).isEqualTo(participant.participantType.description)
+
+        assertThat(result.intraDayPositionGross.debitPosition).isEqualTo(intraDay.debitPositionAmount.amount)
+        assertThat(result.intraDayPositionGross.debitCap).isEqualTo(intraDay.debitCapAmount.amount)
+
+        assertThat(result.currentCycle.id).isEqualTo(currentCycle.id)
+        assertThat(result.currentCycle.settlementTime).isEqualTo(currentCycle.settlementTime)
+        assertThat(result.currentCycle.cutOffTime).isEqualTo(currentCycle.cutOffTime)
+        assertThat(result.currentCycle.status).isEqualTo(currentCycle.status)
+
+        assertThat(result.previousCycle.id).isEqualTo(previousCycle.id)
+        assertThat(result.previousCycle.settlementTime).isEqualTo(previousCycle.settlementTime)
+        assertThat(result.previousCycle.cutOffTime).isEqualTo(previousCycle.cutOffTime)
+        assertThat(result.previousCycle.status).isEqualTo(previousCycle.status)
+
+        // Current Customer Credit Transfer
+        val currentDebitCCT = currentPosition.paymentSent.amount.amount
+        assertThat(result.currentPosition.customerCreditTransfer.debit).isEqualTo(currentDebitCCT)
+
+        val currentCreditCCT = currentPosition.paymentReceived.amount.amount
+        assertThat(result.currentPosition.customerCreditTransfer.credit).isEqualTo(currentCreditCCT)
+
+        val currentNetCCT = currentCreditCCT.subtract(currentDebitCCT)
+        assertThat(result.currentPosition.customerCreditTransfer.netPosition).isEqualTo(currentNetCCT)
+
+        // Current Payment Return
+        val currentDebitPR = currentPosition.returnSent.amount.amount
+        assertThat(result.currentPosition.paymentReturn.debit).isEqualTo(currentDebitPR)
+
+        val currentCreditPR = currentPosition.returnReceived.amount.amount
+        assertThat(result.currentPosition.paymentReturn.credit).isEqualTo(currentCreditPR)
+
+        val currentNetPR = currentCreditPR.subtract(currentDebitPR)
+        assertThat(result.currentPosition.paymentReturn.netPosition).isEqualTo(currentNetPR)
+
+        // Previous Customer Credit Transfer
+        val prevDebitCCT = currentPosition.paymentSent.amount.amount
+        assertThat(result.currentPosition.customerCreditTransfer.debit).isEqualTo(prevDebitCCT)
+
+        val prevCreditCCT = currentPosition.paymentReceived.amount.amount
+        assertThat(result.currentPosition.customerCreditTransfer.credit).isEqualTo(prevCreditCCT)
+
+        val prevNetCCT = prevCreditCCT.subtract(prevDebitCCT)
+        assertThat(result.currentPosition.customerCreditTransfer.netPosition).isEqualTo(prevNetCCT)
+
+        // Previous Payment Return
+        val prevDebitPR = currentPosition.returnSent.amount.amount
+        assertThat(result.currentPosition.paymentReturn.debit).isEqualTo(prevDebitPR)
+
+        val prevCreditPR = currentPosition.returnReceived.amount.amount
+        assertThat(result.currentPosition.paymentReturn.credit).isEqualTo(prevCreditPR)
+
+        val prevNetPR = prevCreditPR.subtract(prevDebitPR)
+        assertThat(result.currentPosition.paymentReturn.netPosition).isEqualTo(prevNetPR)
+
+        // Current Totals
+        val currPaymentCredit = currentPosition.paymentReceived.amount.amount
+        val currReturnCredit = currentPosition.returnReceived.amount.amount
+        val currTotalCredit = currPaymentCredit.add(currReturnCredit)
+        assertThat(result.currentPositionTotals.totalCredit).isEqualTo(currTotalCredit)
+
+        val currPaymentDebit = currentPosition.paymentSent.amount.amount
+        val currReturnDebit = currentPosition.returnSent.amount.amount
+        val currTotalDebit = currPaymentDebit.add(currReturnDebit)
+        assertThat(result.currentPositionTotals.totalDebit).isEqualTo(currTotalDebit)
+
+        assertThat(result.currentPositionTotals.totalNetPosition).isEqualTo(currentPosition.netPositionAmount.amount)
+
+        // Prev Totals
+        val prevPaymentCredit = previousPosition.paymentReceived.amount.amount
+        val prevReturnCredit = previousPosition.returnReceived.amount.amount
+        val prevTotalCredit = prevPaymentCredit.add(prevReturnCredit)
+        assertThat(result.previousPositionTotals.totalCredit).isEqualTo(prevTotalCredit)
+
+        val prevPaymentDebit = previousPosition.paymentSent.amount.amount
+        val prevReturnDebit = previousPosition.returnSent.amount.amount
+        val prevTotalDebit = prevPaymentDebit.add(prevReturnDebit)
+        assertThat(result.previousPositionTotals.totalDebit).isEqualTo(prevTotalDebit)
+
+        assertThat(result.previousPositionTotals.totalNetPosition).isEqualTo(previousPosition.netPositionAmount.amount)
     }
 }

@@ -7,15 +7,15 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionRepository
+import java.math.BigDecimal
+import java.time.LocalDate
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.math.BigDecimal
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @BPSTestConfiguration
 @Import(BPSPositionRepository::class)
@@ -26,8 +26,9 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
         const val REQUEST_JSON_POSITION_DETAILS: String = """ 
         {
             "schemeCode" : "P27-SEK",
-            "sessionCodes" : null,
-            "schemeParticipantIdentifier" : "NDEASESSXXX"
+            "currency" : null,
+            "participantIds" : ["NDEASESSXXX"],
+            "numberOfCycles" : null
         } 
         """
         const val REQUEST_JSON_INTRA_DAY_POSITION: String = """ 
@@ -54,22 +55,50 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
 
         const val VALID_POSITION_DETAILS_RESPONSE: String = """ 
         {
-            "schemeCode": "P27-SEK",
-            "schemeParticipantIdentifier": "NDEASESSXXX",
-            "sessionCode": "01",
-            "settlementIndicator": "2020081401",
-            "customerCreditTransfer": {
-                "credit": 6137142,
-                "debit": 2416676,
-                "netPosition": 3720466
-            },
-            "paymentReturn": {
-                "credit": 4809506,
-                "debit": 8433677,
-                "netPosition": -3624171
-            }
-        } 
-        """
+            "schemeId": "P27-SEK",
+            "mlSettlementPositions":
+            [
+                {
+                    "settlementDate": "2021-01-15",
+                    "participantId": "HANDSESS",
+                    "cycleId": "20210122001",
+                    "currency": "SEK",
+                    "paymentSent": {
+                        "count": 2,
+                        "amount": {
+                            "amount": 100.11,
+                            "currency": "SEK"
+                        }
+                    },
+                    "paymentReceived": {
+                        "count": 2,
+                        "amount": {
+                            "amount": 100.11,
+                            "currency": "SEK"
+                        }
+                    },
+                    "returnSent": {
+                        "count": 2,
+                        "amount": {
+                            "amount": 200.11,
+                            "currency": "SEK"
+                        }
+                    },
+                    "returnReceived": {
+                        "count": 2,
+                        "amount": {
+                            "amount": 200.11,
+                            "currency": "SEK"
+                        }
+                    },
+                    "netPositionAmount": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                }
+            ]
+        }
+        }"""
     }
 
     @AfterEach
@@ -80,18 +109,37 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
     @Test
     fun `should pass position details with success`() {
         mockServer.stubFor(
-                post(urlEqualTo("/positionDetails"))
+                post(urlEqualTo("/settlement/runningSettlementPositions/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_POSITION_DETAILS_RESPONSE))
                         .withRequestBody(equalToJson(REQUEST_JSON_POSITION_DETAILS)))
 
-        val result = client.findByParticipantId("NDEASESSXXX")
+        val result = client.findByParticipantId("NDEASESSXXX")[0]
 
-        assertEquals(BigDecimal.valueOf(6137142), result[0].customerCreditTransfer.credit)
-        assertEquals(BigDecimal.valueOf(8433677), result[0].paymentReturn.debit)
-        assertEquals(BigDecimal.valueOf(-3624171), result[0].paymentReturn.netPosition)
-        assertEquals("01", result[0].sessionCode)
+        assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, 1, 15))
+        assertThat(result.participantId).isEqualTo("HANDSESS")
+        assertThat(result.cycleId).isEqualTo("20210122001")
+        assertThat(result.currency).isEqualTo("SEK")
+
+        assertThat(result.paymentSent.count).isEqualTo(2)
+        assertThat(result.paymentSent.amount.amount).isEqualTo(BigDecimal.valueOf(100.11))
+        assertThat(result.paymentSent.amount.currency).isEqualTo("SEK")
+
+        assertThat(result.paymentReceived.count).isEqualTo(2)
+        assertThat(result.paymentReceived.amount.amount).isEqualTo(BigDecimal.valueOf(100.11))
+        assertThat(result.paymentReceived.amount.currency).isEqualTo("SEK")
+
+        assertThat(result.returnSent.count).isEqualTo(2)
+        assertThat(result.returnSent.amount.amount).isEqualTo(BigDecimal.valueOf(200.11))
+        assertThat(result.returnSent.amount.currency).isEqualTo("SEK")
+
+        assertThat(result.returnReceived.count).isEqualTo(2)
+        assertThat(result.returnReceived.amount.amount).isEqualTo(BigDecimal.valueOf(200.11))
+        assertThat(result.returnReceived.amount.currency).isEqualTo("SEK")
+
+        assertThat(result.netPositionAmount.amount).isEqualTo(BigDecimal.valueOf(2145.41))
+        assertThat(result.netPositionAmount.currency).isEqualTo("SEK")
     }
 }

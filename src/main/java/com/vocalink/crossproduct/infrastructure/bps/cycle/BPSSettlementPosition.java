@@ -3,11 +3,9 @@ package com.vocalink.crossproduct.infrastructure.bps.cycle;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class BPSSettlementPosition {
 
   private final LocalDate settlementDate;

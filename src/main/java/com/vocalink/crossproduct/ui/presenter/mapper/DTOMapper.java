@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
-import com.vocalink.crossproduct.domain.position.PositionDetails;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
@@ -24,6 +23,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertPriorityDataDto;
@@ -76,15 +76,8 @@ public interface DTOMapper {
 
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
-  ParticipantPositionDto toDto(ParticipantPosition participant);
-
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);
-
-  @Mapping(target = "totalCredit", source = "details", qualifiedByName = "countCredit")
-  @Mapping(target = "totalDebit", source = "details", qualifiedByName = "countDebit")
-  @Mapping(target = "totalNetPosition", source = "details", qualifiedByName = "countNetPosition")
-  PositionDetailsTotalsDto toDto(PositionDetailsDto details);
 
   ParticipantDto toDto(Participant participant);
 
@@ -102,31 +95,11 @@ public interface DTOMapper {
 
   ParticipantReferenceDto toDto(ParticipantReference participant);
 
-  PositionDetailsDto toDto(PositionDetails positionDetails);
-
   @Mappings({
       @Mapping(target = "debitCap", source = "debitCapAmount.amount"),
       @Mapping(target = "debitPosition", source = "debitPositionAmount.amount")
   })
   IntraDayPositionGrossDto toDto(IntraDayPositionGross intraDayPositionGross);
-
-  @Named("countCredit")
-  default BigDecimal countCredit(PositionDetailsDto details) {
-    return details.getCustomerCreditTransfer().getCredit()
-        .add(details.getPaymentReturn().getCredit());
-  }
-
-  @Named("countDebit")
-  default BigDecimal countDebit(PositionDetailsDto details) {
-    return details.getCustomerCreditTransfer().getDebit()
-        .add(details.getPaymentReturn().getDebit());
-  }
-
-  @Named("countNetPosition")
-  default BigDecimal countNetPosition(PositionDetailsDto details) {
-    return details.getCustomerCreditTransfer().getNetPosition()
-        .add(details.getPaymentReturn().getNetPosition());
-  }
 
   @Mapping(target = "participant", source = "participant")
   @Mapping(target = "currentPosition", source = "currentCycle.totalPositions", qualifiedByName = "generatePosition")
@@ -199,16 +172,16 @@ public interface DTOMapper {
   }
 
   default PositionDetailsTotalsDto countPositionTotals(List<ParticipantPositionDto> positions) {
-    return PositionDetailsTotalsDto.builder()
-        .totalCredit(positions.stream()
+    return new PositionDetailsTotalsDto(
+        positions.stream()
             .map(ParticipantPositionDto::getCredit)
             .filter(Objects::nonNull)
-            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
-        .totalDebit(positions.stream()
+            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO),
+        positions.stream()
             .map(ParticipantPositionDto::getDebit)
             .filter(Objects::nonNull)
-            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
-        .build();
+            .reduce(BigDecimal::add).orElse(BigDecimal.ZERO)
+    );
   }
 
   @Named("countIntraDayTotals")
@@ -284,4 +257,95 @@ public interface DTOMapper {
   TransactionDto toDto(Transaction transaction);
 
   AlertPriorityDataDto toDto(AlertPriorityData priorityData);
+
+  @Mappings({
+      @Mapping(target = "customerCreditTransfer", source = "position", qualifiedByName = "toCustomerCreditTransfer"),
+      @Mapping(target = "paymentReturn", source = "position", qualifiedByName = "toPaymentReturn")
+  })
+  PositionDetailsDto toPositionDetailsDto(ParticipantPosition position);
+
+  @Named("toCustomerCreditTransfer")
+  default ParticipantPositionDto toCustomerCreditTransfer(ParticipantPosition position) {
+    BigDecimal debit = position.getPaymentSent().getAmount().getAmount();
+    BigDecimal credit = position.getPaymentReceived().getAmount().getAmount();
+
+    return new ParticipantPositionDto(credit, debit, credit.subtract(debit));
+  }
+
+  @Named("toPaymentReturn")
+  default ParticipantPositionDto toPaymentReturn(ParticipantPosition position) {
+    BigDecimal debit = position.getReturnSent().getAmount().getAmount();
+    BigDecimal credit = position.getReturnReceived().getAmount().getAmount();
+
+    return new ParticipantPositionDto(credit, debit, credit.subtract(debit));
+  }
+
+  @Mappings({
+      @Mapping(target = "credit", source = "position", qualifiedByName = "countCredit"),
+      @Mapping(target = "debit", source = "position", qualifiedByName = "countDebit"),
+      @Mapping(target = "netPosition", source = "netPositionAmount.amount")
+  })
+  ParticipantPositionDto toDto(ParticipantPosition position);
+
+  @Named("countCredit")
+  default BigDecimal countCredit(ParticipantPosition position) {
+    return position.getPaymentReceived().getAmount().getAmount()
+        .add(position.getReturnReceived().getAmount().getAmount());
+  }
+
+  @Named("countDebit")
+  default BigDecimal countDebit(ParticipantPosition position) {
+    return position.getPaymentSent().getAmount().getAmount()
+        .add(position.getReturnSent().getAmount().getAmount());
+  }
+
+  @Mappings({
+      @Mapping(target = "totalCredit", source = "position", qualifiedByName = "countTotalCredit"),
+      @Mapping(target = "totalDebit", source = "position", qualifiedByName = "countTotalDebit"),
+      @Mapping(target = "totalNetPosition", source = "netPositionAmount.amount")
+  })
+  PositionDetailsTotalsDto toTotalPositionDetailsDto(ParticipantPosition position);
+
+  @Named("countTotalCredit")
+  default BigDecimal countTotalCredit(ParticipantPosition position) {
+    BigDecimal paymentCredit = position.getPaymentReceived().getAmount().getAmount();
+    BigDecimal returnCredit = position.getReturnReceived().getAmount().getAmount();
+    return paymentCredit.add(returnCredit);
+  }
+
+  @Named("countTotalDebit")
+  default BigDecimal countTotalDebit(ParticipantPosition position) {
+    BigDecimal paymentDebit = position.getPaymentSent().getAmount().getAmount();
+    BigDecimal returnDebit = position.getReturnSent().getAmount().getAmount();
+    return paymentDebit.add(returnDebit);
+  }
+
+  @Mappings({
+      @Mapping(target = "participant", source = "participant"),
+      @Mapping(target = "currentCycle", source = "currentCycle"),
+      @Mapping(target = "previousCycle", source = "previousCycle"),
+      @Mapping(target = "currentPosition", source = "currentPosition"),
+      @Mapping(target = "previousPosition", source = "previousPosition"),
+      @Mapping(target = "previousPositionTotals", source = "currentPosition"),
+      @Mapping(target = "currentPositionTotals", source = "previousPosition")
+  })
+  ParticipantDashboardSettlementDetailsDto toDto(Cycle currentCycle, Cycle previousCycle,
+      ParticipantPosition currentPosition, ParticipantPosition previousPosition,
+      Participant participant);
+
+  @Mappings({
+      @Mapping(target = "participant", source = "participant"),
+      @Mapping(target = "currentCycle", source = "currentCycle"),
+      @Mapping(target = "previousCycle", source = "previousCycle"),
+      @Mapping(target = "currentPosition", source = "currentPosition"),
+      @Mapping(target = "previousPosition", source = "previousPosition"),
+      @Mapping(target = "previousPositionTotals", source = "currentPosition"),
+      @Mapping(target = "currentPositionTotals", source = "previousPosition"),
+      @Mapping(target = "settlementBank", source = "fundingParticipant"),
+      @Mapping(target = "intraDayPositionGross", source = "intradayPositionGross")
+  })
+  ParticipantDashboardSettlementDetailsDto toDto(Cycle currentCycle, Cycle previousCycle,
+      ParticipantPosition currentPosition, ParticipantPosition previousPosition,
+      Participant participant, Participant fundingParticipant,
+      IntraDayPositionGross intradayPositionGross);
 }

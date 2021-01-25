@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.cycle;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.SCHEME_CODE;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
@@ -14,13 +15,12 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.bps.position.BPSGetPositionsRequest;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
@@ -29,7 +29,6 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Repository
-@Slf4j
 public class BPSCycleRepository implements CycleRepository {
 
   private final BPSProperties bpsProperties;
@@ -75,7 +74,7 @@ public class BPSCycleRepository implements CycleRepository {
                 .isNextDayCycle(bpsCycle.getIsNextDayCycle())
                 .totalPositions(positions.stream()
                     .filter(pos -> pos.getCycleId().equals(bpsCycle.getCycleId()))
-                    .map(BPSMAPPER::toEntity)
+                    .map(MAPPER::toEntity)
                     .collect(toList()))
                 .build())
         .collect(toList());
@@ -114,14 +113,14 @@ public class BPSCycleRepository implements CycleRepository {
   }
 
   private BPSSettlementPositionWrapper getSettlementPositions() {
-    final BPSGetPositionsRequest request = BPSGetPositionsRequest.builder()
+    final BPSPositionsRequest request = BPSPositionsRequest.builder()
         .schemeCode(SCHEME_CODE)
         .build();
 
     return webClient.post()
         .uri(resolve(SETTLEMENT_POSITION_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(request), BPSGetPositionsRequest.class))
+        .body(fromPublisher(Mono.just(request), BPSPositionsRequest.class))
         .retrieve()
         .bodyToMono(BPSSettlementPositionWrapper.class)
         .retryWhen(retryWebClientConfig.fixedRetry())

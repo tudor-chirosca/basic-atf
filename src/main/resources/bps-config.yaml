@@ -13,9 +13,6 @@ bps-config:
     settlement-position-path:
       path: /settlement/runningSettlementPositions/readAll
       base: MOCK
-    position-details-path:
-      path: /positionDetails
-      base: MOCK
     participants-path:
       path: /participants/{schemeCode}/readAll
       base: MOCK

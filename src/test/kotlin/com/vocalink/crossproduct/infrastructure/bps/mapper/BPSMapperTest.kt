@@ -32,14 +32,14 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageT
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -72,43 +72,44 @@ class BPSMapperTest {
         val amount0 = BPSAmount(BigDecimal.ZERO, "SEK")
         val netAmount = BPSAmount(BigDecimal.valueOf(50), "SEK")
 
-        val paymentReceived = BPSPayment.builder()
-                .count(234)
-                .amount(amount10)
-                .build()
-        val paymentSent = BPSPayment.builder()
-                .count(234)
-                .amount(amount1)
-                .build()
-        val returnReceived = BPSPayment.builder()
-                .count(234)
-                .amount(amount100)
-                .build()
-        val returnSent = BPSPayment.builder()
-                .count(234)
-                .amount(amount0)
-                .build()
+        val paymentReceived = BPSPayment (234, amount10)
+        val paymentSent = BPSPayment(234, amount1)
+        val returnReceived = BPSPayment(234, amount100)
+        val returnSent = BPSPayment(234, amount0)
 
-        val bps = BPSSettlementPosition.builder()
-                .participantId("participantId")
-                .netPositionAmount(netAmount)
-                .paymentReceived(paymentReceived)
-                .paymentSent(paymentSent)
-                .returnReceived(returnReceived)
-                .returnSent(returnSent)
-                .build()
+        val bps = BPSSettlementPosition(
+                LocalDate.now(),
+                "participantId",
+                "cycleId",
+                "SEK",
+                paymentSent, paymentReceived, returnSent, returnReceived, netAmount
+        )
 
-        val entity = BPSMAPPER.toEntity(bps)
-
-        val expectedCredit = bps.paymentReceived.amount.amount
-                .add(bps.returnReceived.amount.amount)
-        val expectedDebit = bps.paymentSent.amount.amount
-                .add(bps.returnSent.amount.amount)
+        val entity = EntityMapper.MAPPER.toEntity(bps)
 
         assertThat(entity.participantId).isEqualTo(bps.participantId)
-        assertThat(entity.debit).isEqualTo(expectedDebit)
-        assertThat(entity.credit).isEqualTo(expectedCredit)
-        assertThat(entity.netPosition).isEqualTo(netAmount.amount)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
+        assertThat(entity.cycleId).isEqualTo(bps.cycleId)
+        assertThat(entity.currency).isEqualTo(bps.currency)
+
+        assertThat(entity.paymentSent.count).isEqualTo(bps.paymentSent.count)
+        assertThat(entity.paymentSent.amount.currency).isEqualTo(bps.paymentSent.amount.currency)
+        assertThat(entity.paymentSent.amount.amount).isEqualTo(bps.paymentSent.amount.amount)
+
+        assertThat(entity.paymentReceived.count).isEqualTo(bps.paymentReceived.count)
+        assertThat(entity.paymentReceived.amount.currency).isEqualTo(bps.paymentReceived.amount.currency)
+        assertThat(entity.paymentReceived.amount.amount).isEqualTo(bps.paymentReceived.amount.amount)
+
+        assertThat(entity.returnSent.count).isEqualTo(bps.returnSent.count)
+        assertThat(entity.returnSent.amount.currency).isEqualTo(bps.returnSent.amount.currency)
+        assertThat(entity.returnSent.amount.amount).isEqualTo(bps.returnSent.amount.amount)
+
+        assertThat(entity.returnReceived.count).isEqualTo(bps.returnReceived.count)
+        assertThat(entity.returnReceived.amount.currency).isEqualTo(bps.returnReceived.amount.currency)
+        assertThat(entity.returnReceived.amount.amount).isEqualTo(bps.returnReceived.amount.amount)
+
+        assertThat(entity.netPositionAmount.amount).isEqualTo(bps.netPositionAmount.amount)
+        assertThat(entity.netPositionAmount.currency).isEqualTo(bps.netPositionAmount.currency)
     }
 
     @Test

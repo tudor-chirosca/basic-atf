@@ -34,7 +34,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
 
   @Override
   public List<IntraDayPositionGross> findById(String participantId) {
-    IntraDayPositionRequest body = IntraDayPositionRequest.builder()
+    BPSIntraDayPositionRequest body = BPSIntraDayPositionRequest.builder()
         .schemeCode(BPSConstants.SCHEME_CODE)
         .participantId(participantId)
         .build();
@@ -42,7 +42,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
     return webClient.post()
         .uri(resolve(INTRA_DAY_POSITION_GROSS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(body), IntraDayPositionRequest.class))
+        .body(fromPublisher(Mono.just(body), BPSIntraDayPositionRequest.class))
         .retrieve()
         .bodyToFlux(BPSIntraDayPositionGross.class)
         .retryWhen(BPSRetryWebClientConfig.fixedRetry())

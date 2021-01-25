@@ -37,38 +37,4 @@ class MockCycles {
                     .status(CycleStatus.COMPLETED)
                     .build())
 
-    val cyclesWithPositions = listOf(
-            Cycle.builder()
-                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
-                    .id("02")
-                    .status(CycleStatus.OPEN)
-                    .totalPositions(listOf(
-                            MockPositions().getParticipantPosition(true),
-                            MockPositions().getParticipantPosition(false),
-                            ParticipantPosition.builder()
-                                    .participantId("ESSESESS")
-                                    .credit(BigDecimal.ZERO)
-                                    .debit(BigDecimal.ONE)
-                                    .netPosition(BigDecimal.ONE)
-                                    .build()
-                    ))
-                    .build(),
-            Cycle.builder()
-                    .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
-                    .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                    .id("01")
-                    .status(CycleStatus.COMPLETED)
-                    .totalPositions(listOf(
-                            MockPositions().getParticipantPosition(false),
-                            MockPositions().getParticipantPosition(true),
-                            ParticipantPosition.builder()
-                                    .participantId("ESSESESS")
-                                    .credit(BigDecimal.ZERO)
-                                    .debit(BigDecimal.ONE)
-                                    .netPosition(BigDecimal.ONE)
-                                    .build()
-                            ))
-                    .build())
-
 }

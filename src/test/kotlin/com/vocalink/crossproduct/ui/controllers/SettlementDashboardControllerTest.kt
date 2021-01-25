@@ -2,9 +2,15 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
+import com.vocalink.crossproduct.mocks.MockParticipants
+import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
+import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import java.math.BigDecimal
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -65,8 +71,22 @@ open class SettlementDashboardControllerTest {
     @Throws(Exception::class)
     fun `should get self funding settlement details for given participant id`() {
         val participantId = "NDEASESSXXX"
+        val currentPositionTotals = PositionDetailsTotalsDto(BigDecimal.TEN, BigDecimal.TEN)
+        currentPositionTotals.totalNetPosition = BigDecimal.ZERO
+        val previousPositionTotals = PositionDetailsTotalsDto(BigDecimal.TEN, BigDecimal.TEN)
+        previousPositionTotals.totalNetPosition =  BigDecimal.ZERO
+        val dto = ParticipantDashboardSettlementDetailsDto(
+                MockParticipants().getParticipantDto(false),
+                MockCycles().cyclesDto[1],
+                MockCycles().cyclesDto[0],
+                MockPositions().positionDetailsDto,
+                MockPositions().positionDetailsDto,
+                previousPositionTotals,
+                currentPositionTotals,
+                null, null
+        )
         `when`(settlementDashboardFacade.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId))
-                .thenReturn(MockDashboardModels().getSelfFundingDetailsDto())
+                .thenReturn(dto)
         mockMvc.perform(get("/settlement-details/$participantId")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
@@ -95,8 +115,8 @@ open class SettlementDashboardControllerTest {
                 .andExpect(jsonPath("$.previousPositionTotals.totalCredit").value("10"))
                 .andExpect(jsonPath("$.previousPositionTotals.totalDebit").value("10"))
                 .andExpect(jsonPath("$.previousPositionTotals.totalNetPosition").value("0"))
-                .andExpect(jsonPath("$.currentPositionTotals.totalCredit").value("0"))
+                .andExpect(jsonPath("$.currentPositionTotals.totalCredit").value("10"))
                 .andExpect(jsonPath("$.currentPositionTotals.totalDebit").value("10"))
-                .andExpect(jsonPath("$.currentPositionTotals.totalNetPosition").value("10"))
+                .andExpect(jsonPath("$.currentPositionTotals.totalNetPosition").value("0"))
     }
 }
