@@ -13,18 +13,23 @@ pipeline {
     }
     
     stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    setVars()
+                }
+                scmSkip(deleteBuild: false, skipPattern:'.*\\[skip ci\\].*')
+            }
+        }
         stage("Clean workspace and Prepare params") {
             steps {
-                setVars()
-                script{
+                script {
                     if ( BRANCH == RELEASE_BRANCH ) {
                         setGithubStatus("pending")
                     }
                 }
-                cleanWorkspace()
-                dir("${WORKSPACE}") {
-                    checkout scm
-                }
+               cleanWorkspace()
+               checkout scm
             }
         }
         stage("Build and publish artifact") {
@@ -133,9 +138,7 @@ pipeline {
     post {
         always {
             script{ 
-                if ( BRANCH == RELEASE_BRANCH ) {
-                    setGithubStatus("success")
-                }
+                setGithubStatus("success")
             }
         }
     }
