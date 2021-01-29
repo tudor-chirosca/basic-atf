@@ -324,11 +324,14 @@ class DTOMapperTest {
                 emptyList()
         )
         val participant = Participant("participantId", "participantId", "name",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
+                null, null, null, null)
         val counterparty = Participant("counterpartyId", "counterpartyId", "counterpartyName",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
+                null, null, null, null)
         val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
+                null, null, null, null)
 
         val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty))
         assertThat(result).isNotNull
@@ -522,9 +525,9 @@ class DTOMapperTest {
                 amount,
                 "fileName",
                 "batchId",
-                LocalDate.of(2021, 1,15),
+                LocalDate.of(2021, 1, 15),
                 "receiverEntityBic",
-                LocalDate.of(2021, 1,15),
+                LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "status",
@@ -574,7 +577,8 @@ class DTOMapperTest {
     fun `should map EnquirySenderDetailsDto from Account and Participant`() {
         val account = Account("partyCode", 234234, "iban")
         val participant = Participant("participantId", "participantId", "name",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
+                null, null, null, null)
 
         val result = EntityMapper.MAPPER.toEntity(account, participant)
         assertThat(result.entityBic).isEqualTo(account.partyCode)
@@ -645,7 +649,8 @@ class DTOMapperTest {
         )
 
         val participant = Participant("participantId", "participantId", "name",
-                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null)
+                "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
+                null, null, null, null)
 
         val result = MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
                 participant, participant, intraDay)

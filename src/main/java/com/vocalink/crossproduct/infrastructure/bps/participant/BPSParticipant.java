@@ -20,6 +20,9 @@ public class BPSParticipant {
   private final String participantName;
   private final String rcvngParticipantConnectionId;
   private final String participantConnectionId;
+  private final String organizationId;
+  private final String tpspName;
+  private final String tpspId;
 
   @JsonCreator
   public BPSParticipant(
@@ -34,7 +37,10 @@ public class BPSParticipant {
       @JsonProperty(value = "effectiveTillDate") ZonedDateTime effectiveTillDate,
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
-      @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId) {
+      @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId,
+      @JsonProperty(value = "organizationId") String organizationId,
+      @JsonProperty(value = "tpspName") String tpspName,
+      @JsonProperty(value = "tpspId") String tpspId) {
     this.schemeCode = schemeCode;
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
     this.countryCode = countryCode;
@@ -47,5 +53,8 @@ public class BPSParticipant {
     this.participantName = participantName;
     this.rcvngParticipantConnectionId = rcvngParticipantConnectionId;
     this.participantConnectionId = participantConnectionId;
+    this.organizationId = organizationId;
+    this.tpspName = tpspName;
+    this.tpspId = tpspId;
   }
 }

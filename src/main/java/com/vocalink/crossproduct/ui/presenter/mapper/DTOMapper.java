@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -41,6 +40,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto;
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
@@ -372,4 +372,6 @@ public interface DTOMapper {
       IntraDayPositionGross intradayPositionGross);
 
   ApprovalDetailsDto toDto(ApprovalDetails approvalDetails);
+
+  PageDto<ManagedParticipantDto> toDto(Page<Participant> participants);
 }

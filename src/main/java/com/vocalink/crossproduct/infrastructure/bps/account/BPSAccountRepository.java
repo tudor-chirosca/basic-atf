@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.infrastructure.bps.account;
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_ACCOUNT_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_TRANSACTION_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.account.Account;
@@ -11,8 +10,6 @@ import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSSingleTransactionRequest;
-import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

@@ -1,12 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.alert.Alert;
-import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
-import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
@@ -23,20 +19,14 @@ import com.vocalink.crossproduct.domain.io.IODataDetails;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
-import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
-import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
-import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
-import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalDetails;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
@@ -51,7 +41,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
@@ -79,35 +69,6 @@ public interface BPSMapper {
   IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDay);
 
   @Mappings({
-      @Mapping(target = "id", source = "schemeParticipantIdentifier"),
-      @Mapping(target = "bic", source = "schemeParticipantIdentifier"),
-      @Mapping(target = "name", source = "participantName"),
-      @Mapping(target = "fundingBic", source = "connectingParty"),
-      @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
-      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
-      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
-  })
-  Participant toEntity(BPSParticipant bpsParticipant);
-
-  @Mappings({
-      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier"),
-      @Mapping(target = "name", source = "participantName"),
-      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
-      @Mapping(target = "connectingParticipantId", source = "connectingParty"),
-  })
-  ParticipantReference toReference(BPSParticipant bpsParticipant);
-
-  @Named("convertParticipantType")
-  default ParticipantType convertParticipantType(String participantType) {
-    return ParticipantType.valueOf(participantType.replaceAll("[_+-]", "_"));
-  }
-
-  @Named("convertParticipantStatus")
-  default ParticipantStatus convertParticipantStatus(String participantStatus) {
-    return ParticipantStatus.valueOf(participantStatus);
-  }
-
-  @Mappings({
       @Mapping(target = "connectingParty", source = "connectingParty"),
       @Mapping(target = "participantType", source = "participantType")
   })
@@ -127,26 +88,7 @@ public interface BPSMapper {
 
   BPSAlertSearchRequest toBps(AlertSearchCriteria criteria);
 
-  Page<Alert> toAlertPageEntity(BPSPage<BPSAlert> alerts);
-
-  AlertStats toEntity(BPSAlertStats alertStats);
-
   AlertReferenceData toEntity(BPSAlertReferenceData alertReferenceData);
-
-  @Mappings({
-      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
-  })
-  Alert toEntity(BPSAlert alert);
-
-  @Mappings({
-      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
-  })
-  AlertStatsData toEntity(BPSAlertStatsData alertStatsData);
-
-  @Named("convertAlertPriorityType")
-  default AlertPriorityType convertAlertPriorityType(String alertPriorityType) {
-    return AlertPriorityType.valueOf(alertPriorityType.toUpperCase());
-  }
 
   @Mappings({
       @Mapping(target = "fileName", source = "name"),
@@ -200,4 +142,6 @@ public interface BPSMapper {
   BPSInstructionEnquiryRequest toBps(BPSInstructionEnquirySearchCriteria criteria);
 
   BPSSettlementEnquiryRequest toBps(BPSSettlementEnquirySearchCriteria criteria);
+
+  BPSManagedParticipantsSearchRequest toBps(ManagedParticipantsSearchCriteria criteria);
 }

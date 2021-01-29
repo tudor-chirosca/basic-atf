@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.alert;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.ALERTS_PATH;
@@ -10,9 +11,9 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
+import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
@@ -56,7 +57,7 @@ public class BPSAlertRepository implements AlertRepository {
         .bodyToMono(BPSAlertStats.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .block();
   }
 
@@ -71,7 +72,7 @@ public class BPSAlertRepository implements AlertRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSAlert>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toAlertPageEntity)
+        .map(MAPPER::toAlertPageEntity)
         .block();
   }
 

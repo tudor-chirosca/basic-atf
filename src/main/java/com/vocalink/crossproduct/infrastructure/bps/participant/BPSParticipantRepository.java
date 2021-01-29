@@ -1,13 +1,18 @@
 package com.vocalink.crossproduct.infrastructure.bps.participant;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.MANAGED_PARTICIPANT_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANT_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
+import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
+import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
@@ -15,6 +20,7 @@ import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
@@ -52,7 +58,23 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .bodyToMono(BPSParticipant.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
+        .block();
+  }
+
+  @Override
+  public Page<Participant> findPaginated(ManagedParticipantsSearchCriteria criteria) {
+    BPSManagedParticipantsSearchRequest request = BPSMAPPER.toBps(criteria);
+    return webClient.post()
+        .uri(resolve(MANAGED_PARTICIPANT_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(request), BPSManagedParticipantsSearchRequest.class))
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipant>>() {
+        })
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .doOnError(ExceptionUtils::raiseException)
+        .map(MAPPER::toEntityParticipant)
         .block();
   }
 
@@ -65,7 +87,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .bodyToFlux(BPSParticipant.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collectList()
         .block();
   }

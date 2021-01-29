@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.bps.position;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import java.util.List;
 import lombok.Getter;

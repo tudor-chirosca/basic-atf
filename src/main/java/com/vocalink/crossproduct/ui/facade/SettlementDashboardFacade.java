@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.facade;
 
-import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface SettlementDashboardFacade {

@@ -34,6 +34,7 @@ import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -119,4 +120,6 @@ public interface Presenter {
       EnquirySenderDetails sender, EnquirySenderDetails receiver);
 
   ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails);
+
+  PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
 }

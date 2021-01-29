@@ -16,7 +16,6 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,6 +23,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import kotlin.test.assertNotNull
 
 class TransactionsFacadeImplTest {
 
@@ -61,14 +61,14 @@ class TransactionsFacadeImplTest {
                 )
         ))
         val pageDto = PageDto<TransactionDto>(1, listOf(
-                TransactionDto( null, null, null, null,
+                TransactionDto(null, null, null, null,
                         null, null
                 )
         ))
         val request = TransactionEnquirySearchRequest(
                 0, 20, null, null, null, null,
                 "sending", null, null, null, null,
-                null, null, null,  null, null,
+                null, null, null, null, null,
                 null, null
         )
 
@@ -90,19 +90,20 @@ class TransactionsFacadeImplTest {
     @Test
     fun `should invoke presenter and repository on get transaction details`() {
         val transaction = Transaction(
-                null,null,null,null,null,
-                null,null,null,null,
-                null,null,null,null
+                null, null, null, null, null,
+                null, null, null, null,
+                null, null, null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
-                null,null,null,null,null,null,
-                null,null,null,null,null,
-                null,null
+                null, null, null, null, null, null,
+                null, null, null, null, null,
+                null, null
         )
-        val account = Account(null,null,null)
+        val account = Account(null, null, null)
 
-        val participant = Participant(null,null,null, null, null,
-                null, null, null)
+        val participant = Participant(null, null, null, null, null,
+                null, null, null, null,
+                null, null, null, null)
 
         `when`(transactionRepository.findById(any()))
                 .thenReturn(transaction)

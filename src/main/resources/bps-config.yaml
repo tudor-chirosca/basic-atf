@@ -19,6 +19,9 @@ bps-config:
     participant-path:
       path: /participants/{schemeCode}/read
       base: MOCK
+    managed-participant-path:
+      path: /participants/managed
+      base: MOCK
     cycles-path:
       path: /cycles/readAll
       base: MOCK

@@ -34,6 +34,7 @@ import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -131,7 +132,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants) {
+  public List<ParticipantReferenceDto> presentParticipantReferences(
+      List<ParticipantReference> participants) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -192,6 +194,12 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public PageDto<ManagedParticipantDto> presentManagedParticipants(
+      Page<Participant> participants) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

@@ -11,6 +11,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
+import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
@@ -133,9 +134,12 @@ class BPSMapperTest {
                 ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "participantName",
                 "rcvngParticipantConnectionId",
-                "participantConnectionId"
+                "participantConnectionId",
+                "organizationId",
+                "tpspName",
+                "tpspId"
         )
-        val entity = BPSMAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
 
         assertThat(entity.bic).isEqualTo(bps.schemeParticipantIdentifier)
         assertThat(entity.id).isEqualTo(bps.schemeParticipantIdentifier)
@@ -331,12 +335,15 @@ class BPSMapperTest {
                 ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "participantName",
                 "rcvngParticipantConnectionId",
-                "participantConnectionId"
+                "participantConnectionId",
+                "organizationId",
+                "tpspName",
+                "tpspId"
         )
         val bps = BPSAlert(
                 23423, "high", ZonedDateTime.now(), "type", listOf(bpsParticipant)
         )
-        val entity = BPSMAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertThat(entity.alertId).isEqualTo(bps.alertId)
         assertThat(entity.priority).isEqualTo(AlertPriorityType.HIGH)
         assertThat(entity.dateRaised).isEqualTo(bps.dateRaised)
@@ -357,7 +364,7 @@ class BPSMapperTest {
         val bps = BPSAlertStats(
                 1, listOf(alertStatsData)
         )
-        val entity = BPSMAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertThat(entity.total).isEqualTo(1)
         assertThat(entity.items.size).isEqualTo(1)
         assertThat(entity.items[0].count).isEqualTo(20)

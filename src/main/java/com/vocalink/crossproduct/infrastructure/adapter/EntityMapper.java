@@ -5,17 +5,25 @@ import static java.util.stream.Collectors.toList;
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.account.Account;
+import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
+import com.vocalink.crossproduct.domain.alert.AlertStats;
+import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
+import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
@@ -27,12 +35,16 @@ import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
@@ -42,11 +54,11 @@ import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -154,4 +166,56 @@ public interface EntityMapper {
       @Mapping(target = "iban", source = "account.iban")
   })
   EnquirySenderDetails toEntity(Account account, Participant participant);
+
+  ManagedParticipantsSearchCriteria toEntity(ManagedParticipantsSearchRequest request);
+
+  @Mappings({
+      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
+  })
+  Alert toEntity(BPSAlert alert);
+
+  @Mappings({
+      @Mapping(target = "priority", source = "priority", qualifiedByName = "convertAlertPriorityType"),
+  })
+  AlertStatsData toEntity(BPSAlertStatsData alertStatsData);
+
+  @Named("convertAlertPriorityType")
+  default AlertPriorityType convertAlertPriorityType(String alertPriorityType) {
+    return AlertPriorityType.valueOf(alertPriorityType.toUpperCase());
+  }
+
+  AlertStats toEntity(BPSAlertStats alertStats);
+
+  Page<Alert> toAlertPageEntity(BPSPage<BPSAlert> alerts);
+
+  @Mappings({
+      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "participantName"),
+      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
+      @Mapping(target = "connectingParticipantId", source = "connectingParty"),
+  })
+  ParticipantReference toReference(BPSParticipant bpsParticipant);
+
+  @Mappings({
+      @Mapping(target = "id", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "bic", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "participantName"),
+      @Mapping(target = "fundingBic", source = "connectingParty"),
+      @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
+      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
+  })
+  Participant toEntity(BPSParticipant bpsParticipant);
+
+  @Named("convertParticipantType")
+  default ParticipantType convertParticipantType(String participantType) {
+    return ParticipantType.valueOf(participantType.replaceAll("[_+-]", "_"));
+  }
+
+  @Named("convertParticipantStatus")
+  default ParticipantStatus convertParticipantStatus(String participantStatus) {
+    return ParticipantStatus.valueOf(participantStatus);
+  }
+
+  Page<Participant> toEntityParticipant(BPSPage<BPSParticipant> participants);
 }

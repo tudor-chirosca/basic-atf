@@ -2,11 +2,9 @@ package com.vocalink.crossproduct.infrastructure.bps.position;
 
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.SCHEME_CODE;
-import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_POSITION_PATH;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
@@ -14,7 +12,6 @@ import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
 import java.util.Objects;

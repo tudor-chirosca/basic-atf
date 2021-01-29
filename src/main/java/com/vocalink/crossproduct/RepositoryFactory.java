@@ -3,8 +3,8 @@ package com.vocalink.crossproduct;
 import static java.util.stream.Collectors.toMap;
 
 import com.vocalink.crossproduct.domain.account.AccountRepository;
-import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
+import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.exception.RepositoryNotAvailableException;
@@ -143,7 +143,8 @@ public class RepositoryFactory {
 
   public SettlementsRepository getSettlementsRepository(String product) {
     if (settlementsRepositoriesByProduct.get(product) == null) {
-      throw new RepositoryNotAvailableException("Settlement repository not available for context " + product);
+      throw new RepositoryNotAvailableException(
+          "Settlement repository not available for context " + product);
     }
     return settlementsRepositoriesByProduct.get(product);
   }
@@ -166,21 +167,24 @@ public class RepositoryFactory {
 
   public TransactionRepository getTransactionRepository(String product) {
     if (transactionRepositoriesByProduct.get(product) == null) {
-      throw new RepositoryNotAvailableException("Transaction repository not available for product " + product);
+      throw new RepositoryNotAvailableException(
+          "Transaction repository not available for product " + product);
     }
     return transactionRepositoriesByProduct.get(product);
   }
 
   public AccountRepository getAccountRepository(String product) {
     if (accountRepositoriesByProduct.get(product) == null) {
-      throw new RepositoryNotAvailableException("Account repository not available for product " + product);
+      throw new RepositoryNotAvailableException(
+          "Account repository not available for product " + product);
     }
     return accountRepositoriesByProduct.get(product);
   }
 
   public ApprovalRepository getApprovalClient(String product) {
-    if(approvalRepositoriesByProduct.get(product) == null) {
-      throw new RepositoryNotAvailableException("Approval repository not available for product" + product);
+    if (approvalRepositoriesByProduct.get(product) == null) {
+      throw new RepositoryNotAvailableException(
+          "Approval repository not available for product " + product);
     }
     return approvalRepositoriesByProduct.get(product);
   }
