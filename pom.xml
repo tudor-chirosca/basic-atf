@@ -26,6 +26,7 @@
     <lombok.version>1.18.16</lombok.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
     <hibernate-validator.version>6.1.7.Final</hibernate-validator.version>
+    <jacoco.version>0.8.5</jacoco.version>
   </properties>
 
   <dependencies>
@@ -123,6 +124,11 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>${jacoco.version}</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -181,6 +187,25 @@
                 <source>src/test/java</source>
               </sourceDirs>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+          <goals>
+            <goal>prepare-agent</goal>
+          </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

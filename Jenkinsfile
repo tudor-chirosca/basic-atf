@@ -53,11 +53,31 @@ pipeline {
                         runMaven(goal: "-B test")
                     }
                 }
-                stage("Integration tests") {
+
+                stage("Run sonar for unit") {
                     steps {
-                        runMaven(goal: "-B integration-test -U")
+                        withSonarQubeEnv('cp-sonar'){
+                            runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
+                        }
                     }
+
                 }
+                
+                stage("Package") {
+                    steps {
+                        withSonarQubeEnv('cp-sonar'){
+                            runMaven(goal: "-B package")
+                        }
+                    }
+
+                }
+                // commenting out as no itnegration tests as of now
+                // stage("Integration tests") {
+                //     steps {
+                //         runMaven(goal: "-B integration-test -U")
+                //     }
+                // }
+
                 stage("Prepare release") {
                     when { branch "${RELEASE_BRANCH}" }
                     stages {
@@ -66,7 +86,6 @@ pipeline {
                                 script {
                                     sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
                                     createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
-                                    currentGitCommitHash = sh(returnStdout: true, script: "git log --pretty=format:'%H' -n 1 origin/${BRANCH_NAME}")
                                 }
                             }
                         }
@@ -74,7 +93,7 @@ pipeline {
                             when { expression { currentGitCommitHash != gitCommitPr } }
                             steps {
                                 println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                                publishArtifact(goal: "clean install -U")
+                                publishArtifact(goal: "package")
                             }
                         }
                     }//stages
