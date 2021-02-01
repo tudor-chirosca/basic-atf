@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -25,6 +25,8 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
+import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -380,7 +382,14 @@ public interface DTOMapper {
       Participant participant, Participant fundingParticipant,
       IntraDayPositionGross intradayPositionGross);
 
-  ApprovalDetailsDto toDto(ApprovalDetails approvalDetails);
+  @Mappings({
+      @Mapping(target = "createdAt", source = "date"),
+      @Mapping(target = "jobId", source = "approvalId"),
+      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier")
+  })
+  ApprovalDetailsDto toDto(Approval approval);
+
+  PageDto<ApprovalDetailsDto> toApprovalDetailsDto(Page<Approval> approvals);
 
   PageDto<ManagedParticipantDto> toDto(Page<Participant> participants);
 

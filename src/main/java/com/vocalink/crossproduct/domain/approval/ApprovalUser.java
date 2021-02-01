@@ -9,4 +9,5 @@ public class ApprovalUser {
 
   private final String name;
   private final String id;
+  private final String participantName;
 }

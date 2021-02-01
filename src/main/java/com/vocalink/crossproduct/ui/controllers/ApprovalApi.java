@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,4 +18,12 @@ public interface ApprovalApi {
   })
   ResponseEntity<ApprovalDetailsDto> getApprovalDetailsById(ClientType clientType, String context,
       String id);
+
+  @ApiOperation("Fetch all Approvals")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Approvals fetched successfully", response = PageDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(final ClientType clientType, final String context,
+      final ApprovalSearchRequest request);
 }

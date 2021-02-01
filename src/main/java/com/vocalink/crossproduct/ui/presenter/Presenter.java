@@ -4,7 +4,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -123,11 +123,13 @@ public interface Presenter {
   TransactionDetailsDto presentTransactionDetails(Transaction transaction,
       EnquirySenderDetails sender, EnquirySenderDetails receiver);
 
-  ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails);
+  ApprovalDetailsDto presentApprovalDetails(Approval approval);
 
   PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
 
   PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> broadcastDtos);
 
   BroadcastDto presentBroadcast(Broadcast broadcastDto, List<Participant> participants);
+
+  PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals);
 }

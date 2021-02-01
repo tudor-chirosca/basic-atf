@@ -8,7 +8,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -351,8 +351,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails) {
-    return MAPPER.toDto(approvalDetails);
+  public ApprovalDetailsDto presentApprovalDetails(Approval approval) {
+    return MAPPER.toDto(approval);
   }
 
   @Override
@@ -377,5 +377,10 @@ public class UIPresenter implements Presenter {
     broadcastDto.setRecipients(referenceDtos);
 
     return broadcastDto;
+  }
+
+  @Override
+  public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
+    return MAPPER.toApprovalDetailsDto(approvals);
   }
 }

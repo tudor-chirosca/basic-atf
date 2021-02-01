@@ -29,4 +29,5 @@ public interface ResourcePath {
   String APPROVAL_DETAILS_PATH = "approval-details-path";
   String BROADCASTS_PATH = "broadcasts-path";
   String BROADCASTS_CREATE_PATH = "broadcasts-create-path";
+  String APPROVALS_PATH = "approvals-path";
 }

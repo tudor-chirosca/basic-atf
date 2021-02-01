@@ -4,7 +4,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -195,7 +195,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails) {
+  public ApprovalDetailsDto presentApprovalDetails(Approval approval) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -214,6 +214,11 @@ public class SystemPresenter implements Presenter {
   @Override
   public BroadcastDto presentBroadcast(Broadcast broadcastDto,
       List<Participant> references) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

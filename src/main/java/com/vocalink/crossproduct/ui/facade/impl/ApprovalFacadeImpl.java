@@ -1,14 +1,22 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
+import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+
 import com.vocalink.crossproduct.RepositoryFactory;
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
+import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.facade.ApprovalFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ApprovalFacadeImpl implements ApprovalFacade {
@@ -19,8 +27,23 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   @Override
   public ApprovalDetailsDto getApprovalDetailsById(String product, ClientType clientType,
       String id) {
-    final ApprovalDetails approvalDetails = repositoryFactory.getApprovalClient(product).findByJobId(id);
+    log.info("Fetching approval details from: {}", product);
 
-    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approvalDetails);
+    final Approval approval = repositoryFactory.getApprovalClient(product).findByJobId(id);
+
+    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
+  }
+
+  @Override
+  public PageDto<ApprovalDetailsDto> getApprovals(String product, ClientType clientType,
+      ApprovalSearchRequest requestDto) {
+    log.info("Fetching approvals from: {}", product);
+
+    final ApprovalSearchCriteria request = MAPPER.toEntity(requestDto);
+
+    final Page<Approval> approvals = repositoryFactory.getApprovalClient(product)
+        .findPaginated(request);
+
+    return presenterFactory.getPresenter(clientType).presentApproval(approvals);
   }
 }

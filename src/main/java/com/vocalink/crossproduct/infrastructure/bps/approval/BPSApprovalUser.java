@@ -9,12 +9,15 @@ public class BPSApprovalUser {
 
   private final String name;
   private final String id;
+  private final String participantName;
 
   @JsonCreator
   public BPSApprovalUser(
-      @JsonProperty(value = "name") String name,
-      @JsonProperty(value = "id") String id) {
+      @JsonProperty(value = "name", required = true) String name,
+      @JsonProperty(value = "id", required = true) String id,
+      @JsonProperty(value = "participantName", required = true) String participantName) {
     this.name = name;
     this.id = id;
+    this.participantName = participantName;
   }
 }

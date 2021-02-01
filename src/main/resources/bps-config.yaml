@@ -80,7 +80,10 @@ bps-config:
       path: /account/read
       base: MOCK
     approval-details-path:
-      path: /approval/details
+      path: /approvals/{schemeCode}/read
+      base: MOCK
+    approvals-path:
+      path: /approvals/{schemeCode}/readAll
       base: MOCK
     broadcasts-path:
       path: /broadcasts/readAll

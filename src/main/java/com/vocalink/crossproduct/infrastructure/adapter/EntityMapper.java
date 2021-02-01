@@ -11,6 +11,10 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
+import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
@@ -40,6 +44,9 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
@@ -53,6 +60,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSet
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
@@ -222,4 +230,24 @@ public interface EntityMapper {
   Page<Participant> toEntityParticipant(BPSPage<BPSParticipant> participants);
 
   BroadcastsSearchCriteria toEntity(BroadcastsSearchParameters parameters);
+
+  ApprovalSearchCriteria toEntity(ApprovalSearchRequest approvalSearchRequest);
+
+  @Mappings({
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertApprovalStatus"),
+      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertApprovalRequestType")
+  })
+  Approval toEntity(BPSApproval approvalDetails);
+
+  @Named("convertApprovalStatus")
+  default ApprovalStatus convertApprovalStatus(BPSApprovalStatus bpsApprovalStatus) {
+    return ApprovalStatus.valueOf(bpsApprovalStatus.name());
+  }
+
+  @Named("convertApprovalRequestType")
+  default ApprovalRequestType convertApprovalRequestType(BPSApprovalRequestType bpsApprovalRequestType) {
+    return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
+  }
+
+  Page<Approval> toApprovalsEntity(BPSPage<BPSApproval> approvalDetailsPage);
 }

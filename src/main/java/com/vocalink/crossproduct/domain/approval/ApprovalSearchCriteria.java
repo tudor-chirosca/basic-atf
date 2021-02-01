@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RejectionReason {
+public class ApprovalSearchCriteria {
 
-  private final ApprovalUser rejectedBy;
-  private final String comment;
+  private final int offset;
+  private final int limit;
 }

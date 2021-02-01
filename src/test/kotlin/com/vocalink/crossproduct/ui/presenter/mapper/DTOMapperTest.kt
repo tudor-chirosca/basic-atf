@@ -9,11 +9,10 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
-import com.vocalink.crossproduct.domain.approval.ApprovalDetails
+import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
-import com.vocalink.crossproduct.domain.approval.RejectionReason
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
@@ -753,35 +752,39 @@ class DTOMapperTest {
 
     @Test
     fun `should map ApprovalDetails to ApprovalDetailsDto`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514")
-        val jobId = "10000020"
-        val createdAt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
-        val rejectionReason = RejectionReason(approvalUser,
-                "Please check ticket number...")
+        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalId = "10000020"
+        val date = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
         val requestedChange = mapOf("status" to "suspended")
+        val originalData = mapOf("data" to "data")
 
-        val approvalDetails = ApprovalDetails(
-                ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
-                createdAt, jobId,
-                ApprovalRequestType.UNSUSPEND,
+        val approvalDetails = Approval(
+                approvalId,
+                ApprovalRequestType.STATUS_CHANGE,
                 "FORXSES1",
+                date, approvalUser,
+                ApprovalStatus.APPROVED,
+                approvalUser,
                 "Forex Bank",
-                rejectionReason,
-                requestedChange)
+                "This is the reason that I...",
+                approvalUser,
+                originalData,
+                requestedChange,
+                "hashed data",
+                "hashed data",
+                "Notes")
 
         val result = MAPPER.toDto(approvalDetails)
 
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
         assertThat(result.requestedBy.name).isEqualTo("John Doe")
         assertThat(result.requestedBy.id).isEqualTo("12a514")
-        assertThat(result.createdAt).isEqualTo(createdAt)
-        assertThat(result.jobId).isEqualTo(jobId)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.UNSUSPEND)
+        assertThat(result.createdAt).isEqualTo(date)
+        assertThat(result.jobId).isEqualTo(approvalId)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
         assertThat(result.participantIdentifier).isEqualTo("FORXSES1")
         assertThat(result.participantName).isEqualTo("Forex Bank")
-        assertThat(result.rejectionReason.rejectedBy.name).isEqualTo("John Doe")
-        assertThat(result.rejectionReason.comment).isEqualTo("Please check ticket number...")
+        assertThat(result.rejectedBy.name).isEqualTo("John Doe")
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 

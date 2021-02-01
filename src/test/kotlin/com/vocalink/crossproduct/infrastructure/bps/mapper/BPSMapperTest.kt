@@ -18,9 +18,10 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
-import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalDetails
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
-import com.vocalink.crossproduct.infrastructure.bps.approval.BPSRejectionReason
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
@@ -549,36 +550,36 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSApprovalDetails to ApprovalDetails`() {
-        val approvalUser = BPSApprovalUser("John Doe", "12a514")
-        val createdAt = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
-        val rejectionReason = BPSRejectionReason(approvalUser,
-                "Please check ticket number...")
+        val approvalUser = BPSApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val date = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
+        val approvalId = "10000006"
         val requestedChange = mapOf("status" to "Suspended")
+        val originalData = mapOf("data" to "data")
 
-        val bpsApprovalDetails = BPSApprovalDetails(
-                "approved",
-                approvalUser,
-                approvalUser,
-                createdAt,
-                "10000006",
-                "unsuspend",
+        val bpsApprovalDetails = BPSApproval(
+                approvalId,
+                BPSApprovalRequestType.STATUS_CHANGE,
                 "FORXSES1",
-                "Forex Bank",
-                rejectionReason,
-                requestedChange)
+                date, approvalUser,
+                BPSApprovalStatus.APPROVED,
+                approvalUser, "Forex Bank",
+                "This is the reason that I...",
+                approvalUser, originalData,
+                requestedChange, "hashed data",
+                "hashed data",
+                "Notes")
 
-        val result = BPSMAPPER.toEntity(bpsApprovalDetails)
+        val result = MAPPER.toEntity(bpsApprovalDetails)
 
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
         assertThat(result.requestedBy.name).isEqualTo("John Doe")
         assertThat(result.requestedBy.id).isEqualTo("12a514")
-        assertThat(result.createdAt).isEqualTo(createdAt)
-        assertThat(result.jobId).isEqualTo("10000006")
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.UNSUSPEND)
-        assertThat(result.participantIdentifier).isEqualTo("FORXSES1")
+        assertThat(result.date).isEqualTo(date)
+        assertThat(result.approvalId).isEqualTo("10000006")
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo("FORXSES1")
         assertThat(result.participantName).isEqualTo("Forex Bank")
-        assertThat(result.rejectionReason.rejectedBy.name).isEqualTo("John Doe")
-        assertThat(result.rejectionReason.comment).isEqualTo("Please check ticket number...")
+        assertThat(result.rejectedBy.name).isEqualTo("John Doe")
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 }

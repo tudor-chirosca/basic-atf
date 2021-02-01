@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BPSApprovalDetailsRequest {
 
-  private final String id;
+  private final String approvalId;
 }
