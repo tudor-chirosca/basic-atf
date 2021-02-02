@@ -12,6 +12,7 @@ import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -53,6 +54,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSche
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
@@ -218,4 +220,6 @@ public interface EntityMapper {
   }
 
   Page<Participant> toEntityParticipant(BPSPage<BPSParticipant> participants);
+
+  BroadcastsSearchCriteria toEntity(BroadcastsSearchParameters parameters);
 }

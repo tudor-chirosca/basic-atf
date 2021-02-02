@@ -35,6 +35,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
+import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -118,7 +119,8 @@ public class UIPresenter implements Presenter {
     ParticipantPosition currentPosition = getPosition(positions, currentCycle);
     ParticipantPosition previousPosition = getPosition(positions, previousCycle);
 
-    return MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition, participant);
+    return MAPPER
+        .toDto(currentCycle, previousCycle, currentPosition, previousPosition, participant);
   }
 
   @Override
@@ -355,5 +357,10 @@ public class UIPresenter implements Presenter {
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
       Page<Participant> participants) {
     return MAPPER.toDto(participants);
+  }
+
+  @Override
+  public PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items) {
+    return new PageDto<>(totalResults, items);
   }
 }

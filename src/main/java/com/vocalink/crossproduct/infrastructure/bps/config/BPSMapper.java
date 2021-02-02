@@ -8,6 +8,8 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
+import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
@@ -30,6 +32,8 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalDetails;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
+import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcastsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileEnquirySearchRequest;
@@ -144,4 +148,8 @@ public interface BPSMapper {
   BPSSettlementEnquiryRequest toBps(BPSSettlementEnquirySearchCriteria criteria);
 
   BPSManagedParticipantsSearchRequest toBps(ManagedParticipantsSearchCriteria criteria);
+
+  BPSBroadcastsSearchRequest toBps(BroadcastsSearchCriteria criteria);
+
+  Page<Broadcast> toPagedBroadcastEntity(BPSPage<BPSBroadcast> bpsBroadcastBPSPage);
 }

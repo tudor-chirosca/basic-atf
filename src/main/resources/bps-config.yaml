@@ -82,5 +82,8 @@ bps-config:
     approval-details-path:
       path: /approval/details
       base: MOCK
+    broadcasts-path:
+      path: /broadcasts/readAll
+      base: MOCK
 
   retryable: 404, 429

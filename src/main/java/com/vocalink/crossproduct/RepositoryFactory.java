@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
+import com.vocalink.crossproduct.domain.broadcasts.BroadcastsRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
 import com.vocalink.crossproduct.domain.exception.RepositoryNotAvailableException;
 import com.vocalink.crossproduct.domain.files.FileRepository;
@@ -40,6 +41,7 @@ public class RepositoryFactory {
   private final List<TransactionRepository> transactionClientList;
   private final List<AccountRepository> accountClientList;
   private final List<ApprovalRepository> approvalRepositories;
+  private final List<BroadcastsRepository> broadcastsRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -54,6 +56,7 @@ public class RepositoryFactory {
   private Map<String, TransactionRepository> transactionRepositoriesByProduct;
   private Map<String, AccountRepository> accountRepositoriesByProduct;
   private Map<String, ApprovalRepository> approvalRepositoriesByProduct;
+  private Map<String, BroadcastsRepository> broadcastsRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -83,6 +86,8 @@ public class RepositoryFactory {
         .collect(toMap(AccountRepository::getProduct, Function.identity()));
     approvalRepositoriesByProduct = approvalRepositories.stream()
         .collect(toMap(ApprovalRepository::getProduct, Function.identity()));
+    broadcastsRepositoriesByProduct = broadcastsRepositories.stream()
+        .collect(toMap(BroadcastsRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -187,5 +192,13 @@ public class RepositoryFactory {
           "Approval repository not available for product " + product);
     }
     return approvalRepositoriesByProduct.get(product);
+  }
+
+  public BroadcastsRepository getBroadcastsRepositories(String product) {
+    if (!broadcastsRepositoriesByProduct.containsKey(product)) {
+      throw new RepositoryNotAvailableException(
+          "Broadcasts repository not available for product " + product);
+    }
+    return broadcastsRepositoriesByProduct.get(product);
   }
 }

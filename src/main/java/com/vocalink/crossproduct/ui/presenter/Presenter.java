@@ -30,6 +30,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
+import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -63,7 +64,8 @@ public interface Presenter {
       List<ParticipantPosition> positionsDetails,
       Participant participant);
 
-  ParticipantDashboardSettlementDetailsDto presentFundedParticipantSettlementDetails(List<Cycle> cycles,
+  ParticipantDashboardSettlementDetailsDto presentFundedParticipantSettlementDetails(
+      List<Cycle> cycles,
       List<ParticipantPosition> positionsDetails,
       Participant participant,
       Participant fundingParticipant,
@@ -83,7 +85,8 @@ public interface Presenter {
 
   PageDto<AlertDto> presentAlert(Page<Alert> alerts);
 
-  List<ParticipantReferenceDto> presentParticipantReferences(List<ParticipantReference> participants);
+  List<ParticipantReferenceDto> presentParticipantReferences(
+      List<ParticipantReference> participants);
 
   List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences,
       String enquiryType);
@@ -122,4 +125,6 @@ public interface Presenter {
   ApprovalDetailsDto presentApprovalDetails(ApprovalDetails approvalDetails);
 
   PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
+
+  PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items);
 }

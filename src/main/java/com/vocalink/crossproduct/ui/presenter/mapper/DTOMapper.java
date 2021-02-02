@@ -9,12 +9,14 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -34,13 +36,14 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
+import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
-import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto;
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
@@ -60,9 +63,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
@@ -225,18 +230,22 @@ public interface DTOMapper {
 
   BatchDetailsDto toDetailsDto(Batch batch);
 
-  PageDto<ParticipantSettlementCycleDto> toDto(Page<ParticipantSettlement> settlements, @Context List<Participant> participants);
+  PageDto<ParticipantSettlementCycleDto> toDto(Page<ParticipantSettlement> settlements,
+      @Context List<Participant> participants);
 
   @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
-  ParticipantSettlementCycleDto toDto(@Context List<Participant> participants, ParticipantSettlement settlement);
+  ParticipantSettlementCycleDto toDto(@Context List<Participant> participants,
+      ParticipantSettlement settlement);
 
   @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
-  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement, @Context  List<Participant> participants);
+  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement,
+      @Context List<Participant> participants);
 
   @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
   @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
   @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
-  ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction, @Context List<Participant> participants);
+  ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction,
+      @Context List<Participant> participants);
 
   @Named("toStatus")
   default InstructionStatus convertStatusType(String status) {
@@ -244,7 +253,8 @@ public interface DTOMapper {
   }
 
   @Named("findParticipant")
-  default ParticipantReferenceDto findParticipant(String participantId, @Context List<Participant> participants) {
+  default ParticipantReferenceDto findParticipant(String participantId,
+      @Context List<Participant> participants) {
     return participants.stream()
         .filter(p -> p.getBic().equals(participantId))
         .findFirst()
@@ -376,4 +386,20 @@ public interface DTOMapper {
   ApprovalDetailsDto toDto(ApprovalDetails approvalDetails);
 
   PageDto<ManagedParticipantDto> toDto(Page<Participant> participants);
+
+  @Mapping(target = "recipients", ignore = true)
+  BroadcastDto toDto(Broadcast broadcast, ParticipantRepository repository);
+
+  @AfterMapping
+  default void mapRecipients(@MappingTarget BroadcastDto broadcastDto,
+      ParticipantRepository repository, Broadcast broadcast) {
+
+    final List<ParticipantReference> references = broadcast.getRecipients()
+        .stream()
+        .map(repository::findById)
+        .map(this::toReference)
+        .collect(toList());
+
+    broadcastDto.setRecipients(references);
+  }
 }
