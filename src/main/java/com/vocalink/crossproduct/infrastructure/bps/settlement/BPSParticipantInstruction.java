@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +8,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class BPSParticipantInstruction {
 
   private final String cycleId;
@@ -26,14 +24,14 @@ public class BPSParticipantInstruction {
 
   @JsonCreator
   public BPSParticipantInstruction(
-      @JsonProperty(value = "cycleId") String cycleId,
-      @JsonProperty(value = "participantId") String participantId,
-      @JsonProperty(value = "reference") String reference,
-      @JsonProperty(value = "status") String status,
-      @JsonProperty(value = "counterpartyId") String counterpartyId,
+      @JsonProperty(value = "cycleId", required = true) String cycleId,
+      @JsonProperty(value = "participantId", required = true) String participantId,
+      @JsonProperty(value = "reference", required = true) String reference,
+      @JsonProperty(value = "status", required = true) String status,
+      @JsonProperty(value = "counterpartyId", required = true) String counterpartyId,
       @JsonProperty(value = "settlementCounterpartyId") String settlementCounterpartyId,
-      @JsonProperty(value = "totalDebit") BigDecimal totalDebit,
-      @JsonProperty(value = "totalCredit") BigDecimal totalCredit) {
+      @JsonProperty(value = "totalDebit", required = true) BigDecimal totalDebit,
+      @JsonProperty(value = "totalCredit", required = true) BigDecimal totalCredit) {
     this.cycleId = cycleId;
     this.participantId = participantId;
     this.reference = reference;

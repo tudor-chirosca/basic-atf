@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.transaction;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import java.time.LocalDate;
@@ -9,7 +8,6 @@ import java.time.ZonedDateTime;
 import lombok.Getter;
 
 @Getter
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class BPSTransaction {
 
   private final String instructionId;
