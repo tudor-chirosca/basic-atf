@@ -30,4 +30,8 @@ public class ManagedParticipantDto {
   @JsonInclude(Include.NON_EMPTY)
   private final List<ParticipantReferenceDto> fundedParticipants;
   private final int fundedParticipantsCount;
+
+  public String getParticipantType() {
+    return participantType.getDescription();
+  }
 }
