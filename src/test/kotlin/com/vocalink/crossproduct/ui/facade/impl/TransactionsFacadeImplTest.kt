@@ -97,7 +97,7 @@ class TransactionsFacadeImplTest {
         val batchDetailsDto = TransactionDetailsDto(
                 null, null, null, null, null, null,
                 null, null, null, null, null,
-                null, null
+                null, null, null
         )
         val account = Account(null, null, null)
 

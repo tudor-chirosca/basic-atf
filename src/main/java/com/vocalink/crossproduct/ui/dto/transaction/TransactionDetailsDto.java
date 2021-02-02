@@ -13,6 +13,7 @@ public class TransactionDetailsDto {
 
   private final String instructionId;
   private final BigDecimal amount;
+  private final String currency;
   private final String fileName;
   private final String batchId;
   private final LocalDate valueDate;

@@ -151,6 +151,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val VALID_DETAILS_RESPONSE = """{
             "instructionId": "20210115SCADSE21B2191",
             "amount": 11112222.33,
+            "currency": "SEK",
             "fileName": "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
             "batchId": "P27ISTXBANKSESS",
             "valueDate": "2021-01-14",
@@ -344,7 +345,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         )
         val detailsDto = TransactionDetailsDto(
                 "20210115SCADSE21B2191",
-                BigDecimal.valueOf(11112222.33),
+                BigDecimal.valueOf(11112222.33), "SEK",
                 "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
                 "P27ISTXBANKSESS",
                 date, receiver, date,

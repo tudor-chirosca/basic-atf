@@ -538,6 +538,7 @@ class DTOMapperTest {
         val result = MAPPER.toDetailsDto(transaction, sender, receiver)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
+        assertThat(result.currency).isEqualTo(transaction.amount.currency)
         assertThat(result.fileName).isEqualTo(transaction.fileName)
         assertThat(result.batchId).isEqualTo(transaction.batchId)
         assertThat(result.valueDate).isEqualTo(transaction.valueDate)
