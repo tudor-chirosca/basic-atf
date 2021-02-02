@@ -209,14 +209,13 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 on invalid param names in body`() {
+    fun `should ignore unrecognized param and read valid params`() {
         mockMvc.perform(post("/enquiry/transactions/searches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .content(INVALID_BODY_PARAM_NAMES_REQUEST))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Unrecognized field")))
+                .andExpect(status().isOk)
     }
 
     @Test
