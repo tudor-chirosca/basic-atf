@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.ui.presenter.mapper;
+package com.vocalink.crossproduct.ui.presenter.mapper
 
 import com.vocalink.crossproduct.domain.Amount
 import com.vocalink.crossproduct.domain.Page
@@ -39,6 +39,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
@@ -782,5 +783,39 @@ class DTOMapperTest {
         assertThat(result.rejectionReason.rejectedBy.name).isEqualTo("John Doe")
         assertThat(result.rejectionReason.comment).isEqualTo("Please check ticket number...")
         assertThat(result.requestedChange).isEqualTo(requestedChange)
+    }
+
+    @Test
+    fun `should map all fields of Participant to ManagedParticipantDto`() {
+        val participant = Participant("FORXSES1", "FORXSES1", "Forex Bank",
+                null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
+                "00002121", "Nordnet Bank", "475347837892",
+                listOf(Participant("FORXSES1", "FORXSES1", "Forex Bank", null,
+                        ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
+                        "00002121", "Nordnet Bank", "475347837892",
+                        null, null)), 1)
+
+        val participants = Page<Participant>(1, listOf(participant))
+
+        val result = MAPPER.toDto(participants)
+
+        assertThat(result).isNotNull
+
+        val managedParticipant: ManagedParticipantDto = result.items.elementAt(0) as ManagedParticipantDto
+
+        assertThat(managedParticipant.bic).isEqualTo(participant.bic)
+        assertThat(managedParticipant.name).isEqualTo(participant.name)
+        assertThat(managedParticipant.id).isEqualTo(participant.id)
+        assertThat(managedParticipant.status).isEqualTo(participant.status)
+        assertThat(managedParticipant.suspendedTime).isEqualTo(participant.suspendedTime)
+        assertThat(managedParticipant.participantType).isEqualTo(participant.participantType.description)
+        assertThat(managedParticipant.organizationId).isEqualTo(participant.organizationId)
+        assertThat(managedParticipant.tpspName).isEqualTo(participant.tpspName)
+        assertThat(managedParticipant.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
+        assertThat(managedParticipant.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
+        assertThat(managedParticipant.fundedParticipants[0].connectingParticipantId).isEqualTo(participant.fundedParticipants[0].fundingBic)
+        assertThat(managedParticipant.fundedParticipants[0].participantIdentifier).isEqualTo(participant.fundedParticipants[0].id)
+        assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(participant.fundedParticipants[0].participantType.description)
+        assertThat(managedParticipant.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
     }
 }

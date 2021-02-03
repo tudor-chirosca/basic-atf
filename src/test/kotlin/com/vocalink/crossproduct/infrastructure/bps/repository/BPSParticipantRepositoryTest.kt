@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
@@ -34,6 +35,13 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         const val VALID_PARTICIPANTS_WITH_ID_REQUEST: String = """ 
         {
             "schemeParticipantIdentifier" : "NDEASESSXXX"
+        } 
+        """
+
+        const val VALID_MANAGED_PARTICIPANTS_REQUEST: String = """ 
+        {
+            "offset": 0,
+            "limit": 2
         } 
         """
 
@@ -98,6 +106,46 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "rcvngParticipantConnectionId": "NA",
             "participantConnectionId": "NA"
         } 
+        """
+
+        const val VALID_MANAGED_PARTICIPANTS_RESPONSE: String = """
+        {
+            "totalResults": 23,
+            "items": [
+                {
+                    "schemeCode": "P27-SEK",
+                    "schemeParticipantIdentifier": "AVANSESX",
+                    "countryCode": "SWE",
+                    "partyCode": "AVANSESX",
+                    "connectingParty": "NA",
+                    "participantType": "DIRECT",
+                    "status": "ACTIVE",
+                    "effectiveFromDate": "2020-10-21T18:09:05Z",
+                    "effectiveTillDate": null,
+                    "participantName": "Avanza Bank",
+                    "rcvngParticipantConnectionId": "NA",
+                    "participantConnectionId": "NA",
+                    "organizationId": "894819924"
+                },
+                {
+                    "schemeCode": "P27-SEK",
+                    "schemeParticipantIdentifier": "NDEASESSXXX",
+                    "countryCode": "SWE",
+                    "partyCode": "NDEASESSXXX",
+                    "connectingParty": "NA",
+                    "participantType": "DIRECT+FUNDING",
+                    "status": "ACTIVE",
+                    "effectiveFromDate": "2020-05-22T14:09:05Z",
+                    "effectiveTillDate": null,
+                    "participantName": "Nordea",
+                    "rcvngParticipantConnectionId": "NA",
+                    "participantConnectionId": "NA",
+                    "organizationId": "77777777",
+                    "tpspName": "Forex Bank",
+                    "tpspId": "940404004"
+                }
+            ]
+        }
         """
     }
 
@@ -198,5 +246,26 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.status).isEqualTo(ParticipantStatus.ACTIVE)
         assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT)
         assertThat(result.suspendedTime).isNull()
+    }
+
+    @Test
+    fun `should return the list of managed participants`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/participants/managed"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_MANAGED_PARTICIPANTS_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_MANAGED_PARTICIPANTS_REQUEST)))
+
+        val result = participantRepository.findPaginated(ManagedParticipantsSearchCriteria(0, 2, null, null))
+
+        assertThat(result).isNotNull
+        assertThat(result.totalResults).isEqualTo(23)
+        assertThat(result.items).isNotEmpty
+
+        assertThat(result.items[0].bic).isEqualTo("AVANSESX")
+        assertThat(result.items[0].fundingBic).isEqualTo("NA")
+        assertThat(result.items[0].participantType).isEqualTo(ParticipantType.DIRECT)
     }
 }
