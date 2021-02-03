@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.facade.impl;
 
 import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -43,6 +44,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
                     .findByConnectingPartyAndType(p.getId(), ParticipantType.FUNDED.getDescription());
                 p.setFundedParticipants(fundedParticipants);
                 p.setFundedParticipantsCount(p.getFundedParticipants().size());
+                p.getFundedParticipants().sort(comparing(Participant::getName));
               }
             }).collect(toList()));
 
