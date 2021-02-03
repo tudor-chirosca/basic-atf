@@ -26,7 +26,7 @@ class MockParticipants {
                 .name("Svenska Handelsbanken")
                 .suspendedTime(ZonedDateTime.now().plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
-                .participantType(ParticipantType.DIRECT_ONLY)
+                .participantType(ParticipantType.DIRECT)
                 .build()
         else ParticipantDto.builder()
                 .id("NDEASESSXXX")
@@ -34,7 +34,7 @@ class MockParticipants {
                 .name("Nordea")
                 .suspendedTime(null)
                 .status(ParticipantStatus.ACTIVE)
-                .participantType(ParticipantType.DIRECT_ONLY)
+                .participantType(ParticipantType.DIRECT)
                 .build()
     }
 
@@ -63,7 +63,7 @@ class MockParticipants {
                     .name("Svenska Handelsbanken")
                     .suspendedTime(ZonedDateTime.now().plusDays(15))
                     .status(ParticipantStatus.SUSPENDED)
-                    .participantType(ParticipantType.DIRECT_ONLY)
+                    .participantType(ParticipantType.DIRECT)
                     .build()
         else Participant.builder()
                 .id("NDEASESSXXX")
@@ -72,7 +72,7 @@ class MockParticipants {
                 .name("Nordea")
                 .suspendedTime(null)
                 .status(ParticipantStatus.ACTIVE)
-                .participantType(ParticipantType.DIRECT_ONLY)
+                .participantType(ParticipantType.DIRECT)
                 .build()
     }
 }

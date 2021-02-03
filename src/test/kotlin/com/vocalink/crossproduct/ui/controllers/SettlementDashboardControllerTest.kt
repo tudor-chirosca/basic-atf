@@ -6,12 +6,11 @@ import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.mocks.MockPositions
+import com.vocalink.crossproduct.ui.controllers.impl.SettlementDashboardController
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
-import com.vocalink.crossproduct.ui.controllers.impl.SettlementDashboardController
 import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import java.math.BigDecimal
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
 
 @WebMvcTest(SettlementDashboardController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -100,7 +100,7 @@ open class SettlementDashboardControllerTest {
                 .andExpect(jsonPath("$.participant.bic").value("NDEASESSXXX"))
                 .andExpect(jsonPath("$.participant.name").value("Nordea"))
                 .andExpect(jsonPath("$.participant.status").value("ACTIVE"))
-                .andExpect(jsonPath("$.participant.participantType").value("DIRECT+ONLY"))
+                .andExpect(jsonPath("$.participant.participantType").value("DIRECT"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.credit").value("1"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.debit").value("10"))
                 .andExpect(jsonPath("$.previousPosition.customerCreditTransfer.netPosition").value("9"))

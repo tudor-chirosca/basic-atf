@@ -10,10 +10,6 @@ import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertRepository
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.util.Collections.singletonList
-import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -22,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.Collections.singletonList
+import kotlin.test.assertEquals
 
 @BPSTestConfiguration
 @Import(BPSAlertRepository::class)
@@ -127,7 +127,7 @@ class BPSAlertRepositoryTest @Autowired constructor(var alertRepository: BPSAler
                          "schemeParticipantIdentifier": "NDEASESSXXX",
                          "countryCode": "SWE",
                          "partyCode": "NDEASESSXXX",
-                         "participantType": "DIRECT-ONLY",
+                         "participantType": "DIRECT",
                          "connectingParty": "NA",
                          "status": "ACTIVE",
                          "effectiveFromDate": "2020-05-22T14:09:05Z",
@@ -149,7 +149,7 @@ class BPSAlertRepositoryTest @Autowired constructor(var alertRepository: BPSAler
                          "schemeParticipantIdentifier": "NDEASESSXXX",
                          "countryCode": "SWE",
                          "partyCode": "NDEASESSXXX",
-                         "participantType": "DIRECT-ONLY",
+                         "participantType": "DIRECT",
                          "connectingParty": "NA",
                          "status": "ACTIVE",
                          "effectiveFromDate": "2020-05-22T14:09:05Z",

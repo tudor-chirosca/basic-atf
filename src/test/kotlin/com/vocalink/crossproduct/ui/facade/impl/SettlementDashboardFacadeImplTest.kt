@@ -21,7 +21,6 @@ import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import java.time.ZonedDateTime
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -31,6 +30,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.ZonedDateTime
 
 open class SettlementDashboardFacadeImplTest {
 
@@ -208,7 +208,7 @@ open class SettlementDashboardFacadeImplTest {
                 .name("Svenska Handelsbanken")
                 .suspendedTime(ZonedDateTime.now().plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
-                .participantType(ParticipantType.DIRECT_ONLY)
+                .participantType(ParticipantType.DIRECT)
                 .build()
         val positionsDetails = ParticipantPosition(
                 null, null,null,null,null,

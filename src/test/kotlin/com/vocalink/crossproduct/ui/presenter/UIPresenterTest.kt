@@ -17,13 +17,6 @@ import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
-import java.time.LocalDate
-import java.time.ZonedDateTime
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,6 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.time.LocalDate
+import java.time.ZonedDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class])
@@ -193,7 +193,7 @@ class UIPresenterTest {
         val bbb = "Bbb"
         val ccc = "Ccc"
         val id = "id"
-        val participantType = ParticipantType.DIRECT_ONLY
+        val participantType = ParticipantType.DIRECT
         val model = listOf(
                 ParticipantReference(id, ccc, participantType, null, null),
                 ParticipantReference(id, aaa, participantType, null, null),
@@ -214,9 +214,9 @@ class UIPresenterTest {
         val p27 = "P27"
         val id = "id"
 
-        val pTypeDirect = ParticipantType.DIRECT_ONLY
+        val pTypeDirect = ParticipantType.DIRECT
         val pTypeFunding = ParticipantType.FUNDING
-        val pTypeScheme = ParticipantType.SCHEME
+        val pTypeScheme = ParticipantType.SCHEME_OPERATOR
 
         val model = listOf(
                 ParticipantReference(id, aaa, pTypeDirect, null, null),
@@ -265,7 +265,7 @@ class UIPresenterTest {
         val id = "NDEASESSXXX"
         val nordea = "Nordea"
         val seb = "SEB Bank"
-        val participantType = ParticipantType.DIRECT_ONLY
+        val participantType = ParticipantType.DIRECT
         val alerts = listOf(
                 Alert.builder()
                         .alertId(3141)

@@ -42,17 +42,17 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 class DTOMapperTest {
 
@@ -138,7 +138,7 @@ class DTOMapperTest {
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
                 .entities(listOf(ParticipantReference("NDEASESSXXX", "Nordea",
-                        ParticipantType.DIRECT_ONLY, null, null)))
+                        ParticipantType.DIRECT, null, null)))
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))

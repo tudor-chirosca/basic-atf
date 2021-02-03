@@ -4,11 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum ParticipantType {
-  DIRECT_ONLY("DIRECT+ONLY"),
+  DIRECT("DIRECT"),
   FUNDING("FUNDING"),
   FUNDED("FUNDED"),
   DIRECT_FUNDING("DIRECT+FUNDING"),
-  SCHEME("SCHEME");
+  INDIRECT("INDIRECT"),
+  TPSP("TPSP"),
+  SCHEME_OPERATOR("SCHEME");
 
   private final String description;
 

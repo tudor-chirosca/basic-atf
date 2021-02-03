@@ -100,7 +100,7 @@ class MockIOData {
                             .name("SEB Bank")
                             .suspendedTime(null)
                             .status(ParticipantStatus.ACTIVE)
-                            .participantType(ParticipantType.DIRECT_ONLY)
+                            .participantType(ParticipantType.DIRECT)
                             .build())
                     .batches(IODataDto.builder()
                             .submitted(1)

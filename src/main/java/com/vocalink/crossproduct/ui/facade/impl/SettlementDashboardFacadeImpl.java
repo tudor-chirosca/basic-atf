@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade {
 
-  public static final String NOT_AVAILABLE = "NA";
-
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
 
@@ -38,7 +36,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
     }
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll()
-        .stream().filter(p -> p.getParticipantType() != ParticipantType.SCHEME).collect(toList());
+        .stream().filter(p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR).collect(toList());
 
     return presenterFactory.getPresenter(clientType)
         .presentAllParticipantsSettlement(cycles, participants);

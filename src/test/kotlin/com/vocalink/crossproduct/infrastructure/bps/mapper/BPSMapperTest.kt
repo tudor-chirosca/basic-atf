@@ -39,15 +39,15 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageT
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.Month
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class BPSMapperTest {
 
@@ -328,7 +328,7 @@ class BPSMapperTest {
                 "schemeParticipantIdentifier",
                 "countryCode",
                 "partyCode",
-                "DIRECT+ONLY",
+                "DIRECT",
                 "connectingParty",
                 "SUSPENDED",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
@@ -351,7 +351,7 @@ class BPSMapperTest {
 
         assertThat(entity.entities[0].participantIdentifier).isEqualTo(bps.entities[0].schemeParticipantIdentifier)
         assertThat(entity.entities[0].name).isEqualTo(bps.entities[0].participantName)
-        assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT_ONLY)
+        assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT)
         assertThat(entity.entities[0].connectingParticipantId).isEqualTo(bps.entities[0].connectingParty)
         assertThat(entity.entities[0].schemeCode).isEqualTo(bps.entities[0].schemeCode)
     }

@@ -74,7 +74,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "schemeParticipantIdentifier": "NDEASESSXXX",
             "countryCode": "SWE",
             "partyCode": "NDEASESSXXX",
-            "participantType": "DIRECT+ONLY",
+            "participantType": "DIRECT",
             "connectingParty": "NA",
             "status": "ACTIVE",
             "effectiveFromDate": "2020-05-22T14:09:05Z",
@@ -91,7 +91,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "schemeParticipantIdentifier": "NDEASESSXXX",
             "countryCode": "SWE",
             "partyCode": "NDEASESSXXX",
-            "participantType": "DIRECT+ONLY",
+            "participantType": "DIRECT",
             "status": "ACTIVE",
             "effectiveFromDate": "2020-05-22T14:09:05Z",
             "participantName": "Nordea",
@@ -175,7 +175,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.id).isEqualTo("NDEASESSXXX")
         assertThat(result.name).isEqualTo("Nordea")
         assertThat(result.status).isEqualTo(ParticipantStatus.ACTIVE)
-        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT_ONLY)
+        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT)
         assertThat(result.suspendedTime).isNull()
     }
 
@@ -196,7 +196,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.id).isEqualTo("NDEASESSXXX")
         assertThat(result.name).isEqualTo("Nordea")
         assertThat(result.status).isEqualTo(ParticipantStatus.ACTIVE)
-        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT_ONLY)
+        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT)
         assertThat(result.suspendedTime).isNull()
     }
 }

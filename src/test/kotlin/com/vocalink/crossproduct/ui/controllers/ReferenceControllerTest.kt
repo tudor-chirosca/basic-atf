@@ -56,13 +56,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "schemeCode": "P27"
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "schemeCode": "P27"
         }]
         """
@@ -71,14 +71,14 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "connectingParticipantId": "any id",
         "schemeCode": null
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "connectingParticipantId": "any id_2",
         "schemeCode": null
         }]
@@ -88,14 +88,14 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
        [{
         "participantIdentifier": "ESSESESS",
         "name": "SEB Bank",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "connectingParticipantId": "any id",
         "schemeCode": "P27"
         },
         {
         "participantIdentifier": "HANDSESS",
         "name": "Svenska Handelsbanken",
-        "participantType": "DIRECT+ONLY",
+        "participantType": "DIRECT",
         "connectingParticipantId": "any id_2",
         "schemeCode": "P27"
         }]
@@ -104,7 +104,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all participant references`() {
-        val directOnly = ParticipantType.DIRECT_ONLY
+        val directOnly = ParticipantType.DIRECT
         val participants = listOf(
                 ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27"),
                 ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
@@ -121,7 +121,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all participant references with connectingParticipantId`() {
-        val directOnly = ParticipantType.DIRECT_ONLY
+        val directOnly = ParticipantType.DIRECT
         val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, null)
         val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, null)
 
@@ -141,7 +141,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all participant references with schemeCode`() {
-        val directOnly = ParticipantType.DIRECT_ONLY
+        val directOnly = ParticipantType.DIRECT
         val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27")
         val participantReferenceDto2 = ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
 
@@ -162,7 +162,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get bad request on missing context for reference participants`() {
-        val directOnly = ParticipantType.DIRECT_ONLY
+        val directOnly = ParticipantType.DIRECT
         val participants = listOf(
                 ParticipantReferenceDto("ESSESESS", "SEB Bank", directOnly, "P27"),
                 ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, "P27")
