@@ -28,7 +28,7 @@ public class BPSParticipant {
   public BPSParticipant(
       @JsonProperty(value = "schemeCode", required = true) String schemeCode,
       @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier,
-      @JsonProperty(value = "countryCode", required = true) String countryCode,
+      @JsonProperty(value = "countryCode") String countryCode,
       @JsonProperty(value = "partyCode", required = true) String partyCode,
       @JsonProperty(value = "participantType", required = true) String participantType,
       @JsonProperty(value = "connectingParty") String connectingParty,
