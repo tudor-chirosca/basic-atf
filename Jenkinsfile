@@ -18,10 +18,10 @@ pipeline {
                 script {
                     setVars()
                 }
-                scmSkip(deleteBuild: false, skipPattern:'.*\\[skip ci\\].*')
             }
         }
         stage("Clean workspace and Prepare params") {
+            when { expression { skipCondition != 'true' } }
             steps {
                 script {
                     if ( BRANCH == RELEASE_BRANCH ) {
@@ -32,7 +32,9 @@ pipeline {
                checkout scm
             }
         }
+        
         stage("Build and publish artifact") {
+            when { expression { skipCondition != 'true' } }
             agent {
                 dockerfile {
                     filename 'Dockerfile-ci'
@@ -40,13 +42,7 @@ pipeline {
                     additionalBuildArgs '--build-arg USER_ID=1001 --build-arg GROUP_ID=1001'
                 }
             }
-            when {
-                not {
-                    changelog "^chore\\(release\\):.*"
-                }
-            }
-            stages {
-                
+            stages {                
                 stage("Compile") {
                     steps {
                         runMaven(goal: "-B -U clean compile")
@@ -63,31 +59,21 @@ pipeline {
                     }
                 }
                 stage("Prepare release") {
-                    when {
-                        allOf {
-                            branch "${RELEASE_BRANCH}"
-                            not {
-                                changelog "^chore\\(release\\):.*"
-                            }
-                        }
-                    }
+                    when { branch "${RELEASE_BRANCH}" }
                     stages {
                         stage('Create release') {
                             steps {
-                                sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
-                                createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
+                                script {
+                                    sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
+                                    createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
+                                    currentGitCommitHash = sh(returnStdout: true, script: "git log --pretty=format:'%H' -n 1 origin/${BRANCH_NAME}")
+                                }
                             }
                         }
                         stage("Publish artifact") {
-                            when {
-                                allOf {
-                                    branch "${RELEASE_BRANCH}"
-                                    not {
-                                         changelog "^chore\\(release\\):.*"
-                                    }
-                                }
-                            }
+                            when { expression { currentGitCommitHash != gitCommitPr } }
                             steps {
+                                println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
                                 publishArtifact(goal: "clean install -U")
                             }
                         }
@@ -95,13 +81,10 @@ pipeline {
                 }//stage
             }//stages
         }//stage
+
         stage('Build and deploy docker image') {
             agent any
-            when {
-                not {
-                    changelog "^chore\\(release\\):.*"
-                }
-            }
+            when { expression { skipCondition != 'true' } }
             stages {
                 stage("Publish docker") {
                     steps {
@@ -114,9 +97,7 @@ pipeline {
                     }
                 }
                 stage("Deploy preprod") {
-                    when {
-                        branch "${RELEASE_BRANCH}"
-                    }
+                    when { branch "${RELEASE_BRANCH}" }
                     steps {
                         script {
                             echo "Deploying ${env.gitTag} to ${PREPROD_IP}"
