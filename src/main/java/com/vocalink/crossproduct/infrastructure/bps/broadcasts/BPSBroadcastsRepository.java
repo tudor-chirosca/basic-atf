@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.broadcasts;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BROADCASTS_CREATE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BROADCASTS_PATH;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -14,6 +15,7 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +45,21 @@ public class BPSBroadcastsRepository implements BroadcastsRepository {
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(BPSMAPPER::toPagedBroadcastEntity)
+        .block();
+  }
+
+  @Override
+  public Broadcast create(String message, List<String> recipients) {
+    return webClient.post()
+        .uri(resolve(BROADCASTS_CREATE_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(new BPSBroadcastsMessageRequest(message, recipients)),
+            BPSBroadcastsMessageRequest.class))
+        .retrieve()
+        .bodyToMono(BPSBroadcast.class)
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .doOnError(ExceptionUtils::raiseException)
+        .map(BPSMAPPER::toEntity)
         .block();
   }
 

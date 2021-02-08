@@ -16,7 +16,6 @@ import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -63,11 +62,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
@@ -388,18 +385,9 @@ public interface DTOMapper {
   PageDto<ManagedParticipantDto> toDto(Page<Participant> participants);
 
   @Mapping(target = "recipients", ignore = true)
-  BroadcastDto toDto(Broadcast broadcast, ParticipantRepository repository);
+  BroadcastDto toDto(Broadcast broadcast);
 
-  @AfterMapping
-  default void mapRecipients(@MappingTarget BroadcastDto broadcastDto,
-      ParticipantRepository repository, Broadcast broadcast) {
-
-    final List<ParticipantReference> references = broadcast.getRecipients()
-        .stream()
-        .map(repository::findById)
-        .map(this::toReference)
-        .collect(toList());
-
-    broadcastDto.setRecipients(references);
-  }
+  @Mapping(target = "totalResults", source = "totalResults")
+  @Mapping(target = "items", source = "items")
+  PageDto<BroadcastDto> toDto(Integer totalResults, List<BroadcastDto> items);
 }

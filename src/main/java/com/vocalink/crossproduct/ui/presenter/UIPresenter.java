@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -54,6 +55,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -361,6 +363,19 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items) {
-    return new PageDto<>(totalResults, items);
+    return MAPPER.toDto(totalResults, items);
+  }
+
+  @Override
+  public BroadcastDto presentBroadcast(Broadcast broadcast,
+      List<Participant> references) {
+    final List<ParticipantReferenceDto> referenceDtos = references.stream()
+        .map(MAPPER::toReferenceDto)
+        .collect(toList());
+
+    final BroadcastDto broadcastDto = DTOMapper.MAPPER.toDto(broadcast);
+    broadcastDto.setRecipients(referenceDtos);
+
+    return broadcastDto;
   }
 }

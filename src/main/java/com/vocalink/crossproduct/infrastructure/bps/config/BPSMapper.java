@@ -152,4 +152,6 @@ public interface BPSMapper {
   BPSBroadcastsSearchRequest toBps(BroadcastsSearchCriteria criteria);
 
   Page<Broadcast> toPagedBroadcastEntity(BPSPage<BPSBroadcast> bpsBroadcastBPSPage);
+
+  Broadcast toEntity(BPSBroadcast broadcast);
 }

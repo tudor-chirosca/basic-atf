@@ -1,9 +1,8 @@
 package com.vocalink.crossproduct.ui.dto;
 
-import static java.util.Collections.emptyList;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
@@ -18,6 +17,6 @@ public class PageDto<T> {
       final @JsonProperty(value = "totalResults", required = true) int totalResults,
       final @JsonProperty(value = "items", required = true) List<T> items) {
     this.totalResults = totalResults;
-    this.items = items == null ? emptyList() : items;
+    this.items = items == null ? new ArrayList<>() : items;
   }
 }

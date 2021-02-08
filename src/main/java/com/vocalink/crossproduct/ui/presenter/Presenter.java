@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -126,5 +127,7 @@ public interface Presenter {
 
   PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
 
-  PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items);
+  PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> broadcastDtos);
+
+  BroadcastDto presentBroadcast(Broadcast broadcastDto, List<Participant> participants);
 }

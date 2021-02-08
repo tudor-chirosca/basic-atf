@@ -6,11 +6,13 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.BroadcastsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -39,18 +41,40 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
         .getBroadcastsRepositories(product)
         .findPaginated(criteria);
 
-    final int totalResults = pagedBroadcasts.getTotalResults();
-
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);
 
-    final List<BroadcastDto> broadcastDtos = pagedBroadcasts.getItems()
-        .stream()
-        .map(b -> DTOMapper.MAPPER.toDto(b, participantRepository))
+    final List<BroadcastDto> broadcasts = pagedBroadcasts.getItems().stream()
+        .map(b -> {
+          final List<ParticipantReferenceDto> references = b.getRecipients().stream()
+              .map(participantRepository::findById)
+              .map(DTOMapper.MAPPER::toReferenceDto)
+              .collect(toList());
+          final BroadcastDto broadcastDto = DTOMapper.MAPPER.toDto(b);
+          broadcastDto.setRecipients(references);
+
+          return broadcastDto;
+        })
         .collect(toList());
 
     return presenterFactory
         .getPresenter(clientType)
-        .presentBroadcasts(totalResults, broadcastDtos);
+        .presentBroadcasts(pagedBroadcasts.getTotalResults(), broadcasts);
+  }
+
+  @Override
+  public BroadcastDto create(String product, ClientType clientType, String message, List<String> recipients) {
+
+    final Broadcast broadcast = repositoryFactory.getBroadcastsRepositories(product)
+        .create(message, recipients);
+
+    final ParticipantRepository participantRepository = repositoryFactory
+        .getParticipantRepository(product);
+
+    final List<Participant> participants = broadcast.getRecipients().stream()
+        .map(participantRepository::findById)
+        .collect(toList());
+
+    return presenterFactory.getPresenter(clientType).presentBroadcast(broadcast, participants);
   }
 }

@@ -28,4 +28,5 @@ public interface ResourcePath {
   String SINGLE_ACCOUNT_PATH = "single-account-path";
   String APPROVAL_DETAILS_PATH = "approval-details-path";
   String BROADCASTS_PATH = "broadcasts-path";
+  String BROADCASTS_CREATE_PATH = "broadcasts-create-path";
 }

@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.ApprovalDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -205,7 +206,14 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items) {
+  public PageDto<BroadcastDto> presentBroadcasts(int totalResults,
+      List<BroadcastDto> broadcastDtos) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public BroadcastDto presentBroadcast(Broadcast broadcastDto,
+      List<Participant> references) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

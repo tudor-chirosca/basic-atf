@@ -85,5 +85,8 @@ bps-config:
     broadcasts-path:
       path: /broadcasts/readAll
       base: MOCK
+    broadcasts-create-path:
+      path: /broadcasts
+      base: MOCK
 
   retryable: 404, 429

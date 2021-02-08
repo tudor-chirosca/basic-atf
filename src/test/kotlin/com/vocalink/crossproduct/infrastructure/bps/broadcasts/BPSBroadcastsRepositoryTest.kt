@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.infrastructure.bps.broadcasts;
+package com.vocalink.crossproduct.infrastructure.bps.broadcasts
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -56,6 +56,22 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
             ]
         }
         """
+
+        var NEW_MESSAGE_REQUEST = """
+           {
+            "message": "New any message",
+            "recipients": ["NDEASESSXXX"]
+           } 
+        """
+
+        var NEW_BROADCAST_RESPONSE = """
+            {
+            "createdAt": "2021-01-25T00:00:00Z",
+            "broadcastId": "0000 0100",
+            "msg": "The world is slowly recovering from the aftermath. Please assure you have sufficient funds",
+            "recipients": ["NDEASESSXXX"]
+            }
+        """
     }
 
     @Test
@@ -63,7 +79,7 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
         val request = BroadcastsSearchCriteria.builder().offset(0).limit(20).build()
 
         mockServer.stubFor(
-                post(urlEqualTo("/broadcasts"))
+                post(urlEqualTo("/broadcasts/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +101,7 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
                 .build()
 
         mockServer.stubFor(
-                post(urlEqualTo("/broadcasts"))
+                post(urlEqualTo("/broadcasts/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -93,6 +109,19 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
                         .withRequestBody(equalToJson(FULL_REQUEST, true, false)))
 
         repository.findPaginated(request)
+    }
+
+    @Test
+    fun `should return created broadcast on successful creation`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/broadcasts"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(NEW_BROADCAST_RESPONSE))
+                        .withRequestBody(equalToJson(NEW_MESSAGE_REQUEST, true, false)))
+
+        repository.create("New any message", listOf("NDEASESSXXX"))
     }
 
 }

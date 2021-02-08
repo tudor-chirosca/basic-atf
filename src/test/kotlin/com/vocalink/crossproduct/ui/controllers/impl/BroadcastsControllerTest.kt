@@ -1,11 +1,11 @@
-package com.vocalink.crossproduct.ui.controllers.impl;
+package com.vocalink.crossproduct.ui.controllers.impl
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.BroadcastsFacade
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -13,12 +13,15 @@ import org.mockito.Mockito.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
+import java.nio.charset.Charset
 import java.time.ZonedDateTime
 
 @WebMvcTest(BroadcastsController::class)
@@ -27,6 +30,9 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var facade: BroadcastsFacade
+
+    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
+            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     companion object {
         const val CONTEXT_HEADER = "context"
@@ -59,6 +65,30 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         ]
         }
         """
+
+        var NEW_MESSAGE_REQUEST = """
+            {
+            "message": "Sample message",
+            "recipients": ["NDEASESSXXX"]
+            }
+        """
+
+        var NEW_BROADCAST_RESPONSE = """
+            {
+               "createdAt":"2021-01-25T00:00:00Z",
+               "broadcastId":"00000100",
+               "message":"Sample message",
+               "recipients":[
+                  {
+                     "participantIdentifier":"123",
+                     "name":"name",
+                     "participantType":"DIRECT",
+                     "schemeCode":"p27",
+                     "connectingParticipantId":"id"
+                  }
+               ]
+            }
+        """
     }
 
     @Test
@@ -82,7 +112,8 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 Pair("msg", listOf("any")),
                 Pair("recipient", listOf("any"))
         ))
-        val ref = ParticipantReference("123", "name", ParticipantType.DIRECT, "id", "p27")
+        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, "p27")
+        ref.connectingParticipantId = "id"
         val broadcastDto = BroadcastDto(ZonedDateTime.parse("2021-01-25T00:00:00Z"), "123", "msg", listOf(ref))
 
         val response = PageDto(1, listOf(broadcastDto))
@@ -95,5 +126,23 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .queryParams(queryParams))
                 .andExpect(status().isOk)
                 .andExpect(content().json(EXPECTED_RESPONSE, true))
+    }
+
+    @Test
+    fun `should return newly created broadcast`() {
+
+        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, "p27")
+        ref.connectingParticipantId = "id"
+        val broadcastDto = BroadcastDto(ZonedDateTime.parse("2021-01-25T00:00:00Z"), "00000100", "Sample message", listOf(ref))
+
+        `when`(facade.create(any(), any(), any(), any())).thenReturn(broadcastDto)
+
+        mockMvc.perform(post("/broadcasts")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(NEW_MESSAGE_REQUEST))
+                .andExpect(status().isOk)
+                .andExpect(content().json(NEW_BROADCAST_RESPONSE, true))
     }
 }
