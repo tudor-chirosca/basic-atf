@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -16,10 +17,13 @@ import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -43,6 +47,7 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
@@ -54,6 +59,7 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -391,7 +397,7 @@ public interface DTOMapper {
 
   PageDto<ApprovalDetailsDto> toApprovalDetailsDto(Page<Approval> approvals);
 
-  PageDto<ManagedParticipantDto> toDto(Page<Participant> participants);
+  PageDto<ManagedParticipantDto> toManagedParticipantPageDto(Page<Participant> participants);
 
   @Mapping(target = "recipients", ignore = true)
   BroadcastDto toDto(Broadcast broadcast);
@@ -399,4 +405,38 @@ public interface DTOMapper {
   @Mapping(target = "totalResults", source = "totalResults")
   @Mapping(target = "items", source = "items")
   PageDto<BroadcastDto> toDto(Integer totalResults, List<BroadcastDto> items);
+
+  RoutingRecordDto toDto(RoutingRecord routingRecord);
+
+  @Mappings({
+      @Mapping(target = "bic", source = "participant.bic"),
+      @Mapping(target = "fundingBic", source = "participant.fundingBic"),
+      @Mapping(target = "id", source = "participant.id"),
+      @Mapping(target = "name", source = "participant.name"),
+      @Mapping(target = "status", source = "participant.status"),
+      @Mapping(target = "suspendedTime", source = "participant.suspendedTime"),
+      @Mapping(target = "participantType", source = "participant.participantType"),
+      @Mapping(target = "organizationId", source = "participant.organizationId"),
+      @Mapping(target = "tpspName", source = "participant.tpspName"),
+      @Mapping(target = "tpspId", source = "participant.tpspId"),
+      @Mapping(target = "fundingParticipant", source = "fundingParticipant"),
+      @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
+      @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
+      @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
+      @Mapping(target = "debitCapLimitThresholds", source = "configuration.debitCapLimitThresholds"),
+      @Mapping(target = "outputChannel", source = "configuration.networkName"),
+      @Mapping(target = "settlementAccountNo", source = "account.accountNo")
+  })
+  ManagedParticipantDetailsDto toDto(Participant participant,
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account);
+
+  @Mappings({
+      @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
+      @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
+      @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
+      @Mapping(target = "outputChannel", source = "configuration.networkName"),
+      @Mapping(target = "settlementAccountNo", source = "account.accountNo")
+  })
+  ManagedParticipantDetailsDto toDto(Participant participant,
+      ParticipantConfiguration configuration, Account account);
 }

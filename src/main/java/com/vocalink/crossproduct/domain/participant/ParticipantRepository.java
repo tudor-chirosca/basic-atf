@@ -13,4 +13,6 @@ public interface ParticipantRepository extends CrossproductRepository {
   Participant findById(String participantId);
 
   Page<Participant> findPaginated(ManagedParticipantsSearchCriteria request);
+
+  ParticipantConfiguration findConfigurationById(String participantId);
 }

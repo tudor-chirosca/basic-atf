@@ -29,7 +29,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
       String id) {
     log.info("Fetching approval details from: {}", product);
 
-    final Approval approval = repositoryFactory.getApprovalClient(product).findByJobId(id);
+    final Approval approval = repositoryFactory.getApprovalRepository(product).findByJobId(id);
 
     return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
   }
@@ -41,7 +41,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
     final ApprovalSearchCriteria request = MAPPER.toEntity(requestDto);
 
-    final Page<Approval> approvals = repositoryFactory.getApprovalClient(product)
+    final Page<Approval> approvals = repositoryFactory.getApprovalRepository(product)
         .findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentApproval(approvals);

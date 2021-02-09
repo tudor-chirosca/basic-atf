@@ -21,8 +21,9 @@ import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
-import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
+import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
@@ -46,6 +47,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
+import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
@@ -125,13 +127,15 @@ public interface BPSMapper {
     return date.toLocalDate();
   }
 
-  BPSInstructionEnquiryRequest toBps(BPSInstructionEnquirySearchCriteria criteria);
+  BPSInstructionEnquiryRequest toBps(InstructionEnquirySearchCriteria criteria);
 
-  BPSSettlementEnquiryRequest toBps(BPSSettlementEnquirySearchCriteria criteria);
+  BPSSettlementEnquiryRequest toBps(SettlementEnquirySearchCriteria criteria);
 
   BPSManagedParticipantsSearchRequest toBps(ManagedParticipantsSearchCriteria criteria);
 
   BPSBroadcastsSearchRequest toBps(BroadcastsSearchCriteria criteria);
+
+  BPSRoutingRecordRequest toBps(RoutingRecordCriteria criteria);
 
   Page<Broadcast> toPagedBroadcastEntity(BPSPage<BPSBroadcast> bpsBroadcastBPSPage);
 

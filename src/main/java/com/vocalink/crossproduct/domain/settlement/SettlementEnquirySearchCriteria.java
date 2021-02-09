@@ -8,13 +8,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class BPSSettlementEnquirySearchCriteria {
+public class SettlementEnquirySearchCriteria {
 
-  private int offset;
-  private int limit;
-  private List<String> sort;
-  private String dateFrom;
-  private String dateTo;
+  private final int offset;
+  private final int limit;
+  private final List<String> sort;
+  private final String dateFrom;
+  private final String dateTo;
   private final List<String> cycleIds;
   private final List<String> participants;
 }

@@ -38,7 +38,7 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
     BroadcastsSearchCriteria criteria = EntityMapper.MAPPER.toEntity(parameters);
 
     final Page<Broadcast> pagedBroadcasts = repositoryFactory
-        .getBroadcastsRepositories(product)
+        .getBroadcastsRepository(product)
         .findPaginated(criteria);
 
     final ParticipantRepository participantRepository = repositoryFactory
@@ -65,7 +65,7 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
   @Override
   public BroadcastDto create(String product, ClientType clientType, String message, List<String> recipients) {
 
-    final Broadcast broadcast = repositoryFactory.getBroadcastsRepositories(product)
+    final Broadcast broadcast = repositoryFactory.getBroadcastsRepository(product)
         .create(message, recipients);
 
     final ParticipantRepository participantRepository = repositoryFactory

@@ -9,6 +9,8 @@ import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCri
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantRepository
+import java.math.BigDecimal
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -146,6 +148,26 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             ]
         }
         """
+
+        const val VALID_PARTICIPANT_CONFIGURATION_RESPONSE: String = """ 
+        {
+            "schemeParticipantIdentifier": "NDEASESSXXX",
+            "txnVolume": 100,
+            "outputFileTimeLimit": 40,
+            "networkName": "SWIFT",
+            "gatewayName": "Swift Alliance G004",
+            "requestorDN": "VL BPS",
+            "responderDN": "SWCTSES1",
+            "preSettlementAckType": "pacs.004.001.03",
+            "preSettlementActGenerationLevel": "BATCH",
+            "postSettlementAckType": "pacs.004.001.03",
+            "postSettlementAckGenerationLevel": "BATCH",
+            "debitCapLimit": 59099,
+            "debitCapLimitThresholds": [
+                0.1
+            ]
+        } 
+        """
     }
 
     @AfterEach
@@ -266,5 +288,32 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.items[0].bic).isEqualTo("AVANSESX")
         assertThat(result.items[0].fundingBic).isEqualTo("NA")
         assertThat(result.items[0].participantType).isEqualTo(ParticipantType.DIRECT)
+    }
+
+    @Test
+    fun `should return 200, on participant configuration`() {
+        val participantId = "NDEASESSXXX"
+        mockServer.stubFor(
+                post(urlEqualTo("/participants/P27-SEK/configuration"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_PARTICIPANT_CONFIGURATION_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_PARTICIPANTS_WITH_ID_REQUEST)))
+
+        val result = participantRepository.findConfigurationById(participantId)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo("NDEASESSXXX")
+        assertThat(result.txnVolume).isEqualTo(100)
+        assertThat(result.outputFileTimeLimit).isEqualTo(40)
+        assertThat(result.networkName).isEqualTo("SWIFT")
+        assertThat(result.gatewayName).isEqualTo("Swift Alliance G004")
+        assertThat(result.requestorDN).isEqualTo("VL BPS")
+        assertThat(result.responderDN).isEqualTo("SWCTSES1")
+        assertThat(result.preSettlementAckType).isEqualTo("pacs.004.001.03")
+        assertThat(result.preSettlementActGenerationLevel).isEqualTo("BATCH")
+        assertThat(result.postSettlementAckType).isEqualTo("pacs.004.001.03")
+        assertThat(result.postSettlementAckGenerationLevel).isEqualTo("BATCH")
+        assertThat(result.debitCapLimit).isEqualTo(BigDecimal.valueOf(59099))
+        assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.1))
     }
 }

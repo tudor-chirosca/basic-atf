@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -14,10 +15,12 @@ import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
@@ -36,10 +39,12 @@ import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -219,6 +224,23 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
+      ParticipantConfiguration configuration, Account account) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

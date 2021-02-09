@@ -38,7 +38,7 @@ class BroadcastsFacadeImplTest {
 
         val pageDto = Page<Broadcast>(0, listOf())
 
-        `when`(repositoryFactory.getBroadcastsRepositories(any())).thenReturn(broadcastsRepository)
+        `when`(repositoryFactory.getBroadcastsRepository(any())).thenReturn(broadcastsRepository)
         `when`(broadcastsRepository.findPaginated(any())).thenReturn(pageDto)
 
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
@@ -61,7 +61,7 @@ class BroadcastsFacadeImplTest {
         val broadcastDto = Broadcast(ZonedDateTime.parse("2021-01-22T00:00:00Z"), "id", "msg", listOf("00000001"))
         val pageDto = Page<Broadcast>(1, listOf(broadcastDto))
 
-        `when`(repositoryFactory.getBroadcastsRepositories(any())).thenReturn(broadcastsRepository)
+        `when`(repositoryFactory.getBroadcastsRepository(any())).thenReturn(broadcastsRepository)
         `when`(broadcastsRepository.findPaginated(any())).thenReturn(pageDto)
 
         val participant = Participant.builder().id(participantId).build()
@@ -88,7 +88,7 @@ class BroadcastsFacadeImplTest {
         val broadcastDto = Broadcast(ZonedDateTime.parse("2021-01-22T00:00:00Z"), "id", "msg", listOf(participantId))
         val pageDto = Page<Broadcast>(1, listOf(broadcastDto))
 
-        `when`(repositoryFactory.getBroadcastsRepositories(any())).thenReturn(broadcastsRepository)
+        `when`(repositoryFactory.getBroadcastsRepository(any())).thenReturn(broadcastsRepository)
         `when`(broadcastsRepository.findPaginated(any())).thenReturn(pageDto)
 
         val participant = Participant.builder().id(participantId).build()
@@ -111,7 +111,7 @@ class BroadcastsFacadeImplTest {
 
         val broadcastDto = Broadcast(ZonedDateTime.parse("2021-01-22T00:00:00Z"), "id", "msg", listOf(participantId))
 
-        `when`(repositoryFactory.getBroadcastsRepositories(any())).thenReturn(broadcastsRepository)
+        `when`(repositoryFactory.getBroadcastsRepository(any())).thenReturn(broadcastsRepository)
         `when`(broadcastsRepository.create(any(), any())).thenReturn(broadcastDto)
 
         val participant = Participant.builder().id(participantId).build()

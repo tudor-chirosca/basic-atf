@@ -23,17 +23,20 @@ import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
-import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
+import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
+import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
@@ -53,8 +56,10 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
+import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
@@ -65,6 +70,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
@@ -145,10 +151,10 @@ public interface EntityMapper {
       @Mapping(source = "cycleId", target = "cycleId"),
       @Mapping(source = "participantId", target = "participantId")
   })
-  BPSInstructionEnquirySearchCriteria toEntity(ParticipantSettlementRequest request, String cycleId,
+  InstructionEnquirySearchCriteria toEntity(ParticipantSettlementRequest request, String cycleId,
       String participantId);
 
-  BPSSettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);
+  SettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);
 
   @Mappings({
       @Mapping(target = "weekdayCycles", source = "weekdayCycles"),
@@ -250,4 +256,14 @@ public interface EntityMapper {
   }
 
   Page<Approval> toApprovalsEntity(BPSPage<BPSApproval> approvalDetailsPage);
+
+  ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);
+
+  RoutingRecord toEntity(BPSRoutingRecord routingRecord);
+
+  @Mappings({
+      @Mapping(target = "bic", source = "bic")
+  })
+  RoutingRecordCriteria toEntity(RoutingRecordRequest request, String bic);
+
 }

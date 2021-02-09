@@ -5,9 +5,9 @@ import com.vocalink.crossproduct.domain.Page;
 
 public interface SettlementsRepository extends CrossproductRepository {
 
-  ParticipantSettlement findBy(BPSInstructionEnquirySearchCriteria request);
+  ParticipantSettlement findBy(InstructionEnquirySearchCriteria criteria);
 
-  Page<ParticipantSettlement> findBy(BPSSettlementEnquirySearchCriteria request);
+  Page<ParticipantSettlement> findBy(SettlementEnquirySearchCriteria criteria);
 
   SettlementSchedule findSchedule();
 }

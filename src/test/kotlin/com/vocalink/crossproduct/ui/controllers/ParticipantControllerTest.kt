@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade
+import java.nio.charset.Charset
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -21,11 +22,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.nio.charset.Charset
 
-@WebMvcTest(AlertsController::class)
+@WebMvcTest(ParticipantController::class)
 @ContextConfiguration(classes = [TestConfig::class])
-class ParticipantsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var facade: ParticipantFacade
@@ -45,7 +45,7 @@ class ParticipantsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val CONTEXT_HEADER = "context"
         const val CLIENT_TYPE_HEADER = "client-type"
 
-        const val VALID_RESPONSE = """
+        const val VALID_MANAGED_PARTICIPANTS_RESPONSE = """
         {
             "totalResults": 22,
             "items": [
@@ -55,7 +55,6 @@ class ParticipantsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "id": "FORXSES1",
                 "name": "Forex Bank",
                 "status": "ACTIVE",
-                "suspendedTime": null,
                 "participantType": "FUNDED",
                 "organizationId": "194869924",
                 "hasActiveSuspensionRequests": false,
@@ -81,7 +80,7 @@ class ParticipantsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_REQUEST))
                 .andExpect(status().isOk)
-                .andExpect(content().json(VALID_RESPONSE, true))
+                .andExpect(content().json(VALID_MANAGED_PARTICIPANTS_RESPONSE, true))
     }
 
     @Test
@@ -89,13 +88,12 @@ class ParticipantsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java)))
                 .thenReturn(PageDto(22, listOf(items)))
 
-
         mockMvc.perform(get("/participants")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_PARTIAL_PARTICIPANT_REQUEST))
                 .andExpect(status().isOk)
-                .andExpect(content().json(VALID_RESPONSE, true))
+                .andExpect(content().json(VALID_MANAGED_PARTICIPANTS_RESPONSE, true))
     }
 }

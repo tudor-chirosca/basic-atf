@@ -37,7 +37,7 @@ class ApprovalFacadeImplTest {
 
     @BeforeEach
     fun init() {
-        `when`(repositoryFactory.getApprovalClient(ArgumentMatchers.anyString()))
+        `when`(repositoryFactory.getApprovalRepository(ArgumentMatchers.anyString()))
                 .thenReturn(approvalRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)

@@ -30,4 +30,7 @@ public interface ResourcePath {
   String BROADCASTS_PATH = "broadcasts-path";
   String BROADCASTS_CREATE_PATH = "broadcasts-create-path";
   String APPROVALS_PATH = "approvals-path";
+  String PARTICIPANT_CONFIGURATION_PATH = "participant-configuration-path";
+  String ROUTING_RECORD_PATH = "routing-record-path";
+
 }

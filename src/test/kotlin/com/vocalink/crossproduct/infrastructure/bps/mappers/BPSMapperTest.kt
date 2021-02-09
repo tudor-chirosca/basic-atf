@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
@@ -38,16 +39,18 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -580,5 +583,67 @@ class BPSMapperTest {
         assertThat(result.participantName).isEqualTo("Forex Bank")
         assertThat(result.rejectedBy.name).isEqualTo("John Doe")
         assertThat(result.requestedChange).isEqualTo(requestedChange)
+    }
+
+    @Test
+    fun `should map RoutingRecord fields`() {
+        val entity = BPSRoutingRecord(
+                "schemeId",
+                "reachableBic",
+                ZonedDateTime.now(),
+                ZonedDateTime.now(),
+                "currency"
+        )
+        val result = MAPPER.toEntity(entity)
+        assertThat(result.reachableBic).isEqualTo(entity.reachableBic)
+        assertThat(result.validFrom).isEqualTo(entity.validFrom)
+        assertThat(result.validTo).isEqualTo(entity.validTo)
+        assertThat(result.currency).isEqualTo(entity.currency)
+    }
+
+    @Test
+    fun `should map RoutingRecordCriteria fields`() {
+        val bic = "bic"
+        val entity = RoutingRecordCriteria(
+                0, 10, listOf("someValue1", "someValue2"), bic
+        )
+        val result = BPSMAPPER.toBps(entity)
+        assertThat(result.bic).isEqualTo(bic)
+        assertThat(result.limit).isEqualTo(entity.limit)
+        assertThat(result.offset).isEqualTo(entity.offset)
+        assertThat(result.sort).isEqualTo(entity.sort)
+    }
+
+    @Test
+    fun `should map ParticipantConfiguration fields`() {
+        val entity = BPSParticipantConfiguration(
+                "schemeParticipantIdentifier",
+                10,
+                10,
+                "networkName",
+                "gatewayName",
+                "requestorDN",
+                "responderDN",
+                "preSettlementAckType",
+                "preSettlementActGenerationLevel",
+                "postSettlementAckType",
+                "postSettlementAckGenerationLevel",
+                BigDecimal.ONE,
+                listOf(0.12, 0.25)
+                )
+        val result = MAPPER.toEntity(entity)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo(entity.schemeParticipantIdentifier)
+        assertThat(result.txnVolume).isEqualTo(entity.txnVolume)
+        assertThat(result.outputFileTimeLimit).isEqualTo(entity.outputFileTimeLimit)
+        assertThat(result.networkName).isEqualTo(entity.networkName)
+        assertThat(result.gatewayName).isEqualTo(entity.gatewayName)
+        assertThat(result.requestorDN).isEqualTo(entity.requestorDN)
+        assertThat(result.responderDN).isEqualTo(entity.responderDN)
+        assertThat(result.preSettlementAckType).isEqualTo(entity.preSettlementAckType)
+        assertThat(result.preSettlementActGenerationLevel).isEqualTo(entity.preSettlementActGenerationLevel)
+        assertThat(result.postSettlementAckType).isEqualTo(entity.postSettlementAckType)
+        assertThat(result.postSettlementAckGenerationLevel).isEqualTo(entity.postSettlementAckGenerationLevel)
+        assertThat(result.debitCapLimit).isEqualTo(entity.debitCapLimit)
+        assertThat(result.debitCapLimitThresholds).isEqualTo(entity.debitCapLimitThresholds)
     }
 }

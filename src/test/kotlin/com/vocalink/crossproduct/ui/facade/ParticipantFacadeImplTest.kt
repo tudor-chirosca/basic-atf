@@ -3,27 +3,34 @@ package com.vocalink.crossproduct.ui.facade
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.account.Account
+import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.atMost
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import kotlin.test.assertNotNull
 
 class ParticipantFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)
+    private val accountRepository = mock(AccountRepository::class.java)
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)
@@ -37,6 +44,8 @@ class ParticipantFacadeImplTest {
     fun init() {
         `when`(repositoryFactory.getParticipantRepository(anyString()))
                 .thenReturn(participantRepository)
+        `when`(repositoryFactory.getAccountRepository(anyString()))
+                .thenReturn(accountRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }
@@ -100,6 +109,86 @@ class ParticipantFacadeImplTest {
         verify(participantRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentManagedParticipants(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke repository getParticipantById twice on FUNDED participants`() {
+        val participant = Participant(null, null, null,
+                null, null, null, ParticipantType.FUNDED, null,
+                null, null, null, null, null)
+        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null)
+        val account = Account(null, null, null)
+        val configuration = ParticipantConfiguration(null, null,
+                null, null, null, null,
+                null, null, null,
+                null, null, null, null)
+
+
+        `when`(participantRepository.findById(any()))
+                .thenReturn(participant)
+
+        `when`(accountRepository.findByPartyCode(any()))
+                .thenReturn(account)
+
+        `when`(participantRepository.findConfigurationById(any()))
+                .thenReturn(configuration)
+
+        `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any(), any()))
+                .thenReturn(managedDetailsDto)
+
+        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
+
+        verify(participantRepository, atLeast(2)).findById(any())
+        verify(accountRepository).findByPartyCode(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any(), any())
+        verify(participantRepository).findConfigurationById(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke repository getParticipantById once on FUNDED participants`() {
+        val participant = Participant(null, null, null,
+                null, null, null, ParticipantType.FUNDING, null,
+                null, null, null, null, null)
+        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null)
+        val account = Account(null, null, null)
+        val configuration = ParticipantConfiguration(null, null,
+                null, null, null, null,
+                null, null, null,
+                null, null, null, null)
+
+
+        `when`(participantRepository.findById(any()))
+                .thenReturn(participant)
+
+        `when`(accountRepository.findByPartyCode(any()))
+                .thenReturn(account)
+
+        `when`(participantRepository.findConfigurationById(any()))
+                .thenReturn(configuration)
+
+        `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any()))
+                .thenReturn(managedDetailsDto)
+
+        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
+
+        verify(participantRepository, atMost(1)).findById(any())
+        verify(accountRepository).findByPartyCode(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any())
+        verify(participantRepository).findConfigurationById(any())
 
         assertNotNull(result)
     }

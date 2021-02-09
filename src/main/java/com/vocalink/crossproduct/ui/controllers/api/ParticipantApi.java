@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers.api;
 
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -18,4 +19,12 @@ public interface ParticipantApi {
   })
   ResponseEntity<PageDto<ManagedParticipantDto>> getParticipants(final ClientType clientType,
       final String context, final ManagedParticipantsSearchRequest request);
+
+  @ApiOperation("Fetch managed participant details records")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Managed participant details retrieved successfully", response = ManagedParticipantDetailsDto.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  ResponseEntity<ManagedParticipantDetailsDto> getManagedParticipantDetails(final ClientType clientType,
+      final String context, final String bic);
 }

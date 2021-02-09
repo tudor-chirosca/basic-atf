@@ -2,8 +2,8 @@ package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria
-import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.assertj.core.api.Assertions.assertThat
@@ -116,7 +116,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                                 .withBody(VALID_INSTRUCTION_PAGE_RESPONSE))
                         .withRequestBody(WireMock.equalToJson(VALID_INSTRUCTION_REQUEST)))
 
-        val criteria = BPSInstructionEnquirySearchCriteria(0, 10, null, "20201209001", "HANDSESS")
+        val criteria = InstructionEnquirySearchCriteria(0, 10, null, "20201209001", "HANDSESS")
         val result = repository.findBy(criteria)
 
         assertThat(result).isNotNull
@@ -144,7 +144,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                                 .withBody(VALID_SETTLEMENTS_RESPONSE))
                         .withRequestBody(WireMock.equalToJson(VALID_SETTLEMENTS_REQUEST)))
 
-        val criteria = BPSSettlementEnquirySearchCriteria.builder()
+        val criteria = SettlementEnquirySearchCriteria.builder()
                 .offset(0)
                 .limit(10)
                 .sort(null)

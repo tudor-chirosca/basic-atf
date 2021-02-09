@@ -10,8 +10,8 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.settlement.BPSInstructionEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.settlement.BPSSettlementEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
@@ -39,7 +39,7 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   private final WebClient webClient;
 
   @Override
-  public ParticipantSettlement findBy(BPSInstructionEnquirySearchCriteria criteria) {
+  public ParticipantSettlement findBy(InstructionEnquirySearchCriteria criteria) {
     final BPSInstructionEnquiryRequest request = BPSMAPPER.toBps(criteria);
     final BPSParticipantSettlement settlement = findSettlement(request.getCycleId(),
         request.getParticipantId());
@@ -77,7 +77,7 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   }
 
   @Override
-  public Page<ParticipantSettlement> findBy(BPSSettlementEnquirySearchCriteria criteria) {
+  public Page<ParticipantSettlement> findBy(SettlementEnquirySearchCriteria criteria) {
     final BPSSettlementEnquiryRequest request = BPSMAPPER.toBps(criteria);
     return webClient.post()
         .uri(resolve(SETTLEMENT_ENQUIRIES_PATH, bpsProperties))

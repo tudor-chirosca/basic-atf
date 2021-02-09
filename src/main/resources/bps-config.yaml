@@ -91,5 +91,11 @@ bps-config:
     broadcasts-create-path:
       path: /broadcasts
       base: MOCK
+    participant-configuration-path:
+      path: /participants/{schemeCode}/configuration
+      base: MOCK
+    routing-record-path:
+      path: /routing/{schemeCode}/records
+      base: MOCK
 
   retryable: 404, 429

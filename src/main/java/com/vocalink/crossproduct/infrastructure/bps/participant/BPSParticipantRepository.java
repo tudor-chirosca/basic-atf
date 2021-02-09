@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.participant;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.MANAGED_PARTICIPANT_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANTS_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANT_CONFIGURATION_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.PARTICIPANT_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
@@ -11,6 +12,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
@@ -70,11 +72,25 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSManagedParticipantsSearchRequest.class))
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipant>>() {
-        })
+        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipant>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntityParticipant)
+        .block();
+  }
+
+  @Override
+  public ParticipantConfiguration findConfigurationById(String participantId) {
+    BPSParticipantConfigurationRequest request = new BPSParticipantConfigurationRequest(participantId);
+    return webClient.post()
+        .uri(resolve(PARTICIPANT_CONFIGURATION_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(request), BPSParticipantConfigurationRequest.class))
+        .retrieve()
+        .bodyToMono(BPSParticipantConfiguration.class)
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .doOnError(ExceptionUtils::raiseException)
+        .map(MAPPER::toEntity)
         .block();
   }
 

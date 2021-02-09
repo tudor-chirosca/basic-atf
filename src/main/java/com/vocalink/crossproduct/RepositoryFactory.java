@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
+import com.vocalink.crossproduct.domain.routing.RoutingRepository;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.domain.transaction.TransactionRepository;
 import java.util.List;
@@ -42,6 +43,7 @@ public class RepositoryFactory {
   private final List<AccountRepository> accountClientList;
   private final List<ApprovalRepository> approvalRepositories;
   private final List<BroadcastsRepository> broadcastsRepositories;
+  private final List<RoutingRepository> routingRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -57,6 +59,7 @@ public class RepositoryFactory {
   private Map<String, AccountRepository> accountRepositoriesByProduct;
   private Map<String, ApprovalRepository> approvalRepositoriesByProduct;
   private Map<String, BroadcastsRepository> broadcastsRepositoriesByProduct;
+  private Map<String, RoutingRepository> routingRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -88,6 +91,8 @@ public class RepositoryFactory {
         .collect(toMap(ApprovalRepository::getProduct, Function.identity()));
     broadcastsRepositoriesByProduct = broadcastsRepositories.stream()
         .collect(toMap(BroadcastsRepository::getProduct, Function.identity()));
+    routingRepositoriesByProduct = routingRepositories.stream()
+        .collect(toMap(RoutingRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -186,7 +191,7 @@ public class RepositoryFactory {
     return accountRepositoriesByProduct.get(product);
   }
 
-  public ApprovalRepository getApprovalClient(String product) {
+  public ApprovalRepository getApprovalRepository(String product) {
     if (approvalRepositoriesByProduct.get(product) == null) {
       throw new RepositoryNotAvailableException(
           "Approval repository not available for product " + product);
@@ -194,11 +199,19 @@ public class RepositoryFactory {
     return approvalRepositoriesByProduct.get(product);
   }
 
-  public BroadcastsRepository getBroadcastsRepositories(String product) {
+  public BroadcastsRepository getBroadcastsRepository(String product) {
     if (!broadcastsRepositoriesByProduct.containsKey(product)) {
       throw new RepositoryNotAvailableException(
           "Broadcasts repository not available for product " + product);
     }
     return broadcastsRepositoriesByProduct.get(product);
+  }
+
+  public RoutingRepository getRoutingRepository(String product) {
+    if (!routingRepositoriesByProduct.containsKey(product)) {
+      throw new RepositoryNotAvailableException(
+          "Routing repository not available for product " + product);
+    }
+    return routingRepositoriesByProduct.get(product);
   }
 }

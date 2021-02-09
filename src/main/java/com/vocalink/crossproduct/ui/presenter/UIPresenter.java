@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -18,10 +19,12 @@ import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
@@ -43,12 +46,14 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
@@ -74,8 +79,8 @@ public class UIPresenter implements Presenter {
   @Value("${default.message.reference.name}")
   private String defaultMessageReferenceName;
 
-  private String PREVIOUS_CYCLE = "PREVIOUS";
-  private String CURRENT_CYCLE = "CURRENT";
+  private final String PREVIOUS_CYCLE = "PREVIOUS";
+  private final String CURRENT_CYCLE = "CURRENT";
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
@@ -358,7 +363,7 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
       Page<Participant> participants) {
-    return MAPPER.toDto(participants);
+    return MAPPER.toManagedParticipantPageDto(participants);
   }
 
   @Override
@@ -382,5 +387,25 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
     return MAPPER.toApprovalDetailsDto(approvals);
+  }
+
+  @Override
+  public PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords) {
+    return new PageDto<>(routingRecords.getTotalResults(),
+        routingRecords.getItems().stream()
+            .map(MAPPER::toDto)
+            .collect(toList()));
+  }
+
+  @Override
+  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account) {
+    return MAPPER.toDto(participant, configuration, fundingParticipant, account);
+  }
+
+  @Override
+  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
+      ParticipantConfiguration configuration, Account account) {
+    return MAPPER.toDto(participant, configuration, account);
   }
 }
