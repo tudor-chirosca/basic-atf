@@ -2,16 +2,12 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.controllers.api.TransactionsApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto
-import com.vocalink.crossproduct.ui.facade.TransactionsFacade
-import java.math.BigDecimal
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import com.vocalink.crossproduct.ui.facade.api.TransactionsFacade
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -22,10 +18,15 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.math.BigDecimal
+import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @WebMvcTest(TransactionsApi::class)
 @ContextConfiguration(classes=[TestConfig::class])

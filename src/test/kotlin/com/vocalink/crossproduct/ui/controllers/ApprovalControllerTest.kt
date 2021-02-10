@@ -5,8 +5,9 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
-import com.vocalink.crossproduct.ui.facade.ApprovalFacade
+import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`

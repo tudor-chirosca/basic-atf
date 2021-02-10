@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.account;
 
-import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_ACCOUNT_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.account.Account;

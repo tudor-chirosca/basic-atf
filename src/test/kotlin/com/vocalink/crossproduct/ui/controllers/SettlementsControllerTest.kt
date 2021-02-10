@@ -6,14 +6,13 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
-import com.vocalink.crossproduct.ui.controllers.impl.SettlementsController
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
-import com.vocalink.crossproduct.ui.facade.SettlementsFacade
+import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`

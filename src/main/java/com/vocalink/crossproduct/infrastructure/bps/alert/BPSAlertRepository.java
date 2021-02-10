@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.infrastructure.bps.alert;
 
-import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
-import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.ALERTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.ALERT_STATS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.ALERT_THRESHOLD_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;

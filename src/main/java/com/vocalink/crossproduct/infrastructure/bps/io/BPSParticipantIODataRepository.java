@@ -1,9 +1,9 @@
 package com.vocalink.crossproduct.infrastructure.bps.io;
 
-import static com.vocalink.crossproduct.infrastructure.adapter.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.IO_DETAILS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.IO_PARTICIPANTS_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.io.IODetails;

@@ -5,12 +5,11 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.ui.controllers.impl.ReferenceController
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
-import com.vocalink.crossproduct.ui.facade.ReferencesServiceFacade
+import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test

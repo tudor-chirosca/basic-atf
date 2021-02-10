@@ -30,7 +30,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
-import com.vocalink.crossproduct.infrastructure.adapter.EntityMapper
+import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto

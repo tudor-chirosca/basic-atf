@@ -1,10 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.bps.file;
 
-import static com.vocalink.crossproduct.infrastructure.bps.config.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.FILE_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.FILE_REFERENCES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_FILE_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;

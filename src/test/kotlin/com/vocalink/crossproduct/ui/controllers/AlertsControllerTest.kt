@@ -3,14 +3,12 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
-import com.vocalink.crossproduct.ui.controllers.impl.AlertsController
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
-import com.vocalink.crossproduct.ui.facade.AlertsServiceFacade
+import com.vocalink.crossproduct.ui.facade.api.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import java.nio.charset.Charset
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -24,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.nio.charset.Charset
 
 @WebMvcTest(AlertsController::class)
 @ContextConfiguration(classes=[TestConfig::class])

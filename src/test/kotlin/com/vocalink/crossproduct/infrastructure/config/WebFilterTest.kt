@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.config
 
 import com.vocalink.crossproduct.TestConfig
-import com.vocalink.crossproduct.ui.controllers.impl.SettlementDashboardController
-import com.vocalink.crossproduct.ui.facade.SettlementDashboardFacade
+import com.vocalink.crossproduct.ui.controllers.SettlementDashboardController
+import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
