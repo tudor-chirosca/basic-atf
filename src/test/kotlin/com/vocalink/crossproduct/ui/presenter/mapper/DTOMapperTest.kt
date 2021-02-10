@@ -146,7 +146,7 @@ class DTOMapperTest {
 
         val alerts = Page<Alert>(1, listOf(alert))
 
-        val result = MAPPER.toAlertPageDto(alerts)
+        val result = MAPPER.toDto(alerts, AlertDto::class.java)
 
         assertThat(result).isNotNull
         val alertItem: AlertDto = result.items.elementAt(0) as AlertDto
@@ -191,7 +191,7 @@ class DTOMapperTest {
                 .build()
         val page = Page<File>(totalResults, listOf(file))
 
-        val result = MAPPER.toFilePageDto(page)
+        val result = MAPPER.toDto(page, FileDto::class.java)
 
         assertThat(result).isNotNull
 
@@ -261,7 +261,7 @@ class DTOMapperTest {
                 .build()
         val page = Page<Batch>(totalResults, listOf(batch))
 
-        val result = MAPPER.toBatchPageDto(page)
+        val result = MAPPER.toDto(page, BatchDto::class.java)
 
         assertThat(result).isNotNull
 
@@ -803,7 +803,7 @@ class DTOMapperTest {
 
         val participants = Page<Participant>(1, listOf(participant))
 
-        val result = MAPPER.toManagedParticipantPageDto(participants)
+        val result = MAPPER.toDto(participants, ManagedParticipantDto::class.java)
 
         assertThat(result).isNotNull
 

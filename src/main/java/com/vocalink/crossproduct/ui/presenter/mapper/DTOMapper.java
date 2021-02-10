@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -18,7 +20,6 @@ import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
-import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -29,8 +30,6 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
-import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
-import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -66,6 +65,9 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import com.vocalink.crossproduct.ui.exceptions.UILayerException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -87,8 +89,6 @@ public interface DTOMapper {
   AlertReferenceDataDto toDto(AlertReferenceData alertReferenceData);
 
   AlertStatsDto toDto(AlertStats alertStats);
-
-  PageDto<AlertDto> toAlertPageDto(Page<Alert> alert);
 
   MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
@@ -219,13 +219,9 @@ public interface DTOMapper {
 
   List<FileStatusesTypeDto> toDtoType(List<FileReference> fileReferences);
 
-  PageDto<FileDto> toFilePageDto(Page<File> files);
-
   @Mapping(target = "name", source = "fileName")
   @Mapping(target = "senderBic", source = "sender.entityBic")
   FileDto toDto(File file);
-
-  PageDto<BatchDto> toBatchPageDto(Page<Batch> batches);
 
   @Mapping(target = "id", source = "batchId")
   @Mapping(target = "senderBic", source = "sender.entityBic")
@@ -268,8 +264,6 @@ public interface DTOMapper {
   }
 
   SettlementScheduleDto toDto(SettlementSchedule schedule);
-
-  PageDto<TransactionDto> toTransactionPageDto(Page<Transaction> transactions);
 
   @Mappings({
       @Mapping(target = "amount", source = "amount.amount"),
@@ -395,10 +389,6 @@ public interface DTOMapper {
   })
   ApprovalDetailsDto toDto(Approval approval);
 
-  PageDto<ApprovalDetailsDto> toApprovalDetailsDto(Page<Approval> approvals);
-
-  PageDto<ManagedParticipantDto> toManagedParticipantPageDto(Page<Participant> participants);
-
   @Mapping(target = "recipients", ignore = true)
   BroadcastDto toDto(Broadcast broadcast);
 
@@ -439,4 +429,39 @@ public interface DTOMapper {
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
       ParticipantConfiguration configuration, Account account);
+
+  AlertDto toDto (Alert alert);
+
+  //TODO: check ManagedParticipant != Participant?
+  ManagedParticipantDto toManagedDto(Participant participants);
+
+  default <T> PageDto<T> toDto(Page<?> page, Class<T> targetType) {
+    List<?> sourceItems = page.getItems();
+
+    if (sourceItems == null || sourceItems.isEmpty()) {
+      return new PageDto<>(0, emptyList());
+    }
+
+    final Class<?> sourceType = sourceItems.get(0).getClass();
+
+    Method method = stream(this.getClass().getDeclaredMethods())
+        .filter(m -> stream(m.getParameterTypes()).anyMatch(p -> p.isAssignableFrom(sourceType)))
+        .filter(m -> m.getReturnType().isAssignableFrom(targetType))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Method by signature not found!"));
+
+    final List<T> targetItems = sourceItems.stream()
+        .map(sourceType::cast)
+        .map(obj -> {
+          try {
+            return method.invoke(this, obj);
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new UILayerException(e.getCause(), "DataTransferObject mapping exception!");
+          }
+        })
+        .map(targetType::cast)
+        .collect(toList());
+
+    return new PageDto<>(page.getTotalResults(), targetItems);
+  }
 }

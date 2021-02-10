@@ -231,7 +231,7 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<AlertDto> presentAlert(Page<Alert> alerts) {
-    return MAPPER.toAlertPageDto(alerts);
+    return MAPPER.toDto(alerts, AlertDto.class);
   }
 
   @Override
@@ -245,7 +245,7 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<FileDto> presentFiles(Page<File> enquiries) {
-    return MAPPER.toFilePageDto(enquiries);
+    return MAPPER.toDto(enquiries, FileDto.class);
   }
 
   @Override
@@ -262,12 +262,12 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<BatchDto> presentBatches(Page<Batch> batches) {
-    return MAPPER.toBatchPageDto(batches);
+    return MAPPER.toDto(batches, BatchDto.class);
   }
 
   @Override
   public PageDto<TransactionDto> presentTransactions(Page<Transaction> transactions) {
-    return MAPPER.toTransactionPageDto(transactions);
+    return MAPPER.toDto(transactions, TransactionDto.class);
   }
 
   @Override
@@ -363,7 +363,7 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
       Page<Participant> participants) {
-    return MAPPER.toManagedParticipantPageDto(participants);
+    return MAPPER.toDto(participants, ManagedParticipantDto.class);
   }
 
   @Override
@@ -386,15 +386,12 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
-    return MAPPER.toApprovalDetailsDto(approvals);
+    return MAPPER.toDto(approvals, ApprovalDetailsDto.class);
   }
 
   @Override
   public PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords) {
-    return new PageDto<>(routingRecords.getTotalResults(),
-        routingRecords.getItems().stream()
-            .map(MAPPER::toDto)
-            .collect(toList()));
+    return MAPPER.toDto(routingRecords, RoutingRecordDto.class);
   }
 
   @Override
