@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.R
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
+import static java.util.Collections.singletonList;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -16,6 +17,7 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +34,23 @@ public class BPSRoutingRepository implements RoutingRepository {
   private final BPSRetryWebClientConfig retryWebClientConfig;
   private final WebClient webClient;
 
+  public static final String REACHABLE_BIC_SORT = "reachableBic";
+
   @Override
   public Page<RoutingRecord> findPaginated(RoutingRecordCriteria criteria) {
     BPSRoutingRecordRequest request = BPSMAPPER.toBps(criteria);
+    return findRoutingRecordsBy(request);
+  }
+
+  @Override
+  public List<RoutingRecord> findAllByBic(String bic) {
+    BPSRoutingRecordRequest request = new BPSRoutingRecordRequest(
+        0, Integer.MAX_VALUE, singletonList(REACHABLE_BIC_SORT), bic
+    );
+    return findRoutingRecordsBy(request).getItems();
+  }
+
+  public Page<RoutingRecord> findRoutingRecordsBy(BPSRoutingRecordRequest request) {
     return webClient.post()
         .uri(resolve(ROUTING_RECORD_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

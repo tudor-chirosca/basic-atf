@@ -328,13 +328,13 @@ class DTOMapperTest {
         )
         val participant = Participant("participantId", "participantId", "name",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null, null)
         val counterparty = Participant("counterpartyId", "counterpartyId", "counterpartyName",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null, null)
         val settlementCounterparty = Participant("settlementCounterpartyId", "settlementCounterpartyId", "settlementCounterpartyName",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null, null)
 
         val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty))
         assertThat(result).isNotNull
@@ -582,7 +582,7 @@ class DTOMapperTest {
         val account = Account("partyCode", 234234, "iban")
         val participant = Participant("participantId", "participantId", "name",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null, null)
 
         val result = EntityMapper.MAPPER.toEntity(account, participant)
         assertThat(result.entityBic).isEqualTo(account.partyCode)
@@ -654,7 +654,7 @@ class DTOMapperTest {
 
         val participant = Participant("participantId", "participantId", "name",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null, null)
 
         val result = MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
                 participant, participant, intraDay)
@@ -799,9 +799,15 @@ class DTOMapperTest {
                 listOf(Participant("FORXSES1", "FORXSES1", "Forex Bank", null,
                         ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
                         "00002121", "Nordnet Bank", "475347837892",
-                        null, null)), 1)
-
+                        null, 0, null)), 1, null)
         val participants = Page<Participant>(1, listOf(participant))
+        val routingRecords = RoutingRecord(
+                "reachableBic",
+                ZonedDateTime.now(),
+                ZonedDateTime.now(),
+                "currency"
+        )
+        participant.reachableBics = listOf(routingRecords)
 
         val result = MAPPER.toDto(participants, ManagedParticipantDto::class.java)
 
@@ -824,6 +830,10 @@ class DTOMapperTest {
         assertThat(managedParticipant.fundedParticipants[0].participantIdentifier).isEqualTo(participant.fundedParticipants[0].id)
         assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(participant.fundedParticipants[0].participantType.description)
         assertThat(managedParticipant.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
+        assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic)
+        assertThat(managedParticipant.reachableBics[0].validFrom).isEqualTo(participant.reachableBics[0].validFrom)
+        assertThat(managedParticipant.reachableBics[0].validTo).isEqualTo(participant.reachableBics[0].validTo)
+        assertThat(managedParticipant.reachableBics[0].currency).isEqualTo(participant.reachableBics[0].currency)
     }
 
     @Test
@@ -860,10 +870,11 @@ class DTOMapperTest {
         val participant = Participant("FORXSES1", "FORXSES1", "Forex Bank",
                 null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null,
                 "00002121", "Nordnet Bank", "475347837892",
-                emptyList(), 1)
+                emptyList(), 1, null)
         val fundingParticipant = Participant("participantId", "participantId", "name",
                 "fundingBic", ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null, "organizationId",
-                null, null, null, null)
+                null, null, null, null,
+                null)
         val configuration = ParticipantConfiguration(
                 "schemeParticipantIdentifier",
                 10,

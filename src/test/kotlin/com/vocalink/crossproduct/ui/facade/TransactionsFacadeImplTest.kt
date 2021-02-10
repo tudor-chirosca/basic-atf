@@ -103,7 +103,8 @@ class TransactionsFacadeImplTest {
 
         val participant = Participant(null, null, null, null, null,
                 null, null, null, null,
-                null, null, null, null)
+                null, null, null, null,
+                null)
 
         `when`(transactionRepository.findById(any()))
                 .thenReturn(transaction)

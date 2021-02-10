@@ -9,6 +9,8 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.routing.RoutingRecord
+import com.vocalink.crossproduct.domain.routing.RoutingRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
@@ -31,6 +33,7 @@ class ParticipantFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)
     private val accountRepository = mock(AccountRepository::class.java)
+    private val routingRecordRepository = mock(RoutingRepository::class.java)
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)
@@ -46,6 +49,8 @@ class ParticipantFacadeImplTest {
                 .thenReturn(participantRepository)
         `when`(repositoryFactory.getAccountRepository(anyString()))
                 .thenReturn(accountRepository)
+        `when`(repositoryFactory.getRoutingRepository(anyString()))
+                .thenReturn(routingRecordRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }
@@ -54,12 +59,13 @@ class ParticipantFacadeImplTest {
     fun `should invoke presenter and repository on funding participants`() {
         val page = Page<Participant>(1, listOf(Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null)))
+                null, null, null, null, null,
+                null)))
         val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
                 null, null, null, null,
-                null, null, null, 0)))
+                null, null, null, 0, null)))
+        
         val request = ManagedParticipantsSearchRequest()
-
 
         `when`(participantRepository.findPaginated(any()))
                 .thenReturn(page)
@@ -67,7 +73,8 @@ class ParticipantFacadeImplTest {
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
                 .thenReturn(listOf(Participant(null, null, null,
                         null, null, null, null, null,
-                        null, null, null, null, null)))
+                        null, null, null, null,
+                        null, null)))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -83,15 +90,21 @@ class ParticipantFacadeImplTest {
     }
 
     @Test
-    fun `should not invoke presenter and repository when participant type is funded`() {
-        val page = Page<Participant>(1, listOf(Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDED, null,
-                null, null, null, null, null)))
+    fun `should invoke repository getRoutingRepository and findAllById for routing records on present search param in request`() {
+        val bic = "bic"
+        val page = Page<Participant>(1, listOf(Participant(null, bic, null,
+                null, null, null, ParticipantType.FUNDING, null,
+                null, null, null, null, null,
+                null)))
         val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
                 null, null, null, null,
-                null, null, null, 0)))
-        val request = ManagedParticipantsSearchRequest()
+                null, null, null, 0, null)))
+        val routingRecord = RoutingRecord(
+                bic, null, null, null
+        )
 
+        val request = ManagedParticipantsSearchRequest()
+        request.q = "SEARCH"
 
         `when`(participantRepository.findPaginated(any()))
                 .thenReturn(page)
@@ -99,7 +112,45 @@ class ParticipantFacadeImplTest {
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
                 .thenReturn(listOf(Participant(null, null, null,
                         null, null, null, null, null,
-                        null, null, null, null, null)))
+                        null, null, null, null,
+                        null, null)))
+
+        `when`(routingRecordRepository.findAllByBic(any()))
+                .thenReturn(listOf(routingRecord))
+
+        `when`(uiPresenter.presentManagedParticipants(any()))
+                .thenReturn(pageDto)
+
+        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
+
+        verify(participantRepository).findPaginated(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentManagedParticipants(any())
+        verify(participantRepository).findByConnectingPartyAndType(any(), any())
+        verify(routingRecordRepository).findAllByBic(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should not invoke presenter and repository when participant type is funded`() {
+        val page = Page<Participant>(1, listOf(Participant(null, null, null,
+                null, null, null, ParticipantType.FUNDED, null,
+                null, null, null, null, null,
+                null)))
+        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
+                null, null, null, null,
+                null, null, null, 0, null)))
+        val request = ManagedParticipantsSearchRequest()
+
+        `when`(participantRepository.findPaginated(any()))
+                .thenReturn(page)
+
+        `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
+                .thenReturn(listOf(Participant(null, null, null,
+                        null, null, null, null, null,
+                        null, null, null, null,
+                        null, null)))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -117,7 +168,8 @@ class ParticipantFacadeImplTest {
     fun `should invoke repository getParticipantById twice on FUNDED participants`() {
         val participant = Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDED, null,
-                null, null, null, null, null)
+                null, null, null, null, null,
+                null)
         val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
@@ -128,7 +180,6 @@ class ParticipantFacadeImplTest {
                 null, null, null, null,
                 null, null, null,
                 null, null, null, null)
-
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)
@@ -157,7 +208,8 @@ class ParticipantFacadeImplTest {
     fun `should invoke repository getParticipantById once on FUNDED participants`() {
         val participant = Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null)
+                null, null, null, null, null,
+                null)
         val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
@@ -167,8 +219,8 @@ class ParticipantFacadeImplTest {
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,
                 null, null, null,
-                null, null, null, null)
-
+                null, null, null,
+                null)
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)

@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.participant;
 
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,4 +28,6 @@ public class Participant {
   private List<Participant> fundedParticipants;
   @Setter
   private Integer fundedParticipantsCount;
+  @Setter
+  private List<RoutingRecord> reachableBics;
 }

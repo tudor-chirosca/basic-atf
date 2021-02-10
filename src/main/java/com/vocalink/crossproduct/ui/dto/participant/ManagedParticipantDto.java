@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -31,6 +32,8 @@ public class ManagedParticipantDto {
   @JsonInclude(Include.NON_EMPTY)
   private final List<ParticipantReferenceDto> fundedParticipants;
   private final int fundedParticipantsCount;
+  @JsonInclude(Include.NON_EMPTY)
+  private final List<RoutingRecord> reachableBics;
 
   public String getParticipantType() {
     return participantType.getDescription();

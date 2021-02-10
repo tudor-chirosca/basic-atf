@@ -2,7 +2,9 @@ package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
@@ -11,6 +13,7 @@ import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCri
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
@@ -44,7 +47,10 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
     final Page<Participant> managedParticipants = new Page<>(participants.getTotalResults(),
         participants.getItems().stream()
-            .peek(p -> setFundedParticipants(p, product))
+            .peek(p -> {
+              setFundedParticipants(p, product);
+              setRoutingRecords(p, product, requestDto.getQ());
+            })
             .collect(toList()));
 
     return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants);
@@ -85,6 +91,16 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
       fundedParticipants.sort(comparing(Participant::getName));
       participant.setFundedParticipants(fundedParticipants);
       participant.setFundedParticipantsCount(participant.getFundedParticipants().size());
+    }
+  }
+
+  private void setRoutingRecords(Participant participant, String product, String searchString) {
+    if (nonNull(searchString)) {
+      List<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
+          .findAllByBic(participant.getBic())
+          .stream().filter(f -> containsIgnoreCase(f.getReachableBic(), searchString))
+          .collect(toList());
+      participant.setReachableBics(routingRecords);
     }
   }
 }

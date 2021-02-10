@@ -37,5 +37,4 @@ public class RoutingRecordFacadeImpl implements RoutingRecordFacade {
 
     return presenterFactory.getPresenter(clientType).presentRoutingRecords(routingRecords);
   }
-
 }
