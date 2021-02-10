@@ -92,7 +92,7 @@ pipeline {
                             when { expression { currentGitCommitHash != gitCommitPr } }
                             steps {
                                 println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                                publishArtifact(goal: "package")
+                                publishArtifact(goal: "clean package -U")
                             }
                         }
                     }//stages
