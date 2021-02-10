@@ -20,6 +20,7 @@ pipeline {
                 }
             }
         }
+
         stage("Clean workspace and Prepare params") {
             when { expression { skipCondition != 'true' } }
             steps {
