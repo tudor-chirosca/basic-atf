@@ -54,7 +54,6 @@ pipeline {
                         runMaven(goal: "-B test")
                     }
                 }
-
                 stage("Run sonar for unit") {
                     steps {
                         withSonarQubeEnv('cp-sonar'){
