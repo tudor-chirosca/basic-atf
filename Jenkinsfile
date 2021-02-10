@@ -61,8 +61,7 @@ pipeline {
                         }
                     }
 
-                }
-                
+                }      
                 stage("Package") {
                     steps {
                         withSonarQubeEnv('cp-sonar'){
