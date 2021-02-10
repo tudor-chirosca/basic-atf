@@ -72,7 +72,7 @@ pipeline {
                     }
 
                 }
-                // commenting out as no itnegration tests as of now
+                // commenting out as no integration tests as of now
                 // stage("Integration tests") {
                 //     steps {
                 //         runMaven(goal: "-B integration-test -U")
