@@ -5,6 +5,7 @@ pipeline {
 
     environment {
         RELEASE_BRANCH = "master"
+        // when RELEASE_BRANCH != master, update sonar projet key to avoid overwriting current sonar project
         repoType = "staging"
     }
     
@@ -55,6 +56,7 @@ pipeline {
                     }
                 }
                 stage("Run sonar for unit") {
+                    when { branch "${RELEASE_BRANCH}" }
                     steps {
                         withSonarQubeEnv('cp-sonar'){
                             runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
@@ -70,6 +72,7 @@ pipeline {
                     }
 
                 }
+                
                 // commenting out as no integration tests as of now
                 // stage("Integration tests") {
                 //     steps {
@@ -102,7 +105,12 @@ pipeline {
 
         stage('Build and deploy docker image') {
             agent any
-            when { expression { skipCondition != 'true' } }
+            when { anyOf {
+                // Always build docker container for branches
+                expression { skipCondition != 'true' && env.BRANCH != env.RELEASE_BRANCH }
+                // Build docker container for master branch only if there are changes
+                expression { skipCondition != 'true' && env.BRANCH == env.RELEASE_BRANCH && env.currentGitCommitHash != env.gitCommitPr } }
+            }
             stages {
                 stage("Publish docker") {
                     steps {
