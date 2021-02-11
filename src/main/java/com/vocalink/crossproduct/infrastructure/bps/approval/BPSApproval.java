@@ -19,8 +19,8 @@ public class BPSApproval {
   private final String participantName;
   private final String requestComment;
   private final BPSApprovalUser rejectedBy;
-  private final Map<String, String> originalData;
-  private final Map<String, String> requestedChange;
+  private final Map<String, Object> originalData;
+  private final Map<String, Object> requestedChange;
   private final String oldData;
   private final String newData;
   private final String notes;
@@ -37,8 +37,8 @@ public class BPSApproval {
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "requestComment", required = true) String requestComment,
       @JsonProperty(value = "rejectedBy") BPSApprovalUser rejectedBy,
-      @JsonProperty(value = "originalData", required = true) Map<String, String> originalData,
-      @JsonProperty(value = "requestedChange", required = true) Map<String, String> requestedChange,
+      @JsonProperty(value = "originalData", required = true) Map<String, Object> originalData,
+      @JsonProperty(value = "requestedChange", required = true) Map<String, Object> requestedChange,
       @JsonProperty(value = "oldData", required = true) String oldData,
       @JsonProperty(value = "newData", required = true) String newData,
       @JsonProperty(value = "notes") String notes) {

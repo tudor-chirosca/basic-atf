@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.approval;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVALS_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_CREATE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_DETAILS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
@@ -9,6 +10,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -39,7 +41,7 @@ public class BPSApprovalRepository implements ApprovalRepository {
 
   @Override
   public Approval findByJobId(String approvalId) {
-    BPSApprovalDetailsRequest bpsRequest = new BPSApprovalDetailsRequest(approvalId);
+    final BPSApprovalDetailsRequest bpsRequest = new BPSApprovalDetailsRequest(approvalId);
     return webClient.post()
         .uri(resolve(APPROVAL_DETAILS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +55,7 @@ public class BPSApprovalRepository implements ApprovalRepository {
 
   @Override
   public Page<Approval> findPaginated(ApprovalSearchCriteria criteria) {
-    BPSApprovalSearchRequest request = BPSMAPPER.toBps(criteria);
+    final BPSApprovalSearchRequest request = BPSMAPPER.toBps(criteria);
     final URI uri = UriComponentsBuilder.fromUri(resolve(APPROVALS_PATH, bpsProperties))
         .queryParam(OFFSET, request.getOffset())
         .queryParam(PAGE_SIZE, request.getPageSize())
@@ -66,6 +68,20 @@ public class BPSApprovalRepository implements ApprovalRepository {
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toApprovalsEntity)
+        .block();
+  }
+
+  @Override
+  public Approval requestApproval(ApprovalChangeCriteria criteria) {
+    final BPSApprovalChangeRequest bpsRequest = BPSMAPPER.toBps(criteria);
+    return webClient.post()
+        .uri(resolve(APPROVAL_CREATE_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(bpsRequest), BPSApprovalChangeRequest.class))
+        .retrieve()
+        .bodyToMono(BPSApproval.class)
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .map(MAPPER::toEntity)
         .block();
   }
 

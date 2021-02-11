@@ -5,8 +5,10 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
@@ -45,5 +47,19 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
         .findPaginated(request);
 
     return presenterFactory.getPresenter(clientType).presentApproval(approvals);
+  }
+
+  @Override
+  public ApprovalDetailsDto requestApproval(String product, ClientType clientType,
+      ApprovalChangeRequest requestDto) {
+
+    log.info("Creating approval for: {} in: {}", requestDto.getRequestType(), product);
+
+    final ApprovalChangeCriteria request = MAPPER.toEntity(requestDto);
+
+    final Approval approval = repositoryFactory.getApprovalRepository(product)
+        .requestApproval(request);
+
+    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
   }
 }

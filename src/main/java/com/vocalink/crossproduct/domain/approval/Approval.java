@@ -19,8 +19,8 @@ public class Approval {
   private final String participantName;
   private final String requestComment;
   private final ApprovalUser rejectedBy;
-  private final Map<String, String> originalData;
-  private final Map<String, String> requestedChange;
+  private final Map<String, Object> originalData;
+  private final Map<String, Object> requestedChange;
   private final String oldData;
   private final String newData;
   private final String notes;

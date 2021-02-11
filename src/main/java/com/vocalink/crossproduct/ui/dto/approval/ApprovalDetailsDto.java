@@ -28,6 +28,6 @@ public class ApprovalDetailsDto {
   private final ApprovalUser rejectedBy;
   @JsonInclude(Include.NON_EMPTY)
   private final String notes;
-  private final Map<String, String> originalData;
-  private final Map<String, String> requestedChange;
+  private final Map<String, Object> originalData;
+  private final Map<String, Object> requestedChange;
 }

@@ -35,19 +35,17 @@ import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
-import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -56,6 +54,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -917,5 +918,16 @@ class DTOMapperTest {
         assertThat(result.debitCapLimit).isEqualTo(configuration.debitCapLimit)
         assertThat(result.debitCapLimitThresholds).isEqualTo(configuration.debitCapLimitThresholds)
         assertThat(result.settlementAccountNo).isEqualTo(account.accountNo.toString())
+    }
+
+    @Test
+    fun `should map to ApprovalChangeCriteria fields`() {
+        val request = ApprovalChangeRequest(
+                "STATUS_CHANGE", mapOf("status" to "suspended"),"notes"
+        )
+        val result = EntityMapper.MAPPER.toEntity(request)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestedChange).isEqualTo(request.requestedChange)
+        assertThat(result.notes).isEqualTo(request.notes)
     }
 }

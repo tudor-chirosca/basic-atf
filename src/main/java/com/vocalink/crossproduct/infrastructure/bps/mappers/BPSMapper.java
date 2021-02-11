@@ -3,6 +3,8 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
@@ -28,6 +30,8 @@ import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCrit
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalChangeRequest;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
@@ -145,4 +149,14 @@ public interface BPSMapper {
       @Mapping(target = "pageSize", source = "limit")
   })
   BPSApprovalSearchRequest toBps(ApprovalSearchCriteria criteria);
+
+  @Mappings({
+      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "toBpsApprovalRequestType")
+  })
+  BPSApprovalChangeRequest toBps(ApprovalChangeCriteria criteria);
+
+  @Named("toBpsApprovalRequestType")
+  default BPSApprovalRequestType toBpsApprovalRequestType(ApprovalRequestType approvalRequestType) {
+    return BPSApprovalRequestType.valueOf(approvalRequestType.name());
+  }
 }

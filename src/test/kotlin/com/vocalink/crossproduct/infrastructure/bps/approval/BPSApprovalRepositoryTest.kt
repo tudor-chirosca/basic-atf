@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
@@ -27,6 +28,14 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                                                        var mockServer: WireMockServer){
 
     companion object {
+        const val VALID_BATCH_CANCELLATION_REQUEST = """ {
+           "requestType" : "BATCHCANCELLATION",
+           "requestedChange" : {
+                "batchId": "some_batch_id",
+                "status": "some_new_status"
+              },
+           "notes" : "notes"
+        }"""
         const val VALID_APPROVAL_DETAILS_REQUEST: String = """
             {
                 "approvalId": "10000004"
@@ -142,5 +151,34 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(item.participantName).isEqualTo("P27")
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
+    }
+
+    @Test
+    fun `should return approval on create approval request`() {
+        val date = ZonedDateTime.of(LocalDateTime.of(2021, 2, 3, 14, 55,0),  ZoneId.of("UTC"))
+        mockServer.stubFor(
+                post(urlEqualTo("/approvals/P27-SEK"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_APPROVAL_DETAILS_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_BATCH_CANCELLATION_REQUEST)))
+        val criteria = ApprovalChangeCriteria(
+                ApprovalRequestType.BATCH_CANCELLATION,
+                mapOf("batchId" to "some_batch_id",
+                        "status" to "some_new_status"),
+                "notes"
+        )
+        val result = approvalRepository.requestApproval(criteria)
+
+        assertThat(result.approvalId).isEqualTo("10000004")
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.CONFIG_CHANGE)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo("ELLFSESP")
+        assertThat(result.date).isEqualTo(date)
+        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.status).isEqualTo(ApprovalStatus.REJECTED)
+        assertThat(result.participantName).isEqualTo("Lansfosakringar Bank II")
+        assertThat(result.requestComment).isEqualTo("This is the reason...")
+        assertThat(result.requestedChange["status"]).isEqualTo("suspended")
     }
 }

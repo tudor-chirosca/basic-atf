@@ -12,6 +12,7 @@ import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
@@ -65,6 +66,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSet
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
@@ -241,7 +243,7 @@ public interface EntityMapper {
 
   @Mappings({
       @Mapping(target = "status", source = "status", qualifiedByName = "convertApprovalStatus"),
-      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertApprovalRequestType")
+      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertBpsApprovalRequestType")
   })
   Approval toEntity(BPSApproval approvalDetails);
 
@@ -250,8 +252,8 @@ public interface EntityMapper {
     return ApprovalStatus.valueOf(bpsApprovalStatus.name());
   }
 
-  @Named("convertApprovalRequestType")
-  default ApprovalRequestType convertApprovalRequestType(BPSApprovalRequestType bpsApprovalRequestType) {
+  @Named("convertBpsApprovalRequestType")
+  default ApprovalRequestType convertBpsApprovalRequestType(BPSApprovalRequestType bpsApprovalRequestType) {
     return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
   }
 
@@ -266,4 +268,13 @@ public interface EntityMapper {
   })
   RoutingRecordCriteria toEntity(RoutingRecordRequest request, String bic);
 
+  @Mappings({
+      @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertApprovalRequestType")
+  })
+  ApprovalChangeCriteria toEntity(ApprovalChangeRequest request);
+
+  @Named("convertApprovalRequestType")
+  default ApprovalRequestType convertApprovalRequestType(String approvalRequestType) {
+    return ApprovalRequestType.valueOf(approvalRequestType);
+  }
 }

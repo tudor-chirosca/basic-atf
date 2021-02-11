@@ -8,4 +8,7 @@ public interface ApprovalRepository extends CrossproductRepository {
   Approval findByJobId(String jobId);
 
   Page<Approval> findPaginated(ApprovalSearchCriteria criteria);
+
+  Approval requestApproval(ApprovalChangeCriteria criteria);
+
 }

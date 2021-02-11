@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers
 
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
+import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
@@ -96,7 +97,7 @@ class BPSMapperTest {
                 paymentSent, paymentReceived, returnSent, returnReceived, netAmount
         )
 
-        val entity = EntityMapper.MAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
 
         assertThat(entity.participantId).isEqualTo(bps.participantId)
         assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
@@ -511,7 +512,7 @@ class BPSMapperTest {
                 "senderEntityName",
                 "senderEntityBic"
         )
-        val entity = EntityMapper.MAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
         assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
@@ -528,7 +529,7 @@ class BPSMapperTest {
     @Test
     fun `should map AlertPriorityData fields`() {
         val bps = BPSAlertPriority("name", 234234, true)
-        val entity = EntityMapper.MAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertThat(entity.name).isEqualTo(bps.name)
         assertThat(entity.threshold).isEqualTo(bps.threshold)
         assertThat(entity.highlight).isEqualTo(bps.highlight)
@@ -537,14 +538,14 @@ class BPSMapperTest {
     @Test
     fun `should map AlertPriorityData fields with null threshold`() {
         val bps = BPSAlertPriority("name", null, true)
-        val entity = EntityMapper.MAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertNull(entity.threshold)
     }
 
     @Test
     fun `should map Account fields`() {
         val bps = BPSAccount("partyCode", 234234, "iban")
-        val entity = EntityMapper.MAPPER.toEntity(bps)
+        val entity = MAPPER.toEntity(bps)
         assertThat(entity.partyCode).isEqualTo(bps.partyCode)
         assertThat(entity.iban).isEqualTo(bps.iban)
         assertThat(entity.accountNo).isEqualTo(bps.accountNo)
@@ -645,5 +646,16 @@ class BPSMapperTest {
         assertThat(result.postSettlementAckGenerationLevel).isEqualTo(entity.postSettlementAckGenerationLevel)
         assertThat(result.debitCapLimit).isEqualTo(entity.debitCapLimit)
         assertThat(result.debitCapLimitThresholds).isEqualTo(entity.debitCapLimitThresholds)
+    }
+
+    @Test
+    fun `should map to ApprovalChangeCriteria fields`() {
+        val criteria = ApprovalChangeCriteria(
+                ApprovalRequestType.STATUS_CHANGE, mapOf("status" to "suspended"),"notes"
+        )
+        val result = BPSMAPPER.toBps(criteria)
+        assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestedChange).isEqualTo(criteria.requestedChange)
+        assertThat(result.notes).isEqualTo(criteria.notes)
     }
 }
