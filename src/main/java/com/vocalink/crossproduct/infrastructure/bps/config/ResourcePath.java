@@ -18,6 +18,7 @@ public interface ResourcePath {
   String ALERT_STATS_PATH = "alert-stats-path";
   String ALERTS_PATH = "alerts-path";
   String SINGLE_FILE_PATH = "single-file-path";
+  String DOWNLOAD_FILE_PATH = "download-file-path";
   String SINGLE_BATCH_PATH = "single-batch-path";
   String SINGLE_SETTLEMENT_PATH = "single-settlement-path";
   String INSTRUCTION_ENQUIRIES_PATH = "instruction-enquiries-path";

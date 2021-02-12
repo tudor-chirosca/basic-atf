@@ -22,7 +22,7 @@
     <swagger.version>3.0.0</swagger.version>
     <kotlin.version>1.3.72</kotlin.version>
     <kotlin-test-runner.version>3.4.2</kotlin-test-runner.version>
-    <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
+    <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
     <lombok.version>1.18.16</lombok.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
     <hibernate-validator.version>6.1.7.Final</hibernate-validator.version>

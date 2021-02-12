@@ -53,8 +53,10 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.core.io.Resource;
 
 public interface Presenter {
 
@@ -149,4 +151,6 @@ public interface Presenter {
       ParticipantConfiguration configuration, Account account);
 
   PageDto<ReportDto> presentReports(Page<Report> reports);
+
+  Resource presentFile(InputStream file);
 }

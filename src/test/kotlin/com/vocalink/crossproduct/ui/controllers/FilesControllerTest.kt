@@ -14,12 +14,15 @@ import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.core.io.InputStreamResource
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.io.ByteArrayInputStream
 import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.ZoneId
@@ -298,8 +301,25 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         mockMvc.perform(get("/enquiry/files/$id")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+    }
+
+    @Test
+    fun `should return 200 on download file by Id`() {
+        val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
+
+        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
+
+        `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
+        mockMvc.perform(get("/enquiry/files/$id")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk)
+                .andExpect(content().bytes(byteArrayOf(125, 12)))
     }
 }

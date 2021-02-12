@@ -55,6 +55,9 @@ bps-config:
     single-file-path:
       path: /enquiry/files/read
       base: MOCK
+    download-file-path:
+      path: /enquiries/file/downloadFile/{schemeCode}
+      base: MOCK
     single-batch-path:
       path: /enquiry/batches/read
       base: MOCK

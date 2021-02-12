@@ -6,15 +6,20 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.io.IOException;
+import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -43,5 +48,17 @@ public class FilesFacadeImpl implements FilesFacade {
     final File file = repositoryFactory.getFileRepository(product).findById(id);
 
     return presenterFactory.getPresenter(clientType).presentFileDetails(file);
+  }
+
+  @Override
+  public Resource getFile(String product, ClientType clientType, String fileId) {
+    final FileRepository fileRepository = repositoryFactory.getFileRepository(product);
+
+    try {
+      final InputStream input = fileRepository.getFileById(fileId);
+      return presenterFactory.getPresenter(clientType).presentFile(input);
+    } catch (IOException e) {
+      throw new UILayerException(e, "Exception thrown while reading input stream.");
+    }
   }
 }

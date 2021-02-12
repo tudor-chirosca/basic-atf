@@ -63,6 +63,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -72,6 +73,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -411,5 +414,10 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ReportDto> presentReports(Page<Report> reports) {
     return MAPPER.toDto(reports, ReportDto.class);
+  }
+
+  @Override
+  public Resource presentFile(InputStream is) {
+    return new InputStreamResource(is);
   }
 }

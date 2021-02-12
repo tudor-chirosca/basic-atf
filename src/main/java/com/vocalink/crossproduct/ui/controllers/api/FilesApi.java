@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +32,8 @@ public interface FilesApi {
       @ApiResponse(code = 200, message = "File details fetched successfully", response = FileDetailsDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<FileDetailsDto> getFileDetails(
+  ResponseEntity<?> getFile(
       final ClientType clientType,
       final String context,
-      final String fileId);
+      final String id, HttpServletRequest request);
 }

@@ -34,6 +34,7 @@ open class BPSTestConfig {
                 Pair("file-enquiries-path", Detail("MOCK", "/enquiry/files")),
                 Pair("batch-enquiries-path", Detail("MOCK", "/enquiry/batches")),
                 Pair("single-file-path", Detail("MOCK", "/enquiry/files/read")),
+                Pair("download-file-path", Detail("MOCK", "/enquiries/file/downloadFile/P27-SEK")),
                 Pair("single-batch-path", Detail("MOCK", "/enquiry/batches/read")),
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
                 Pair("instruction-enquiries-path", Detail("MOCK", "/enquiry/instructions")),

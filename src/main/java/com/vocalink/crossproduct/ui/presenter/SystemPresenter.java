@@ -53,8 +53,10 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -248,6 +250,11 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public PageDto<ReportDto> presentReports(Page<Report> reports) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public Resource presentFile(InputStream file) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

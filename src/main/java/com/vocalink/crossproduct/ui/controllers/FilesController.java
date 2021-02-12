@@ -1,13 +1,23 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.valueOf;
+
 import com.vocalink.crossproduct.ui.controllers.api.FilesApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
-import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FilesController implements FilesApi {
 
+  public static final String ACCEPT_HEADER = "Accept";
   private final FilesFacade filesFacade;
 
-  @GetMapping(value = "/enquiry/files", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/enquiry/files", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<FileDto>> getFiles(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
@@ -32,14 +43,25 @@ public class FilesController implements FilesApi {
     return ResponseEntity.ok().body(fileDto);
   }
 
-  @GetMapping(value = "/enquiry/files/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<FileDetailsDto> getFileDetails(
+  @GetMapping(value = "/enquiry/files/{id}",
+      produces = {APPLICATION_JSON_VALUE, APPLICATION_OCTET_STREAM_VALUE})
+  public ResponseEntity<?> getFile(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final @PathVariable String fileId) {
+      final @PathVariable String id, HttpServletRequest request) {
 
-    final FileDetailsDto fileDetails = filesFacade.getDetailsById(context, clientType, fileId);
+    final MediaType mediaType = valueOf(request.getHeader(ACCEPT_HEADER));
 
-    return ResponseEntity.ok().body(fileDetails);
+    if (mediaType.isCompatibleWith(APPLICATION_JSON)) {
+      return ResponseEntity.ok(filesFacade.getDetailsById(context, clientType, id));
+    }
+
+    Resource resource = filesFacade.getFile(context, clientType, id);
+
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.add(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE);
+    httpHeaders.add(CONTENT_DISPOSITION, "attachment;filename=" + id);
+
+    return new ResponseEntity<>(resource, httpHeaders, HttpStatus.OK);
   }
 }
