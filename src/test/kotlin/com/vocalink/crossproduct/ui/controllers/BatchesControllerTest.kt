@@ -274,7 +274,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("status", "pre-rejected")
+                .param("status", "PRE-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
     }
@@ -288,7 +288,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("status", "post-rejected")
+                .param("status", "POST-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
     }

@@ -107,7 +107,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "offset" : 0,
             "limit" : 20,
             "messageDirection" : "sending",
-            "status": "rejected",
+            "status": "PRE-RJCT",
             "reasonCode": "F01"
         }"""
 
@@ -121,7 +121,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "messageType": "pacs.008",
             "sendingBic": "AVANSESX",
             "receivingBic": "CARNSES1",
-            "status": "rejected",
+            "status": "PRE-RJCT",
             "reasonCode": "F04",
             "id": "BANK*",
             "sendingAccount": "SE91 9500 0099 6042 0638 7369",

@@ -24,7 +24,7 @@ import lombok.Getter;
 @Getter
 @ValidDateOrCycle(date = "dateTo", cycles = "cycleIds")
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
-@ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"rejected"})
+@ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 public class TransactionEnquirySearchRequest {
 
   private final int offset;
