@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -49,6 +50,7 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
           final List<ParticipantReferenceDto> references = b.getRecipients().stream()
               .map(participantRepository::findById)
               .map(DTOMapper.MAPPER::toReferenceDto)
+              .sorted(comparing(ParticipantReferenceDto::getName))
               .collect(toList());
           final BroadcastDto broadcastDto = DTOMapper.MAPPER.toDto(b);
           broadcastDto.setRecipients(references);
