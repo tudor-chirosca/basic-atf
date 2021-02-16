@@ -6,13 +6,11 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
+import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import java.nio.charset.Charset
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -27,6 +25,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.nio.charset.Charset
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @WebMvcTest(ApprovalApi::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -109,6 +111,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "status": "suspended"
             }
         }"""
+
+        const val VALID_APPROVAL_RESPONSE = """{
+         "totalResults": 0,
+         "items": []
+        }
+        """
     }
 
     @Test
@@ -265,5 +273,19 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_MISSING_REQUEST_CHANGE_REQUEST_BODY))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Missing required creator property 'requestedChange'")))
+    }
+
+    @Test
+    fun `should return 200 if no criteria specified in request`() {
+        `when`(approvalFacade.getApprovals(any(), any(), any(ApprovalSearchRequest::class.java))).thenReturn(
+            PageDto(0, null)
+        )
+
+        mockMvc.perform(get("/approvals")
+            .contentType(UTF8_CONTENT_TYPE)
+            .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+            .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_APPROVAL_RESPONSE, true));
     }
 }

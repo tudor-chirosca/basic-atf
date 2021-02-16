@@ -2,12 +2,16 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -22,6 +26,7 @@ import org.mockito.Mockito.verify
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import kotlin.test.assertNotNull
 
 class ApprovalFacadeImplTest {
 
@@ -91,5 +96,59 @@ class ApprovalFacadeImplTest {
         verify(uiPresenter).presentApprovalDetails(any())
 
         assertThat(result).isNotNull
+    }
+
+    @Test
+    fun `should invoke presenter and repository on get approvals`() {
+        val page = Page<Approval>(1, listOf(Approval(null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null)))
+        val pageDto = PageDto<ApprovalDetailsDto>(1, listOf(ApprovalDetailsDto(null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null)))
+        val request = ApprovalSearchRequest()
+
+        `when`(approvalRepository.findPaginated(any()))
+            .thenReturn(page)
+
+        `when`(uiPresenter.presentApproval(any()))
+            .thenReturn(pageDto)
+
+        val result = approvalFacadeImpl.getApprovals(TestConstants.CONTEXT, ClientType.UI, request)
+
+        verify(approvalRepository).findPaginated(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentApproval(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke presenter and repository on request approval`() {
+        val approval = Approval(null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null)
+
+        val approvalDetailsDto = ApprovalDetailsDto(null,
+            null, null, null, null, null, null,
+            null, null, null, null, null, null)
+
+        val request = ApprovalChangeRequest("STATUS_CHANGE", mapOf("status" to "suspended"),"notes")
+
+        `when`(approvalRepository.requestApproval(any()))
+            .thenReturn(approval)
+
+        `when`(uiPresenter.presentApprovalDetails(any()))
+            .thenReturn(approvalDetailsDto)
+
+        val result = approvalFacadeImpl.requestApproval(TestConstants.CONTEXT, ClientType.UI, request)
+
+        verify(approvalRepository).requestApproval(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentApprovalDetails(any())
+
+        assertNotNull(result)
     }
 }
