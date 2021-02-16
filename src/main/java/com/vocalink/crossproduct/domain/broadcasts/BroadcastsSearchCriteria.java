@@ -16,6 +16,7 @@ public class BroadcastsSearchCriteria {
   private final List<String> sort;
   private final String recipient;
   private final String msg;
+  private final String id;
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;
 }

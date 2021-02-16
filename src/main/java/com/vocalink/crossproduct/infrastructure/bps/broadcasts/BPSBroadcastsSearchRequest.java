@@ -17,6 +17,7 @@ public class BPSBroadcastsSearchRequest {
   private List<String> sort;
   private String recipient;
   private String msg;
+  private String id;
   private ZonedDateTime dateFrom;
   private ZonedDateTime dateTo;
 }

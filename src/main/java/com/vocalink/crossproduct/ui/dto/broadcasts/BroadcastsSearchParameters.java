@@ -22,6 +22,7 @@ public class BroadcastsSearchParameters {
   private List<String> sort;
   private String recipient;
   private String msg;
+  private String id;
   @Setter(AccessLevel.PRIVATE)
   private ZonedDateTime dateFrom;
   @Setter(AccessLevel.PRIVATE)
