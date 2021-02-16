@@ -24,6 +24,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
@@ -58,6 +59,7 @@ import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
@@ -395,6 +397,8 @@ public interface DTOMapper {
   @Mapping(target = "totalResults", source = "totalResults")
   @Mapping(target = "items", source = "items")
   PageDto<BroadcastDto> toDto(Integer totalResults, List<BroadcastDto> items);
+
+  ReportDto toDto(Report report);
 
   RoutingRecordDto toDto(RoutingRecord routingRecord);
 

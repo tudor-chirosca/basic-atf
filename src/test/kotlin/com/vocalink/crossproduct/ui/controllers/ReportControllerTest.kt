@@ -1,0 +1,112 @@
+package com.vocalink.crossproduct.ui.controllers
+
+import com.vocalink.crossproduct.TestConfig
+import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
+import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.controllers.api.ReportApi
+import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.report.ReportDto
+import com.vocalink.crossproduct.ui.facade.api.ReportFacade
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.LinkedMultiValueMap
+import java.nio.charset.Charset
+import java.time.ZonedDateTime
+
+@WebMvcTest(ReportApi::class)
+@ContextConfiguration(classes = [TestConfig::class])
+class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+
+    @MockBean
+    private lateinit var reportFacade: ReportFacade
+
+    private val UTF8_CONTENT_TYPE: MediaType = MediaType(
+        APPLICATION_JSON.type,
+        APPLICATION_JSON.subtype, Charset.forName("utf8")
+    )
+
+    private companion object {
+        const val CONTEXT_HEADER = "context"
+        const val CLIENT_TYPE_HEADER = "client-type"
+
+        const val MIN_EXPECTED_RESPONSE = """
+        {
+        "totalResults": 0,
+        "items": []
+        }
+        """
+
+        const val EXPECTED_RESPONSE = """
+        {
+        "totalResults": 1,
+        "items": [
+                 {
+                     "reportId": "10000000006",
+                     "reportType": "PRE-SETTLEMENT_ADVICE",
+                     "createdAt": "2021-02-14T00:00:00Z",
+                     "cycleId": "20201231002",
+                     "participantIdentifier": "IBCASES1",
+                     "participantName": "ICA Banken" 
+                }
+            ]
+        }
+        """
+    }
+
+    @Test
+    fun `should have success on get reports`() {
+        `when`(reportFacade.getPaginated(any(), any(), any()))
+            .thenReturn(PageDto(0, emptyList<ReportDto>()))
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/reports")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+            .andExpect(status().isOk)
+            .andExpect(content().json(MIN_EXPECTED_RESPONSE, true))
+    }
+
+    @Test
+    fun `should have success on get reports with query params`() {
+        val queryParams = LinkedMultiValueMap(
+            mapOf(
+                Pair("offset", listOf("0")),
+                Pair("limit", listOf("10")),
+                Pair("sort", listOf("any"))
+            )
+        )
+
+        val reportDto = ReportDto(
+            "10000000006",
+            "PRE-SETTLEMENT_ADVICE",
+            ZonedDateTime.parse("2021-02-14T00:00:00Z"),
+            "20201231002",
+            "IBCASES1",
+            "ICA Banken"
+        )
+
+        val response = PageDto(1, listOf(reportDto))
+
+        `when`(reportFacade.getPaginated(any(), any(), any()))
+            .thenReturn(response)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/reports")
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .queryParams(queryParams))
+            .andExpect(status().isOk)
+            .andExpect(content().json(EXPECTED_RESPONSE, true))
+    }
+
+
+}

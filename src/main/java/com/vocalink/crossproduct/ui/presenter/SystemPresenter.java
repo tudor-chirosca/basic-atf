@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
@@ -44,6 +45,7 @@ import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
@@ -241,6 +243,11 @@ public class SystemPresenter implements Presenter {
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
       ParticipantConfiguration configuration, Account account) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public PageDto<ReportDto> presentReports(Page<Report> reports) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

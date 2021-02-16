@@ -11,6 +11,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
@@ -22,7 +23,6 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
-import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
@@ -46,15 +46,15 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -707,4 +707,16 @@ class BPSMapperTest {
         assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("status")
         assertThat(result.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
     }
+
+    @Test
+    fun `should map BPSReportsSearchRequest fields`() {
+        val criteria = ReportSearchCriteria(0, 20, listOf("sort"))
+
+        val request = BPSMAPPER.toBps(criteria)
+        assertThat(request.offset).isEqualTo(criteria.offset)
+        assertThat(request.limit).isEqualTo(criteria.limit)
+        assertThat(request.sort).isEqualTo(criteria.sort)
+    }
+
+
 }

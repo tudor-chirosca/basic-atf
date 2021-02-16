@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.getApprovalSortParam;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -27,6 +26,7 @@ import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
+import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
@@ -57,6 +57,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
@@ -64,10 +65,7 @@ import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEn
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -181,4 +179,6 @@ public interface BPSMapper {
         .filter(s -> nonNull(s.getSortOrderBy()))
         .collect(toList());
   }
+
+  BPSReportSearchRequest toBps(ReportSearchCriteria criteria);
 }

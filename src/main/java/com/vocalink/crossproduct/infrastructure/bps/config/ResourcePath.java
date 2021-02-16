@@ -33,5 +33,6 @@ public interface ResourcePath {
   String APPROVALS_PATH = "approvals-path";
   String PARTICIPANT_CONFIGURATION_PATH = "participant-configuration-path";
   String ROUTING_RECORD_PATH = "routing-record-path";
+  String REPORTS_PATH = "reports-path";
 
 }

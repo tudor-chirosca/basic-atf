@@ -31,6 +31,8 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.report.Report;
+import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
@@ -60,6 +62,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
@@ -72,6 +75,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
+import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
@@ -277,4 +281,8 @@ public interface EntityMapper {
   default ApprovalRequestType convertApprovalRequestType(String approvalRequestType) {
     return ApprovalRequestType.valueOf(approvalRequestType);
   }
+
+  ReportSearchCriteria toEntity(ReportsSearchRequest parameters);
+
+  Page<Report> toPagedReportEntity(BPSPage<BPSReport> bpsReportBPSPage);
 }

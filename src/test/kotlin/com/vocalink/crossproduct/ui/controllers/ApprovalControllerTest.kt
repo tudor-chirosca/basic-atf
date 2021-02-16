@@ -5,10 +5,14 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
+import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.CoreMatchers.containsString
@@ -25,20 +29,24 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.LinkedMultiValueMap
+import java.math.BigDecimal
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @WebMvcTest(ApprovalApi::class)
-@ContextConfiguration(classes=[TestConfig::class])
+@ContextConfiguration(classes = [TestConfig::class])
 class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @MockBean
     private lateinit var approvalFacade: ApprovalFacade
 
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
+    private val UTF8_CONTENT_TYPE: MediaType = MediaType(
+        MediaType.APPLICATION_JSON.type,
+        MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8")
+    )
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -113,8 +121,30 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         }"""
 
         const val VALID_APPROVAL_RESPONSE = """{
-         "totalResults": 0,
-         "items": []
+                "totalResults": 26,
+                "items": [
+               {
+                   "status": "PENDING",
+                   "requestedBy": {
+                       "name": "John Doe",
+                       "id": "12a514",
+                       "participantName": "P27-SEK"
+                   },
+                   "createdAt": "2021-02-08T14:55:00Z",
+                   "jobId": "10000004",
+                   "requestType": "STATUS_CHANGE",
+                   "participantIdentifier": "ESSESESS",
+                   "participantName": "SEB Bank",
+                   "requestComment": "This is the reason that I have requested this change to be made.",
+                   "notes": "Please check ticket number 342 and resubmit the change.",
+                   "originalData": {
+                       "status": "WAITING-FORAPPROVAL"
+                   },
+                   "requestedChange": {
+                       "status": "REJECTED"
+                   }
+               }
+            ]
         }
         """
     }
@@ -123,169 +153,206 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     fun `should return 200 with path variable and return valid response`() {
         val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
-        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55),  ZoneId.of("UTC"))
+        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
 
         val approvalDetailsDto = ApprovalDetailsDto(
-                ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
-                createdAt, jobId,
-                ApprovalRequestType.BATCH_CANCELLATION,
-                "ESSESESS",
-                "SEB Bank",
-                "This is the reason that I...",
-                approvalUser, "Notes",
-                originalData, requestedChange)
+            ApprovalStatus.APPROVED,
+            approvalUser, approvalUser,
+            createdAt, jobId,
+            ApprovalRequestType.BATCH_CANCELLATION,
+            "ESSESESS",
+            "SEB Bank",
+            "This is the reason that I...",
+            approvalUser, "Notes",
+            originalData, requestedChange
+        )
 
         `when`(approvalFacade.getApprovalDetailsById(TestConstants.CONTEXT, ClientType.UI, jobId))
-                .thenReturn(approvalDetailsDto)
+            .thenReturn(approvalDetailsDto)
 
-        mockMvc.perform(get("/approvals/$jobId")
+        mockMvc.perform(
+            get("/approvals/$jobId")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
-                .andExpect(status().isOk)
-                .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
     }
 
     @Test
     fun `should return 200 on valid batch cancellation body for create Approval`() {
         val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
-        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55),  ZoneId.of("UTC"))
+        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
 
         val approvalDetailsDto = ApprovalDetailsDto(
-                ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
-                createdAt, jobId,
-                ApprovalRequestType.BATCH_CANCELLATION,
-                "ESSESESS",
-                "SEB Bank",
-                "This is the reason that I...",
-                approvalUser, "Notes",
-                originalData, requestedChange)
+            ApprovalStatus.APPROVED,
+            approvalUser, approvalUser,
+            createdAt, jobId,
+            ApprovalRequestType.BATCH_CANCELLATION,
+            "ESSESESS",
+            "SEB Bank",
+            "This is the reason that I...",
+            approvalUser, "Notes",
+            originalData, requestedChange
+        )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
-                .thenReturn(approvalDetailsDto)
+            .thenReturn(approvalDetailsDto)
 
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(VALID_BATCH_CANCELLATION_REQUEST_BODY))
-                .andExpect(status().isOk)
-                .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
+                .content(VALID_BATCH_CANCELLATION_REQUEST_BODY)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
     }
 
     @Test
     fun `should return 200 on valid status change body for create Approval`() {
         val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
-        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55),  ZoneId.of("UTC"))
+        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
 
         val approvalDetailsDto = ApprovalDetailsDto(
-                ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
-                createdAt, jobId,
-                ApprovalRequestType.BATCH_CANCELLATION,
-                "ESSESESS",
-                "SEB Bank",
-                "This is the reason that I...",
-                approvalUser, "Notes",
-                originalData, requestedChange)
+            ApprovalStatus.APPROVED,
+            approvalUser, approvalUser,
+            createdAt, jobId,
+            ApprovalRequestType.BATCH_CANCELLATION,
+            "ESSESESS",
+            "SEB Bank",
+            "This is the reason that I...",
+            approvalUser, "Notes",
+            originalData, requestedChange
+        )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
-                .thenReturn(approvalDetailsDto)
+            .thenReturn(approvalDetailsDto)
 
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(VALID_STATUS_CHANGE_REQUEST_BODY))
-                .andExpect(status().isOk)
-                .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
+                .content(VALID_STATUS_CHANGE_REQUEST_BODY)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
     }
 
     @Test
     fun `should return 200 on valid status change with notes body for create Approval`() {
         val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
-        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55),  ZoneId.of("UTC"))
+        val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
 
         val approvalDetailsDto = ApprovalDetailsDto(
-                ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
-                createdAt, jobId,
-                ApprovalRequestType.BATCH_CANCELLATION,
-                "ESSESESS",
-                "SEB Bank",
-                "This is the reason that I...",
-                approvalUser, "Notes",
-                originalData, requestedChange)
+            ApprovalStatus.APPROVED,
+            approvalUser, approvalUser,
+            createdAt, jobId,
+            ApprovalRequestType.BATCH_CANCELLATION,
+            "ESSESESS",
+            "SEB Bank",
+            "This is the reason that I...",
+            approvalUser, "Notes",
+            originalData, requestedChange
+        )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
-                .thenReturn(approvalDetailsDto)
+            .thenReturn(approvalDetailsDto)
 
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(VALID_STATUS_CHANGE_WITH_NOTES_REQUEST_BODY))
-                .andExpect(status().isOk)
-                .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
+                .content(VALID_STATUS_CHANGE_WITH_NOTES_REQUEST_BODY)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_APPROVAL_DETAILS_RESPONSE))
     }
 
     @Test
     fun `should fail with 400 when required notes for BATCH_CANCELLATION is missing`() {
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(INVALID_CREATE_APPROVAL_REQUEST_BODY))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Notes parameter is mandatory on a BATCH_CANCELLATION")))
+                .content(INVALID_CREATE_APPROVAL_REQUEST_BODY)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Notes parameter is mandatory on a BATCH_CANCELLATION")))
     }
 
     @Test
     fun `should fail with 400 when required requestType is missing`() {
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(INVALID_MISSING_REQUEST_TYPE_REQUEST_BODY))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Missing required creator property 'requestType'")))
+                .content(INVALID_MISSING_REQUEST_TYPE_REQUEST_BODY)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Missing required creator property 'requestType'")))
     }
 
     @Test
     fun `should fail with 400 when required requestedChange is missing`() {
-        mockMvc.perform(post("/approvals")
+        mockMvc.perform(
+            post("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(INVALID_MISSING_REQUEST_CHANGE_REQUEST_BODY))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Missing required creator property 'requestedChange'")))
+                .content(INVALID_MISSING_REQUEST_CHANGE_REQUEST_BODY)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Missing required creator property 'requestedChange'")))
     }
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        `when`(approvalFacade.getApprovals(any(), any(), any(ApprovalSearchRequest::class.java))).thenReturn(
-            PageDto(0, null)
+        val approvalUser = ApprovalUser("John Doe", "12a514", "P27-SEK")
+        val jobId = "10000004"
+        val createdAt = ZonedDateTime.parse("2021-02-08T14:55:00Z")
+        val requestedChange = mapOf("status" to "REJECTED")
+        val originalData = mapOf("status" to "WAITING-FORAPPROVAL")
+
+        val approvalDetailsDto = ApprovalDetailsDto(
+            ApprovalStatus.PENDING,
+            approvalUser, approvalUser,
+            createdAt, jobId,
+            ApprovalRequestType.STATUS_CHANGE,
+            "ESSESESS",
+            "SEB Bank",
+            "This is the reason that I have requested this change to be made.",
+            approvalUser, "Please check ticket number 342 and resubmit the change.",
+            originalData, requestedChange
         )
 
-        mockMvc.perform(get("/approvals")
-            .contentType(UTF8_CONTENT_TYPE)
-            .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-            .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+        `when`(approvalFacade.getApprovals(any(), any(), any()))
+            .thenReturn(PageDto(26, listOf(approvalDetailsDto)))
+
+        mockMvc.perform(
+            get("/approvals")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+        )
             .andExpect(status().isOk)
-            .andExpect(content().json(VALID_APPROVAL_RESPONSE, true));
+            .andExpect(content().json(VALID_APPROVAL_RESPONSE));
     }
 }

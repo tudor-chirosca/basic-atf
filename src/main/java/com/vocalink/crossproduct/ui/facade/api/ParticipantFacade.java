@@ -4,8 +4,6 @@ import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
-import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
-import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface ParticipantFacade {

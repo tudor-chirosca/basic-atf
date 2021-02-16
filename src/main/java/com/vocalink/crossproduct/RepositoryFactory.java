@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
+import com.vocalink.crossproduct.domain.report.ReportRepository;
 import com.vocalink.crossproduct.domain.routing.RoutingRepository;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.domain.transaction.TransactionRepository;
@@ -44,6 +45,7 @@ public class RepositoryFactory {
   private final List<ApprovalRepository> approvalRepositories;
   private final List<BroadcastsRepository> broadcastsRepositories;
   private final List<RoutingRepository> routingRepositories;
+  private final List<ReportRepository> reportRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -60,6 +62,7 @@ public class RepositoryFactory {
   private Map<String, ApprovalRepository> approvalRepositoriesByProduct;
   private Map<String, BroadcastsRepository> broadcastsRepositoriesByProduct;
   private Map<String, RoutingRepository> routingRepositoriesByProduct;
+  private Map<String, ReportRepository> reportRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -93,6 +96,8 @@ public class RepositoryFactory {
         .collect(toMap(BroadcastsRepository::getProduct, Function.identity()));
     routingRepositoriesByProduct = routingRepositories.stream()
         .collect(toMap(RoutingRepository::getProduct, Function.identity()));
+    reportRepositoriesByProduct = reportRepositories.stream()
+        .collect(toMap(ReportRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -213,5 +218,13 @@ public class RepositoryFactory {
           "Routing repository not available for product " + product);
     }
     return routingRepositoriesByProduct.get(product);
+  }
+
+  public ReportRepository getReportRepository(String product) {
+    if (!reportRepositoriesByProduct.containsKey(product)) {
+      throw new RepositoryNotAvailableException(
+          "Reports repository not available for product " + product);
+    }
+    return reportRepositoriesByProduct.get(product);
   }
 }

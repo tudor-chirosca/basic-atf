@@ -100,5 +100,8 @@ bps-config:
     routing-record-path:
       path: /routing/{schemeCode}/records
       base: MOCK
+    reports-path:
+      path: /reports
+      base: MOCK
 
   retryable: 404, 429

@@ -153,4 +153,11 @@ class SystemPresenterTests {
             systemPresenter.presentTransactions(null)
         }
     }
+
+    @Test
+    fun `should throw RuntimeException on present reports for System`() {
+        assertThrows(RuntimeException::class.java) {
+            systemPresenter.presentReports(null)
+        }
+    }
 }
