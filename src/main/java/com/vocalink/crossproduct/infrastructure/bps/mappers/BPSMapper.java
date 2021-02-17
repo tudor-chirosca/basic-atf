@@ -1,5 +1,9 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
+import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.getApprovalSortParam;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
+
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
@@ -28,6 +32,8 @@ import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCrite
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper;
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalChangeRequest;
@@ -57,6 +63,11 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnqu
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -146,7 +157,7 @@ public interface BPSMapper {
   Broadcast toEntity(BPSBroadcast broadcast);
 
   @Mappings({
-      @Mapping(target = "pageSize", source = "limit")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParam")
   })
   BPSApprovalSearchRequest toBps(ApprovalSearchCriteria criteria);
 
@@ -158,5 +169,16 @@ public interface BPSMapper {
   @Named("toBpsApprovalRequestType")
   default BPSApprovalRequestType toBpsApprovalRequestType(ApprovalRequestType approvalRequestType) {
     return BPSApprovalRequestType.valueOf(approvalRequestType.name());
+  }
+
+  @Named("mapApprovalSortParam")
+  default List<BPSSortingQuery> mapApprovalSortParam(List<String> sortParams) {
+    if (sortParams == null || sortParams.isEmpty()) {
+      return new ArrayList<>();
+    }
+    return sortParams.stream()
+        .map(BPSSortParamMapper::getApprovalSortParam)
+        .filter(s -> nonNull(s.getSortOrderBy()))
+        .collect(toList());
   }
 }

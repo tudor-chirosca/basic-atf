@@ -136,7 +136,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                         .withQueryParam("offset", WireMock.equalTo("0"))
                         .withQueryParam("pageSize", WireMock.equalTo("1")))
 
-        val result = approvalRepository.findPaginated(ApprovalSearchCriteria(0, 1))
+        val result = approvalRepository.findPaginated(ApprovalSearchCriteria(0, 1, listOf()))
 
         assertThat(result).isNotNull
         assertThat(result.totalResults).isEqualTo(1)

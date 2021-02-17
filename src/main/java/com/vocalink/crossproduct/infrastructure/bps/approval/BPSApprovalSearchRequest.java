@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.approval;
 
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BPSApprovalSearchRequest {
 
-  private final int offset;
-  private final int pageSize;
+  private final List<BPSSortingQuery> sortingOrder;
 }

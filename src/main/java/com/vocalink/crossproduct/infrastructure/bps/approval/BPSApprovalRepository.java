@@ -57,12 +57,13 @@ public class BPSApprovalRepository implements ApprovalRepository {
   public Page<Approval> findPaginated(ApprovalSearchCriteria criteria) {
     final BPSApprovalSearchRequest request = BPSMAPPER.toBps(criteria);
     final URI uri = UriComponentsBuilder.fromUri(resolve(APPROVALS_PATH, bpsProperties))
-        .queryParam(OFFSET, request.getOffset())
-        .queryParam(PAGE_SIZE, request.getPageSize())
+        .queryParam(OFFSET, criteria.getOffset())
+        .queryParam(PAGE_SIZE, criteria.getLimit())
         .build().toUri();
     return webClient.post()
         .uri(uri)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(request), BPSApprovalSearchRequest.class))
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSApproval>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())

@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
@@ -12,6 +13,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
@@ -20,6 +22,7 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
@@ -649,7 +652,7 @@ class BPSMapperTest {
     }
 
     @Test
-    fun `should map to ApprovalChangeCriteria fields`() {
+    fun `should map to BPSApprovalChangeRequest fields`() {
         val criteria = ApprovalChangeCriteria(
                 ApprovalRequestType.STATUS_CHANGE, mapOf("status" to "suspended"),"notes"
         )
@@ -657,5 +660,51 @@ class BPSMapperTest {
         assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.STATUS_CHANGE)
         assertThat(result.requestedChange).isEqualTo(criteria.requestedChange)
         assertThat(result.notes).isEqualTo(criteria.notes)
+    }
+
+    @Test
+    fun `should map to BPSApprovalSearchRequest fields`() {
+        val criteria = ApprovalSearchCriteria(
+                0, 20,
+                listOf(
+                        "-participantName", "+participantName",
+                        "-requestType", "requestType",
+                        "-jobId", "+jobId",
+                        "-createdAt", "createdAt",
+                        "-requestedBy", "+requestedBy",
+                        "-status", "+status"
+                )
+        )
+        val result = BPSMAPPER.toBps(criteria)
+
+        assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("participantName")
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[1].sortOrderBy).isEqualTo("participantName")
+        assertThat(result.sortingOrder[1].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(result.sortingOrder[2].sortOrderBy).isEqualTo("requestType")
+        assertThat(result.sortingOrder[2].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[3].sortOrderBy).isEqualTo("requestType")
+        assertThat(result.sortingOrder[3].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(result.sortingOrder[4].sortOrderBy).isEqualTo("approvalId")
+        assertThat(result.sortingOrder[4].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[5].sortOrderBy).isEqualTo("approvalId")
+        assertThat(result.sortingOrder[5].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(result.sortingOrder[6].sortOrderBy).isEqualTo("date")
+        assertThat(result.sortingOrder[6].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[7].sortOrderBy).isEqualTo("date")
+        assertThat(result.sortingOrder[7].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(result.sortingOrder[8].sortOrderBy).isEqualTo("requestedBy")
+        assertThat(result.sortingOrder[8].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[9].sortOrderBy).isEqualTo("requestedBy")
+        assertThat(result.sortingOrder[9].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(result.sortingOrder[10].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
     }
 }
