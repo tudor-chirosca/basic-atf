@@ -27,7 +27,7 @@ public interface ApprovalApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(final ClientType clientType, final String context,
-      final ApprovalSearchRequest request);
+      @Valid final ApprovalSearchRequest request);
 
   ResponseEntity<ApprovalDetailsDto> requestApproval(
       final ClientType clientType,

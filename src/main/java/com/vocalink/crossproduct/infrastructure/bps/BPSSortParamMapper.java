@@ -28,9 +28,7 @@ public class BPSSortParamMapper {
         .trim()
         .replace(MINUS, EMPTY)
         .replace(PLUS, EMPTY));
-    if (bpsSort == null) {
-      throw new NonConsistentDataException("Wrong sorting param: " + sortParam);
-    }
+
     return new BPSSortingQuery(bpsSort, order);
   }
 }
