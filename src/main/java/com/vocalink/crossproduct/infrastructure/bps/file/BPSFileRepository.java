@@ -31,9 +31,9 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -98,27 +98,28 @@ public class BPSFileRepository implements FileRepository {
     final Flux<DataBuffer> body = webClient.post()
         .uri(resolve(DOWNLOAD_FILE_PATH, bpsProperties).toString(), b -> b.pathSegment(id).build())
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        .accept(MediaType.APPLICATION_OCTET_STREAM)
-        .exchange()
-        .flatMapMany(r -> r.body(BodyExtractors.toDataBuffers()))
+        .retrieve()
+        .bodyToFlux(DataBuffer.class)
         .doOnError(t -> {
-          log.error("Error reading body.", t);
+          log.debug("Error reading body. Reason: {}", t.getMessage());
           try {
             inputPipe.close();
           } catch (IOException ioe) {
-            log.error("Error closing input stream", ioe);
+            log.debug("Error closing input stream", ioe);
           }
         })
         .doFinally(s -> {
           try {
             outputPipe.close();
           } catch (IOException ioe) {
-            log.error("Error closing output stream", ioe);
+            log.debug("Error closing output stream", ioe);
           }
         });
 
     DataBufferUtils.write(body, outputPipe)
         .subscribe(DataBufferUtils.releaseConsumer());
+
+    Hooks.onErrorDropped(error -> log.debug(error.getMessage()));
 
     return inputPipe;
   }
