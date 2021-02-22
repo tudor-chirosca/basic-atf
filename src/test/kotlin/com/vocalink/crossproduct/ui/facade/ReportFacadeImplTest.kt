@@ -1,8 +1,10 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.ResourceService
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.report.ReportRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -11,6 +13,7 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -18,24 +21,28 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import kotlin.test.assertNotNull
 
 class ReportFacadeImplTest {
 
+    private val downloadService = mock(ResourceService::class.java)!!
     private val reportRepository = mock(ReportRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)
+    private val serviceFactory = mock(ServiceFactory::class.java)
 
     private val reportFacadeImpl = ReportFacadeImpl(
-        repositoryFactory,
-        presenterFactory
+            repositoryFactory,
+            presenterFactory,
+            serviceFactory
     )
 
     @BeforeEach
     fun init() {
         `when`(repositoryFactory.getReportRepository(anyString()))
             .thenReturn(reportRepository)
+        `when`(serviceFactory.getDownloadService(anyString()))
+                .thenReturn(downloadService)
         `when`(presenterFactory.getPresenter(ClientType.UI))
             .thenReturn(uiPresenter)
     }

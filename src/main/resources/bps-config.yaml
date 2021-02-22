@@ -106,5 +106,8 @@ bps-config:
     reports-path:
       path: /reports
       base: MOCK
+    download-report-path:
+      path: /reports/downloadFile/{schemeCode}
+      base: MOCK
 
   retryable: 404, 429

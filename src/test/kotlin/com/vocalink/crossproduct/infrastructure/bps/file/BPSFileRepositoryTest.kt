@@ -7,17 +7,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
-import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
-import org.springframework.http.HttpHeaders.CONTENT_LENGTH
 import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
-import java.time.LocalDate
 
 @BPSTestConfiguration
 @Import(BPSFileRepository::class)
@@ -200,21 +197,5 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         assertThat(result.nrOfBatches).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
         assertThat(result.status).isEqualTo("Accepted")
-    }
-
-    @Test
-    fun `should return file data for id` () {
-        val fileName = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
-        mockServer.stubFor(
-                post(urlEqualTo("/enquiries/file/downloadFile/P27-SEK/$fileName"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE)
-                                .withHeader(CONTENT_DISPOSITION, "attachment;filename=$fileName")
-                                .withHeader(CONTENT_LENGTH, "3")
-                                .withBody(byteArrayOf(123, 12, 15)))
-        )
-        val result = fileRepository.getFileById(fileName)
-        assertThat(result).hasBinaryContent(byteArrayOf(123, 12, 15))
     }
 }

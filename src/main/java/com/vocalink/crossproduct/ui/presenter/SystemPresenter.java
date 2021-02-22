@@ -256,7 +256,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public Resource presentFile(InputStream file) {
+  public Resource presentStream(InputStream file) {
     throw new RuntimeException("System API not implemented yet");
   }
 

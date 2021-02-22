@@ -421,7 +421,7 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public Resource presentFile(InputStream is) {
+  public Resource presentStream(InputStream is) {
     return new InputStreamResource(is);
   }
 

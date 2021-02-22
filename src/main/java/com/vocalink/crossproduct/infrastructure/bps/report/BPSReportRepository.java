@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.r
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.REPORTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -18,7 +19,6 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConf
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -36,7 +36,7 @@ public class BPSReportRepository implements ReportRepository {
     final BPSReportSearchRequest request = BPSMAPPER.toBps(criteria);
     return webClient.post()
         .uri(resolve(REPORTS_PATH, bpsProperties))
-        .header(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE)
+        .header(ACCEPT, APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSReportSearchRequest.class))
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSReport>>() {

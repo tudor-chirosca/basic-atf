@@ -7,6 +7,12 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
+import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ofPattern
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -22,12 +28,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.io.ByteArrayInputStream
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
 
 @WebMvcTest(FilesController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -310,9 +310,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 on download file by Id`() {
         val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
-
         val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
-
         `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
         mockMvc.perform(get("/enquiry/files/$id")
                 .contentType(UTF8_CONTENT_TYPE)

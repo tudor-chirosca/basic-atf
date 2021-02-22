@@ -51,8 +51,9 @@ open class BPSTestConfig {
                 Pair("approvals-path", Detail("MOCK", "/approvals/P27-SEK/readAll")),
                 Pair("participant-configuration-path", Detail("MOCK", "/participants/P27-SEK/configuration")),
                 Pair("routing-record-path", Detail("MOCK", "/routing/P27-SEK/records")),
-                Pair("reports-path", Detail("MOCK", "/reports"))
-        )
+                Pair("reports-path", Detail("MOCK", "/reports")),
+                Pair("download-report-path", Detail("MOCK", "/reports/downloadFile/P27-SEK"))
+                )
         props.retryable = listOf(404)
 
         return props

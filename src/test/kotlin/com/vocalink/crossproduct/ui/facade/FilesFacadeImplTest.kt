@@ -1,8 +1,10 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.ResourceService
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -12,6 +14,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -19,25 +22,28 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import kotlin.test.assertNotNull
 
 class FilesFacadeImplTest {
 
     private val fileRepository = mock(FileRepository::class.java)!!
+    private val downloadService = mock(ResourceService::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
-
     private val repositoryFactory = mock(RepositoryFactory::class.java)
+    private val serviceFactory = mock(ServiceFactory::class.java)
 
     private val filesServiceFacadeImpl = FilesFacadeImpl(
             presenterFactory,
-            repositoryFactory
+            repositoryFactory,
+            serviceFactory
     )
 
     @BeforeEach
     fun init() {
         `when`(repositoryFactory.getFileRepository(anyString()))
                 .thenReturn(fileRepository)
+        `when`(serviceFactory.getDownloadService(anyString()))
+                .thenReturn(downloadService)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }

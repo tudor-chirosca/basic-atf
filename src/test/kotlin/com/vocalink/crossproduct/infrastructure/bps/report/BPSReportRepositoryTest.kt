@@ -1,7 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.bps.report
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
@@ -58,13 +61,12 @@ class BPSReportRepositoryTest @Autowired constructor(
             null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null
         )
         mockServer.stubFor(
-            WireMock.post(WireMock.urlEqualTo("/reports"))
-                .willReturn(
-                    WireMock.aResponse()
+            post(urlEqualTo("/reports"))
+                .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(VALID_RESPONSE))
-                .withRequestBody(WireMock.equalToJson(VALID_REQUEST, true, false)))
+                .withRequestBody(equalToJson(VALID_REQUEST, true, false)))
 
         reportRepository.findPaginated(request)
     }
@@ -72,14 +74,14 @@ class BPSReportRepositoryTest @Autowired constructor(
     @Test
     fun `should fail if 404 returned and throw ClientException`() {
         mockServer.stubFor(
-            WireMock.post(WireMock.urlEqualTo("/reports"))
+            post(urlEqualTo("/reports"))
                 .willReturn(
-                    WireMock.aResponse()
+                    aResponse()
                         .withStatus(404)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(VALID_RESPONSE)
                 )
-                .withRequestBody(WireMock.equalToJson(VALID_REQUEST))
+                .withRequestBody(equalToJson(VALID_REQUEST))
         )
 
         assertThatExceptionOfType(InfrastructureException::class.java).isThrownBy {

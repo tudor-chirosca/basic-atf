@@ -154,8 +154,7 @@ public interface Presenter {
 
   PageDto<ReportDto> presentReports(Page<Report> reports);
 
-  Resource presentFile(InputStream file);
+  Resource presentStream(InputStream file);
 
   ApprovalConfirmationResponseDto presentApprovalResponse(ApprovalConfirmationResponse response);
-
 }

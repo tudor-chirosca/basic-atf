@@ -7,6 +7,10 @@ import com.vocalink.crossproduct.ui.controllers.api.ReportApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.report.ReportDto
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade
+import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -14,17 +18,17 @@ import org.mockito.Mockito.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.core.io.InputStreamResource
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
-import java.nio.charset.Charset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReportApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -117,7 +121,6 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 Pair("date_from", listOf(ZonedDateTime.now().minusDays(31).format(DateTimeFormatter.ISO_ZONED_DATE_TIME)))
             )
         )
-
         mockMvc.perform(
             get("/reports")
             .contentType(UTF8_CONTENT_TYPE)
@@ -126,5 +129,19 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .queryParams(queryParams))
             .andExpect(status().is4xxClientError)
             .andExpect(content().string(CoreMatchers.containsString("date_from can not be earlier than 30 days")))
+    }
+
+    @Test
+    fun `should return report data for id` () {
+        val id = "10000000006"
+        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
+        `when`(reportFacade.getReport(any(), any(), any())).thenReturn(stream)
+        mockMvc.perform(get("/reports/$id")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .header(HttpHeaders.ACCEPT, APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk)
+                .andExpect(content().bytes(byteArrayOf(125, 12)))
     }
 }

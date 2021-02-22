@@ -35,5 +35,6 @@ public interface ResourcePath {
   String PARTICIPANT_CONFIGURATION_PATH = "participant-configuration-path";
   String ROUTING_RECORD_PATH = "routing-record-path";
   String REPORTS_PATH = "reports-path";
+  String DOWNLOAD_REPORT_PATH = "download-report-path";
 
 }

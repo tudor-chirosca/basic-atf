@@ -1,12 +1,13 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.DOWNLOAD_FILE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
+import com.vocalink.crossproduct.ServiceFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -29,6 +30,7 @@ public class FilesFacadeImpl implements FilesFacade {
 
   private final PresenterFactory presenterFactory;
   private final RepositoryFactory repositoryFactory;
+  private final ServiceFactory serviceFactory;
 
   @Override
   public PageDto<FileDto> getPaginated(String product, ClientType clientType,
@@ -52,11 +54,10 @@ public class FilesFacadeImpl implements FilesFacade {
 
   @Override
   public Resource getFile(String product, ClientType clientType, String fileId) {
-    final FileRepository fileRepository = repositoryFactory.getFileRepository(product);
-
     try {
-      final InputStream input = fileRepository.getFileById(fileId);
-      return presenterFactory.getPresenter(clientType).presentFile(input);
+      final InputStream input = serviceFactory.getDownloadService(product)
+          .getResource(DOWNLOAD_FILE_PATH, fileId);
+      return presenterFactory.getPresenter(clientType).presentStream(input);
     } catch (IOException e) {
       throw new UILayerException(e, "Exception thrown while reading input stream.");
     }

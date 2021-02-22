@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
@@ -29,6 +30,11 @@ class BPSAccountRepositoryTest @Autowired constructor(var accountRepository: BPS
             "accountNo": 200002,
             "iban": "SE23 9999 9999 9999 9999 2150"
         }"""
+    }
+
+    @AfterEach
+    fun cleanUp() {
+        mockServer.resetAll()
     }
 
     @Test
