@@ -26,27 +26,27 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
 
     companion object {
         const val VALID_ALL_PARTICIPANTS_REQUEST: String = """ { } """
-        const val VALID_PARTICIPANTS_REQUEST: String = """ 
+        const val VALID_PARTICIPANTS_REQUEST: String = """
         {
             "connectingParty": "NDEASESSXXX",
             "participantType": "FUNDING"
-        } 
+        }
         """
 
-        const val VALID_PARTICIPANTS_WITH_ID_REQUEST: String = """ 
+        const val VALID_PARTICIPANTS_WITH_ID_REQUEST: String = """
         {
             "schemeParticipantIdentifier" : "NDEASESSXXX"
-        } 
+        }
         """
 
-        const val VALID_MANAGED_PARTICIPANTS_REQUEST: String = """ 
+        const val VALID_MANAGED_PARTICIPANTS_REQUEST: String = """
         {
             "offset": 0,
             "limit": 2
-        } 
+        }
         """
 
-        const val VALID_PARTICIPANTS_RESPONSE: String = """ 
+        const val VALID_PARTICIPANTS_RESPONSE: String = """
         [{
             "schemeCode": "P27-SEK",
             "schemeParticipantIdentifier": "NDEASESSXXX",
@@ -74,10 +74,10 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "participantName": "Svenska Handelsbanken",
             "rcvngParticipantConnectionId": "NDEASESSXXX",
             "participantConnectionId": "NDEASESSXXX"
-        }] 
+        }]
         """
 
-        const val VALID_PARTICIPANTS_BY_ID_RESPONSE: String = """ 
+        const val VALID_PARTICIPANTS_BY_ID_RESPONSE: String = """
         {
             "schemeCode": "P27-SEK",
             "schemeParticipantIdentifier": "NDEASESSXXX",
@@ -91,10 +91,10 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "participantName": "Nordea",
             "rcvngParticipantConnectionId": "NA",
             "participantConnectionId": "NA"
-        } 
+        }
         """
 
-        const val VALID_PARTICIPANTS_WO_CONN_EFFECTIVE_TILL: String = """ 
+        const val VALID_PARTICIPANTS_WO_CONN_EFFECTIVE_TILL: String = """
         {
             "schemeCode": "P27-SEK",
             "schemeParticipantIdentifier": "NDEASESSXXX",
@@ -106,7 +106,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "participantName": "Nordea",
             "rcvngParticipantConnectionId": "NA",
             "participantConnectionId": "NA"
-        } 
+        }
         """
 
         const val VALID_MANAGED_PARTICIPANTS_RESPONSE: String = """
@@ -149,7 +149,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         }
         """
 
-        const val VALID_PARTICIPANT_CONFIGURATION_RESPONSE: String = """ 
+        const val VALID_PARTICIPANT_CONFIGURATION_RESPONSE: String = """
         {
             "schemeParticipantIdentifier": "NDEASESSXXX",
             "txnVolume": 100,
@@ -166,7 +166,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "debitCapLimitThresholds": [
                 0.1
             ]
-        } 
+        }
         """
     }
 

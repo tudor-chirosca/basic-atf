@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.domain.participant;
 
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class Participant {
+public class Participant implements Serializable{
 
   private final String id;
   private final String bic;

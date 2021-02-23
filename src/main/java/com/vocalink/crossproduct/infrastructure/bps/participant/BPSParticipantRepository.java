@@ -22,6 +22,7 @@ import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,11 +46,13 @@ public class BPSParticipantRepository implements ParticipantRepository {
   }
 
   @Override
+  @Cacheable(value = "participantCache", key = "#root.method.name")
   public List<Participant> findAll() {
     return findParticipantsWith(new BPSParticipantsSearchRequest());
   }
 
   @Override
+  @Cacheable(value = "participantCache", key = "#participantId")
   public Participant findById(final String participantId) {
     final BPSParticipantSearchRequest body = new BPSParticipantSearchRequest(participantId);
     return webClient.post()
