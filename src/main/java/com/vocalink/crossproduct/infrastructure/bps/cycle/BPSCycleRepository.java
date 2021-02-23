@@ -4,7 +4,6 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.S
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.CYCLES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_POSITION_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
@@ -57,7 +56,7 @@ public class BPSCycleRepository implements CycleRepository {
 
     return getCycles(request).getCycles().stream()
         .filter(c -> cycleIds.contains(c.getCycleId()))
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collect(toList());
   }
 
@@ -86,7 +85,7 @@ public class BPSCycleRepository implements CycleRepository {
 
     return getCycles(request).getCycles().stream()
         .filter(c -> date.equals(c.getFileSubmissionCutOffTime().toLocalDate()))
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collect(toList());
   }
 
@@ -96,7 +95,7 @@ public class BPSCycleRepository implements CycleRepository {
     request.setNumberOfCycles(nrLatestCycles);
 
     return getCycles(request).getCycles().stream()
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collect(toList());
   }
 

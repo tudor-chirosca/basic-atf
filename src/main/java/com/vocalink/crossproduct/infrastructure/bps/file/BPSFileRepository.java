@@ -6,6 +6,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.F
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.FILE_REFERENCES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_FILE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -54,7 +55,7 @@ public class BPSFileRepository implements FileRepository {
         .bodyToFlux(BPSFileReference.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collectList()
         .block();
   }
@@ -71,7 +72,7 @@ public class BPSFileRepository implements FileRepository {
         })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toFilePageEntity)
+        .map(f -> MAPPER.toEntity(f, File.class))
         .block();
   }
 
@@ -85,7 +86,7 @@ public class BPSFileRepository implements FileRepository {
         .retrieve()
         .bodyToMono(BPSFile.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .block();
   }
 

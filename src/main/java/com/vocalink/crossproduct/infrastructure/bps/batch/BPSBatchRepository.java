@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.r
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BATCH_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_BATCH_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -42,7 +43,7 @@ public class BPSBatchRepository implements BatchRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSBatch>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toBatchPageEntity)
+        .map(b -> MAPPER.toEntity(b, Batch.class))
         .block();
   }
 
@@ -56,7 +57,7 @@ public class BPSBatchRepository implements BatchRepository {
         .retrieve()
         .bodyToMono(BPSBatch.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .block();
   }
 

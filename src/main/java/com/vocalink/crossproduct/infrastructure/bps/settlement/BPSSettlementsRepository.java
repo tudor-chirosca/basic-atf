@@ -11,8 +11,8 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -88,7 +88,7 @@ public class BPSSettlementsRepository implements SettlementsRepository {
         })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toEntity)
+        .map(ps -> MAPPER.toEntity(ps, ParticipantSettlement.class))
         .block();
   }
 

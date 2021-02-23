@@ -43,7 +43,7 @@ public class BPSTransactionRepository implements TransactionRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSTransaction>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toTransactionPageEntity)
+        .map(t -> MAPPER.toEntity(t, Transaction.class))
         .block();
   }
 

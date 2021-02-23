@@ -33,26 +33,13 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
-import com.vocalink.crossproduct.infrastructure.bps.BPSPage
-import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper
-import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
-import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
-import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
-import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
-import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
-import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
-import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
-import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -61,6 +48,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -213,8 +203,8 @@ class DTOMapperTest {
             .sender(sender)
             .status("status")
             .build()
-        val page = Page<File>(totalResults, listOf(file))
 
+        val page = Page<File>(totalResults, listOf(file))
         val result = MAPPER.toDto(page, FileDto::class.java)
 
         assertThat(result).isNotNull
@@ -305,8 +295,8 @@ class DTOMapperTest {
             .sender(sender)
             .status("status")
             .build()
-        val page = Page<Batch>(totalResults, listOf(batch))
 
+        val page = Page<Batch>(totalResults, listOf(batch))
         val result = MAPPER.toDto(page, BatchDto::class.java)
 
         assertThat(result).isNotNull
@@ -467,88 +457,6 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map FileEnquirySearchCriteria fields`() {
-        val request = FileEnquirySearchRequest()
-        request.sort = listOf("sort")
-        request.status = "status"
-        request.id = "id"
-        request.setDate_to(LocalDate.now().toString())
-        request.setMsg_direction("msg_direction")
-        request.setMsg_type("msg_type")
-        request.setSend_bic("send_bic")
-        request.setRecv_bic("rcvng_bic")
-        request.setReason_code("reason_code")
-        request.setCycle_ids(listOf("cycle1, cycle2"))
-
-        val entity = EntityMapper.MAPPER.toEntity(request)
-        assertThat(entity.offset).isEqualTo(request.offset)
-        assertThat(entity.limit).isEqualTo(request.limit)
-        assertThat(entity.sort).isEqualTo(request.sort)
-        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
-        assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
-        assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
-        assertThat(entity.status).isEqualTo(request.status)
-        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
-        assertThat(entity.id).isEqualTo(request.id)
-    }
-
-    @Test
-    fun `should map BatchEnquirySearchCriteria fields`() {
-        val request = BatchEnquirySearchRequest()
-        request.sort = listOf("sort")
-        request.status = "status"
-        request.id = "id"
-        request.setDate_to(LocalDate.now().toString())
-        request.setMsg_direction("msg_direction")
-        request.setMsg_type("msg_type")
-        request.setSend_bic("send_bic")
-        request.setRecv_bic("rcvng_bic")
-        request.setReason_code("reason_code")
-        request.setCycle_ids(listOf("cycle1, cycle2"))
-
-        val entity = EntityMapper.MAPPER.toEntity(request)
-        assertThat(entity.offset).isEqualTo(request.offset)
-        assertThat(entity.limit).isEqualTo(request.limit)
-        assertThat(entity.sort).isEqualTo(request.sort)
-        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
-        assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
-        assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
-        assertThat(entity.status).isEqualTo(request.status)
-        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
-        assertThat(entity.id).isEqualTo(request.id)
-    }
-
-    @Test
-    fun `should map AlertSearchCriteria fields`() {
-        val request = AlertSearchRequest()
-        request.priorities = listOf("priority")
-        request.types = listOf("types")
-        request.entities = listOf("entities")
-        request.setAlert_id("alertId")
-        request.sort = listOf("sort")
-
-
-        val entity = EntityMapper.MAPPER.toEntity(request)
-        assertThat(entity.offset).isEqualTo(request.offset)
-        assertThat(entity.limit).isEqualTo(request.limit)
-        assertThat(entity.sort).isEqualTo(request.sort)
-        assertThat(entity.priorities).isEqualTo(request.priorities)
-        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
-        assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.types).isEqualTo(request.types)
-        assertThat(entity.entities).isEqualTo(request.entities)
-        assertThat(entity.alertId).isEqualTo(request.alertId)
-    }
-
-    @Test
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
         val transaction = Transaction(
@@ -573,45 +481,6 @@ class DTOMapperTest {
         assertThat(result.messageType).isEqualTo(transaction.messageType)
         assertThat(result.senderBic).isEqualTo(transaction.senderParticipantIdentifier)
         assertThat(result.status).isEqualTo(transaction.status)
-    }
-
-    @Test
-    fun `should map TransactionEnquirySearchCriteria fields`() {
-        val date = LocalDate.of(2021, 1, 15)
-        val request = TransactionEnquirySearchRequest(
-            0, 0, listOf("sortBy"), date, date,
-            listOf("cycle_id"),
-            "messageDirection",
-            "messageType",
-            "sendingBic",
-            "receivingBic",
-            "status",
-            "reasonCode",
-            "id",
-            "sendingAccount",
-            "receivingAccount",
-            date, BigDecimal.TEN, BigDecimal.ONE
-        )
-
-        val criteria = EntityMapper.MAPPER.toEntity(request)
-        assertThat(criteria.offset).isEqualTo(request.offset)
-        assertThat(criteria.limit).isEqualTo(request.limit)
-        assertThat(criteria.sort).isEqualTo(request.sort)
-        assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
-        assertThat(criteria.dateTo).isEqualTo(request.dateTo)
-        assertThat(criteria.cycleIds).isEqualTo(request.cycleIds)
-        assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
-        assertThat(criteria.messageType).isEqualTo(request.messageType)
-        assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
-        assertThat(criteria.status).isEqualTo(request.status)
-        assertThat(criteria.reasonCode).isEqualTo(request.reasonCode)
-        assertThat(criteria.id).isEqualTo(request.id)
-        assertThat(criteria.sendingAccount).isEqualTo(request.sendingAccount)
-        assertThat(criteria.receivingAccount).isEqualTo(request.receivingAccount)
-        assertThat(criteria.valueDate).isEqualTo(request.valueDate)
-        assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
-        assertThat(criteria.txnTo).isEqualTo(request.txnTo)
     }
 
     @Test
@@ -681,32 +550,6 @@ class DTOMapperTest {
         val entity = AlertPriorityData("name", null, true)
         val result = MAPPER.toDto(entity)
         assertNull(result.threshold)
-    }
-
-    @Test
-    fun `should map EnquirySenderDetailsDto from Account and Participant`() {
-        val account = Account("partyCode", 234234, "iban")
-        val participant = Participant(
-            "participantId",
-            "participantId",
-            "name",
-            "fundingBic",
-            ParticipantStatus.ACTIVE,
-            null,
-            ParticipantType.FUNDED,
-            null,
-            "organizationId",
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-
-        val result = EntityMapper.MAPPER.toEntity(account, participant)
-        assertThat(result.entityBic).isEqualTo(account.partyCode)
-        assertThat(result.entityName).isEqualTo(participant.name)
-        assertThat(result.iban).isEqualTo(account.iban)
     }
 
     @Test
@@ -1002,20 +845,6 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map to RoutingRecordCriteria fields`() {
-        val request = RoutingRecordRequest()
-        request.limit = 20
-        request.offset = 0
-        request.sort = listOf("someValue1", "someValue2")
-        val bic = "bic"
-        val result = EntityMapper.MAPPER.toEntity(request, bic)
-        assertThat(result.limit).isEqualTo(request.limit)
-        assertThat(result.offset).isEqualTo(request.offset)
-        assertThat(result.sort).isEqualTo(request.sort)
-        assertThat(result.bic).isEqualTo(bic)
-    }
-
-    @Test
     fun `should map to ManagedParticipantDetailsDto fields`() {
         val participant = Participant(
             "FORXSES1", "FORXSES1", "Forex Bank",
@@ -1084,18 +913,6 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map to ApprovalChangeCriteria fields`() {
-        val request = ApprovalChangeRequest(
-            "STATUS_CHANGE", mapOf("status" to "suspended"), "notes"
-        )
-        val result = EntityMapper.MAPPER.toEntity(request)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
-        assertThat(result.requestedChange).isEqualTo(request.requestedChange)
-        assertThat(result.notes).isEqualTo(request.notes)
-    }
-
-
-    @Test
     fun `should map ReportDto fields`() {
         val report = Report(
             "10000000006",
@@ -1113,39 +930,5 @@ class DTOMapperTest {
         assertThat(result.cycleId).isEqualTo(report.cycleId)
         assertThat(result.participantIdentifier).isEqualTo(report.participantIdentifier)
         assertThat(result.participantName).isEqualTo(report.participantName)
-    }
-
-    @Test
-    fun `should map to ReportSearchCriteria fields`() {
-        val request = ReportsSearchRequest()
-        request.limit = 20
-        request.offset = 0
-        request.sort = listOf("someValue1", "someValue2")
-        val result = EntityMapper.MAPPER.toEntity(request)
-        assertThat(result.limit).isEqualTo(request.limit)
-        assertThat(result.offset).isEqualTo(request.offset)
-        assertThat(result.sort).isEqualTo(request.sort)
-    }
-
-    @Test
-    fun `should map BPSReport to Report fields`() {
-        val bpsReport = BPSReport(
-            "10000000006",
-            "PRE-SETTLEMENT_ADVICE",
-            ZonedDateTime.parse("2021-02-14T00:00:00Z"),
-            "20201231002",
-            "IBCASES1",
-            "ICA Banken")
-
-        val bpsReportPaged = BPSPage<BPSReport>(1, listOf(bpsReport))
-
-        val result = EntityMapper.MAPPER.toPagedReportEntity(bpsReportPaged)
-
-        assertThat(result.items[0].reportId).isEqualTo(bpsReport.reportId)
-        assertThat(result.items[0].reportType).isEqualTo(bpsReport.reportType)
-        assertThat(result.items[0].createdAt).isEqualTo(bpsReport.createdAt)
-        assertThat(result.items[0].cycleId).isEqualTo(bpsReport.cycleId)
-        assertThat(result.items[0].participantIdentifier).isEqualTo(bpsReport.participantIdentifier)
-        assertThat(result.items[0].participantName).isEqualTo(bpsReport.participantName)
     }
 }

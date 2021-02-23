@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.r
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BROADCASTS_CREATE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.BROADCASTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -44,7 +45,7 @@ public class BPSBroadcastsRepository implements BroadcastsRepository {
         })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toPagedBroadcastEntity)
+        .map(b -> MAPPER.toEntity(b, Broadcast.class))
         .block();
   }
 
@@ -59,7 +60,7 @@ public class BPSBroadcastsRepository implements BroadcastsRepository {
         .bodyToMono(BPSBroadcast.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .block();
   }
 

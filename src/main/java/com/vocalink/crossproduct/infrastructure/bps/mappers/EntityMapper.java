@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
@@ -8,6 +10,7 @@ import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
+import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
@@ -16,17 +19,28 @@ import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
+import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
+import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
+import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.files.FileReference;
+import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes;
+import com.vocalink.crossproduct.domain.io.IOData;
+import com.vocalink.crossproduct.domain.io.IODataAmountDetails;
+import com.vocalink.crossproduct.domain.io.IODataDetails;
 import com.vocalink.crossproduct.domain.io.IODetails;
+import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -48,18 +62,30 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
+import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
+import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
@@ -80,6 +106,11 @@ import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.exceptions.UILayerException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -92,27 +123,59 @@ public interface EntityMapper {
 
   EntityMapper MAPPER = Mappers.getMapper(EntityMapper.class);
 
-  IODetails toEntity(BPSIODetails input);
+  @Mappings({
+      @Mapping(target = "fileName", source = "name"),
+      @Mapping(target = "settlementCycleId", source = "cycle.cycleId"),
+      @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
+  })
+  Batch toEntity(BPSBatch batch);
 
-  ParticipantIOData toEntity(BPSParticipantIOData input);
+  @Mappings({
+      @Mapping(target = "fileName", source = "name"),
+      @Mapping(target = "settlementCycleId", source = "cycle.cycleId"),
+      @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
+  })
+  File toEntity(BPSFile file);
 
-   MessageDirectionReference toEntity(BPSMessageDirectionReference alertReferenceData);
+  @Named("convertToDate")
+  default LocalDate convertToDate(ZonedDateTime date) {
+    return date.toLocalDate();
+  }
+
+  FileReference toEntity(BPSFileReference reference);
+
+  AlertReferenceData toEntity(BPSAlertReferenceData alertReferenceData);
+
+  IOBatchesMessageTypes toEntity(BPSIOBatchesMessageTypes batchesMessageTypes);
+
+  IOData toEntity(BPSIOData ioData);
+
+  IODataAmountDetails toEntity(BPSIODataAmountDetails ioDataAmountDetails);
+
+  IODataDetails toEntity(BPSIODataDetails ioDataDetails);
+
+  IOTransactionsMessageTypes toEntity(BPSIOTransactionsMessageTypes transactionsMessageTypes);
+
+  Broadcast toEntity(BPSBroadcast broadcast);
+
+  @Mappings({
+      @Mapping(target = "id", source = "cycleId"),
+      @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime")
+  })
+  Cycle toEntity(BPSCycle cycle);
+
+  IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDayPositionGross);
+
+  IODetails toEntity(BPSIODetails ioDetails);
+
+  ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
+
+  MessageDirectionReference toEntity(BPSMessageDirectionReference messageDirectionReference);
 
   @Mappings(
       @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
   )
   ParticipantSettlement toEntity(BPSParticipantSettlement settlement);
-
-  @Mappings(
-      @Mapping(target = "items", source = "items", qualifiedByName = "toEntity")
-  )
-  Page<ParticipantSettlement> toEntity(BPSPage<BPSParticipantSettlement> settlements);
-
-  @Named("toEntity")
-  default List<ParticipantSettlement> convertStatusType(
-      List<BPSParticipantSettlement> settlements) {
-    return settlements.stream().map(this::toEntity).collect(toList());
-  }
 
   @Named("toStatus")
   default SettlementStatus convertStatusType(String status) {
@@ -170,8 +233,6 @@ public interface EntityMapper {
 
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 
-  Page<Transaction> toTransactionPageEntity(BPSPage<BPSTransaction> transactions);
-
   Transaction toEntity(BPSTransaction transaction);
 
   AlertPriorityData toEntity(BPSAlertPriority priorityData);
@@ -208,8 +269,6 @@ public interface EntityMapper {
 
   AlertStats toEntity(BPSAlertStats alertStats);
 
-  Page<Alert> toAlertPageEntity(BPSPage<BPSAlert> alerts);
-
   @Mappings({
       @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier"),
       @Mapping(target = "name", source = "participantName"),
@@ -239,8 +298,6 @@ public interface EntityMapper {
     return ParticipantStatus.valueOf(participantStatus);
   }
 
-  Page<Participant> toEntityParticipant(BPSPage<BPSParticipant> participants);
-
   BroadcastsSearchCriteria toEntity(BroadcastsSearchParameters parameters);
 
   ApprovalSearchCriteria toEntity(ApprovalSearchRequest approvalSearchRequest);
@@ -249,7 +306,7 @@ public interface EntityMapper {
       @Mapping(target = "status", source = "status", qualifiedByName = "convertApprovalStatus"),
       @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertBpsApprovalRequestType")
   })
-  Approval toEntity(BPSApproval approvalDetails);
+  Approval toEntity(BPSApproval approval);
 
   @Named("convertApprovalStatus")
   default ApprovalStatus convertApprovalStatus(BPSApprovalStatus bpsApprovalStatus) {
@@ -260,8 +317,6 @@ public interface EntityMapper {
   default ApprovalRequestType convertBpsApprovalRequestType(BPSApprovalRequestType bpsApprovalRequestType) {
     return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
   }
-
-  Page<Approval> toApprovalsEntity(BPSPage<BPSApproval> approvalDetailsPage);
 
   ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);
 
@@ -284,5 +339,35 @@ public interface EntityMapper {
 
   ReportSearchCriteria toEntity(ReportsSearchRequest parameters);
 
-  Page<Report> toPagedReportEntity(BPSPage<BPSReport> bpsReportBPSPage);
+  Report toEntity(BPSReport bpsReportBPSPage);
+
+  default <T> Page<T> toEntity(BPSPage<?> page, Class<T> targetType) {
+    List<?> sourceItems = page.getItems();
+
+    if (sourceItems == null || sourceItems.isEmpty()) {
+      return new Page<>(0, emptyList());
+    }
+
+    final Class<?> sourceType = sourceItems.get(0).getClass();
+
+    Method method = stream(this.getClass().getDeclaredMethods())
+        .filter(m -> stream(m.getParameterTypes()).anyMatch(p -> p.isAssignableFrom(sourceType)))
+        .filter(m -> m.getReturnType().isAssignableFrom(targetType))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Method by signature not found!"));
+
+    final List<T> targetItems = sourceItems.stream()
+        .map(sourceType::cast)
+        .map(obj -> {
+          try {
+            return method.invoke(this, obj);
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new UILayerException(e.getCause(), "DataTransferObject mapping exception!");
+          }
+        })
+        .map(targetType::cast)
+        .collect(toList());
+
+    return new Page<>(page.getTotalResults(), targetItems);
+  }
 }

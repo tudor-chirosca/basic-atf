@@ -43,7 +43,7 @@ public class BPSReportRepository implements ReportRepository {
         })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toPagedReportEntity)
+        .map(r -> MAPPER.toEntity(r, Report.class))
         .block();
   }
 

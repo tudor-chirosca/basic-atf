@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.position;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.INTRA_DAY_POSITION_GROSS_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -34,11 +34,9 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
 
   @Override
   public List<IntraDayPositionGross> findById(String participantId) {
-    BPSIntraDayPositionRequest body = BPSIntraDayPositionRequest.builder()
-        .schemeCode(BPSConstants.SCHEME_CODE)
-        .participantId(participantId)
-        .build();
-
+    BPSIntraDayPositionRequest body = new BPSIntraDayPositionRequest(
+        BPSConstants.SCHEME_CODE, participantId
+    );
     return webClient.post()
         .uri(resolve(INTRA_DAY_POSITION_GROSS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +45,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
         .bodyToFlux(BPSIntraDayPositionGross.class)
         .retryWhen(BPSRetryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .collectList()
         .block();
   }

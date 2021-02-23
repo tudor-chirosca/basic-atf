@@ -1,0 +1,712 @@
+package com.vocalink.crossproduct.infrastructure.bps.mappers
+
+import com.vocalink.crossproduct.domain.account.Account
+import com.vocalink.crossproduct.domain.alert.AlertPriorityType
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
+import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
+import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
+import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
+import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
+import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
+import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
+import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
+import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
+import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
+
+class EntityMapperTest {
+
+    @Test
+    fun `should map Cycle fields`() {
+        val bps = BPSCycle(
+                "cycleId",
+                "COMPLETED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                true,
+                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.id).isEqualTo(bps.cycleId)
+        assertThat(entity.cutOffTime).isEqualTo(bps.fileSubmissionCutOffTime)
+        assertThat(entity.isNextDayCycle).isEqualTo(bps.isNextDayCycle)
+        assertThat(entity.settlementConfirmationTime).isEqualTo(bps.settlementConfirmationTime)
+        assertThat(entity.settlementTime).isEqualTo(bps.settlementTime)
+        assertThat(entity.status).isEqualTo(CycleStatus.COMPLETED)
+    }
+
+    @Test
+    fun `should map ParticipantPosition fields`() {
+        val amount10 = BPSAmount(BigDecimal.TEN, "SEK")
+        val amount1 = BPSAmount(BigDecimal.ONE, "SEK")
+        val amount100 = BPSAmount(BigDecimal.valueOf(100), "SEK")
+        val amount0 = BPSAmount(BigDecimal.ZERO, "SEK")
+        val netAmount = BPSAmount(BigDecimal.valueOf(50), "SEK")
+
+        val paymentReceived = BPSPayment (234, amount10)
+        val paymentSent = BPSPayment(234, amount1)
+        val returnReceived = BPSPayment(234, amount100)
+        val returnSent = BPSPayment(234, amount0)
+
+        val bps = BPSSettlementPosition(
+                LocalDate.now(),
+                "participantId",
+                "cycleId",
+                "SEK",
+                paymentSent, paymentReceived, returnSent, returnReceived, netAmount
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.participantId).isEqualTo(bps.participantId)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
+        assertThat(entity.cycleId).isEqualTo(bps.cycleId)
+        assertThat(entity.currency).isEqualTo(bps.currency)
+        assertThat(entity.paymentSent.count).isEqualTo(bps.paymentSent.count)
+        assertThat(entity.paymentSent.amount.currency).isEqualTo(bps.paymentSent.amount.currency)
+        assertThat(entity.paymentSent.amount.amount).isEqualTo(bps.paymentSent.amount.amount)
+        assertThat(entity.paymentReceived.count).isEqualTo(bps.paymentReceived.count)
+        assertThat(entity.paymentReceived.amount.currency).isEqualTo(bps.paymentReceived.amount.currency)
+        assertThat(entity.paymentReceived.amount.amount).isEqualTo(bps.paymentReceived.amount.amount)
+        assertThat(entity.returnSent.count).isEqualTo(bps.returnSent.count)
+        assertThat(entity.returnSent.amount.currency).isEqualTo(bps.returnSent.amount.currency)
+        assertThat(entity.returnSent.amount.amount).isEqualTo(bps.returnSent.amount.amount)
+        assertThat(entity.returnReceived.count).isEqualTo(bps.returnReceived.count)
+        assertThat(entity.returnReceived.amount.currency).isEqualTo(bps.returnReceived.amount.currency)
+        assertThat(entity.returnReceived.amount.amount).isEqualTo(bps.returnReceived.amount.amount)
+        assertThat(entity.netPositionAmount.amount).isEqualTo(bps.netPositionAmount.amount)
+        assertThat(entity.netPositionAmount.currency).isEqualTo(bps.netPositionAmount.currency)
+    }
+
+    @Test
+    fun `should map Participant fields`() {
+        val bps = BPSParticipant(
+                "schemeCode",
+                "schemeParticipantIdentifier",
+                "countryCode",
+                "partyCode",
+                "FUNDED",
+                "connectingParty",
+                "SUSPENDED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "participantName",
+                "rcvngParticipantConnectionId",
+                "participantConnectionId",
+                "organizationId",
+                "tpspName",
+                "tpspId"
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.bic).isEqualTo(bps.schemeParticipantIdentifier)
+        assertThat(entity.id).isEqualTo(bps.schemeParticipantIdentifier)
+        assertThat(entity.name).isEqualTo(bps.participantName)
+        assertThat(entity.status).isEqualTo(ParticipantStatus.SUSPENDED)
+        assertThat(entity.participantType).isEqualTo(ParticipantType.FUNDED)
+        assertThat(entity.suspendedTime).isEqualTo(bps.effectiveTillDate)
+        assertThat(entity.fundingBic).isEqualTo(bps.connectingParty)
+        assertThat(entity.schemeCode).isEqualTo(bps.schemeCode)
+    }
+
+    @Test
+    fun `should map Batch fields`() {
+        val bpsCycle = BPSCycle(
+                "cycleId",
+                "COMPLETED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                true,
+                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        )
+
+        val bpsSenderDetails = BPSSenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                "fullName"
+        )
+
+        val bps = BPSBatch(
+                "batchId",
+                "name",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                234234,
+                bpsCycle,
+                "receivingBic",
+                "messageType",
+                "messageDirection",
+                10,
+                "status",
+                "reasonCode",
+                bpsSenderDetails
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.batchId).isEqualTo(bps.batchId)
+        assertThat(entity.nrOfTransactions).isEqualTo(bps.nrOfTransactions)
+        assertThat(entity.fileName).isEqualTo(bps.name)
+        assertThat(entity.fileSize).isEqualTo(bps.fileSize)
+        assertThat(entity.settlementDate).isEqualTo(bps.cycle.settlementTime.toLocalDate())
+        assertThat(entity.settlementCycleId).isEqualTo(bps.cycle.cycleId)
+        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.status).isEqualTo(bps.status)
+        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
+        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
+        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
+        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
+    }
+
+    @Test
+    fun `should map File fields`() {
+        val bpsCycle = BPSCycle(
+                "cycleId",
+                "COMPLETED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                true,
+                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        )
+
+        val bpsSenderDetails = BPSSenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                "fullName"
+        )
+
+        val bps = BPSFile(
+                "name",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                234234,
+                bpsCycle,
+                "receivingBic",
+                "messageType",
+                "messageDirection",
+                10,
+                "status",
+                "reasonCode",
+                bpsSenderDetails
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.nrOfBatches).isEqualTo(bps.nrOfBatches)
+        assertThat(entity.fileName).isEqualTo(bps.name)
+        assertThat(entity.fileSize).isEqualTo(bps.fileSize)
+        assertThat(entity.settlementDate).isEqualTo(bps.cycle.settlementTime.toLocalDate())
+        assertThat(entity.settlementCycleId).isEqualTo(bps.cycle.cycleId)
+        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.status).isEqualTo(bps.status)
+        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
+        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
+        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
+        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
+    }
+
+    @Test
+    fun `should map FileReference fields`() {
+        val bps = BPSFileReference(
+                "status",
+                true,
+                "enquiryType",
+                listOf("reasonCodes")
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.status).isEqualTo(bps.status)
+        assertThat(entity.isHasReason).isEqualTo(bps.isHasReason)
+        assertThat(entity.enquiryType).isEqualTo(bps.enquiryType)
+        assertThat(entity.reasonCodes).isEqualTo(bps.reasonCodes)
+    }
+
+    @Test
+    fun `should map Alert fields`() {
+        val bpsParticipant = BPSParticipant(
+                "schemeCode",
+                "schemeParticipantIdentifier",
+                "countryCode",
+                "partyCode",
+                "DIRECT",
+                "connectingParty",
+                "SUSPENDED",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "participantName",
+                "rcvngParticipantConnectionId",
+                "participantConnectionId",
+                "organizationId",
+                "tpspName",
+                "tpspId"
+        )
+        val bps = BPSAlert(
+                23423, "high", ZonedDateTime.now(), "type", listOf(bpsParticipant)
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.alertId).isEqualTo(bps.alertId)
+        assertThat(entity.priority).isEqualTo(AlertPriorityType.HIGH)
+        assertThat(entity.dateRaised).isEqualTo(bps.dateRaised)
+        assertThat(entity.type).isEqualTo(bps.type)
+        assertThat(entity.entities[0].participantIdentifier).isEqualTo(bps.entities[0].schemeParticipantIdentifier)
+        assertThat(entity.entities[0].name).isEqualTo(bps.entities[0].participantName)
+        assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT)
+        assertThat(entity.entities[0].connectingParticipantId).isEqualTo(bps.entities[0].connectingParty)
+        assertThat(entity.entities[0].schemeCode).isEqualTo(bps.entities[0].schemeCode)
+    }
+
+    @Test
+    fun `should map AlertStats fields`() {
+        val alertStatsData = BPSAlertStatsData(
+                "high", 20
+        )
+        val bps = BPSAlertStats(
+                1, listOf(alertStatsData)
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.total).isEqualTo(1)
+        assertThat(entity.items.size).isEqualTo(1)
+        assertThat(entity.items[0].count).isEqualTo(20)
+        assertThat(entity.items[0].priority).isEqualTo(AlertPriorityType.HIGH)
+    }
+
+    @Test
+    fun `should map AlertReferenceData fields`() {
+        val alertPriority = BPSAlertPriority("name", 100, true)
+        val alertReferenceData = BPSAlertReferenceData(
+                listOf(alertPriority), listOf("alertType")
+        )
+        val entity = MAPPER.toEntity(alertReferenceData)
+        assertThat(entity.alertTypes.size).isEqualTo(1)
+        assertThat(entity.priorities.size).isEqualTo(1)
+        assertThat(entity.priorities[0].highlight).isEqualTo(true)
+        assertThat(entity.priorities[0].threshold).isEqualTo(100)
+        assertThat(entity.priorities[0].name).isEqualTo("name")
+    }
+
+    @Test
+    fun `should map all fields on ParticipantIOData`() {
+        val ioData = BPSIOData(20, 20.00)
+        val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
+
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.participantId).isEqualTo(bps.participantId)
+        assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
+        assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
+        assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
+        assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
+        assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
+        assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
+    }
+
+    @Test
+    fun `should map all fields on IODetails`() {
+        val ioDataDetails = BPSIODataDetails(1, 2, 3, 4.00)
+        val ioDataAmountDetails = BPSIODataAmountDetails(5, 6, 7, 8.00, 9, 10)
+        val batches = BPSIOBatchesMessageTypes("batch_code", "batch_name", ioDataDetails)
+        val transactions = BPSIOTransactionsMessageTypes("transaction_code", "transaction_name", ioDataAmountDetails)
+        val bps = BPSIODetails("ident", ioDataDetails, listOf(batches), listOf(transactions))
+
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
+        assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
+        assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
+        assertThat(entity.files.accepted).isEqualTo(bps.files.accepted)
+        assertThat(entity.files.output).isEqualTo(bps.files.output)
+        assertThat(entity.batches[0].name).isEqualTo(bps.batches[0].name)
+        assertThat(entity.batches[0].code).isEqualTo(bps.batches[0].code)
+        assertThat(entity.batches[0].data.rejected).isEqualTo(bps.batches[0].data.rejected)
+        assertThat(entity.batches[0].data.submitted).isEqualTo(bps.batches[0].data.submitted)
+        assertThat(entity.batches[0].data.accepted).isEqualTo(bps.batches[0].data.accepted)
+        assertThat(entity.batches[0].data.output).isEqualTo(bps.batches[0].data.output)
+        assertThat(entity.transactions[0].name).isEqualTo(bps.transactions[0].name)
+        assertThat(entity.transactions[0].code).isEqualTo(bps.transactions[0].code)
+        assertThat(entity.transactions[0].data.rejected).isEqualTo(bps.transactions[0].data.rejected)
+        assertThat(entity.transactions[0].data.submitted).isEqualTo(bps.transactions[0].data.submitted)
+        assertThat(entity.transactions[0].data.accepted).isEqualTo(bps.transactions[0].data.accepted)
+        assertThat(entity.transactions[0].data.output).isEqualTo(bps.transactions[0].data.output)
+        assertThat(entity.transactions[0].data.amountAccepted).isEqualTo(bps.transactions[0].data.amountAccepted)
+        assertThat(entity.transactions[0].data.amountOutput).isEqualTo(bps.transactions[0].data.amountOutput)
+    }
+
+    @Test
+    fun `should map Transaction fields`() {
+        val amount = BPSAmount(BigDecimal.TEN, "SEK")
+        val bps = BPSTransaction(
+                "instructionId",
+                amount,
+                "fileName",
+                "batchId",
+                LocalDate.of(2021, 1,15),
+                "receiverEntityBic",
+                LocalDate.of(2021, 1,15),
+                "settlementCycleId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "status",
+                "reasonCode",
+                "messageType",
+                "senderEntityName",
+                "senderEntityBic"
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.instructionId).isEqualTo(bps.instructionId)
+        assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
+        assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
+        assertThat(entity.batchId).isEqualTo(bps.batchId)
+        assertThat(entity.valueDate).isEqualTo(bps.valueDate)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
+        assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycleId)
+        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.status).isEqualTo(bps.status)
+        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+    }
+
+    @Test
+    fun `should map AlertPriorityData fields`() {
+        val bps = BPSAlertPriority("name", 234234, true)
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.name).isEqualTo(bps.name)
+        assertThat(entity.threshold).isEqualTo(bps.threshold)
+        assertThat(entity.highlight).isEqualTo(bps.highlight)
+    }
+
+    @Test
+    fun `should map AlertPriorityData fields with null threshold`() {
+        val bps = BPSAlertPriority("name", null, true)
+        val entity = MAPPER.toEntity(bps)
+        assertNull(entity.threshold)
+    }
+
+    @Test
+    fun `should map Account fields`() {
+        val bps = BPSAccount("partyCode", 234234, "iban")
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.partyCode).isEqualTo(bps.partyCode)
+        assertThat(entity.iban).isEqualTo(bps.iban)
+        assertThat(entity.accountNo).isEqualTo(bps.accountNo)
+    }
+
+    @Test
+    fun `should map BPSApprovalDetails to ApprovalDetails`() {
+        val approvalUser = BPSApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val date = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
+        val approvalId = "10000006"
+        val requestedChange = mapOf("status" to "Suspended")
+        val originalData = mapOf("data" to "data")
+
+        val bpsApprovalDetails = BPSApproval(
+                approvalId,
+                BPSApprovalRequestType.STATUS_CHANGE,
+                "FORXSES1",
+                date, approvalUser,
+                BPSApprovalStatus.APPROVED,
+                approvalUser, "Forex Bank",
+                "This is the reason that I...",
+                approvalUser, originalData,
+                requestedChange, "hashed data",
+                "hashed data",
+                "Notes"
+        )
+        val result = MAPPER.toEntity(bpsApprovalDetails)
+        assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
+        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedBy.id).isEqualTo("12a514")
+        assertThat(result.date).isEqualTo(date)
+        assertThat(result.approvalId).isEqualTo("10000006")
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo("FORXSES1")
+        assertThat(result.participantName).isEqualTo("Forex Bank")
+        assertThat(result.rejectedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedChange).isEqualTo(requestedChange)
+    }
+
+    @Test
+    fun `should map RoutingRecord fields`() {
+        val entity = BPSRoutingRecord(
+                "schemeId",
+                "reachableBic",
+                ZonedDateTime.now(),
+                ZonedDateTime.now(),
+                "currency"
+        )
+        val result = MAPPER.toEntity(entity)
+        assertThat(result.reachableBic).isEqualTo(entity.reachableBic)
+        assertThat(result.validFrom).isEqualTo(entity.validFrom)
+        assertThat(result.validTo).isEqualTo(entity.validTo)
+        assertThat(result.currency).isEqualTo(entity.currency)
+    }
+
+    @Test
+    fun `should map ParticipantConfiguration fields`() {
+        val entity = BPSParticipantConfiguration(
+                "schemeParticipantIdentifier",
+                10,
+                10,
+                "networkName",
+                "gatewayName",
+                "requestorDN",
+                "responderDN",
+                "preSettlementAckType",
+                "preSettlementActGenerationLevel",
+                "postSettlementAckType",
+                "postSettlementAckGenerationLevel",
+                BigDecimal.ONE,
+                listOf(0.12, 0.25)
+        )
+        val result = MAPPER.toEntity(entity)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo(entity.schemeParticipantIdentifier)
+        assertThat(result.txnVolume).isEqualTo(entity.txnVolume)
+        assertThat(result.outputFileTimeLimit).isEqualTo(entity.outputFileTimeLimit)
+        assertThat(result.networkName).isEqualTo(entity.networkName)
+        assertThat(result.gatewayName).isEqualTo(entity.gatewayName)
+        assertThat(result.requestorDN).isEqualTo(entity.requestorDN)
+        assertThat(result.responderDN).isEqualTo(entity.responderDN)
+        assertThat(result.preSettlementAckType).isEqualTo(entity.preSettlementAckType)
+        assertThat(result.preSettlementActGenerationLevel).isEqualTo(entity.preSettlementActGenerationLevel)
+        assertThat(result.postSettlementAckType).isEqualTo(entity.postSettlementAckType)
+        assertThat(result.postSettlementAckGenerationLevel).isEqualTo(entity.postSettlementAckGenerationLevel)
+        assertThat(result.debitCapLimit).isEqualTo(entity.debitCapLimit)
+        assertThat(result.debitCapLimitThresholds).isEqualTo(entity.debitCapLimitThresholds)
+    }
+
+    @Test
+    fun `should map FileEnquirySearchCriteria fields`() {
+        val request = FileEnquirySearchRequest()
+        request.sort = listOf("sort")
+        request.status = "status"
+        request.id = "id"
+        request.setDate_to(LocalDate.now().toString())
+        request.setMsg_direction("msg_direction")
+        request.setMsg_type("msg_type")
+        request.setSend_bic("send_bic")
+        request.setRecv_bic("rcvng_bic")
+        request.setReason_code("reason_code")
+        request.setCycle_ids(listOf("cycle1, cycle2"))
+
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageType).isEqualTo(request.messageType)
+        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.status).isEqualTo(request.status)
+        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(entity.id).isEqualTo(request.id)
+    }
+
+    @Test
+    fun `should map BatchEnquirySearchCriteria fields`() {
+        val request = BatchEnquirySearchRequest()
+        request.sort = listOf("sort")
+        request.status = "status"
+        request.id = "id"
+        request.setDate_to(LocalDate.now().toString())
+        request.setMsg_direction("msg_direction")
+        request.setMsg_type("msg_type")
+        request.setSend_bic("send_bic")
+        request.setRecv_bic("rcvng_bic")
+        request.setReason_code("reason_code")
+        request.setCycle_ids(listOf("cycle1, cycle2"))
+
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageType).isEqualTo(request.messageType)
+        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.status).isEqualTo(request.status)
+        assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(entity.id).isEqualTo(request.id)
+    }
+
+    @Test
+    fun `should map AlertSearchCriteria fields`() {
+        val request = AlertSearchRequest()
+        request.priorities = listOf("priority")
+        request.types = listOf("types")
+        request.entities = listOf("entities")
+        request.setAlert_id("alertId")
+        request.sort = listOf("sort")
+
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.offset).isEqualTo(request.offset)
+        assertThat(entity.limit).isEqualTo(request.limit)
+        assertThat(entity.sort).isEqualTo(request.sort)
+        assertThat(entity.priorities).isEqualTo(request.priorities)
+        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(entity.dateTo).isEqualTo(request.dateTo)
+        assertThat(entity.types).isEqualTo(request.types)
+        assertThat(entity.entities).isEqualTo(request.entities)
+        assertThat(entity.alertId).isEqualTo(request.alertId)
+    }
+
+    @Test
+    fun `should map TransactionEnquirySearchCriteria fields`() {
+        val date = LocalDate.of(2021, 1, 15)
+        val request = TransactionEnquirySearchRequest(
+                0, 0, listOf("sortBy"), date, date,
+                listOf("cycle_id"),
+                "messageDirection",
+                "messageType",
+                "sendingBic",
+                "receivingBic",
+                "status",
+                "reasonCode",
+                "id",
+                "sendingAccount",
+                "receivingAccount",
+                date, BigDecimal.TEN, BigDecimal.ONE
+        )
+        val criteria = MAPPER.toEntity(request)
+        assertThat(criteria.offset).isEqualTo(request.offset)
+        assertThat(criteria.limit).isEqualTo(request.limit)
+        assertThat(criteria.sort).isEqualTo(request.sort)
+        assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
+        assertThat(criteria.dateTo).isEqualTo(request.dateTo)
+        assertThat(criteria.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(criteria.messageType).isEqualTo(request.messageType)
+        assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
+        assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(criteria.status).isEqualTo(request.status)
+        assertThat(criteria.reasonCode).isEqualTo(request.reasonCode)
+        assertThat(criteria.id).isEqualTo(request.id)
+        assertThat(criteria.sendingAccount).isEqualTo(request.sendingAccount)
+        assertThat(criteria.receivingAccount).isEqualTo(request.receivingAccount)
+        assertThat(criteria.valueDate).isEqualTo(request.valueDate)
+        assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
+        assertThat(criteria.txnTo).isEqualTo(request.txnTo)
+    }
+
+    @Test
+    fun `should map EnquirySenderDetailsDto from Account and Participant`() {
+        val account = Account("partyCode", 234234, "iban")
+        val participant = Participant(
+                "participantId",
+                "participantId",
+                "name",
+                "fundingBic",
+                ParticipantStatus.ACTIVE,
+                null,
+                ParticipantType.FUNDED,
+                null,
+                "organizationId",
+                null,
+                null,
+                null,
+                null,
+                null
+        )
+        val result = MAPPER.toEntity(account, participant)
+        assertThat(result.entityBic).isEqualTo(account.partyCode)
+        assertThat(result.entityName).isEqualTo(participant.name)
+        assertThat(result.iban).isEqualTo(account.iban)
+    }
+
+    @Test
+    fun `should map to RoutingRecordCriteria fields`() {
+        val request = RoutingRecordRequest()
+        request.limit = 20
+        request.offset = 0
+        request.sort = listOf("someValue1", "someValue2")
+        val bic = "bic"
+
+        val result = MAPPER.toEntity(request, bic)
+        assertThat(result.limit).isEqualTo(request.limit)
+        assertThat(result.offset).isEqualTo(request.offset)
+        assertThat(result.sort).isEqualTo(request.sort)
+        assertThat(result.bic).isEqualTo(bic)
+    }
+
+    @Test
+    fun `should map to ReportSearchCriteria fields`() {
+        val request = ReportsSearchRequest()
+        request.limit = 20
+        request.offset = 0
+        request.sort = listOf("someValue1", "someValue2")
+
+        val result = MAPPER.toEntity(request)
+        assertThat(result.limit).isEqualTo(request.limit)
+        assertThat(result.offset).isEqualTo(request.offset)
+        assertThat(result.sort).isEqualTo(request.sort)
+    }
+
+    @Test
+    fun `should map BPSReport to Report fields`() {
+        val bpsReport = BPSReport(
+                "10000000006",
+                "PRE-SETTLEMENT_ADVICE",
+                ZonedDateTime.parse("2021-02-14T00:00:00Z"),
+                "20201231002",
+                "IBCASES1",
+                "ICA Banken"
+        )
+        val result = MAPPER.toEntity(bpsReport)
+        assertThat(result.reportId).isEqualTo(bpsReport.reportId)
+        assertThat(result.reportType).isEqualTo(bpsReport.reportType)
+        assertThat(result.createdAt).isEqualTo(bpsReport.createdAt)
+        assertThat(result.cycleId).isEqualTo(bpsReport.cycleId)
+        assertThat(result.participantIdentifier).isEqualTo(bpsReport.participantIdentifier)
+        assertThat(result.participantName).isEqualTo(bpsReport.participantName)
+    }
+
+    @Test
+    fun `should map to ApprovalChangeCriteria fields`() {
+        val request = ApprovalChangeRequest(
+                "STATUS_CHANGE", mapOf("status" to "suspended"), "notes"
+        )
+        val result = MAPPER.toEntity(request)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestedChange).isEqualTo(request.requestedChange)
+        assertThat(result.notes).isEqualTo(request.notes)
+    }
+}

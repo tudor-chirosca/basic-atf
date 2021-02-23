@@ -75,7 +75,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipant>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toEntityParticipant)
+        .map(p -> MAPPER.toEntity(p, Participant.class))
         .block();
   }
 

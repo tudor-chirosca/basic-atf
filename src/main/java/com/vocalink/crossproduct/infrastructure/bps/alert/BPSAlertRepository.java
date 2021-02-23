@@ -44,7 +44,7 @@ public class BPSAlertRepository implements AlertRepository {
         .bodyToMono(BPSAlertReferenceData.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(BPSMAPPER::toEntity)
+        .map(MAPPER::toEntity)
         .block();
   }
 
@@ -72,7 +72,7 @@ public class BPSAlertRepository implements AlertRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSAlert>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toAlertPageEntity)
+        .map(a -> MAPPER.toEntity(a, Alert.class))
         .block();
   }
 

@@ -68,7 +68,7 @@ public class BPSApprovalRepository implements ApprovalRepository {
         .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSApproval>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toApprovalsEntity)
+        .map(a -> MAPPER.toEntity(a, Approval.class))
         .block();
   }
 

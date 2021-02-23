@@ -158,9 +158,9 @@ public class UIPresenter implements Presenter {
         );
   }
 
-  private Cycle getCycle(List<Cycle> cycles, String cycleType) {
+  private Cycle getCycle(List<Cycle> cycles, String cycleOrder) {
     // Cycles are always in descending order
-    if (cycleType.equals(CURRENT_CYCLE)) {
+    if (cycleOrder.equals(CURRENT_CYCLE)) {
       return cycles.get(0);
     }
     return cycles.get(1);
