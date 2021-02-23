@@ -1,6 +1,18 @@
 # International Suite Service
 
-This application exposes an API with aggregated data which is consumed from different products.
+This application exposes an API that returns aggregated data from different MC internal products.
+
+### Configuration
+
+#### Database
+
+The main application uses an Oracle database for non-local environments, which is accessed 
+using a JNDI Datasource named jdbc/ISS_DB. For local environments, an in-memory h2 database is 
+used.
+
+A Flyway Autoconfiguration is used at the moment to run DB migrations, which are placed in 
+src/main/resources/db/migration. 
+They are versioned according to the following format: V<datetime>__<migration_name>.sql
 
 
 ### Requirements
@@ -30,4 +42,4 @@ The resulting artifact will be generated in /target folder. Deploy it to an exte
 
 ### Release
 
-The release of this project is managed by the [standard-version](https://github.com/conventional-changelog/standard-version) library. The current version is tracked in the ```version.txt``` file.
+The release of this project is managed by [semantic-release](https://github.com/semantic-release/semantic-release) library. The current version is tracked in the pom.xml file

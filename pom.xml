@@ -29,6 +29,7 @@
     <jacoco.version>0.8.5</jacoco.version>
     <javax.cache.version>1.1.1</javax.cache.version>
     <ehcache.version>3.7.1</ehcache.version>
+    <flyway.version>6.5.7</flyway.version>
   </properties>
 
   <dependencies>
@@ -57,7 +58,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -145,6 +149,16 @@
       <groupId>org.jacoco</groupId>
       <artifactId>jacoco-maven-plugin</artifactId>
       <version>${jacoco.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${flyway.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 

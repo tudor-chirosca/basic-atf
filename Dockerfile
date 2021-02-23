@@ -1,8 +1,4 @@
-# This image installs the -headless package of OpenJDK
-# and so is missing many of the UI-related Java libraries
-# and some common packages contained in the default tag
-FROM tomcat:8
-MAINTAINER Cool kids
+FROM repo-api.mcvl-engineering.com/cp-portal-docker-release/tomcat/cpp-tomcat:8.5.57
 
 ADD ./target/international-suite-service-*.war /usr/local/tomcat/webapps/international-suite-service.war
 
