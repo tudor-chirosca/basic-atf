@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSReportRepository::class)
@@ -24,7 +25,12 @@ class BPSReportRepositoryTest @Autowired constructor(
             {
             "offset": 0,
             "limit": 20,
-            "sort": ["reportId"]
+            "sort": ["reportId"],
+            "reportType": null,
+            "participant": null,
+            "id": null,
+            "date_from": "2021-01-03T00:00:00Z",
+            "date_to": null
             }
         """
 
@@ -47,11 +53,14 @@ class BPSReportRepositoryTest @Autowired constructor(
 
     @Test
     fun `should map full request body and full response and return 200`() {
-        val request = ReportSearchCriteria(0, 20, listOf("reportId"))
-
+        val request = ReportSearchCriteria(
+            0, 20, listOf("reportId"), null, null,
+            null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null
+        )
         mockServer.stubFor(
             WireMock.post(WireMock.urlEqualTo("/reports"))
-                .willReturn(WireMock.aResponse()
+                .willReturn(
+                    WireMock.aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(VALID_RESPONSE))
@@ -64,15 +73,21 @@ class BPSReportRepositoryTest @Autowired constructor(
     fun `should fail if 404 returned and throw ClientException`() {
         mockServer.stubFor(
             WireMock.post(WireMock.urlEqualTo("/reports"))
-                .willReturn(WireMock.aResponse()
+                .willReturn(
+                    WireMock.aResponse()
                         .withStatus(404)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(VALID_RESPONSE))
-                .withRequestBody(WireMock.equalToJson(VALID_REQUEST)))
+                        .withBody(VALID_RESPONSE)
+                )
+                .withRequestBody(WireMock.equalToJson(VALID_REQUEST))
+        )
 
         assertThatExceptionOfType(InfrastructureException::class.java).isThrownBy {
             reportRepository.findPaginated(
-                ReportSearchCriteria(0, 20, listOf("reportId")))
+                ReportSearchCriteria(
+                    0, 20, listOf("reportId"), null, null,
+                    null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null)
+            )
         }.withMessageContaining("Timeout!")
     }
 }

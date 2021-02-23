@@ -24,8 +24,8 @@ public class ReportController implements ReportApi {
 
   @GetMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<ReportDto>> getPaginatedReports(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      ReportsSearchRequest searchParameters) {
+      @RequestHeader("client-type") final ClientType clientType, @RequestHeader final String context,
+      final ReportsSearchRequest searchParameters) {
     log.debug("Request parameters: {}", searchParameters);
 
     final PageDto<ReportDto> paginated = reportFacade

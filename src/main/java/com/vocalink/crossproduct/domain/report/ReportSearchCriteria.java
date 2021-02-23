@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.report;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,4 +12,9 @@ public class ReportSearchCriteria {
   private final int offset;
   private final int limit;
   private final List<String> sort;
+  private final String reportType;
+  private final String participant;
+  private final String id;
+  private final ZonedDateTime dateFrom;
+  private final ZonedDateTime dateTo;
 }

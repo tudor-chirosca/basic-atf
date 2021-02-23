@@ -35,7 +35,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
-        const val VALID_REQUEST = "{}"
+        const val VALID_EMPTY_REQUEST = "{}"
         const val VALID_PARTIAL_ALERT_REQUEST: String = """
         {
           "offset": 0,
@@ -94,7 +94,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
-                .content(VALID_REQUEST))
+                .content(VALID_EMPTY_REQUEST))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_RESPONSE, true))
     }

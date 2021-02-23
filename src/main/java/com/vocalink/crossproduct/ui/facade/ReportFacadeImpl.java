@@ -1,10 +1,11 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
-import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
@@ -26,9 +27,9 @@ public class ReportFacadeImpl implements ReportFacade {
   @Override
   public PageDto<ReportDto> getPaginated(String product, ClientType clientType,
       ReportsSearchRequest parameters) {
-    log.info("Fetching broadcasts from: {}", product);
+    log.info("Fetching reports from: {}", product);
 
-    final ReportSearchCriteria criteria = EntityMapper.MAPPER.toEntity(parameters);
+    final ReportSearchCriteria criteria = MAPPER.toEntity(parameters);
 
     final Page<Report> pagedReports = repositoryFactory.getReportRepository(product)
         .findPaginated(criteria);

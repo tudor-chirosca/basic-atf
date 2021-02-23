@@ -33,10 +33,10 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, listOf("sort"), LocalDate.now(), null,
-                listOf("cycle1, cycle2"), "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
-                "id"
+            0, 20, listOf("sort"), LocalDate.now(), null,
+            listOf("cycle1, cycle2"), "msg_direction", "msg_type",
+            "send_bic", "rcvng_bic", "status", "reasonCode",
+            "id"
         )
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.offset).isEqualTo(request.offset)
@@ -57,10 +57,10 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields`() {
         val request = FileEnquirySearchCriteria(
-                0, 20, listOf("sort"), LocalDate.now(), null,
-                listOf("cycle1, cycle2"), "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
-                "id"
+            0, 20, listOf("sort"), LocalDate.now(), null,
+            listOf("cycle1, cycle2"), "msg_direction", "msg_type",
+            "send_bic", "rcvng_bic", "status", "reasonCode",
+            "id"
         )
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.offset).isEqualTo(request.offset)
@@ -81,8 +81,8 @@ class BPSMapperTest {
     @Test
     fun `should map BPSAlertSearchRequest fields`() {
         val criteria = AlertSearchCriteria(
-                0, 20, listOf("priority"), ZonedDateTime.now(), null,
-                listOf("types"), listOf("entities"), "alertId", listOf("sort")
+            0, 20, listOf("priority"), ZonedDateTime.now(), null,
+            listOf("types"), listOf("entities"), "alertId", listOf("sort")
         )
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.offset).isEqualTo(criteria.offset)
@@ -98,20 +98,20 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSTransactionEnquirySearchRequest fields`() {
-        val date = LocalDate.of(2021, 1,15)
+        val date = LocalDate.of(2021, 1, 15)
         val criteria = TransactionEnquirySearchCriteria(
-                0, 0, listOf("sortBy"), date, date,
-                listOf("cycle_id"),
-                "messageDirection",
-                "messageType",
-                "sendingBic",
-                "receivingBic",
-                "status",
-                "reasonCode",
-                "id",
-                "sendingAccount",
-                "receivingAccount",
-                date, BigDecimal.TEN, BigDecimal.ONE
+            0, 0, listOf("sortBy"), date, date,
+            listOf("cycle_id"),
+            "messageDirection",
+            "messageType",
+            "sendingBic",
+            "receivingBic",
+            "status",
+            "reasonCode",
+            "id",
+            "sendingAccount",
+            "receivingAccount",
+            date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.offset).isEqualTo(criteria.offset)
@@ -138,7 +138,7 @@ class BPSMapperTest {
     fun `should map RoutingRecordCriteria fields`() {
         val bic = "bic"
         val entity = RoutingRecordCriteria(
-                0, 10, listOf("someValue1", "someValue2"), bic
+            0, 10, listOf("someValue1", "someValue2"), bic
         )
         val result = BPSMAPPER.toBps(entity)
         assertThat(result.bic).isEqualTo(bic)
@@ -150,7 +150,7 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalChangeRequest fields`() {
         val criteria = ApprovalChangeCriteria(
-                ApprovalRequestType.STATUS_CHANGE, mapOf("status" to "suspended"),"notes"
+            ApprovalRequestType.STATUS_CHANGE, mapOf("status" to "suspended"), "notes"
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.STATUS_CHANGE)
@@ -161,15 +161,15 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalSearchRequest fields`() {
         val criteria = ApprovalSearchCriteria(
-                0, 20,
-                listOf(
-                        "-participantName", "+participantName",
-                        "-requestType", "requestType",
-                        "-jobId", "+jobId",
-                        "-createdAt", "createdAt",
-                        "-requestedBy", "+requestedBy",
-                        "-status", "+status"
-                )
+            0, 20,
+            listOf(
+                "-participantName", "+participantName",
+                "-requestType", "requestType",
+                "-jobId", "+jobId",
+                "-createdAt", "createdAt",
+                "-requestedBy", "+requestedBy",
+                "-status", "+status"
+            )
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("participantName")
@@ -205,11 +205,25 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSReportsSearchRequest fields`() {
-        val criteria = ReportSearchCriteria(0, 20, listOf("sort"))
+        val criteria = ReportSearchCriteria(
+            0,
+            20,
+            listOf("sort"),
+            "DAILY_SETTLEMENT_REPORT",
+            "Resursbank",
+            "10000000305",
+            ZonedDateTime.parse("2021-02-15T00:00:00Z"),
+            ZonedDateTime.parse("2021-02-16T00:00:00Z")
+        )
 
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.offset).isEqualTo(criteria.offset)
         assertThat(request.limit).isEqualTo(criteria.limit)
         assertThat(request.sort).isEqualTo(criteria.sort)
+        assertThat(request.participant).isEqualTo(criteria.participant)
+        assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(request.id).isEqualTo(criteria.id)
+        assertThat(request.dateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.reportType).isEqualTo(criteria.reportType)
     }
 }

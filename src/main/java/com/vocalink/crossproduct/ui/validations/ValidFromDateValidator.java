@@ -3,22 +3,19 @@ package com.vocalink.crossproduct.ui.validations;
 import static com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT;
 import static java.lang.Long.parseLong;
-import static java.util.Objects.nonNull;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class ValidFromDateValidator implements
-    ConstraintValidator<ValidFromDate, LocalDate> {
+    ConstraintValidator<ValidFromDate, Temporal> {
 
   @Override
-  public boolean isValid(LocalDate date,
-      ConstraintValidatorContext validatorContext) {
+  public boolean isValid(Temporal value, ConstraintValidatorContext context) {
 
-    if (nonNull(date)) {
-      return !date.isBefore(LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT))));
-    }
-    return true;
+    return value.until(ZonedDateTime.now(), ChronoUnit.DAYS) <= parseLong(getDefault(DAYS_LIMIT));
   }
 }

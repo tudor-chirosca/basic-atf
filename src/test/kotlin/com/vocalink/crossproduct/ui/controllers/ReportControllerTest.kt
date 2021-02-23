@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.ui.controllers.api.ReportApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.report.ReportDto
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade
+import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
@@ -17,12 +18,13 @@ import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
 import java.nio.charset.Charset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReportApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -32,9 +34,7 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     private lateinit var reportFacade: ReportFacade
 
     private val UTF8_CONTENT_TYPE: MediaType = MediaType(
-        APPLICATION_JSON.type,
-        APPLICATION_JSON.subtype, Charset.forName("utf8")
-    )
+        APPLICATION_JSON.type, APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -69,7 +69,7 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(reportFacade.getPaginated(any(), any(), any()))
             .thenReturn(PageDto(0, emptyList<ReportDto>()))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/reports")
+        mockMvc.perform(get("/reports")
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
             .andExpect(status().isOk)
@@ -100,7 +100,7 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(reportFacade.getPaginated(any(), any(), any()))
             .thenReturn(response)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/reports")
+        mockMvc.perform(get("/reports")
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .queryParams(queryParams))
@@ -108,5 +108,23 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             .andExpect(content().json(EXPECTED_RESPONSE, true))
     }
 
+    @Test
+    fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
+        val queryParams = LinkedMultiValueMap(
+            mapOf(
+                Pair("offset", listOf("0")),
+                Pair("limit", listOf("10")),
+                Pair("date_from", listOf(ZonedDateTime.now().minusDays(31).format(DateTimeFormatter.ISO_ZONED_DATE_TIME)))
+            )
+        )
 
+        mockMvc.perform(
+            get("/reports")
+            .contentType(UTF8_CONTENT_TYPE)
+            .header(CONTEXT_HEADER, CONTEXT)
+            .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .queryParams(queryParams))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(CoreMatchers.containsString("date_from can not be earlier than 30 days")))
+    }
 }

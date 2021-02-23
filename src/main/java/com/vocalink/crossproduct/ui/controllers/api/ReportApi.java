@@ -7,9 +7,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface ReportApi {
 
   @ApiOperation("Fetch Report")
@@ -18,6 +20,6 @@ public interface ReportApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<ReportDto>> getPaginatedReports(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      ReportsSearchRequest searchParameters);
+      final ClientType clientType, final String context,
+      @Valid final ReportsSearchRequest searchParameters);
 }
