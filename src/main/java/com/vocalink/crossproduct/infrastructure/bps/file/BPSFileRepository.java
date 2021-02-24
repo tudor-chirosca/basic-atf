@@ -8,16 +8,21 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPS
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.files.FileRepository;
-import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +31,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class BPSFileRepository implements FileRepository {
+
+  private static final String OFFSET = "offset";
+  private static final String PAGE_SIZE = "pageSize";
 
   private final BPSProperties bpsProperties;
   private final BPSRetryWebClientConfig retryWebClientConfig;
@@ -52,14 +63,18 @@ public class BPSFileRepository implements FileRepository {
   }
 
   @Override
-  public Page<File> findPaginated(FileEnquirySearchCriteria request) {
+  public Result<File> findBy(FileEnquirySearchCriteria request) {
     BPSFileEnquirySearchRequest bpsRequest = BPSMAPPER.toBps(request);
+    final URI uri = UriComponentsBuilder.fromUri(resolve(FILE_ENQUIRIES_PATH, bpsProperties))
+        .queryParam(OFFSET, request.getOffset())
+        .queryParam(PAGE_SIZE, request.getLimit())
+        .build().toUri();
     return webClient.post()
-        .uri(resolve(FILE_ENQUIRIES_PATH, bpsProperties))
+        .uri(uri)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(bpsRequest), BPSFileEnquirySearchRequest.class))
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSFile>>() {
+        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSFile>>() {
         })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)

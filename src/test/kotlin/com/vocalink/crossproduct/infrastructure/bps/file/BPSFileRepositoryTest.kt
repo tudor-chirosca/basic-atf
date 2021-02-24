@@ -2,12 +2,13 @@ package com.vocalink.crossproduct.infrastructure.bps.file
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.MediaType
+import java.time.LocalDate
 
 @BPSTestConfiguration
 @Import(BPSFileRepository::class)
@@ -24,19 +26,9 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
     companion object {
         const val VALID_FILES_REQUEST: String = """ 
         {
-            "offset": 0,
-            "limit": 20,
-            "sort": null,
-            "status": null,
-            "id": null,
-            "date_from": "2021-01-03",
-            "date_to": null,
-            "cycle_ids": null,
-            "msg_direction": "Sending",
-            "msg_type": null,
-            "send_bic": null,
-            "recv_bic": null,
-            "reason_code": null
+            "createdFromDate": "2021-01-03T12:00:00Z",
+            "createdToDate": "2021-01-04T12:00:00Z",
+            "messageDirection": "Sending"
         }"""
         const val VALID_FILE_REQUEST: String = """ 
         {
@@ -67,61 +59,43 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
 
         const val VALID_FILE_RESULT_LIST_RESPONSE: String = """
             {
-             "totalResults": 1,
-             "items": [
-                  {
-                     "name": "G27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800107.gz",
-                     "createdAt": "2020-10-23T13:43:00Z",
-                     "fileSize": 3245234523,
-                     "cycle" : {
-                       "cycleId": "02",
-                       "status": "ACTIVE",
-                       "settlementTime": "2020-11-03T16:58:19Z",
-                       "fileSubmissionCutOffTime": "2020-12-09T15:58:19Z",
-                       "isNextDayCycle": false,
-                       "settlementConfirmationTime": "2020-12-09T15:58:19Z"
-                     },
-                     "receivingBic": "FORXSES1",
-                     "messageType": "prtp.005-prtp.006",
-                     "messageDirection": "Receiving",
-                     "nrOfBatches": 12,
-                     "status": "Accepted",
-                     "reasonCode": null,
-                     "sender": {
-                       "entityName": "Nordea Bank",
-                       "entityBic": "NDEASESSXXX",
-                       "iban": "SE91 9500 0099 6042 0638 7369",
-                       "fullName": "Lisa Engstrøm"
-                     }
-                 }                
-            ]
+            "data": [
+                {
+                  "instructionId": "2641",
+                  "fileName": "P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz",
+                  "fileSize": "20954",
+                  "createdDate": "2020-12-28T17:32:28Z",
+                  "originator": "NDEASESSXXX",
+                  "messageType": "pacs.008",
+                  "nrOfBatches": "12",
+                  "status": "DEBULKED",
+                  "reasonCode": "F001",
+                  "settlementCycle": "20201113003",
+                  "settlementDate": "2020-11-13T10:00:28Z",
+                  "schemeParticipantIdentifier": "AABASESSXXX"
+                }
+            ],
+            "summary": {
+                "pageSize": 20,
+                "offset": 0,
+                "totalCount": 1
+            }
         }
     """
         const val VALID_FILE_RESPONSE: String = """
         {
-             "name": "G27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800107.gz",
-             "createdAt": "2020-10-23T13:43:00Z",
-             "fileSize": 3245234523,
-             "cycle" : {
-               "cycleId": "02",
-                  "status": "ACTIVE",
-                  "settlementTime": "2020-11-03T16:58:19Z",
-                  "fileSubmissionCutOffTime": "2020-12-09T15:58:19Z",
-                  "isNextDayCycle": false,
-                  "settlementConfirmationTime": "2020-12-09T15:58:19Z"
-             },
-             "receivingBic": "FORXSES1",
+             "instructionId": "2641",
+             "fileName": "P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz",
+             "fileSize": "20954",
+             "createdDate": "2020-12-28T17:32:28Z",
+             "originator": "NDEASESSXXX",
              "messageType": "prtp.005-prtp.006",
-             "messageDirection": "Receiving",
-             "nrOfBatches": 12,
+             "nrOfBatches": "12",
              "status": "Accepted",
-             "reasonCode": null,
-             "sender": {
-               "entityName": "Nordea Bank",
-               "entityBic": "NDEASESSXXX",
-               "iban": "SE91 9500 0099 6042 0638 7369",
-               "fullName": "Lisa Engstrøm"
-             }
+             "reasonCode": "F001",
+             "settlementCycle": "20201113003",
+             "settlementDate": "2020-11-13T10:00:28Z",
+             "schemeParticipantIdentifier": "AABASESSXXX"
         }               
     """
     }
@@ -152,30 +126,44 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
     @Test
     fun `should return the list of file enquiries`() {
         mockServer.stubFor(
-                post(urlEqualTo("/enquiry/files"))
+                post(urlPathEqualTo("/enquiries/file/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_FILES_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("20"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_FILE_RESULT_LIST_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_FILES_REQUEST)))
-
-        val request = FileEnquirySearchCriteria(
-                0, 20, null, LocalDate.of(2021,1,3),
-                null, null, "Sending", null, null,
-                null, null, null, null
         )
-        val result = fileRepository.findPaginated(request)
+
+        val request = FileEnquirySearchCriteria.builder()
+                .offset(0)
+                .limit(20)
+                .dateFrom(LocalDate.of(2021, 1, 3))
+                .dateTo(LocalDate.of(2021, 1, 4))
+                .messageDirection("Sending")
+                .build()
+
+        val result = fileRepository.findBy(request)
 
         assertThat(result).isNotNull
-        assertThat(result.totalResults).isEqualTo(1)
-        assertThat(result.items).isNotEmpty
+        assertThat(result.summary.totalCount).isEqualTo(1)
+        assertThat(result.summary.offset).isEqualTo(0)
+        assertThat(result.summary.pageSize).isEqualTo(20)
 
-        assertThat(result.items[0].settlementCycleId).isEqualTo("02")
-        assertThat(result.items[0].sender.entityBic).isEqualTo("NDEASESSXXX")
-        assertThat(result.items[0].reasonCode).isNull()
-        assertThat(result.items[0].nrOfBatches).isEqualTo(12)
-        assertThat(result.items[0].messageType).isEqualTo("prtp.005-prtp.006")
-        assertThat(result.items[0].status).isEqualTo("Accepted")
+        assertThat(result.data).isNotEmpty
+        assertThat(result.data[0].instructionId).isEqualTo("2641")
+        assertThat(result.data[0].fileName).isEqualTo("P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz")
+        assertThat(result.data[0].fileSize).isEqualTo(20954L)
+        assertThat(result.data[0].createdDate).isEqualTo("2020-12-28T17:32:28Z")
+        assertThat(result.data[0].originator).isEqualTo("NDEASESSXXX")
+        assertThat(result.data[0].messageType).isEqualTo("pacs.008")
+        assertThat(result.data[0].nrOfBatches).isEqualTo(12)
+        assertThat(result.data[0].status).isEqualTo("DEBULKED")
+        assertThat(result.data[0].reasonCode).isEqualTo("F001")
+        assertThat(result.data[0].settlementCycle).isEqualTo("20201113003")
+        assertThat(result.data[0].settlementDate).isEqualTo("2020-11-13T10:00:28Z")
+        assertThat(result.data[0].schemeParticipantIdentifier).isEqualTo("AABASESSXXX")
     }
 
     @Test
@@ -191,9 +179,9 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         val result = fileRepository.findById("A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz")
 
         assertThat(result).isNotNull
-        assertThat(result.settlementCycleId).isEqualTo("02")
-        assertThat(result.sender.entityBic).isEqualTo("NDEASESSXXX")
-        assertThat(result.reasonCode).isNull()
+        assertThat(result.settlementCycle).isEqualTo("20201113003")
+        assertThat(result.originator).isEqualTo("NDEASESSXXX")
+        assertThat(result.reasonCode).isEqualTo("F001")
         assertThat(result.nrOfBatches).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
         assertThat(result.status).isEqualTo("Accepted")

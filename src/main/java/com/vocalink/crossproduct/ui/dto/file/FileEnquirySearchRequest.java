@@ -8,7 +8,6 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.NotEqual;
-import com.vocalink.crossproduct.ui.validations.ValidDateOrCycle;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -20,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@ValidDateOrCycle(date = "dateTo", cycles = "cycleIds")
+//@ValidDateOrCycle(date = "dateTo", cycles = "cycleId") //TODO: Change validation, both dates or cycle id
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"rejected"})
 public class FileEnquirySearchRequest {
@@ -35,7 +34,7 @@ public class FileEnquirySearchRequest {
   @ValidFromDate
   private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
-  private List<String> cycleIds;
+  private String cycleId;
   @ValidDirection
   private String messageDirection;
   private String messageType;
@@ -56,8 +55,8 @@ public class FileEnquirySearchRequest {
     this.dateTo = LocalDate.parse(dateTo);
   }
 
-  public void setCycle_ids(List<String> cycleIds) {
-    this.cycleIds = cycleIds;
+  public void setCycle_ids(List<String> cycleId) {
+    this.cycleId = cycleId.stream().findFirst().orElse(null);
   }
 
   public void setMsg_direction(String messageDirection) {

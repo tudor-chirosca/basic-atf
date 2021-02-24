@@ -1,5 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
+import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.resolveParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -18,7 +21,6 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
-import com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper;
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalChangeRequest;
@@ -35,8 +37,13 @@ import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequ
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -56,7 +63,26 @@ public interface BPSMapper {
 
   BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
 
+  @Mappings({
+      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter"),
+      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter"),
+      @Mapping(target = "sessionInstanceId", source = "cycleId"),
+      @Mapping(target = "sendingParticipant", source = "sendingBic"),
+      @Mapping(target = "receivingParticipant", source = "receivingBic"),
+      @Mapping(target = "identifier", source = "id"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapFileSortParams")
+  })
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
+
+  @Named("toZonedDateTimeConverter")
+  default ZonedDateTime toZonedDateTime(LocalDate localDate) {
+    return ZonedDateTime.of(localDate, LocalTime.NOON, ZoneId.of("UTC"));
+  }
+
+  @Named("mapFileSortParams")
+  default List<BPSSortingQuery> mapFileSortParams(List<String> sortParams) {
+    return map(sortParams, getFileSearchRequestSortParams());
+  }
 
   BPSTransactionEnquirySearchRequest toBps(TransactionEnquirySearchCriteria criteria);
 
@@ -75,7 +101,7 @@ public interface BPSMapper {
   BPSReportSearchRequest toBps(ReportSearchCriteria criteria);
 
   @Mappings({
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParam")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParams")
   })
   BPSApprovalSearchRequest toBps(ApprovalSearchCriteria criteria);
 
@@ -100,13 +126,18 @@ public interface BPSMapper {
     return BPSApprovalRequestType.valueOf(approvalRequestType.name());
   }
 
-  @Named("mapApprovalSortParam")
+  @Named("mapApprovalSortParams")
   default List<BPSSortingQuery> mapApprovalSortParam(List<String> sortParams) {
+    return map(sortParams, getApprovalSearchRequestSortParams());
+  }
+
+  default List<BPSSortingQuery> map(List<String> sortParams, Map<String, String> bindings) {
     if (sortParams == null || sortParams.isEmpty()) {
       return new ArrayList<>();
     }
+
     return sortParams.stream()
-        .map(BPSSortParamMapper::getApprovalSortParam)
+        .map(e -> resolveParams(e, bindings))
         .filter(s -> nonNull(s.getSortOrderBy()))
         .collect(toList());
   }

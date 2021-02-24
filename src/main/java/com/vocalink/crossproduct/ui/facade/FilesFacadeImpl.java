@@ -6,8 +6,12 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.ServiceFactory;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.files.FileRepository;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -38,18 +42,25 @@ public class FilesFacadeImpl implements FilesFacade {
     log.info("Fetching files from: {}", product);
 
     final FileEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
-    final Page<File> files = repositoryFactory.getFileRepository(product).findPaginated(request);
 
-    return presenterFactory.getPresenter(clientType).presentFiles(files);
+    final Result<File> result = repositoryFactory.getFileRepository(product).findBy(request);
+
+    return presenterFactory.getPresenter(clientType)
+        .presentFiles(result.getSummary().getTotalCount(), result.getData());
   }
 
   @Override
   public FileDetailsDto getDetailsById(String product, ClientType clientType, String id) {
     log.info("Fetching file details for id: {} from: {}", id, product);
 
-    final File file = repositoryFactory.getFileRepository(product).findById(id);
+    final File file = repositoryFactory.getFileRepository(product)
+        .findById(id);
+    final Participant sender = repositoryFactory.getParticipantRepository(product)
+        .findById(file.getOriginator());
+    final Account account = repositoryFactory.getAccountRepository(product)
+        .findByPartyCode(sender.getBic());
 
-    return presenterFactory.getPresenter(clientType).presentFileDetails(file);
+    return presenterFactory.getPresenter(clientType).presentFileDetails(file, sender, account);
   }
 
   @Override

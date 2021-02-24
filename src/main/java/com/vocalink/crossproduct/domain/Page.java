@@ -11,5 +11,4 @@ public class Page<T> implements Serializable {
 
   private final int totalResults;
   private final List<T> items;
-
 }

@@ -108,11 +108,12 @@ public interface Presenter {
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences);
 
-  PageDto<FileDto> presentFiles(Page<File> files);
+  PageDto<FileDto> presentFiles(Integer totalResults, List<File> items);
 
   List<DayCycleDto> presentCycleDateReferences(List<DayCycle> dayCycles);
 
-  FileDetailsDto presentFileDetails(File file);
+  FileDetailsDto presentFileDetails(File file, Participant participant,
+      Account account);
 
   PageDto<BatchDto> presentBatches(Page<Batch> batches);
 

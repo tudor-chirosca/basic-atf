@@ -29,7 +29,7 @@ bps-config:
       path: /cycles/read
       base: MOCK
     file-enquiries-path:
-      path: /enquiry/files
+      path: /enquiries/file/{schemeCode}/readAll
       base: MOCK
     io-participants-path:
       path: /io

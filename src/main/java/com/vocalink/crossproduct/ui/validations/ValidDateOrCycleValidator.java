@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.validations;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -23,10 +22,9 @@ public class ValidDateOrCycleValidator implements ConstraintValidator<ValidDateO
       ConstraintValidatorContext validatorContext) {
 
     LocalDate date = tryGetFieldValue(obj, dateFieldName, LocalDate.class);
-    List<String> cycles = tryGetFieldValue(obj, cycleFiledName, List.class);
+    String cycles = tryGetFieldValue(obj, cycleFiledName, String.class);
 
-    return cycles == null || cycles.isEmpty()
-        || date == null;
+    return cycles == null || cycles.isEmpty() || date == null;
   }
 
   private <T> T tryGetFieldValue(Object obj, String name, Class<T> type) {

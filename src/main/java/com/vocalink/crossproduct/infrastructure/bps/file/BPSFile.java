@@ -2,49 +2,50 @@ package com.vocalink.crossproduct.infrastructure.bps.file;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
 import java.time.ZonedDateTime;
 import lombok.Getter;
 
 @Getter
 public class BPSFile {
 
-  private final int nrOfBatches;
-  private final String name;
-  private final ZonedDateTime createdAt;
+  private final String instructionId;
+  private final String fileName;
   private final long fileSize;
-  private final BPSCycle cycle;
-  private final String receivingBic;
+  private final ZonedDateTime createdDate;
+  private final String originator;
   private final String messageType;
-  private final String messageDirection;
+  private final int nrOfBatches;
   private final String status;
   private final String reasonCode;
-  private final BPSSenderDetails sender;
+  private final String settlementCycle;
+  private final ZonedDateTime settlementDate;
+  private final String schemeParticipantIdentifier;
 
   @JsonCreator
   public BPSFile(
-      @JsonProperty(value = "name", required = true) String name,
-      @JsonProperty(value = "createdAt", required = true) ZonedDateTime createdAt,
+      @JsonProperty(value = "instructionId", required = true) String instructionId,
+      @JsonProperty(value = "fileName", required = true) String fileName,
       @JsonProperty(value = "fileSize", required = true) long fileSize,
-      @JsonProperty(value = "cycle", required = true) BPSCycle cycle,
-      @JsonProperty(value = "receivingBic", required = true) String receivingBic,
+      @JsonProperty(value = "createdDate", required = true) ZonedDateTime createdDate,
+      @JsonProperty(value = "originator", required = true) String originator,
       @JsonProperty(value = "messageType", required = true) String messageType,
-      @JsonProperty(value = "messageDirection", required = true) String messageDirection,
       @JsonProperty(value = "nrOfBatches", required = true) int nrOfBatches,
       @JsonProperty(value = "status", required = true) String status,
-      @JsonProperty(value = "reasonCode") String reasonCode,
-      @JsonProperty(value = "sender", required = true) BPSSenderDetails sender
-  ) {
-    this.nrOfBatches = nrOfBatches;
-    this.name = name;
-    this.createdAt = createdAt;
+      @JsonProperty(value = "reasonCode", required = true) String reasonCode,
+      @JsonProperty(value = "settlementCycle", required = true) String settlementCycle,
+      @JsonProperty(value = "settlementDate", required = true) ZonedDateTime settlementDate,
+      @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier) {
+    this.instructionId = instructionId;
+    this.fileName = fileName;
     this.fileSize = fileSize;
-    this.cycle = cycle;
-    this.receivingBic = receivingBic;
+    this.createdDate = createdDate;
+    this.originator = originator;
     this.messageType = messageType;
-    this.messageDirection = messageDirection;
+    this.nrOfBatches = nrOfBatches;
     this.status = status;
     this.reasonCode = reasonCode;
-    this.sender = sender;
+    this.settlementCycle = settlementCycle;
+    this.settlementDate = settlementDate;
+    this.schemeParticipantIdentifier = schemeParticipantIdentifier;
   }
 }

@@ -50,15 +50,15 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -203,49 +203,35 @@ class EntityMapperTest {
 
     @Test
     fun `should map File fields`() {
-        val bpsCycle = BPSCycle(
-                "cycleId",
-                "COMPLETED",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                true,
-                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
-        )
-
-        val bpsSenderDetails = BPSSenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "fullName"
-        )
-
         val bps = BPSFile(
                 "name",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "fileName",
                 234234,
-                bpsCycle,
-                "receivingBic",
-                "messageType",
-                "messageDirection",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "originator",
+                "msgType",
                 10,
                 "status",
                 "reasonCode",
-                bpsSenderDetails
+                "cycleId",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "P27"
         )
+
         val entity = MAPPER.toEntity(bps)
-        assertThat(entity.nrOfBatches).isEqualTo(bps.nrOfBatches)
-        assertThat(entity.fileName).isEqualTo(bps.name)
+
+        assertThat(entity.instructionId).isEqualTo(bps.instructionId)
+        assertThat(entity.fileName).isEqualTo(bps.fileName)
         assertThat(entity.fileSize).isEqualTo(bps.fileSize)
-        assertThat(entity.settlementDate).isEqualTo(bps.cycle.settlementTime.toLocalDate())
-        assertThat(entity.settlementCycleId).isEqualTo(bps.cycle.cycleId)
-        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.createdDate).isEqualTo(bps.createdDate)
+        assertThat(entity.originator).isEqualTo(bps.originator)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.nrOfBatches).isEqualTo(bps.nrOfBatches)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
-        assertThat(entity.messageType).isEqualTo(bps.messageType)
-        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
-        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
-        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
-        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
+        assertThat(entity.settlementCycle).isEqualTo(bps.settlementCycle)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
+        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
     }
 
     @Test
@@ -524,15 +510,16 @@ class EntityMapperTest {
         request.setSend_bic("send_bic")
         request.setRecv_bic("rcvng_bic")
         request.setReason_code("reason_code")
-        request.setCycle_ids(listOf("cycle1, cycle2"))
+        request.setCycle_ids(listOf("cycle1"))
 
         val entity = MAPPER.toEntity(request)
+
         assertThat(entity.offset).isEqualTo(request.offset)
         assertThat(entity.limit).isEqualTo(request.limit)
         assertThat(entity.sort).isEqualTo(request.sort)
         assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
         assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.cycleId).isEqualTo(request.cycleId)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingBic).isEqualTo(request.sendingBic)

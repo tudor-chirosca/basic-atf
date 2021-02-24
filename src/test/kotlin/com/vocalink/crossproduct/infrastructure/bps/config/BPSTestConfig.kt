@@ -32,7 +32,7 @@ open class BPSTestConfig {
                 Pair("message-direction-references-path", Detail("MOCK", "/reference/messages")),
                 Pair("alert-stats-path", Detail("MOCK", "/alerts/stats")),
                 Pair("file-references-path", Detail("MOCK", "/reference/files")),
-                Pair("file-enquiries-path", Detail("MOCK", "/enquiry/files")),
+                Pair("file-enquiries-path", Detail("MOCK", "/enquiries/file/P27-SEK/readAll")),
                 Pair("batch-enquiries-path", Detail("MOCK", "/enquiry/batches")),
                 Pair("single-file-path", Detail("MOCK", "/enquiry/files/read")),
                 Pair("download-file-path", Detail("MOCK", "/enquiries/file/downloadFile/P27-SEK")),

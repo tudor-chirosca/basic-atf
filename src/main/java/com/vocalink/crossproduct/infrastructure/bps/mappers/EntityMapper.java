@@ -6,6 +6,8 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.Result.ResultSummary;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
@@ -62,6 +64,8 @@ import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult.BPSResultSummary;
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
@@ -99,6 +103,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantIns
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
@@ -112,12 +117,13 @@ import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
-import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -136,11 +142,6 @@ public interface EntityMapper {
   })
   Batch toEntity(BPSBatch batch);
 
-  @Mappings({
-      @Mapping(target = "fileName", source = "name"),
-      @Mapping(target = "settlementCycleId", source = "cycle.cycleId"),
-      @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
-  })
   File toEntity(BPSFile file);
 
   @Named("convertToDate")
@@ -378,12 +379,47 @@ public interface EntityMapper {
           try {
             return method.invoke(this, obj);
           } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new UILayerException(e.getCause(), "DataTransferObject mapping exception!");
+            throw new InfrastructureException(e.getCause(), "DataTransferObject mapping exception!");
           }
         })
         .map(targetType::cast)
         .collect(toList());
 
     return new Page<>(page.getTotalResults(), targetItems);
+  }
+
+  ResultSummary toEntity(BPSResultSummary summary);
+
+  default <T> Result<T> toEntity(BPSResult<?> result, Class<T> targetType) {
+    final List<?> sourceData = result.getData();
+
+    if (Objects.isNull(sourceData) || sourceData.isEmpty()) {
+      return new Result<>(Collections.emptyList(), ResultSummary.empty());
+    }
+
+    final Class<?> sourceType = sourceData.get(0).getClass();
+
+    Method method = stream(this.getClass().getDeclaredMethods())
+        .filter(m -> m.getParameterTypes().length == 1)
+        .filter(m -> m.getParameterTypes()[0].isAssignableFrom(sourceType))
+        .filter(m -> m.getReturnType().isAssignableFrom(targetType))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Method by signature not found!"));
+
+    final List<T> targetItems = sourceData.stream()
+        .map(sourceType::cast)
+        .map(obj -> {
+          try {
+            return method.invoke(this, obj);
+          } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new InfrastructureException(e.getCause(), "DataTransferObject mapping exception!");
+          }
+        })
+        .map(targetType::cast)
+        .collect(toList());
+
+    final ResultSummary resultSummary = toEntity(result.getSummary());
+
+    return new Result<>(targetItems, resultSummary);
   }
 }

@@ -46,6 +46,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -77,6 +78,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -254,8 +256,11 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<FileDto> presentFiles(Page<File> enquiries) {
-    return MAPPER.toDto(enquiries, FileDto.class);
+  public PageDto<FileDto> presentFiles(Integer totalResults, List<File> items) {
+    final List<FileDto> files = items.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
+    return new PageDto<>(totalResults, files);
   }
 
   @Override
@@ -266,8 +271,26 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(File file) {
-    return MAPPER.toDetailsDto(file);
+  public FileDetailsDto presentFileDetails(File file, Participant participant, Account account) {
+    final EnquirySenderDetailsDto sender = EnquirySenderDetailsDto.builder()
+        .entityName(participant.getName())
+        .entityBic(participant.getBic())
+        .iban(account.getIban())
+        .fullName(StringUtils.EMPTY)
+        .build();
+
+    return FileDetailsDto.builder()
+        .fileName(file.getFileName())
+        .nrOfBatches(file.getNrOfBatches())
+        .fileSize(file.getFileSize())
+        .settlementDate(file.getSettlementDate().toLocalDate())
+        .settlementCycleId(file.getSettlementCycle())
+        .createdAt(file.getCreatedDate())
+        .status(file.getStatus())
+        .reasonCode(file.getReasonCode())
+        .messageType(file.getMessageType())
+        .sender(sender)
+        .build();
   }
 
   @Override
@@ -379,7 +402,7 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> items) {
-    return MAPPER.toDto(totalResults, items);
+    return new PageDto<>(totalResults, items);
   }
 
   @Override

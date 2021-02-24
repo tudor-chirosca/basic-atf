@@ -8,7 +8,6 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.NotEqual;
-import com.vocalink.crossproduct.ui.validations.ValidDateOrCycle;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -20,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@ValidDateOrCycle(date = "dateTo", cycles = "cycleIds")
+//@ValidDateOrCycle(date = "dateTo", cycles = "cycleIds") //TODO: Disabled. To be updated.
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 public class BatchEnquirySearchRequest {

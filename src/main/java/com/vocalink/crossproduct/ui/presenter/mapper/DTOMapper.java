@@ -49,7 +49,6 @@ import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
-import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
@@ -233,15 +232,16 @@ public interface DTOMapper {
 
   List<FileStatusesTypeDto> toDtoType(List<FileReference> fileReferences);
 
-  @Mapping(target = "name", source = "fileName")
-  @Mapping(target = "senderBic", source = "sender.entityBic")
+  @Mappings({
+      @Mapping(target = "name", source = "fileName"),
+      @Mapping(target = "createdAt", source = "createdDate"),
+      @Mapping(target = "senderBic", source = "originator")
+  })
   FileDto toDto(File file);
 
   @Mapping(target = "id", source = "batchId")
   @Mapping(target = "senderBic", source = "sender.entityBic")
   BatchDto toDto(Batch batch);
-
-  FileDetailsDto toDetailsDto(File file);
 
   BatchDetailsDto toDetailsDto(Batch batch);
 
@@ -406,10 +406,6 @@ public interface DTOMapper {
   @Mapping(target = "recipients", ignore = true)
   BroadcastDto toDto(Broadcast broadcast);
 
-  @Mapping(target = "totalResults", source = "totalResults")
-  @Mapping(target = "items", source = "items")
-  PageDto<BroadcastDto> toDto(Integer totalResults, List<BroadcastDto> items);
-
   ReportDto toDto(Report report);
 
   RoutingRecordDto toDto(RoutingRecord routingRecord);
@@ -446,7 +442,7 @@ public interface DTOMapper {
   ManagedParticipantDetailsDto toDto(Participant participant,
       ParticipantConfiguration configuration, Account account);
 
-  AlertDto toDto (Alert alert);
+  AlertDto toDto(Alert alert);
 
   //TODO: check ManagedParticipant != Participant?
   ManagedParticipantDto toManagedDto(Participant participants);

@@ -9,10 +9,10 @@ import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
-import java.time.LocalDate
-import kotlin.test.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import kotlin.test.assertEquals
 
 class SystemPresenterTests {
 
@@ -101,9 +101,8 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present files for System`() {
-        val files = Page<File>(0, emptyList())
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFiles(files)
+            systemPresenter.presentFiles(0, emptyList())
         }
     }
 
@@ -111,7 +110,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present file details for System`() {
         val file = File.builder().build()
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFileDetails(file)
+            systemPresenter.presentFileDetails(file, null, null)
         }
     }
 

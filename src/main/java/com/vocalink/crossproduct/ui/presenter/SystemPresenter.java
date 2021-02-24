@@ -137,7 +137,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<FileDto> presentFiles(Page<File> enquiries) {
+  public PageDto<FileDto> presentFiles(Integer totalResults, List<File> items) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -153,7 +153,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(File file) {
+  public FileDetailsDto presentFileDetails(File file, Participant participant,
+      Account account) {
     throw new RuntimeException("System API not implemented yet");
   }
 
