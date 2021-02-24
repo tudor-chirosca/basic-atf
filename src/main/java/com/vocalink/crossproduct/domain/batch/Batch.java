@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain.batch;
 
-import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
@@ -22,6 +21,5 @@ public class Batch {
   private final String status;
   private final String reasonCode;
   private final String messageType;
-  private final EnquirySenderDetails sender;
-
+  private final String sender;
 }

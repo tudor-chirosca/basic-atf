@@ -46,8 +46,8 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
+import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
@@ -72,7 +72,6 @@ import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -294,8 +293,9 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<BatchDto> presentBatches(Page<Batch> batches) {
-    return MAPPER.toDto(batches, BatchDto.class);
+  public PageDto<BatchDto> presentBatches(Integer totalResults, List<Batch> items) {
+    final List<BatchDto> batches = items.stream().map(MAPPER::toDto).collect(toList());
+    return new PageDto<>(totalResults, batches);
   }
 
   @Override
@@ -304,8 +304,9 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public BatchDetailsDto presentBatchDetails(Batch batch) {
-    return MAPPER.toDetailsDto(batch);
+  public BatchDetailsDto presentBatchDetails(Batch batch, Participant participant,
+      File file) {
+    return MAPPER.toDetailsDto(batch, participant, file);
   }
 
   @Override

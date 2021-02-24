@@ -1,45 +1,28 @@
 package com.vocalink.crossproduct.infrastructure.bps.batch;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@JsonInclude(Include.NON_EMPTY)
 public class BPSBatchEnquirySearchRequest {
-  private final int offset;
 
-  private final int limit;
-
-  private final List<String> sort;
-
-  @JsonProperty(value = "date_from")
-  private final LocalDate dateFrom;
-
-  @JsonProperty(value = "date_to")
-  private final LocalDate dateTo;
-
-  @JsonProperty(value = "cycle_ids")
-  private final List<String> cycleIds;
-
-  @JsonProperty(value = "msg_direction")
+  private final ZonedDateTime createdFromDate;
+  private final ZonedDateTime createdToDate;
+  private final String sessionInstanceId;
   private final String messageDirection;
-
-  @JsonProperty(value = "msg_type")
   private final String messageType;
-
-  @JsonProperty(value = "send_bic")
-  private final String sendingBic;
-
-  @JsonProperty(value = "recv_bic")
-  private final String receivingBic;
-
+  private final String sendingParticipant;
+  private final String receivingParticipant;
   private final String status;
-
-  @JsonProperty(value = "reason_code")
   private final String reasonCode;
-
-  private final String id;
+  private final String identifier;
+  @JsonInclude(Include.NON_EMPTY)
+  private final List<BPSSortingQuery> sortingOrder;
 }

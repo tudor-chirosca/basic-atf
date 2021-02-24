@@ -53,7 +53,7 @@ bps-config:
       path: /reference/files
       base: MOCK
     batch-enquiries-path:
-      path: /enquiry/batches
+      path: /enquiries/batches/{schemeCode}/readAll
       base: MOCK
     single-file-path:
       path: /enquiry/files/read
@@ -62,7 +62,7 @@ bps-config:
       path: /enquiries/file/downloadFile/{schemeCode}
       base: MOCK
     single-batch-path:
-      path: /enquiry/batches/read
+      path: /enquiries/batches/{schemeCode}/read
       base: MOCK
     single-settlement-path:
       path: /enquiry/settlements/read

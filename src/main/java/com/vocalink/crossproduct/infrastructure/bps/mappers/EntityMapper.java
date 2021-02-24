@@ -76,7 +76,8 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationResponse;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
-import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
+import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed;
+import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchPart;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
@@ -136,11 +137,12 @@ public interface EntityMapper {
   EntityMapper MAPPER = Mappers.getMapper(EntityMapper.class);
 
   @Mappings({
-      @Mapping(target = "fileName", source = "name"),
-      @Mapping(target = "settlementCycleId", source = "cycle.cycleId"),
-      @Mapping(target = "settlementDate", source = "cycle.settlementTime", qualifiedByName = "convertToDate")
+      @Mapping(target = "settlementCycleId", source = "settlementCycle"),
+      @Mapping(target = "sender", source = "senderBic"),
+      @Mapping(target = "nrOfTransactions", source = "numberOfTransactions"),
+      @Mapping(target = "createdAt", source = "sentDateAndTime"),
   })
-  Batch toEntity(BPSBatch batch);
+  Batch toEntity(BPSBatchDetailed batch);
 
   File toEntity(BPSFile file);
 
@@ -387,6 +389,13 @@ public interface EntityMapper {
 
     return new Page<>(page.getTotalResults(), targetItems);
   }
+
+  @Mappings({
+   @Mapping(target = "batchId", source = "messageIdentifier"),
+   @Mapping(target = "createdAt", source = "createdDateTime"),
+   @Mapping(target = "sender", source = "originator")
+  })
+  Batch toEntity(BPSBatchPart partialBatch);
 
   ResultSummary toEntity(BPSResultSummary summary);
 

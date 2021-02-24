@@ -39,7 +39,6 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -115,11 +114,12 @@ public interface Presenter {
   FileDetailsDto presentFileDetails(File file, Participant participant,
       Account account);
 
-  PageDto<BatchDto> presentBatches(Page<Batch> batches);
+  PageDto<BatchDto> presentBatches(Integer totalResults, List<Batch> items);
 
   PageDto<TransactionDto> presentTransactions(Page<Transaction> transactions);
 
-  BatchDetailsDto presentBatchDetails(Batch batch);
+  BatchDetailsDto presentBatchDetails(Batch batch, Participant participant,
+      File file);
 
   ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
       List<Participant> participants);

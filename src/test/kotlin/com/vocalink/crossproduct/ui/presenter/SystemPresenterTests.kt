@@ -5,7 +5,6 @@ import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.batch.Batch
-import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
@@ -116,9 +115,8 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present batches for System`() {
-        val batches = Page<Batch>(0, emptyList())
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentBatches(batches)
+            systemPresenter.presentBatches(0, listOf())
         }
     }
 
@@ -141,7 +139,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present batch details for System`() {
         val batch = Batch.builder().build()
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentBatchDetails(batch)
+            systemPresenter.presentBatchDetails(batch, null, null)
         }
     }
 

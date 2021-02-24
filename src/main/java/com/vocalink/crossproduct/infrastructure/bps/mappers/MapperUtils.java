@@ -29,11 +29,23 @@ abstract class MapperUtils {
     put("status", "status");
   }};
 
+  private static final Map<String, String> batchSearchRequestSortParams = new HashMap<String, String>() {{
+    put("id", "messageIdentifier");
+    put("createdAt", "createdDateTime");
+    put("senderBic", "originator");
+    put("messageType","messageType");
+    put("nrOfTransactions","nrOfTransactions");
+    put("status", "status");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
   static Map<String, String> getApprovalSearchRequestSortParams() {
     return unmodifiableMap(approvalSearchRequestSortParams);
+  }
+  static Map<String, String> getBatchSearchRequestSortParams() {
+    return unmodifiableMap(batchSearchRequestSortParams);
   }
 
 }

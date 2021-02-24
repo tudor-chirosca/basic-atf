@@ -35,25 +35,22 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, listOf("sort"), LocalDate.now(), null,
-                listOf("cycle1, cycle2"), "msg_direction", "msg_type",
+                0, 20, LocalDate.now(), LocalDate.now(),
+                "cycle1", "msg_direction", "msg_type",
                 "send_bic", "rcvng_bic", "status", "reasonCode",
-                "id"
-        )
+                null, listOf("id"))
+
         val entity = BPSMAPPER.toBps(request)
-        assertThat(entity.offset).isEqualTo(request.offset)
-        assertThat(entity.limit).isEqualTo(request.limit)
-        assertThat(entity.sort).isEqualTo(request.sort)
-        assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
-        assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
+        assertThat(entity.createdFromDate.toLocalDate()).isEqualTo(request.dateFrom)
+        assertThat(entity.createdToDate.toLocalDate()).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.sendingParticipant).isEqualTo(request.sendingBic)
+        assertThat(entity.receivingParticipant).isEqualTo(request.receivingBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
-        assertThat(entity.id).isEqualTo(request.id)
+        assertThat(entity.identifier).isEqualTo(request.id)
     }
 
     @Test
@@ -206,14 +203,14 @@ class BPSMapperTest {
     @Test
     fun `should map BPSReportsSearchRequest fields`() {
         val criteria = ReportSearchCriteria(
-            0,
-            20,
-            listOf("sort"),
-            listOf("DAILY_SETTLEMENT_REPORT"),
-            listOf("Resursbank"),
-            "10000000305",
-            ZonedDateTime.parse("2021-02-15T00:00:00Z"),
-            ZonedDateTime.parse("2021-02-16T00:00:00Z")
+                0,
+                20,
+                listOf("sort"),
+                listOf("DAILY_SETTLEMENT_REPORT"),
+                listOf("Resursbank"),
+                "10000000305",
+                ZonedDateTime.parse("2021-02-15T00:00:00Z"),
+                ZonedDateTime.parse("2021-02-16T00:00:00Z")
         )
 
         val request = BPSMAPPER.toBps(criteria)

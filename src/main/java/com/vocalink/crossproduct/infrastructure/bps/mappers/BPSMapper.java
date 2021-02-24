@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
 import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.resolveParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -61,11 +62,25 @@ public interface BPSMapper {
   })
   BPSParticipantsSearchRequest toBps(String connectingParty, String participantType);
 
+  @Mappings({
+      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
+      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "sendingParticipant", source = "sendingBic"),
+      @Mapping(target = "sessionInstanceId", source = "cycleId"),
+      @Mapping(target = "receivingParticipant", source = "receivingBic"),
+      @Mapping(target = "identifier", source = "id"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapBatchSortParams")
+  })
   BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
 
+  @Named("mapBatchSortParams")
+  default List<BPSSortingQuery> mapBatchSortParams(List<String> sortParams) {
+    return map(sortParams, getBatchSearchRequestSortParams());
+  }
+
   @Mappings({
-      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter"),
-      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter"),
+      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
+      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "sendingParticipant", source = "sendingBic"),
       @Mapping(target = "receivingParticipant", source = "receivingBic"),
@@ -74,9 +89,14 @@ public interface BPSMapper {
   })
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
 
-  @Named("toZonedDateTimeConverter")
-  default ZonedDateTime toZonedDateTime(LocalDate localDate) {
-    return ZonedDateTime.of(localDate, LocalTime.NOON, ZoneId.of("UTC"));
+  @Named("toZonedDateTimeConverter-SOD")
+  default ZonedDateTime toZonedDateTimeSOD(LocalDate localDate) {
+    return ZonedDateTime.of(localDate, LocalTime.MIN, ZoneId.of("UTC"));
+  }
+
+  @Named("toZonedDateTimeConverter-EOD")
+  default ZonedDateTime toZonedDateTimeEOD(LocalDate localDate) {
+    return ZonedDateTime.of(localDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC"));
   }
 
   @Named("mapFileSortParams")

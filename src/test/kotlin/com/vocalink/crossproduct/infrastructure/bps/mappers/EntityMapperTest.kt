@@ -20,7 +20,7 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirma
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
-import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
+import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle
@@ -28,7 +28,6 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
-import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails
@@ -163,42 +162,31 @@ class EntityMapperTest {
                 ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         )
 
-        val bpsSenderDetails = BPSSenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "fullName"
-        )
-
-        val bps = BPSBatch(
+        val bps = BPSBatchDetailed(
+                "id",
                 "batchId",
-                "name",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                234234,
-                bpsCycle,
-                "receivingBic",
-                "messageType",
-                "messageDirection",
                 10,
+                "messageType",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "status",
                 "reasonCode",
-                bpsSenderDetails
+                bpsCycle.cycleId,
+                bpsCycle.settlementTime,
+                "fileName",
+                "bank",
+                "bic",
+                "iban"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.batchId).isEqualTo(bps.batchId)
-        assertThat(entity.nrOfTransactions).isEqualTo(bps.nrOfTransactions)
-        assertThat(entity.fileName).isEqualTo(bps.name)
-        assertThat(entity.fileSize).isEqualTo(bps.fileSize)
-        assertThat(entity.settlementDate).isEqualTo(bps.cycle.settlementTime.toLocalDate())
-        assertThat(entity.settlementCycleId).isEqualTo(bps.cycle.cycleId)
-        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.nrOfTransactions).isEqualTo(bps.numberOfTransactions)
+        assertThat(entity.fileName).isEqualTo(bps.fileName)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate.toLocalDate())
+        assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycle)
+        assertThat(entity.createdAt).isEqualTo(bps.sentDateAndTime)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
-        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
-        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
-        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
-        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
     }
 
     @Test
@@ -549,7 +537,6 @@ class EntityMapperTest {
         assertThat(entity.sort).isEqualTo(request.sort)
         assertThat(entity.dateFrom).isEqualTo(request.dateFrom)
         assertThat(entity.dateTo).isEqualTo(request.dateTo)
-        assertThat(entity.cycleIds).isEqualTo(request.cycleIds)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingBic).isEqualTo(request.sendingBic)

@@ -26,8 +26,8 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
     companion object {
         const val VALID_FILES_REQUEST: String = """ 
         {
-            "createdFromDate": "2021-01-03T12:00:00Z",
-            "createdToDate": "2021-01-04T12:00:00Z",
+            "createdFromDate": "2021-01-03T00:00:00Z",
+            "createdToDate": "2021-01-04T23:59:59Z",
             "messageDirection": "Sending"
         }"""
         const val VALID_FILE_REQUEST: String = """ 

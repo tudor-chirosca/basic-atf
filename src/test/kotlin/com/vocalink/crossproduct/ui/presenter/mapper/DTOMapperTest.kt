@@ -241,7 +241,7 @@ class DTOMapperTest {
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
-                .sender(sender)
+                .sender(sender.entityBic)
                 .status("status")
                 .build()
 
@@ -254,7 +254,7 @@ class DTOMapperTest {
         assertThat(result.totalResults).isEqualTo(totalResults)
         assertThat(resultItem.id).isEqualTo(batch.batchId)
         assertThat(resultItem.createdAt).isEqualTo(batch.createdAt)
-        assertThat(resultItem.senderBic).isEqualTo(batch.sender.entityBic)
+        assertThat(resultItem.senderBic).isEqualTo(batch.sender)
         assertThat(resultItem.messageType).isEqualTo(batch.messageType)
         assertThat(resultItem.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
         assertThat(resultItem.status).isEqualTo(batch.status)
@@ -262,10 +262,6 @@ class DTOMapperTest {
 
     @Test
     fun `should map Batch Details fields`() {
-        val sender = EnquirySenderDetails.builder()
-                .entityBic("sender_bic")
-                .fullName("full_name")
-                .build()
         val batch = Batch.builder()
                 .fileName("filename")
                 .createdAt(
@@ -283,17 +279,21 @@ class DTOMapperTest {
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
-                .sender(sender)
+                .sender("sender_bic")
                 .status("status")
                 .build()
 
-        val result = MAPPER.toDetailsDto(batch)
+        val participant = Participant.builder().id("id").build()
+
+        val file = File.builder().fileSize(1).build()
+
+        val result = MAPPER.toDetailsDto(batch, participant, file)
 
         assertThat(result).isNotNull
         assertThat(result.batchId).isEqualTo(batch.batchId)
         assertThat(result.fileName).isEqualTo(batch.fileName)
         assertThat(result.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
-        assertThat(result.fileSize).isEqualTo(batch.fileSize)
+        assertThat(result.fileSize).isEqualTo(file.fileSize)
         assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
         assertThat(result.settlementCycleId).isEqualTo(batch.settlementCycleId)
         assertThat(result.createdAt).isEqualTo(batch.createdAt)
@@ -301,8 +301,7 @@ class DTOMapperTest {
         assertThat(result.reasonCode).isEqualTo(batch.reasonCode)
         assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
         assertThat(result.messageType).isEqualTo(batch.messageType)
-        assertThat(result.sender.entityBic).isEqualTo(batch.sender.entityBic)
-        assertThat(result.sender.entityName).isEqualTo(batch.sender.entityName)
+        assertThat(result.sender.entityBic).isEqualTo(participant.bic)
     }
 
     @Test

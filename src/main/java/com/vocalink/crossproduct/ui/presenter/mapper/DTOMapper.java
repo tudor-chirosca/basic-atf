@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
-import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -240,10 +239,21 @@ public interface DTOMapper {
   FileDto toDto(File file);
 
   @Mapping(target = "id", source = "batchId")
-  @Mapping(target = "senderBic", source = "sender.entityBic")
+  @Mapping(target = "senderBic", source = "sender")
   BatchDto toDto(Batch batch);
 
-  BatchDetailsDto toDetailsDto(Batch batch);
+
+  @Mappings({
+      @Mapping(target = "status", source = "batch.status"),
+      @Mapping(target = "fileName", source = "batch.fileName"),
+      @Mapping(target = "reasonCode", source = "batch.reasonCode"),
+      @Mapping(target = "messageType", source = "batch.messageType"),
+      @Mapping(target = "settlementDate", source = "batch.settlementDate"),
+      @Mapping(target = "sender.entityName", source = "participant.name"),
+      @Mapping(target = "sender.entityBic", source = "participant.bic"),
+      @Mapping(target = "fileSize", source = "file.fileSize")
+  })
+  BatchDetailsDto toDetailsDto(Batch batch, Participant participant, File file);
 
   PageDto<ParticipantSettlementCycleDto> toDto(Page<ParticipantSettlement> settlements,
       @Context List<Participant> participants);

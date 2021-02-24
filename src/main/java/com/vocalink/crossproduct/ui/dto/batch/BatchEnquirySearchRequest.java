@@ -34,7 +34,7 @@ public class BatchEnquirySearchRequest {
   @ValidFromDate
   private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
-  private List<String> cycleIds;
+  private String cycleId;
   @ValidDirection
   private String messageDirection;
   private String messageType;
@@ -56,7 +56,7 @@ public class BatchEnquirySearchRequest {
   }
 
   public void setCycle_ids(List<String> cycleIds) {
-    this.cycleIds = cycleIds;
+    this.cycleId = cycleIds.stream().findFirst().orElse(null);
   }
 
   public void setMsg_direction(String messageDirection) {
