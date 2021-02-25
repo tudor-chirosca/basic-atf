@@ -25,8 +25,10 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
-    List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context) {
+
+    final List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
         .getParticipantReferences(context.toUpperCase(), clientType);
 
     return ResponseEntity.ok().body(participantReferenceDto);
@@ -34,10 +36,10 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "/reference/enquiry-statuses", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<FileStatusesTypeDto>> findFileReferencesByType(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @RequestParam String type) {
+      final @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
+      final @RequestParam String type) {
 
-    List<FileStatusesTypeDto> files = referencesServiceFacade
+    final List<FileStatusesTypeDto> files = referencesServiceFacade
         .getFileReferences(context.toUpperCase(), clientType, type);
 
     return ResponseEntity.ok().body(files);
@@ -45,10 +47,10 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "/reference/messages", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<MessageDirectionReferenceDto>> getMessageDirectionReferences(
-      @RequestHeader("client-type") ClientType clientType,
-      @RequestHeader String context) {
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context) {
 
-    List<MessageDirectionReferenceDto> messageDirectionReferenceDto = referencesServiceFacade
+    final List<MessageDirectionReferenceDto> messageDirectionReferenceDto = referencesServiceFacade
         .getMessageDirectionReferences(context, clientType);
 
     return ResponseEntity.ok().body(messageDirectionReferenceDto);
@@ -56,11 +58,13 @@ public class ReferenceController implements ReferenceApi {
 
   @GetMapping(value = "reference/cycles", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<CycleDto>> getCycleByDate(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @RequestParam(value = "day") String date) {
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final @RequestParam(value = "day") String date,
+      final @RequestParam(value = "settled", required = false) boolean settled) {
 
-    List<CycleDto> cycleDto = referencesServiceFacade
-        .getCyclesByDate(context, clientType, LocalDate.parse(date));
+    final List<CycleDto> cycleDto = referencesServiceFacade
+        .getCyclesByDate(context, clientType, LocalDate.parse(date), settled);
 
     return ResponseEntity.ok().body(cycleDto);
   }

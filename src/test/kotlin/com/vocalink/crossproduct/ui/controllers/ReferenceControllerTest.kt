@@ -268,7 +268,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                         .status(CycleStatus.OPEN)
                         .build())
 
-        `when`(referencesServiceFacade.getCyclesByDate(CONTEXT, ClientType.UI, date))
+        `when`(referencesServiceFacade.getCyclesByDate(CONTEXT, ClientType.UI, date, false))
                 .thenReturn(cycles)
 
         mockMvc.perform(get("/reference/cycles")

@@ -15,7 +15,9 @@ public interface ReferencesServiceFacade {
   List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType);
 
-  List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType, String enquiryType);
+  List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
+      String enquiryType);
 
-  List<CycleDto> getCyclesByDate(String product, ClientType clientType, LocalDate date);
+  List<CycleDto> getCyclesByDate(String product, ClientType clientType, LocalDate date,
+      boolean settled);
 }

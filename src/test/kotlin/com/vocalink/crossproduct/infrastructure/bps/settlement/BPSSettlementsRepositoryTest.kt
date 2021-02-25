@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
@@ -10,6 +9,7 @@ import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCrite
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.math.BigDecimal
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.math.BigDecimal
 
 @BPSTestConfiguration
 @Import(BPSSettlementsRepository::class)
@@ -134,7 +133,6 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result.instructions.items[0].settlementCounterpartyId).isEqualTo(null)
         assertThat(result.instructions.items[0].totalCredit).isEqualTo(BigDecimal.TEN)
         assertThat(result.instructions.items[0].totalCredit).isEqualTo(BigDecimal.TEN)
-
     }
 
     @Test
@@ -150,14 +148,10 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         val criteria = SettlementEnquirySearchCriteria.builder()
                 .offset(0)
                 .limit(10)
-                .sort(null)
-                .dateFrom(null)
-                .dateTo(null)
-                .cycleIds(null)
                 .participants(listOf("HANDSESS", "NDEASESSXXX"))
                 .build()
 
-        val result = repository.findBy(criteria)
+        val result = repository.findPaginated(criteria)
 
         assertThat(result).isNotNull
         assertThat(result.totalResults).isEqualTo(2)

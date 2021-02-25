@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ReferenceApi {
 
@@ -43,5 +44,5 @@ public interface ReferenceApi {
       @ApiResponse(code = 400, message = "Invalid context")
   })
   ResponseEntity<List<CycleDto>> getCycleByDate(
-      ClientType clientType, String context, String date);
+      ClientType clientType, String context, String date, boolean settled);
 }

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
@@ -17,6 +18,8 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.xml.transform.Source;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -50,6 +53,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
     final List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
         .getReferencesRepository(product).findAll();
+
     return presenterFactory.getPresenter(clientType)
         .presentMessageDirectionReferences(messageDirectionReferences);
   }
@@ -68,10 +72,13 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   @Override
   public List<CycleDto> getCyclesByDate(String product, ClientType clientType,
-      LocalDate date) {
+      LocalDate date, boolean settled) {
     log.info("Fetching cycles by date from: {}", product);
 
-    final List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date);
+    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date)
+        .stream()
+        .filter(settled ? c -> !c.getStatus().equals(CycleStatus.OPEN) : c -> true)
+        .collect(toList());
 
     return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);
   }

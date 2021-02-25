@@ -77,7 +77,7 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   }
 
   @Override
-  public Page<ParticipantSettlement> findBy(SettlementEnquirySearchCriteria criteria) {
+  public Page<ParticipantSettlement> findPaginated(SettlementEnquirySearchCriteria criteria) {
     final BPSSettlementEnquiryRequest request = BPSMAPPER.toBps(criteria);
     return webClient.post()
         .uri(resolve(SETTLEMENT_ENQUIRIES_PATH, bpsProperties))

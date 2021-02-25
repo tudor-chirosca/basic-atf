@@ -60,7 +60,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
     final Page<ParticipantSettlement> participantSettlements = repositoryFactory
         .getSettlementsRepository(product)
-        .findBy(MAPPER.toEntity(request));
+        .findPaginated(MAPPER.toEntity(request));
 
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);

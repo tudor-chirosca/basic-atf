@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -326,8 +327,9 @@ public class UIPresenter implements Presenter {
       List<ParticipantReference> participants) {
     return participants.stream()
         .map(MAPPER::toDto)
-        .sorted(Comparator.comparing((ParticipantReferenceDto p) -> !p.getParticipantType().equals(
-            SCHEME_OPERATOR.getDescription())).thenComparing(ParticipantReferenceDto::getName))
+        .sorted(comparing((ParticipantReferenceDto p) -> !p.getParticipantType()
+            .equals(SCHEME_OPERATOR.getDescription()))
+            .thenComparing(ParticipantReferenceDto::getName))
         .collect(toList());
   }
 

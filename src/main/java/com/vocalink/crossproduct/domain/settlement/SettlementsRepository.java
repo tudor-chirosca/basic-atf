@@ -7,7 +7,7 @@ public interface SettlementsRepository extends CrossproductRepository {
 
   ParticipantSettlement findBy(InstructionEnquirySearchCriteria criteria);
 
-  Page<ParticipantSettlement> findBy(SettlementEnquirySearchCriteria criteria);
+  Page<ParticipantSettlement> findPaginated(SettlementEnquirySearchCriteria criteria);
 
   SettlementSchedule findSchedule();
 }
