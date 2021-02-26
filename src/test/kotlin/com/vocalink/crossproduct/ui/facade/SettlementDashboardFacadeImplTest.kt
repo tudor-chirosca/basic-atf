@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
-import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -18,9 +18,10 @@ import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
-import com.vocalink.crossproduct.ui.presenter.ClientType
+import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -64,7 +65,7 @@ open class SettlementDashboardFacadeImplTest {
                 .thenReturn(positionRepository)
         `when`(repositoryFactory.getIntradayPositionGrossRepository(anyString()))
                 .thenReturn(intraDayPositionGrossRepository)
-        `when`(presenterFactory.getPresenter(ClientType.UI))
+        `when`(presenterFactory.getPresenter(UI))
                 .thenReturn(uiPresenter)
     }
 
@@ -90,7 +91,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any()))
                 .thenReturn(mockModel)
 
-        settlementServiceFacadeImpl.getParticipantSettlement(TestConstants.CONTEXT, ClientType.UI, participantId)
+        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, participantId)
 
         verify(intraDayPositionGrossRepository, atLeastOnce()).findById(any())
         verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
@@ -104,7 +105,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
         assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getSettlement(TestConstants.CONTEXT, ClientType.UI)
+            settlementServiceFacadeImpl.getSettlement(CONTEXT, UI)
         }
     }
 
@@ -122,7 +123,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
         assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
     }
 
@@ -155,7 +156,7 @@ open class SettlementDashboardFacadeImplTest {
                 .thenReturn(emptyList())
 
         assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participant.id)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participant.id)
         }
     }
 
@@ -191,8 +192,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(intraDayPositionGrossRepository.findById(any()))
                 .thenReturn(listOf(intraDay))
 
-        settlementServiceFacadeImpl.getParticipantSettlementDetails(
-                TestConstants.CONTEXT, ClientType.UI, participant.id)
+        settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participant.id)
 
         verify(uiPresenter, atLeastOnce()).presentFundedParticipantSettlementDetails(
                 any(), any(), any(), any(), any())
@@ -225,8 +225,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findLatest(2))
                 .thenReturn(listOf(cycle, cycle))
 
-        settlementServiceFacadeImpl.getParticipantSettlementDetails(
-                TestConstants.CONTEXT, ClientType.UI, participant.id)
+        settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participant.id)
 
         verify(uiPresenter, atLeastOnce()).presentParticipantSettlementDetails(
                 any(), any(), any())
@@ -242,7 +241,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findLatest(2))
                 .thenReturn(MockCycles().cycles)
         assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
     }
 
@@ -262,7 +261,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findByIds(emptyList()))
                 .thenReturn(emptyList())
         assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
     }
 
@@ -287,7 +286,7 @@ open class SettlementDashboardFacadeImplTest {
                 .thenReturn(mockModel)
 
         assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
     }
 
@@ -312,7 +311,44 @@ open class SettlementDashboardFacadeImplTest {
                 .thenReturn(mockModel)
 
         assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(TestConstants.CONTEXT, ClientType.UI, participantId)
+            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
+    }
+
+    @Test
+    fun `should not return FUNDED and SCHEME OPERATOR participants`() {
+        val typeDirect = ParticipantType.DIRECT
+        val typeScheme = ParticipantType.SCHEME_OPERATOR
+        val typeFunded = ParticipantType.FUNDED
+
+        val participants = listOf(
+            Participant.builder()
+                .bic("NDEASESSXXY")
+                .name("Svenska Handelsbanken")
+                .participantType(typeDirect)
+                .build(),
+            Participant.builder()
+                .bic("NDEASESSXXX")
+                .name("Nordea")
+                .participantType(typeScheme)
+                .build(),
+            Participant.builder()
+                .bic("HANDSESS")
+                .name("Svenska Handelsbanken")
+                .participantType(typeFunded)
+                .build()
+        )
+
+        `when`(cycleRepository.findAll())
+            .thenReturn(MockCycles().cycles)
+        `when`(participantRepository.findAll())
+            .thenReturn(participants)
+        `when`(presenterFactory.getPresenter(UI))
+            .thenReturn(UIPresenter())
+
+        val result = settlementServiceFacadeImpl.getSettlement(CONTEXT, UI)
+
+        assertThat(result.positions.size).isEqualTo(1)
+        assertThat(result.positions[0].participant.participantType).isEqualTo(typeDirect.toString())
     }
 }
