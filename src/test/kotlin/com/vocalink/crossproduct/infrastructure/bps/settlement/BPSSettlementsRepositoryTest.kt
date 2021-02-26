@@ -2,6 +2,10 @@ package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
@@ -18,7 +22,6 @@ import java.math.BigDecimal
 @BPSTestConfiguration
 @Import(BPSSettlementsRepository::class)
 class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSettlementsRepository, var mockServer: WireMockServer) {
-
 
     companion object {
         const val VALID_INSTRUCTION_REQUEST: String = """
@@ -101,20 +104,20 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
     @Test
     fun `should return settlement for given cycleId and participantId`() {
         mockServer.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/enquiry/settlements/read"))
-                        .willReturn(WireMock.aResponse()
+                post(urlEqualTo("/enquiry/settlements/read"))
+                        .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_SETTLEMENT_RESPONSE))
-                        .withRequestBody(WireMock.equalToJson(VALID_SETTLEMENT_REQUEST)))
+                        .withRequestBody(equalToJson(VALID_SETTLEMENT_REQUEST)))
 
         mockServer.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/enquiry/instructions"))
-                        .willReturn(WireMock.aResponse()
+                post(urlEqualTo("/enquiry/instructions"))
+                        .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_INSTRUCTION_PAGE_RESPONSE))
-                        .withRequestBody(WireMock.equalToJson(VALID_INSTRUCTION_REQUEST)))
+                        .withRequestBody(equalToJson(VALID_INSTRUCTION_REQUEST)))
 
         val criteria = InstructionEnquirySearchCriteria(0, 10, null, "20201209001", "HANDSESS")
         val result = repository.findBy(criteria)
@@ -137,12 +140,12 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
     @Test
     fun `should return settlements for given parameters`() {
         mockServer.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/enquiry/settlements"))
-                        .willReturn(WireMock.aResponse()
+                post(urlEqualTo("/enquiry/settlements"))
+                        .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_SETTLEMENTS_RESPONSE))
-                        .withRequestBody(WireMock.equalToJson(VALID_SETTLEMENTS_REQUEST)))
+                        .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST)))
 
         val criteria = SettlementEnquirySearchCriteria.builder()
                 .offset(0)

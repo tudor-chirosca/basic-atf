@@ -1,11 +1,13 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalService
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -15,34 +17,41 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.test.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import kotlin.test.assertNotNull
 
 class ApprovalFacadeImplTest {
 
     private val approvalRepository = mock(ApprovalRepository::class.java)!!
+    private val approvalService = mock(ApprovalService::class.java)!!
+
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)
+    private val serviceFactory = mock(ServiceFactory::class.java)
 
     private val approvalFacadeImpl = ApprovalFacadeImpl(
             presenterFactory,
-            repositoryFactory
+            repositoryFactory,
+            serviceFactory
     )
 
     @BeforeEach
     fun init() {
-        `when`(repositoryFactory.getApprovalRepository(ArgumentMatchers.anyString()))
+        `when`(serviceFactory.getApprovalService(anyString()))
+                .thenReturn(approvalService)
+        `when`(repositoryFactory.getApprovalRepository(anyString()))
                 .thenReturn(approvalRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)

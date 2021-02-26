@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.approval.Approval
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
@@ -923,12 +924,18 @@ class DTOMapperTest {
             "ICA Banken"
         )
         val result = MAPPER.toDto(report)
-
         assertThat(result.reportId).isEqualTo(report.reportId)
         assertThat(result.reportType).isEqualTo(report.reportType)
         assertThat(result.createdAt).isEqualTo(report.createdAt)
         assertThat(result.cycleId).isEqualTo(report.cycleId)
         assertThat(result.participantIdentifier).isEqualTo(report.participantIdentifier)
         assertThat(result.participantName).isEqualTo(report.participantName)
+    }
+
+    @Test
+    fun `should map ApprovalConfirmationResponseDto fields`() {
+        val entity = ApprovalConfirmationResponse("response")
+        val result = MAPPER.toDto(entity)
+        assertThat(result.responseMessage).isEqualTo(entity.responseMessage)
     }
 }

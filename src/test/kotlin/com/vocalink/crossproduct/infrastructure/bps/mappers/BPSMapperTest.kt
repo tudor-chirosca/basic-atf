@@ -2,6 +2,8 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers
 
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
@@ -225,5 +227,27 @@ class BPSMapperTest {
         assertThat(request.id).isEqualTo(criteria.id)
         assertThat(request.dateTo).isEqualTo(criteria.dateTo)
         assertThat(request.reportType).isEqualTo(criteria.reportType)
+    }
+
+    @Test
+    fun `should map to BPSApprovalConfirmationRequest fields with APPROVED status`() {
+        val approvalConfirmation = ApprovalConfirmation(
+                "approval_id", ApprovalConfirmationType.APPROVE, "some_note"
+        )
+        val request = BPSMAPPER.toBps(approvalConfirmation)
+        assertThat(request.approvalId).isEqualTo(approvalConfirmation.approvalId)
+        assertThat(request.isApproved).isEqualTo(true)
+        assertThat(request.notes).isEqualTo(approvalConfirmation.message)
+    }
+
+    @Test
+    fun `should map to BPSApprovalConfirmationRequest fields with REJECTED status`() {
+        val approvalConfirmation = ApprovalConfirmation(
+                "approval_id", ApprovalConfirmationType.REJECT, "some_note"
+        )
+        val request = BPSMAPPER.toBps(approvalConfirmation)
+        assertThat(request.approvalId).isEqualTo(approvalConfirmation.approvalId)
+        assertThat(request.isApproved).isEqualTo(false)
+        assertThat(request.notes).isEqualTo(approvalConfirmation.message)
     }
 }

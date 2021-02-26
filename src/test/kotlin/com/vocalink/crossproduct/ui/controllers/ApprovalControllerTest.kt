@@ -5,14 +5,10 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
-import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
-import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
-import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto
-import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
-import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.CoreMatchers.containsString
@@ -29,12 +25,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.util.LinkedMultiValueMap
-import java.math.BigDecimal
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 
 @WebMvcTest(ApprovalApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -51,6 +46,20 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     private companion object {
         const val CONTEXT_HEADER = "context"
         const val CLIENT_TYPE_HEADER = "client-type"
+
+        const val VALID_APPROVAL_CONFIRMATION_REQUEST_BODY = """ {
+           "action" : "APPROVE",
+           "message" : "notes"
+        }"""
+
+        const val INVALID_APPROVAL_CONFIRMATION_REQUEST_BODY = """ {
+           "message" : "notes"
+        }"""
+
+        const val INVALID_APPROVAL_CONFIRMATION_TYPE_REQUEST_BODY = """ {
+           "action" : "WRONG_CONFIRMATION_TYPE",
+           "message" : "notes"
+        }"""
 
         const val VALID_BATCH_CANCELLATION_REQUEST_BODY = """ {
            "requestType" : "BATCH_CANCELLATION",
@@ -95,6 +104,10 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val INVALID_MISSING_REQUEST_CHANGE_REQUEST_BODY = """ {
            "requestType" : "STATUS_CHANGE",
            "notes" : "notes"
+        }"""
+
+        const val VALID_APPROVAL_CONFIRMATION_RESPONSE = """ {
+           "responseMessage" : "response_msg"
         }"""
 
         const val VALID_APPROVAL_DETAILS_RESPONSE = """{
@@ -367,5 +380,49 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().json(VALID_APPROVAL_RESPONSE));
+    }
+
+    @Test
+    fun `should return 200 approve or reject Approval request`() {
+        val approvalDetailsDto = ApprovalConfirmationResponseDto(
+                "response_msg"
+        )
+        `when`(approvalFacade.submitApprovalConfirmation(any(), any(), any(), any()))
+                .thenReturn(approvalDetailsDto)
+        mockMvc.perform(
+                put("/approvals/10000004")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(VALID_APPROVAL_CONFIRMATION_REQUEST_BODY)
+        )
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_APPROVAL_CONFIRMATION_RESPONSE))
+    }
+
+    @Test
+    fun `should fail with 400 when required action is missing`() {
+        mockMvc.perform(
+                put("/approvals/10000004")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_APPROVAL_CONFIRMATION_REQUEST_BODY)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Missing required creator property 'action'")))
+    }
+
+    @Test
+    fun `should fail with 400 on wrong confirmation type`() {
+        mockMvc.perform(
+                put("/approvals/10000004")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_APPROVAL_CONFIRMATION_TYPE_REQUEST_BODY)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("not one of the values accepted for Enum class")))
     }
 }

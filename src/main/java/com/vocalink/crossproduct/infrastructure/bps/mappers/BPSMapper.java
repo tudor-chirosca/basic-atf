@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
@@ -20,6 +22,7 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper;
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalChangeRequest;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
@@ -80,6 +83,17 @@ public interface BPSMapper {
       @Mapping(target = "requestType", source = "requestType", qualifiedByName = "toBpsApprovalRequestType")
   })
   BPSApprovalChangeRequest toBps(ApprovalChangeCriteria criteria);
+
+  @Mappings({
+      @Mapping(target = "notes", source = "message"),
+      @Mapping(target = "isApproved", source = "action", qualifiedByName = "getIsApprovedFromType")
+  })
+  BPSApprovalConfirmationRequest toBps(ApprovalConfirmation approvalConfirmation);
+
+  @Named("getIsApprovedFromType")
+  default boolean getIsApprovedFromType(ApprovalConfirmationType confirmationType) {
+    return confirmationType.equals(ApprovalConfirmationType.APPROVE);
+  }
 
   @Named("toBpsApprovalRequestType")
   default BPSApprovalRequestType toBpsApprovalRequestType(ApprovalRequestType approvalRequestType) {

@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
@@ -32,6 +33,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -153,4 +155,7 @@ public interface Presenter {
   PageDto<ReportDto> presentReports(Page<Report> reports);
 
   Resource presentFile(InputStream file);
+
+  ApprovalConfirmationResponseDto presentApprovalResponse(ApprovalConfirmationResponse response);
+
 }

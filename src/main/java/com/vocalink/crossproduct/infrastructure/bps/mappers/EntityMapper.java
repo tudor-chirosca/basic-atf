@@ -16,6 +16,8 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
@@ -66,6 +68,7 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationResponse;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
@@ -96,6 +99,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSche
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
@@ -308,6 +312,8 @@ public interface EntityMapper {
   })
   Approval toEntity(BPSApproval approval);
 
+  ApprovalConfirmationResponse toEntity(BPSApprovalConfirmationResponse approvalConfirmationResponse);
+
   @Named("convertApprovalStatus")
   default ApprovalStatus convertApprovalStatus(BPSApprovalStatus bpsApprovalStatus) {
     return ApprovalStatus.valueOf(bpsApprovalStatus.name());
@@ -337,6 +343,11 @@ public interface EntityMapper {
     return ApprovalRequestType.valueOf(approvalRequestType);
   }
 
+  @Mappings({
+      @Mapping(target = "approvalId", source = "id"),
+  })
+  ApprovalConfirmation toEntity(ApprovalConfirmationRequest request, String id);
+
   ReportSearchCriteria toEntity(ReportsSearchRequest parameters);
 
   Report toEntity(BPSReport bpsReportBPSPage);
@@ -351,7 +362,8 @@ public interface EntityMapper {
     final Class<?> sourceType = sourceItems.get(0).getClass();
 
     Method method = stream(this.getClass().getDeclaredMethods())
-        .filter(m -> stream(m.getParameterTypes()).anyMatch(p -> p.isAssignableFrom(sourceType)))
+        .filter(m -> m.getParameterTypes().length == 1)
+        .filter(m -> m.getParameterTypes()[0].isAssignableFrom(sourceType))
         .filter(m -> m.getReturnType().isAssignableFrom(targetType))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Method by signature not found!"));

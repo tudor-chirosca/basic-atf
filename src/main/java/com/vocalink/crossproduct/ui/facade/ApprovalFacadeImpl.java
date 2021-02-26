@@ -3,12 +3,17 @@ package com.vocalink.crossproduct.ui.facade;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
+import com.vocalink.crossproduct.ServiceFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
@@ -25,6 +30,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
   private final PresenterFactory presenterFactory;
   private final RepositoryFactory repositoryFactory;
+  private final ServiceFactory serviceFactory;
 
   @Override
   public ApprovalDetailsDto getApprovalDetailsById(String product, ClientType clientType,
@@ -61,5 +67,18 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
         .requestApproval(request);
 
     return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
+  }
+
+  @Override
+  public ApprovalConfirmationResponseDto submitApprovalConfirmation(String product, ClientType clientType,
+      ApprovalConfirmationRequest requestDto, String id) {
+    log.info("Sending confirmation on approval id: {} in: {}", id, product);
+
+    final ApprovalConfirmation request = MAPPER.toEntity(requestDto, id);
+
+    final ApprovalConfirmationResponse response = serviceFactory.getApprovalService(product)
+        .submitApprovalConfirmation(request);
+
+    return presenterFactory.getPresenter(clientType).presentApprovalResponse(response);
   }
 }

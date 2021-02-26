@@ -12,15 +12,15 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSApprovalRepository::class)
@@ -36,9 +36,22 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
               },
            "notes" : "notes"
         }"""
+
         const val VALID_APPROVAL_DETAILS_REQUEST: String = """
             {
                 "approvalId": "10000004"
+            }"""
+
+        const val VALID_APPROVAL_CONFIRMATION_REQUEST: String = """
+            {
+                "approvalId": "10000004",
+                "notes": "notes",
+                "isApproved": true
+            }"""
+
+        const val VALID_APPROVAL_CONFIRMATION_RESPONSE: String = """
+            {
+                "responseMessage": "response_msg"
             }"""
 
         const val VALID_APPROVAL_DETAILS_RESPONSE: String = """

@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers
 
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
@@ -15,6 +16,7 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationResponse
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
@@ -41,6 +43,7 @@ import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
@@ -708,5 +711,24 @@ class EntityMapperTest {
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
         assertThat(result.requestedChange).isEqualTo(request.requestedChange)
         assertThat(result.notes).isEqualTo(request.notes)
+    }
+
+    @Test
+    fun `should map to ApprovalConfirmationResponse fields`() {
+        val bps = BPSApprovalConfirmationResponse("response")
+        val result = MAPPER.toEntity(bps)
+        assertThat(result.responseMessage).isEqualTo(bps.responseMessage)
+    }
+
+    @Test
+    fun `should map to ApprovalConfirmationCriteria fields`() {
+        val approvalId = "approval_id"
+        val request = ApprovalConfirmationRequest(
+                ApprovalConfirmationType.APPROVE, "notes"
+        )
+        val result = MAPPER.toEntity(request, approvalId)
+        assertThat(result.approvalId).isEqualTo(approvalId)
+        assertThat(result.action).isEqualTo(ApprovalConfirmationType.APPROVE)
+        assertThat(result.message).isEqualTo(request.message)
     }
 }
