@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.facade.api;
 
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -18,6 +18,6 @@ public interface ReferencesServiceFacade {
   List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
       String enquiryType);
 
-  List<CycleDto> getCyclesByDate(String product, ClientType clientType, LocalDate date,
+  List<DayCycleDto> getDayCyclesByDate(String product, ClientType clientType, LocalDate date,
       boolean settled);
 }

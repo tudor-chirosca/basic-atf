@@ -25,6 +25,9 @@ bps-config:
     cycles-path:
       path: /cycles/readAll
       base: MOCK
+    day-cycles-path:
+      path: /cycles/read
+      base: MOCK
     file-enquiries-path:
       path: /enquiry/files
       base: MOCK

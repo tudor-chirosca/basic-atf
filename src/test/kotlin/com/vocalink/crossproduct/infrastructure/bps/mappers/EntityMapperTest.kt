@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
@@ -730,5 +731,24 @@ class EntityMapperTest {
         assertThat(result.approvalId).isEqualTo(approvalId)
         assertThat(result.action).isEqualTo(ApprovalConfirmationType.APPROVE)
         assertThat(result.message).isEqualTo(request.message)
+    }
+
+    @Test
+    fun `should map to DayCycle fields`() {
+        val bps = BPSDayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.COMPLETED,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        )
+        val result = MAPPER.toEntity(bps)
+        assertThat(result.cycleCode).isEqualTo(bps.cycleCode)
+        assertThat(result.sessionCode).isEqualTo(bps.sessionCode)
+        assertThat(result.sessionInstanceId).isEqualTo(bps.sessionInstanceId)
+        assertThat(result.status).isEqualTo(bps.status)
+        assertThat(result.createdDate).isEqualTo(bps.createdDate)
+        assertThat(result.updatedDate).isEqualTo(bps.updatedDate)
     }
 }

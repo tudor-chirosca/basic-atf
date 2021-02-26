@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers.api;
 
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -10,7 +11,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ReferenceApi {
 
@@ -43,6 +43,6 @@ public interface ReferenceApi {
       @ApiResponse(code = 200, message = "Cycles by date retrieved successfully", response = CycleDto.class),
       @ApiResponse(code = 400, message = "Invalid context")
   })
-  ResponseEntity<List<CycleDto>> getCycleByDate(
+  ResponseEntity<List<DayCycleDto>> getDayCyclesByDate(
       ClientType clientType, String context, String date, boolean settled);
 }

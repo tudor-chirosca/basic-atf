@@ -17,12 +17,13 @@ public class BPSCycle {
   private final ZonedDateTime settlementConfirmationTime;
 
   @JsonCreator
-  public BPSCycle(@JsonProperty("cycleId") String cycleId,
-      @JsonProperty("status") String status,
-      @JsonProperty("settlementTime") ZonedDateTime settlementTime,
-      @JsonProperty("fileSubmissionCutOffTime") ZonedDateTime fileSubmissionCutOffTime,
-      @JsonProperty("isNextDayCycle") Boolean isNextDayCycle,
-      @JsonProperty("settlementConfirmationTime") ZonedDateTime settlementConfirmationTime) {
+  public BPSCycle(
+      @JsonProperty(value = "cycleId", required = true) String cycleId,
+      @JsonProperty(value = "status", required = true) String status,
+      @JsonProperty(value = "settlementTime", required = true) ZonedDateTime settlementTime,
+      @JsonProperty(value = "fileSubmissionCutOffTime", required = true) ZonedDateTime fileSubmissionCutOffTime,
+      @JsonProperty(value = "isNextDayCycle",required = true) Boolean isNextDayCycle,
+      @JsonProperty(value = "settlementConfirmationTime") ZonedDateTime settlementConfirmationTime) {
     this.cycleId = cycleId;
     this.status = status;
     this.settlementTime = settlementTime;

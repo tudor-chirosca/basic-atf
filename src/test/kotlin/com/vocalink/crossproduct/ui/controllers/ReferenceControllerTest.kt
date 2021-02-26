@@ -5,12 +5,14 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,9 +26,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.LocalDate
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReferenceController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -97,6 +96,14 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         "participantType": "DIRECT",
         "connectingParticipantId": "any id_2",
         "schemeCode": "P27"
+        }]
+        """
+
+        const val VALID_CYCLE_DAY_RESPONSE_WITH_SCHEME_CODE = """
+       [{
+        "id": "20201103003",
+        "sessionCode": "03",
+        "status": "OPEN"
         }]
         """
     }
@@ -261,14 +268,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE)
 
         val cycles = listOf(
-                CycleDto.builder()
-                        .id("03")
-                        .settlementTime(ZonedDateTime.parse("2020-11-03T17:58:19Z"))
-                        .cutOffTime(ZonedDateTime.parse("2020-11-03T17:58:19Z"))
-                        .status(CycleStatus.OPEN)
-                        .build())
+                DayCycleDto(
+                        "20201103003",
+                        "03",
+                        CycleStatus.OPEN
+                ))
 
-        `when`(referencesServiceFacade.getCyclesByDate(CONTEXT, ClientType.UI, date, false))
+        `when`(referencesServiceFacade.getDayCyclesByDate(CONTEXT, ClientType.UI, date, false))
                 .thenReturn(cycles)
 
         mockMvc.perform(get("/reference/cycles")
@@ -276,10 +282,11 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)
+                .andExpect(content().json(VALID_CYCLE_DAY_RESPONSE_WITH_SCHEME_CODE))
     }
 
     @Test
-    fun `should fail if missing required parameter day`() {
+    fun `should fail cycle day request if missing required parameter day`() {
         mockMvc.perform(get("/reference/cycles")
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))

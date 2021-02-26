@@ -4,12 +4,12 @@ import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
-import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
+import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ParticipantReference;
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -18,8 +18,6 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.xml.transform.Source;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -71,11 +69,11 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   }
 
   @Override
-  public List<CycleDto> getCyclesByDate(String product, ClientType clientType,
+  public List<DayCycleDto> getDayCyclesByDate(String product, ClientType clientType,
       LocalDate date, boolean settled) {
     log.info("Fetching cycles by date from: {}", product);
 
-    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date)
+    List<DayCycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date)
         .stream()
         .filter(settled ? c -> !c.getStatus().equals(CycleStatus.OPEN) : c -> true)
         .collect(toList());

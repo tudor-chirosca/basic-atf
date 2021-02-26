@@ -6,13 +6,13 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @BPSTestConfiguration
 @Import(BPSCycleRepository::class)
@@ -24,12 +24,27 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
                     "schemeCode": "P27-SEK"
                 }"""
 
+        const val VALID_DAY_CYCLE_REQUEST_JSON: String = """{
+                    "schemeCode": "P27-SEK",
+                    "settlementDate" : "2020-11-05"
+                }"""
+
         const val VALID_SETTLEMENT_REQUEST_JSON: String = """{
                     "schemeCode": "P27-SEK",
                     "currency": null,
                     "participantIds": null,
                     "numberOfCycles": null
                 }"""
+
+        const val VALID_DAY_CYCLE_RESPONSE: String = """{
+                    "cycleCode": "C1",
+                    "sessionCode": "01",
+                    "sessionInstanceId": "20210218001",
+                    "status": "COMPLETED",
+                    "createdDate": "2021-02-18T14:00:00Z",
+                    "updatedDate": "2021-02-18T15:00:00Z"
+                }"""
+
 
         const val VALID_CYCLE_RESPONSE: String = """{
             "currency": "SEK",
@@ -135,17 +150,16 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
         val date = LocalDate.parse("2020-11-05", DateTimeFormatter.ISO_DATE)
 
         mockServer.stubFor(
-                post(urlEqualTo("/cycles/readAll"))
+                post(urlEqualTo("/cycles/read"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json; charset=utf-8")
-                                .withBody(VALID_CYCLE_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_CYCLE_REQUEST_JSON)))
+                                .withBody(VALID_DAY_CYCLE_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_DAY_CYCLE_REQUEST_JSON)))
 
         val result = cycleRepository.findByDate(date)
 
         assertThat(result).isNotEmpty
-        assertThat(result[0].cutOffTime.toLocalDate()).isEqualTo(date)
     }
 
     @Test

@@ -26,6 +26,7 @@ import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
@@ -75,6 +76,7 @@ import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatch;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
@@ -167,6 +169,8 @@ public interface EntityMapper {
       @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime")
   })
   Cycle toEntity(BPSCycle cycle);
+
+  DayCycle toEntity(BPSDayCycle cycle);
 
   IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDayPositionGross);
 

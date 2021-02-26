@@ -94,9 +94,8 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present cycle date references for System`() {
-        val cycles = listOf(Cycle.builder().build())
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentCycleDateReferences(cycles)
+            systemPresenter.presentCycleDateReferences(null)
         }
     }
 

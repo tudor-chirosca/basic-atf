@@ -10,7 +10,7 @@ public interface CycleRepository extends CrossproductRepository {
 
   List<Cycle> findByIds(List<String> cycleIds);
 
-  List<Cycle> findByDate(LocalDate date);
+  List<DayCycle> findByDate(LocalDate date);
 
   List<Cycle> findLatest(int nrLatestCycles);
 }

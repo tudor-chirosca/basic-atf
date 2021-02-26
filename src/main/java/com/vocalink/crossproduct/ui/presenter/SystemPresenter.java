@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
@@ -39,6 +40,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -140,7 +142,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<CycleDto> presentCycleDateReferences(List<Cycle> cycles) {
+  public List<DayCycleDto> presentCycleDateReferences(List<DayCycle> dayCycles) {
     throw new RuntimeException("System API not implemented yet");
   }
 

@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.controllers.api.ReferenceApi;
-import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
+import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -57,14 +57,14 @@ public class ReferenceController implements ReferenceApi {
   }
 
   @GetMapping(value = "reference/cycles", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<CycleDto>> getCycleByDate(
+  public ResponseEntity<List<DayCycleDto>> getDayCyclesByDate(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final @RequestParam(value = "day") String date,
       final @RequestParam(value = "settled", required = false) boolean settled) {
 
-    final List<CycleDto> cycleDto = referencesServiceFacade
-        .getCyclesByDate(context, clientType, LocalDate.parse(date), settled);
+    final List<DayCycleDto> cycleDto = referencesServiceFacade
+        .getDayCyclesByDate(context, clientType, LocalDate.parse(date), settled);
 
     return ResponseEntity.ok().body(cycleDto);
   }

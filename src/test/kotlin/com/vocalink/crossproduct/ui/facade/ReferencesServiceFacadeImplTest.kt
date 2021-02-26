@@ -2,9 +2,9 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
-import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.cycle.DayCycle
 import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -121,12 +121,24 @@ class ReferencesServiceFacadeImplTest {
     @Test
     fun `should get cycles by date`() {
         val date = LocalDate.of(2020, 11, 3)
-        val cycles = listOf(Cycle.builder().status(CycleStatus.OPEN).build(),
-                Cycle.builder().status(CycleStatus.COMPLETED).build())
-
+        val cycles = listOf(DayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.OPEN,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        ), DayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.COMPLETED,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        ))
         `when`(cycleRepository.findByDate(date))
                 .thenReturn(cycles)
-        val result = referenceServiceFacadeImpl.getCyclesByDate(CONTEXT, ClientType.UI, date, false)
+        val result = referenceServiceFacadeImpl.getDayCyclesByDate(CONTEXT, ClientType.UI, date, false)
 
         verify(cycleRepository).findByDate(date)
         verify(presenterFactory).getPresenter(any())
@@ -138,12 +150,24 @@ class ReferencesServiceFacadeImplTest {
     @Test
     fun `should filter remove OPEN cycles when settled`() {
         val date = LocalDate.of(2020, 11, 3)
-        val cycles = listOf(Cycle.builder().status(CycleStatus.OPEN).build(),
-                Cycle.builder().status(CycleStatus.COMPLETED).build())
-
+        val cycles = listOf(DayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.OPEN,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        ), DayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.COMPLETED,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        ))
         `when`(cycleRepository.findByDate(date))
                 .thenReturn(cycles)
-        val result = referenceServiceFacadeImpl.getCyclesByDate(CONTEXT, ClientType.UI, date, true)
+        val result = referenceServiceFacadeImpl.getDayCyclesByDate(CONTEXT, ClientType.UI, date, true)
 
         verify(cycleRepository).findByDate(date)
         verify(presenterFactory).getPresenter(any())

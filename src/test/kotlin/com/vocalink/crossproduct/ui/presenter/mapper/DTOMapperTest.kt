@@ -17,6 +17,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalUser
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.cycle.DayCycle
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -937,5 +938,21 @@ class DTOMapperTest {
         val entity = ApprovalConfirmationResponse("response")
         val result = MAPPER.toDto(entity)
         assertThat(result.responseMessage).isEqualTo(entity.responseMessage)
+    }
+
+    @Test
+    fun `should map DayCycleDto fields`() {
+        val entity = DayCycle(
+                "cycleCode",
+                "sessionCode",
+                "sessionInstanceId",
+                CycleStatus.COMPLETED,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        )
+        val result = MAPPER.toDto(entity)
+        assertThat(result.id).isEqualTo(entity.sessionInstanceId)
+        assertThat(result.sessionCode).isEqualTo(entity.sessionCode)
+        assertThat(result.status).isEqualTo(entity.status)
     }
 }
