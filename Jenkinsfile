@@ -67,7 +67,7 @@ pipeline {
                 stage("Package") {
                     steps {
                         withSonarQubeEnv('cp-sonar'){
-                            runMaven(goal: "-B package")
+                            runMaven(goal: "-B package -Dmaven.test.skip=true")
                         }
                     }
 
