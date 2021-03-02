@@ -19,6 +19,8 @@ public class ParticipantInstructionDto {
   private final ParticipantReferenceDto counterparty;
   @JsonInclude(Include.NON_EMPTY)
   private final ParticipantReferenceDto settlementCounterparty;
+  @JsonInclude(Include.NON_EMPTY)
   private final BigDecimal totalDebit;
+  @JsonInclude(Include.NON_EMPTY)
   private final BigDecimal totalCredit;
 }

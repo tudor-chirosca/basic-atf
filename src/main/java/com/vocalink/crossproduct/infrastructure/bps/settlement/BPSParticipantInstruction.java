@@ -30,8 +30,8 @@ public class BPSParticipantInstruction {
       @JsonProperty(value = "status", required = true) String status,
       @JsonProperty(value = "counterpartyId", required = true) String counterpartyId,
       @JsonProperty(value = "settlementCounterpartyId") String settlementCounterpartyId,
-      @JsonProperty(value = "totalDebit", required = true) BigDecimal totalDebit,
-      @JsonProperty(value = "totalCredit", required = true) BigDecimal totalCredit) {
+      @JsonProperty(value = "totalDebit") BigDecimal totalDebit,
+      @JsonProperty(value = "totalCredit") BigDecimal totalCredit) {
     this.cycleId = cycleId;
     this.participantId = participantId;
     this.reference = reference;
