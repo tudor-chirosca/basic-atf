@@ -211,8 +211,8 @@ class BPSMapperTest {
             0,
             20,
             listOf("sort"),
-            "DAILY_SETTLEMENT_REPORT",
-            "Resursbank",
+            listOf("DAILY_SETTLEMENT_REPORT"),
+            listOf("Resursbank"),
             "10000000305",
             ZonedDateTime.parse("2021-02-15T00:00:00Z"),
             ZonedDateTime.parse("2021-02-16T00:00:00Z")
@@ -222,11 +222,11 @@ class BPSMapperTest {
         assertThat(request.offset).isEqualTo(criteria.offset)
         assertThat(request.limit).isEqualTo(criteria.limit)
         assertThat(request.sort).isEqualTo(criteria.sort)
-        assertThat(request.participant).isEqualTo(criteria.participant)
+        assertThat(request.participants).isEqualTo(criteria.participants)
         assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
         assertThat(request.id).isEqualTo(criteria.id)
         assertThat(request.dateTo).isEqualTo(criteria.dateTo)
-        assertThat(request.reportType).isEqualTo(criteria.reportType)
+        assertThat(request.reportTypes).isEqualTo(criteria.reportTypes)
     }
 
     @Test

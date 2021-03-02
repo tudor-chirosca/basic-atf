@@ -11,7 +11,6 @@ import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;

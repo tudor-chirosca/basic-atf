@@ -29,8 +29,8 @@ class BPSReportRepositoryTest @Autowired constructor(
             "offset": 0,
             "limit": 20,
             "sort": ["reportId"],
-            "reportType": null,
-            "participant": null,
+            "reportTypes": null,
+            "participants": null,
             "id": null,
             "date_from": "2021-01-03T00:00:00Z",
             "date_to": null

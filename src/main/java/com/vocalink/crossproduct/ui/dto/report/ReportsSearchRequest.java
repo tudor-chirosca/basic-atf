@@ -21,8 +21,8 @@ public class ReportsSearchRequest {
   private int offset = parseInt(getDefault(OFFSET));
   private int limit = parseInt(getDefault(LIMIT));
   private List<String> sort;
-  private String reportType;
-  private String participant;
+  private List<String> reportTypes;
+  private List<String> participants;
   private String id;
   @ValidFromDate
   @Setter(AccessLevel.PRIVATE)

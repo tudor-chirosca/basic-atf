@@ -12,8 +12,8 @@ public class ReportSearchCriteria {
   private final int offset;
   private final int limit;
   private final List<String> sort;
-  private final String reportType;
-  private final String participant;
+  private final List<String> reportTypes;
+  private final List<String> participants;
   private final String id;
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;

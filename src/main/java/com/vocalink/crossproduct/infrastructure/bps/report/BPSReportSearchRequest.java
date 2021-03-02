@@ -13,8 +13,8 @@ public class BPSReportSearchRequest {
   private final int offset;
   private final int limit;
   private final List<String> sort;
-  private final String reportType;
-  private final String participant;
+  private final List<String> reportTypes;
+  private final List<String> participants;
   private final String id;
   @JsonProperty(value = "date_from")
   private final ZonedDateTime dateFrom;
