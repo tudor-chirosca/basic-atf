@@ -26,10 +26,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ApprovalApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -425,4 +426,42 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("not one of the values accepted for Enum class")))
     }
+
+    @Test
+    fun `should fail with 400 on date older than 30 days`() {
+        mockMvc.perform(get("/approvals")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("from_date", "2020-02-15T00:00:00Z"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
+    }
+
+    @Test
+    fun `should fail with 200 with all parameters specified in request`() {
+        val fromDate = ZonedDateTime.now().toString()
+        val toDate = ZonedDateTime.now().minusDays(5).toString()
+
+        `when`(approvalFacade.getApprovals(any(), any(), any()))
+                .thenReturn(PageDto(0, null))
+
+        mockMvc.perform(get("/approvals")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("offset", "0")
+                .param("limit", "20")
+                .param("jobId", "9900000")
+                .param("from_date", fromDate)
+                .param("to_date", toDate)
+                .param("participant_ids", "NDEASESSXXX")
+                .param("request_types", "BATCH_CANCELLATION")
+                .param("requested_by", "23451sdf")
+                .param("statuses", "PENDING")
+                .param("sort", "status"))
+                .andExpect(status().isOk)
+
+    }
+
 }

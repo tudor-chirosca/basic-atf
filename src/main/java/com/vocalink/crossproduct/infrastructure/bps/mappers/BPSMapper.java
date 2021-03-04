@@ -14,6 +14,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
@@ -29,6 +30,7 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalChangeRe
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationRequest;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcastsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
@@ -148,7 +150,11 @@ public interface BPSMapper {
   BPSReportSearchRequest toBps(ReportSearchCriteria criteria);
 
   @Mappings({
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParams")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParams"),
+      @Mapping(target = "approvalId", source = "jobId"),
+      @Mapping(target = "schemeParticipantIdentifiers", source = "participantIds"),
+      @Mapping(target = "requestTypes", source = "requestTypes", qualifiedByName = "toBpsApprovalRequestType"),
+      @Mapping(target = "statuses", source = "statuses", qualifiedByName = "toBpsApprovalStatus"),
   })
   BPSApprovalSearchRequest toBps(ApprovalSearchCriteria criteria);
 
@@ -171,6 +177,11 @@ public interface BPSMapper {
   @Named("toBpsApprovalRequestType")
   default BPSApprovalRequestType toBpsApprovalRequestType(ApprovalRequestType approvalRequestType) {
     return BPSApprovalRequestType.valueOf(approvalRequestType.name());
+  }
+
+  @Named("toBpsApprovalStatus")
+  default BPSApprovalStatus toBpsApprovalStatus(ApprovalStatus approvalStatus) {
+    return BPSApprovalStatus.valueOf(approvalStatus.name());
   }
 
   @Named("mapApprovalSortParams")

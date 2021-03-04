@@ -4,8 +4,9 @@ import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.STATUS_CHANGE
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
@@ -13,11 +14,13 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class BPSMapperTest {
@@ -186,7 +189,7 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalChangeRequest fields`() {
         val criteria = ApprovalChangeCriteria(
-                ApprovalRequestType.STATUS_CHANGE, mapOf("status" to "suspended"), "notes"
+                STATUS_CHANGE, mapOf("status" to "suspended"), "notes"
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.STATUS_CHANGE)
@@ -197,7 +200,8 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalSearchRequest fields`() {
         val criteria = ApprovalSearchCriteria(
-                0, 20,
+                0, 20,null, null,
+                null, null, null, null, null,
                 listOf(
                         "-participantName", "+participantName",
                         "-requestType", "requestType",
@@ -237,6 +241,29 @@ class BPSMapperTest {
         assertThat(result.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
         assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("status")
         assertThat(result.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
+    }
+
+    @Test
+    fun `should map all fields from ApprovalSearchCriteria to BPSApprovalSearchRequest fields`() {
+        val fromDate = ZonedDateTime.of(2021, 2, 1, 10, 10, 0, 0, ZoneId.of("UTC"))
+        val toDate = ZonedDateTime.of(2020, 2, 20, 12, 10, 0, 0, ZoneId.of("UTC"))
+
+        val criteria = ApprovalSearchCriteria(
+                0, 20,"10000000", fromDate,
+                toDate, listOf("NDEASESSXXX"), listOf(STATUS_CHANGE),
+                "23451sdf", listOf(PENDING), listOf("+status")
+        )
+        val result = BPSMAPPER.toBps(criteria)
+
+        assertThat(result.approvalId).isEqualTo("10000000")
+        assertThat(result.fromDate).isEqualTo(fromDate)
+        assertThat(result.toDate).isEqualTo(toDate)
+        assertThat(result.schemeParticipantIdentifiers).isEqualTo(listOf("NDEASESSXXX"))
+        assertThat(result.requestTypes).isEqualTo(listOf(BPSApprovalRequestType.STATUS_CHANGE))
+        assertThat(result.requestedBy).isEqualTo("23451sdf")
+        assertThat(result.statuses).isEqualTo(listOf(BPSApprovalStatus.PENDING))
+        assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.ASC)
     }
 
     @Test
