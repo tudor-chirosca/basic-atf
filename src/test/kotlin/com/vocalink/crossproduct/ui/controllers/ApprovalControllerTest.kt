@@ -390,7 +390,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(approvalFacade.submitApprovalConfirmation(any(), any(), any(), any()))
                 .thenReturn(approvalDetailsDto)
         mockMvc.perform(
-                put("/approvals/10000004")
+                post("/approvals/10000004")
                         .contentType(UTF8_CONTENT_TYPE)
                         .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                         .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
@@ -403,7 +403,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should fail with 400 when required action is missing`() {
         mockMvc.perform(
-                put("/approvals/10000004")
+                post("/approvals/10000004")
                         .contentType(UTF8_CONTENT_TYPE)
                         .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                         .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
@@ -416,7 +416,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should fail with 400 on wrong confirmation type`() {
         mockMvc.perform(
-                put("/approvals/10000004")
+                post("/approvals/10000004")
                         .contentType(UTF8_CONTENT_TYPE)
                         .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                         .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)

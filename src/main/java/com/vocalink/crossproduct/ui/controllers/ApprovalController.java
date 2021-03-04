@@ -27,7 +27,7 @@ public class ApprovalController implements ApprovalApi {
 
   private final ApprovalFacade approvalFacade;
 
-  @PutMapping(value = "/approvals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/approvals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApprovalConfirmationResponseDto> submitApprovalConfirmation(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
