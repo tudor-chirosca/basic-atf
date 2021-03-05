@@ -20,6 +20,8 @@ class BPSPropertiesTest @Autowired constructor(private var props: BPSProperties)
         assertThat(props.paths).isInstanceOf(Map::class.java)
         assertThat(props.baseUrls).isNotEmpty
         assertThat(props.baseUrls).isInstanceOf(Map::class.java)
+        assertThat(props.schemeCode).isNotNull()
+        assertThat(props.currencies).isInstanceOf(Map::class.java)
     }
 
 }

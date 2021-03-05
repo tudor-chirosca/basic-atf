@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail
-import org.springframework.context.annotation.Bean
 import java.time.Duration
+import org.springframework.context.annotation.Bean
 
 open class BPSTestConfig {
 
@@ -14,7 +14,8 @@ open class BPSTestConfig {
         val props = BPSProperties()
         props.retryCount = 3
         props.timeoutDuration = Duration.ofMillis(1000)
-
+        props.schemeCode = "P27-SEK"
+        props.currencies = hashMapOf(Pair("P27-SEK", "SEK"))
         props.baseUrls = hashMapOf(Pair("MOCK", "http://localhost:54001"))
 
         props.paths = hashMapOf<String, Detail>(
@@ -41,7 +42,7 @@ open class BPSTestConfig {
                 Pair("instruction-enquiries-path", Detail("MOCK", "/enquiry/instructions")),
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
                 Pair("settlement-enquiries-path", Detail("MOCK", "/enquiry/settlements")),
-                Pair("transaction-enquiries-path", Detail("MOCK", "/enquiry/transactions/P27-SEK/readAll")),
+                Pair("transaction-enquiries-path", Detail("MOCK", "/enquiries/transactions/P27-SEK/readAll")),
                 Pair("single-transaction-path", Detail("MOCK", "/enquiry/transactions/P27-SEK/read")),
                 Pair("single-account-path", Detail("MOCK", "/account/read")),
                 Pair("approval-details-path", Detail("MOCK", "/approvals/P27-SEK/read")),

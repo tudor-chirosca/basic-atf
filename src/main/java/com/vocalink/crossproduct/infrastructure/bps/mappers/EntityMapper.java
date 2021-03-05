@@ -244,6 +244,9 @@ public interface EntityMapper {
 
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 
+  @Mappings({
+      @Mapping(target = "createdAt", source = "createdDateTime")
+  })
   Transaction toEntity(BPSTransaction transaction);
 
   AlertPriorityData toEntity(BPSAlertPriority priorityData);

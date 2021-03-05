@@ -353,6 +353,7 @@ class EntityMapperTest {
                 amount,
                 "fileName",
                 "batchId",
+                "originator",
                 LocalDate.of(2021, 1,15),
                 "receiverEntityBic",
                 LocalDate.of(2021, 1,15),
@@ -372,7 +373,7 @@ class EntityMapperTest {
         assertThat(entity.valueDate).isEqualTo(bps.valueDate)
         assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
         assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycleId)
-        assertThat(entity.createdAt).isEqualTo(bps.createdAt)
+        assertThat(entity.createdAt).isEqualTo(bps.createdDateTime)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
@@ -569,10 +570,10 @@ class EntityMapperTest {
 
     @Test
     fun `should map TransactionEnquirySearchCriteria fields`() {
-        val date = LocalDate.of(2021, 1, 15)
+        val date = ZonedDateTime.now()
         val request = TransactionEnquirySearchRequest(
-                0, 0, listOf("sortBy"), date, date,
-                listOf("cycle_id"),
+                0, 0, listOf("sortBy"), date, date, date,
+                "cycleName",
                 "messageDirection",
                 "messageType",
                 "sendingBic",
@@ -590,7 +591,8 @@ class EntityMapperTest {
         assertThat(criteria.sort).isEqualTo(request.sort)
         assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
         assertThat(criteria.dateTo).isEqualTo(request.dateTo)
-        assertThat(criteria.cycleIds).isEqualTo(request.cycleIds)
+        assertThat(criteria.cycleDay).isEqualTo(request.cycleDay)
+        assertThat(criteria.cycleName).isEqualTo(request.cycleName)
         assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
         assertThat(criteria.messageType).isEqualTo(request.messageType)
         assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)

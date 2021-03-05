@@ -14,6 +14,7 @@ public class Transaction {
   private final Amount amount;
   private final String fileName;
   private final String batchId;
+  private final String originator;
   private final LocalDate valueDate;
   private final String receiverParticipantIdentifier;
   private final LocalDate settlementDate;

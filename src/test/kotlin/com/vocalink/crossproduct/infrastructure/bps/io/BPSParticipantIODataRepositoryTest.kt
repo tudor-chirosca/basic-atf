@@ -2,6 +2,10 @@ package com.vocalink.crossproduct.infrastructure.bps.io
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -266,8 +270,8 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
     @Test
     fun `should pass io details with success`() {
         mockServer.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/io-details"))
-                        .willReturn(WireMock.aResponse()
+                post(urlEqualTo("/io-details"))
+                        .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_IO_DETAILS_RESPONSE))
@@ -289,8 +293,8 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
     @Test
     fun `should pass io data with success`() {
         mockServer.stubFor(
-                WireMock.get(WireMock.urlEqualTo("/io"))
-                        .willReturn(WireMock.aResponse()
+                get(urlEqualTo("/io"))
+                        .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_IO_RESPONSE)))

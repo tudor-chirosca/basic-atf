@@ -46,8 +46,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         const val INVALID_DATE_AND_CYCLE_IDS_BODY_REQUEST = """{
             "messageDirection" : "sending",
-            "dateFrom": "2020-10-23",
-            "dateTo": "2020-10-23",
+            "dateFrom": "2020-10-23T01:59:59Z",
+            "dateTo": "2020-10-23T23:59:59Z",
             "cycleIds": [
               "20190212004"
             ]
@@ -55,7 +55,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         const val INVALID_DATE_FROM_EARLIER_THAN_30_DAYS_BODY_REQUEST = """{
             "messageDirection" : "sending",
-            "dateFrom": "2020-10-23"
+            "dateFrom": "2020-10-23T23:59:59Z"
         }"""
 
         const val INVALID_LIMIT_BODY_REQUEST = """{

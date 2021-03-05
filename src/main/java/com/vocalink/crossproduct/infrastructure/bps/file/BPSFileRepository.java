@@ -56,7 +56,7 @@ public class BPSFileRepository implements FileRepository {
 
   @Override
   public Result<File> findBy(FileEnquirySearchCriteria request) {
-    BPSFileEnquirySearchRequest bpsRequest = BPSMAPPER.toBps(request);
+    final BPSFileEnquirySearchRequest bpsRequest = BPSMAPPER.toBps(request);
     final URI uri = UriComponentsBuilder.fromUri(resolve(FILE_ENQUIRIES_PATH, bpsProperties))
         .queryParam(OFFSET, request.getOffset())
         .queryParam(PAGE_SIZE, request.getLimit())
@@ -76,7 +76,7 @@ public class BPSFileRepository implements FileRepository {
 
   @Override
   public File findById(String id) {
-    BPSSingleFileRequest bpsRequest = new BPSSingleFileRequest(id);
+    final BPSSingleFileRequest bpsRequest = new BPSSingleFileRequest(id);
     return webClient.post()
         .uri(resolve(SINGLE_FILE_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

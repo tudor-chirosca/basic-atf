@@ -38,6 +38,15 @@ abstract class MapperUtils {
     put("status", "status");
   }};
 
+  private static final Map<String, String> transactionSearchRequestSortParams = new HashMap<String, String>() {{
+    put("instructionId", "instructionId");
+    put("createdAt", "createdDateTime");
+    put("senderBic", "originator");
+    put("messageType","messageType");
+    put("amount", "amount");
+    put("status", "status");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -47,5 +56,7 @@ abstract class MapperUtils {
   static Map<String, String> getBatchSearchRequestSortParams() {
     return unmodifiableMap(batchSearchRequestSortParams);
   }
-
+  static Map<String, String> getTransactionSearchRequestSortParams() {
+    return unmodifiableMap(transactionSearchRequestSortParams);
+  }
 }

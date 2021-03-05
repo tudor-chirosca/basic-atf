@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -163,7 +164,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<TransactionDto> presentTransactions(Page<Transaction> transactions) {
+  public PageDto<TransactionDto> presentTransactions(Integer totalResults, List<Transaction> items) {
     throw new RuntimeException("System API not implemented yet");
   }
 

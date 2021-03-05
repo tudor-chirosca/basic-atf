@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.domain.Result
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -23,7 +24,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import kotlin.test.assertNotNull
 
 class TransactionsFacadeImplTest {
 
@@ -53,13 +53,14 @@ class TransactionsFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get transactions`() {
-        val page = Page<Transaction>(1, listOf(
+        val summary = Result.ResultSummary(1, 0, 20)
+        val page = Result(listOf(
                 Transaction(null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null
+                        null, null
                 )
-        ))
+        ), summary)
         val pageDto = PageDto<TransactionDto>(1, listOf(
                 TransactionDto(null, null, null, null,
                         null, null
@@ -69,20 +70,20 @@ class TransactionsFacadeImplTest {
                 0, 20, null, null, null, null,
                 "sending", null, null, null, null,
                 null, null, null, null, null,
-                null, null
+                null, null, null
         )
 
         `when`(transactionRepository.findPaginated(any()))
                 .thenReturn(page)
 
-        `when`(uiPresenter.presentTransactions(any()))
+        `when`(uiPresenter.presentTransactions(any(), any()))
                 .thenReturn(pageDto)
 
         val result = transactionsServiceFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
 
         verify(transactionRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentTransactions(any())
+        verify(uiPresenter).presentTransactions(any(), any())
 
         assertNotNull(result)
     }
@@ -92,7 +93,7 @@ class TransactionsFacadeImplTest {
         val transaction = Transaction(
                 null, null, null, null, null,
                 null, null, null, null,
-                null, null, null, null
+                null, null, null, null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
                 null, null, null, null, null, null,

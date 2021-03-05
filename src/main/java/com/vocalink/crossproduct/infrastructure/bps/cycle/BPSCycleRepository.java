@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.cycle;
 
-import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.SCHEME_CODE;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.CYCLES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.DAY_CYCLES_PATH;
@@ -38,8 +37,8 @@ public class BPSCycleRepository implements CycleRepository {
 
   @Override
   public List<Cycle> findAll() {
-    BPSCycleRequest request = new BPSCycleRequest(SCHEME_CODE);
-    List<BPSCycle> bpsCycles = getCycles(request).getCycles();
+    final BPSCycleRequest request = new BPSCycleRequest(bpsProperties.getSchemeCode());
+    final List<BPSCycle> bpsCycles = getCycles(request).getCycles();
 
     final List<String> cycleIds = bpsCycles.stream()
         .map(BPSCycle::getCycleId).collect(toList());
@@ -54,7 +53,7 @@ public class BPSCycleRepository implements CycleRepository {
 
   @Override
   public List<Cycle> findByIds(List<String> cycleIds) {
-    BPSCycleRequest request = new BPSCycleRequest(SCHEME_CODE);
+    final BPSCycleRequest request = new BPSCycleRequest(bpsProperties.getSchemeCode());
 
     return getCycles(request).getCycles().stream()
         .filter(c -> cycleIds.contains(c.getCycleId()))
@@ -83,7 +82,7 @@ public class BPSCycleRepository implements CycleRepository {
 
   @Override
   public List<DayCycle> findByDate(LocalDate date) {
-    BPSDayCycleRequest request = new BPSDayCycleRequest(SCHEME_CODE, date);
+    final BPSDayCycleRequest request = new BPSDayCycleRequest(bpsProperties.getSchemeCode(), date);
     return webClient.post()
         .uri(resolve(DAY_CYCLES_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -99,7 +98,7 @@ public class BPSCycleRepository implements CycleRepository {
 
   @Override
   public List<Cycle> findLatest(int nrLatestCycles) {
-    BPSCycleRequest request = new BPSCycleRequest(SCHEME_CODE);
+    BPSCycleRequest request = new BPSCycleRequest(bpsProperties.getSchemeCode());
     request.setNumberOfCycles(nrLatestCycles);
 
     return getCycles(request).getCycles().stream()
@@ -121,7 +120,7 @@ public class BPSCycleRepository implements CycleRepository {
 
   private BPSSettlementPositionWrapper getSettlementPositions() {
     final BPSPositionsRequest request = BPSPositionsRequest.builder()
-        .schemeCode(SCHEME_CODE)
+        .schemeCode(bpsProperties.getSchemeCode())
         .build();
 
     return webClient.post()

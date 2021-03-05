@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.re
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -30,6 +31,7 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestT
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcastsSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
@@ -38,6 +40,7 @@ import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequ
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -45,6 +48,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -104,7 +108,30 @@ public interface BPSMapper {
     return map(sortParams, getFileSearchRequestSortParams());
   }
 
-  BPSTransactionEnquirySearchRequest toBps(TransactionEnquirySearchCriteria criteria);
+  @Mappings({
+      @Mapping(target = "createdDateFrom", source = "dateFrom"),
+      @Mapping(target = "createdDateTo", source = "dateTo"),
+      @Mapping(target = "sendingParticipant", source = "sendingBic"),
+      @Mapping(target = "receivingParticipant", source = "receivingBic"),
+      @Mapping(target = "instructionIdentifier", source = "id"),
+      @Mapping(target = "transactionRangeFrom", source = "txnFrom", qualifiedByName = "mapToBpsAmount"),
+      @Mapping(target = "transactionRangeTo", source = "txnTo", qualifiedByName = "mapToBpsAmount"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapTransactionSortParams")
+  })
+  BPSTransactionEnquirySearchRequest toBps(TransactionEnquirySearchCriteria criteria, @Context String currency);
+
+  @Named("mapToBpsAmount")
+  default BPSAmount mapToBpsAmount(BigDecimal amount, @Context String currency) {
+    if (amount == null) {
+      return null;
+    }
+    return new BPSAmount(amount, currency);
+  }
+
+  @Named("mapTransactionSortParams")
+  default List<BPSSortingQuery> mapTransactionSortParams(List<String> sortParams) {
+    return map(sortParams, getTransactionSearchRequestSortParams());
+  }
 
   BPSAlertSearchRequest toBps(AlertSearchCriteria criteria);
 

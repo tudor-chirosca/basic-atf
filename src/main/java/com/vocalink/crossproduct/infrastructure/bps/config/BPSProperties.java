@@ -20,6 +20,8 @@ public class BPSProperties {
 
   private Integer retryCount;
   private Duration timeoutDuration;
+  private String schemeCode;
+  private Map<String, String> currencies;
   private Map<String, String> baseUrls;
   private Map<String, Detail> paths;
   private List<Integer> retryable;

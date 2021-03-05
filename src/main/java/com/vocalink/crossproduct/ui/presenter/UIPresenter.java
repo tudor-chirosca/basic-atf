@@ -6,6 +6,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -299,8 +300,11 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<TransactionDto> presentTransactions(Page<Transaction> transactions) {
-    return MAPPER.toDto(transactions, TransactionDto.class);
+  public PageDto<TransactionDto> presentTransactions(Integer totalResults, List<Transaction> items) {
+    final List<TransactionDto> files = items.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
+    return new PageDto<>(totalResults, files);
   }
 
   @Override

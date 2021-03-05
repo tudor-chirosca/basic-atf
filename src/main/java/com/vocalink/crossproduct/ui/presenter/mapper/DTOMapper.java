@@ -291,7 +291,7 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "amount", source = "amount.amount"),
-      @Mapping(target = "senderBic", source = "senderParticipantIdentifier")
+      @Mapping(target = "senderBic", source = "originator")
   })
   TransactionDto toDto(Transaction transaction);
 

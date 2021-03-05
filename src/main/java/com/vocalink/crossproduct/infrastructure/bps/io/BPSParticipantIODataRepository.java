@@ -47,7 +47,7 @@ public class BPSParticipantIODataRepository implements ParticipantIODataReposito
 
   @Override
   public List<IODetails> findIODetailsFor(String participantId, LocalDate localDate) {
-    IORequest request = new IORequest(BPSConstants.SCHEME_CODE, participantId,
+    final IORequest request = new IORequest(bpsProperties.getSchemeCode(), participantId,
         localDate.toString());
     return webClient.post()
         .uri(resolve(IO_DETAILS_PATH, bpsProperties))

@@ -17,6 +17,6 @@ public final class BPSPathUtils {
 
     return UriComponentsBuilder.fromUriString(baseUrl)
         .path(detail.getPath())
-        .build(BPSConstants.SCHEME_CODE);
+        .build(properties.getSchemeCode());
   }
 }

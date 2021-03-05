@@ -95,10 +95,19 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSTransactionEnquirySearchRequest fields`() {
-        val date = LocalDate.of(2021, 1, 15)
+        val date = ZonedDateTime.now()
+        val currency = "SEK"
+        val sorting = listOf(
+                "-instructionId", "+instructionId",
+                "-createdAt", "createdAt",
+                "-senderBic", "+senderBic",
+                "-messageType", "messageType",
+                "-amount", "+amount",
+                "-status", "+status"
+        )
         val criteria = TransactionEnquirySearchCriteria(
-                0, 0, listOf("sortBy"), date, date,
-                listOf("cycle_id"),
+                0, 0, sorting, date, date, date,
+                "cycleName",
                 "messageDirection",
                 "messageType",
                 "sendingBic",
@@ -110,25 +119,55 @@ class BPSMapperTest {
                 "receivingAccount",
                 date, BigDecimal.TEN, BigDecimal.ONE
         )
-        val request = BPSMAPPER.toBps(criteria)
-        assertThat(request.offset).isEqualTo(criteria.offset)
-        assertThat(request.limit).isEqualTo(criteria.limit)
-        assertThat(request.sort).isEqualTo(criteria.sort)
-        assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
-        assertThat(request.dateTo).isEqualTo(criteria.dateTo)
-        assertThat(request.cycleIds).isEqualTo(criteria.cycleIds)
+        val request = BPSMAPPER.toBps(criteria, currency)
+        assertThat(request.createdDateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(request.createdDateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.cycleDay).isEqualTo(criteria.cycleDay)
+        assertThat(request.cycleName).isEqualTo(criteria.cycleName)
         assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
-        assertThat(request.sendingBic).isEqualTo(criteria.sendingBic)
-        assertThat(request.receivingBic).isEqualTo(criteria.receivingBic)
+        assertThat(request.sendingParticipant).isEqualTo(criteria.sendingBic)
+        assertThat(request.receivingParticipant).isEqualTo(criteria.receivingBic)
         assertThat(request.status).isEqualTo(criteria.status)
         assertThat(request.reasonCode).isEqualTo(criteria.reasonCode)
-        assertThat(request.id).isEqualTo(criteria.id)
+        assertThat(request.instructionIdentifier).isEqualTo(criteria.id)
         assertThat(request.sendingAccount).isEqualTo(criteria.sendingAccount)
         assertThat(request.receivingAccount).isEqualTo(criteria.receivingAccount)
         assertThat(request.valueDate).isEqualTo(criteria.valueDate)
-        assertThat(request.txnFrom).isEqualTo(criteria.txnFrom)
-        assertThat(request.txnTo).isEqualTo(request.txnTo)
+        assertThat(request.transactionRangeFrom.amount).isEqualTo(criteria.txnFrom)
+        assertThat(request.transactionRangeFrom.currency).isEqualTo(currency)
+        assertThat(request.transactionRangeTo.amount).isEqualTo(criteria.txnTo)
+        assertThat(request.transactionRangeTo.currency).isEqualTo(currency)
+
+        assertThat(request.sortingOrder[0].sortOrderBy).isEqualTo("instructionId")
+        assertThat(request.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[1].sortOrderBy).isEqualTo("instructionId")
+        assertThat(request.sortingOrder[1].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(request.sortingOrder[2].sortOrderBy).isEqualTo("createdDateTime")
+        assertThat(request.sortingOrder[2].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[3].sortOrderBy).isEqualTo("createdDateTime")
+        assertThat(request.sortingOrder[3].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(request.sortingOrder[4].sortOrderBy).isEqualTo("originator")
+        assertThat(request.sortingOrder[4].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[5].sortOrderBy).isEqualTo("originator")
+        assertThat(request.sortingOrder[5].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(request.sortingOrder[6].sortOrderBy).isEqualTo("messageType")
+        assertThat(request.sortingOrder[6].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[7].sortOrderBy).isEqualTo("messageType")
+        assertThat(request.sortingOrder[7].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(request.sortingOrder[8].sortOrderBy).isEqualTo("amount")
+        assertThat(request.sortingOrder[8].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[9].sortOrderBy).isEqualTo("amount")
+        assertThat(request.sortingOrder[9].sortOrder).isEqualTo(BPSSortOrder.ASC)
+
+        assertThat(request.sortingOrder[10].sortOrderBy).isEqualTo("status")
+        assertThat(request.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[11].sortOrderBy).isEqualTo("status")
+        assertThat(request.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
     }
 
     @Test

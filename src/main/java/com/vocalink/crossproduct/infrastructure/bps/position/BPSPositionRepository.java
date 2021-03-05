@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.position;
 
-import static com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.SCHEME_CODE;
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_POSITION_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
@@ -33,7 +32,7 @@ public class BPSPositionRepository implements PositionRepository {
   @Override
   public List<ParticipantPosition> findByParticipantId(String schemeParticipantIdentifier) {
     final BPSPositionsRequest request = BPSPositionsRequest.builder()
-        .schemeCode(SCHEME_CODE)
+        .schemeCode(bpsProperties.getSchemeCode())
         .participantIds(singletonList(schemeParticipantIdentifier))
         .build();
 

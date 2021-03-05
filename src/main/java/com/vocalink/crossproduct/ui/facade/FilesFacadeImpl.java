@@ -5,12 +5,10 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.ServiceFactory;
-import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;

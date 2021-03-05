@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
@@ -46,6 +47,7 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val result = ArrayList(validator.validate(request))
@@ -54,9 +56,10 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should fail on bad id regex`() {
+    fun `should fail on invalid id regex`() {
         request = TransactionEnquirySearchRequest(
                 0, 20,
+                null,
                 null,
                 null,
                 null,
@@ -81,9 +84,10 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should pass on good id regex`() {
+    fun `should pass on valid id regex`() {
         request = TransactionEnquirySearchRequest(
                 0, 20,
+                null,
                 null,
                 null,
                 null,
@@ -94,8 +98,8 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
-                "*blah",
                 null,
+                "*blah",
                 null,
                 null,
                 null,
@@ -111,6 +115,7 @@ class TransactionEnquirySearchRequestValidationTest {
     fun `should fail on same sending and receiving bic`() {
         request = TransactionEnquirySearchRequest(
                 0, 20,
+                null,
                 null,
                 null,
                 null,
@@ -136,11 +141,12 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on longer then 30`() {
-        val older = LocalDate.now().minusDays(31)
+        val older = ZonedDateTime.now().minusDays(31)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
                 older,
+                null,
                 null,
                 null,
                 "sending",
@@ -163,12 +169,13 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should pass on 30`() {
-        val older = LocalDate.now().minusDays(30)
+    fun `should pass on 30 days`() {
+        val older = ZonedDateTime.now().minusDays(30)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
                 older,
+                null,
                 null,
                 null,
                 "sending",
@@ -221,6 +228,7 @@ class TransactionEnquirySearchRequestValidationTest {
     fun `should fail if limit is less than 1`() {
         request = TransactionEnquirySearchRequest(
                 0, 0,
+                null,
                 null,
                 null,
                 null,

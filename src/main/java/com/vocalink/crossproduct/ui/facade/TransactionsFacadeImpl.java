@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.facade;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
-import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -35,10 +35,11 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
     log.info("Fetching transactions from: {}", product);
 
     final TransactionEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
-    final Page<Transaction> transactions = repositoryFactory.getTransactionRepository(product)
+    final Result<Transaction> result = repositoryFactory.getTransactionRepository(product)
         .findPaginated(request);
 
-    return presenterFactory.getPresenter(clientType).presentTransactions(transactions);
+    return presenterFactory.getPresenter(clientType)
+        .presentTransactions(result.getSummary().getTotalCount(), result.getData());
   }
 
   @Override

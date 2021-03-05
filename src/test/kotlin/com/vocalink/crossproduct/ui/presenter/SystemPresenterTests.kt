@@ -146,7 +146,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present transactions for System`() {
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentTransactions(null)
+            systemPresenter.presentTransactions(null, null)
         }
     }
 
