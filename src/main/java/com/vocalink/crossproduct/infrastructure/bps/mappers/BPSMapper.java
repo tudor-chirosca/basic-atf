@@ -50,9 +50,11 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
@@ -79,6 +81,14 @@ public interface BPSMapper {
   })
   BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
 
+  @AfterMapping
+  default void updateRequest(@MappingTarget BPSBatchEnquirySearchRequest request) {
+    if(request.getSessionInstanceId() != null && !request.getSessionInstanceId().isEmpty()) {
+      request.setCreatedFromDate(null);
+      request.setCreatedToDate(null);
+    }
+  }
+
   @Named("mapBatchSortParams")
   default List<BPSSortingQuery> mapBatchSortParams(List<String> sortParams) {
     return map(sortParams, getBatchSearchRequestSortParams());
@@ -95,14 +105,22 @@ public interface BPSMapper {
   })
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
 
+  @AfterMapping
+  default void updateRequest(@MappingTarget BPSFileEnquirySearchRequest request) {
+    if(request.getSessionInstanceId() != null && !request.getSessionInstanceId().isEmpty()) {
+      request.setCreatedFromDate(null);
+      request.setCreatedToDate(null);
+    }
+  }
+
   @Named("toZonedDateTimeConverter-SOD")
   default ZonedDateTime toZonedDateTimeSOD(LocalDate localDate) {
-    return ZonedDateTime.of(localDate, LocalTime.MIN, ZoneId.of("UTC"));
+    return localDate == null ? null : ZonedDateTime.of(localDate, LocalTime.MIN, ZoneId.of("UTC"));
   }
 
   @Named("toZonedDateTimeConverter-EOD")
   default ZonedDateTime toZonedDateTimeEOD(LocalDate localDate) {
-    return ZonedDateTime.of(localDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC"));
+    return localDate == null ? null : ZonedDateTime.of(localDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC"));
   }
 
   @Named("mapFileSortParams")

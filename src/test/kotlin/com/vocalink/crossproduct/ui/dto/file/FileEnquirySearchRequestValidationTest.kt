@@ -82,29 +82,6 @@ class FileEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should pass on 30`() {
-        request.setMsg_direction("Sending")
-        val older = LocalDate.now().minusDays(30).toString()
-        request.setDate_from(older)
-
-        val result = ArrayList(validator.validate(request))
-
-        assertThat(result).isEmpty()
-    }
-
-//    @Test //TODO: fix validation
-//    fun `should fail if both cycle and date to are present`() {
-//        request.setMsg_direction("Sending")
-//        request.setCycle_id("1")
-//        request.setDate_to(LocalDate.now().toString())
-//
-//        val result = ArrayList(validator.validate(request))
-//
-//        assertThat(result).isNotEmpty
-//        assertThat(result[0].message).isEqualTo(CYCLE_OR_DATE_ERROR)
-//    }
-
-    @Test
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
         request.limit = 0

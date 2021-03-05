@@ -7,14 +7,17 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
 public class BPSBatchEnquirySearchRequest {
 
-  private final ZonedDateTime createdFromDate;
-  private final ZonedDateTime createdToDate;
+  @Setter
+  private ZonedDateTime createdFromDate;
+  @Setter
+  private ZonedDateTime createdToDate;
   private final String sessionInstanceId;
   private final String messageDirection;
   private final String messageType;

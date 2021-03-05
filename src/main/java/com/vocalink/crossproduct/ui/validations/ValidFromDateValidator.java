@@ -16,6 +16,6 @@ public class ValidFromDateValidator implements
   @Override
   public boolean isValid(Temporal value, ConstraintValidatorContext context) {
 
-    return value.until(ZonedDateTime.now(), ChronoUnit.DAYS) <= parseLong(getDefault(DAYS_LIMIT));
+    return value == null || value.until(ZonedDateTime.now(), ChronoUnit.DAYS) <= parseLong(getDefault(DAYS_LIMIT));
   }
 }
