@@ -9,7 +9,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.MediaType
+import java.time.LocalDate
 
 @BPSTestConfiguration
 @Import(BPSFileRepository::class)
@@ -32,7 +32,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         }"""
         const val VALID_FILE_REQUEST: String = """ 
         {
-            "fileId": "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
+            "fileName": "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
         }"""
         const val VALID_FILE_REFERENCES_RESPONSE: String = """
          [
@@ -169,7 +169,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
     @Test
     fun `should return the file for given id`() {
         mockServer.stubFor(
-                post(urlEqualTo("/enquiry/files/read"))
+                post(urlEqualTo("/enquiries/file/P27-SEK/read"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

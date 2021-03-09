@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail
-import java.time.Duration
 import org.springframework.context.annotation.Bean
+import java.time.Duration
 
 open class BPSTestConfig {
 
@@ -35,7 +35,7 @@ open class BPSTestConfig {
                 Pair("file-references-path", Detail("MOCK", "/reference/files")),
                 Pair("file-enquiries-path", Detail("MOCK", "/enquiries/file/P27-SEK/readAll")),
                 Pair("batch-enquiries-path", Detail("MOCK", "/enquiries/batches/P27-SEK/readAll")),
-                Pair("single-file-path", Detail("MOCK", "/enquiry/files/read")),
+                Pair("single-file-path", Detail("MOCK", "/enquiries/file/P27-SEK/read")),
                 Pair("download-file-path", Detail("MOCK", "/enquiries/file/downloadFile/P27-SEK")),
                 Pair("single-batch-path", Detail("MOCK", "/enquiries/batches/P27-SEK/read")),
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),

@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.file;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,5 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BPSSingleFileRequest {
 
-  private final String fileId;
+  @JsonInclude(Include.NON_EMPTY)
+  private final String instructionId;
+  private final String fileName;
 }

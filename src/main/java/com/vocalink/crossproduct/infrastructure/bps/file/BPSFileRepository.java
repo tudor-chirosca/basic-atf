@@ -76,7 +76,7 @@ public class BPSFileRepository implements FileRepository {
 
   @Override
   public File findById(String id) {
-    final BPSSingleFileRequest bpsRequest = new BPSSingleFileRequest(id);
+    final BPSSingleFileRequest bpsRequest = new BPSSingleFileRequest(null, id);
     return webClient.post()
         .uri(resolve(SINGLE_FILE_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
