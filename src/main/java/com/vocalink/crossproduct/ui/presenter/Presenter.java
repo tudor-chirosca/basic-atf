@@ -133,11 +133,7 @@ public interface Presenter {
 
   SettlementScheduleDto presentSchedule(SettlementSchedule schedule);
 
-  TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender);
-
-  TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender, EnquirySenderDetails receiver);
+  TransactionDetailsDto presentTransactionDetails(Transaction transaction);
 
   ApprovalDetailsDto presentApprovalDetails(Approval approval);
 

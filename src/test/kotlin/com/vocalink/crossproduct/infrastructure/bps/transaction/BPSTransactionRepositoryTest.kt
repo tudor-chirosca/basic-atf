@@ -80,25 +80,33 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
 
         const val VALID_TRANSACTION_DETAILS_RESPONSE: String = """
             {
-                "instructionId": "20210115SVEASES1B2215",
-                "amount": {
-                    "amount": 4563456345.43,
+                "txnsInstructionId": "20210115IKANSE21B2167",
+                "messageType": "pacs.002",
+                "sentDateTime": "2021-02-18T18:00:00Z",
+                "transactionStatus": "ACSC",
+                "reasonCode": null,
+                "settlementCycle": "20210218002",
+                "settlementDate": "2021-02-18T14:00:00Z",
+                "fileName": "E27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800101.gz",
+                "batchId": "F27ISTXBANKSESS",
+                "transactionAmount": {
+                    "amount": 777777.77,
                     "currency": "SEK"
                 },
-                "fileName": "P27ISTXSVEASES1201911320191113135321990NCTSEK_PACS0082216",
-                "batchId": "P27ISTXBANKSESS",
-                "originator": "SVEASES1",
-                "valueDate": "2021-01-14",
-                "receiverParticipantIdentifier": "SWEDSES1",
-                "settlementDate": "2021-01-14",
-                "settlementCycleId": "20201209002",
-                "createdDateTime": "2021-01-14T15:02:14Z",
-                "status": "accepted",
-                "reasonCode": null,
-                "messageType": "camt.056",
-                "senderParticipantIdentifier": "SVEASES1",
-                "messageDirection": "sending"
-        }"""
+                "sender": {
+                    "entityName": "Ikano Bank",
+                    "entityBic": "IKANSE21",
+                    "iban": "SE23 9999 9999 9999 9999 2170",
+                    "fullName": "Mark Markson"
+                },
+                "receiver": {
+                    "entityName": "Nordea",
+                    "entityBic": "NDEASESSXXX",
+                    "iban": "SE23 9999 9999 9999 9999 2142",
+                    "fullName": "John Smith"
+                }
+            }
+        """
     }
 
     @Test
@@ -137,7 +145,7 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
     @Test
     fun `should return transaction by id`() {
         mockServer.stubFor(
-                post(urlEqualTo("/enquiry/transactions/P27-SEK/read"))
+                post(urlEqualTo("/enquiries/transactions/P27-SEK/read"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -145,18 +153,26 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                         .withRequestBody(equalToJson(VALID_TRANSACTION_REQUEST)))
 
         val result = transactionRepository.findById("20210115SVEASES1B2215")
-        assertThat(result.instructionId).isEqualTo("20210115SVEASES1B2215")
-        assertThat(result.amount.amount).isEqualTo(BigDecimal.valueOf(4563456345.43))
-        assertThat(result.amount.currency).isEqualTo("SEK")
-        assertThat(result.batchId).isEqualTo("P27ISTXBANKSESS")
-        assertThat(result.valueDate).isEqualTo(LocalDate.of(2021, 1, 14))
-        assertThat(result.receiverParticipantIdentifier).isEqualTo("SWEDSES1")
-        assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, 1, 14))
-        assertThat(result.settlementCycleId).isEqualTo("20201209002")
-        assertThat(result.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.JANUARY.value, 14, 15, 2, 14, 0, ZoneId.of("UTC")))
-        assertThat(result.status).isEqualTo("accepted")
+        assertThat(result.instructionId).isEqualTo("20210115IKANSE21B2167")
+        assertThat(result.messageType).isEqualTo("pacs.002")
+        assertThat(result.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 18, 0, 0, 0, ZoneId.of("UTC")))
+        assertThat(result.status).isEqualTo("ACSC")
         assertThat(result.reasonCode).isEqualTo(null)
-        assertThat(result.messageType).isEqualTo("camt.056")
-        assertThat(result.senderParticipantIdentifier).isEqualTo("SVEASES1")
+        assertThat(result.settlementCycleId).isEqualTo("20210218002")
+        assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, Month.FEBRUARY.value, 18))
+        assertThat(result.fileName).isEqualTo("E27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800101.gz")
+        assertThat(result.batchId).isEqualTo("F27ISTXBANKSESS")
+        assertThat(result.amount.amount).isEqualTo(BigDecimal.valueOf(777777.77))
+        assertThat(result.amount.currency).isEqualTo("SEK")
+
+        assertThat(result.sender.entityName).isEqualTo("Ikano Bank")
+        assertThat(result.sender.entityBic).isEqualTo("IKANSE21")
+        assertThat(result.sender.iban).isEqualTo("SE23 9999 9999 9999 9999 2170")
+        assertThat(result.sender.fullName).isEqualTo("Mark Markson")
+
+        assertThat(result.receiver.entityName).isEqualTo("Nordea")
+        assertThat(result.receiver.entityBic).isEqualTo("NDEASESSXXX")
+        assertThat(result.receiver.iban).isEqualTo("SE23 9999 9999 9999 9999 2142")
+        assertThat(result.receiver.fullName).isEqualTo("John Smith")
     }
 }

@@ -28,6 +28,7 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails
@@ -41,6 +42,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantCo
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest
@@ -346,37 +348,71 @@ class EntityMapperTest {
     }
 
     @Test
-    fun `should map Transaction fields`() {
+    fun `should map Transaction from BPSTransaction fields`() {
         val amount = BPSAmount(BigDecimal.TEN, "SEK")
         val bps = BPSTransaction(
                 "instructionId",
-                amount,
-                "fileName",
-                "batchId",
+                ZonedDateTime.now(),
                 "originator",
-                LocalDate.of(2021, 1,15),
-                "receiverEntityBic",
-                LocalDate.of(2021, 1,15),
-                "settlementCycleId",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "status",
-                "reasonCode",
                 "messageType",
-                "senderEntityName",
-                "senderEntityBic"
+                amount,
+                "status"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
         assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
-        assertThat(entity.batchId).isEqualTo(bps.batchId)
-        assertThat(entity.valueDate).isEqualTo(bps.valueDate)
-        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
-        assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycleId)
         assertThat(entity.createdAt).isEqualTo(bps.createdDateTime)
         assertThat(entity.status).isEqualTo(bps.status)
-        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.originator).isEqualTo(bps.originator)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
+    }
+
+    @Test
+    fun `should map Transaction from BPSTransactionDetails fields`() {
+        val amount = BPSAmount(BigDecimal.TEN, "SEK")
+        val sender = BPSSenderDetails(
+                "senderName", "senderBic", "iban", "fullname"
+        )
+        val receiver = BPSSenderDetails(
+                "receiverName", "receiverBic", "iban", "fullname"
+        )
+        val bps = BPSTransactionDetails(
+                "txnsInstructionId",
+                "messageType",
+                ZonedDateTime.now(),
+                "transactionStatus",
+                "reasonCode",
+                "settlementCycle",
+                ZonedDateTime.now(),
+                "fileName",
+                "batchId",
+                amount,
+                sender,
+                receiver
+        )
+        val entity = MAPPER.toEntity(bps)
+        assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
+        assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.createdAt).isEqualTo(bps.sentDateTime)
+        assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
+        assertThat(entity.settlementCycleId).isEqualTo(bps.settlementCycle)
+        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate.toLocalDate())
+        assertThat(entity.fileName).isEqualTo(bps.fileName)
+        assertThat(entity.batchId).isEqualTo(bps.batchId)
+        assertThat(entity.status).isEqualTo(bps.transactionStatus)
+        assertThat(entity.amount.amount).isEqualTo(bps.transactionAmount.amount)
+        assertThat(entity.amount.currency).isEqualTo(bps.transactionAmount.currency)
+
+        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
+        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
+        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
+        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
+
+        assertThat(entity.receiver.entityBic).isEqualTo(bps.receiver.entityBic)
+        assertThat(entity.receiver.fullName).isEqualTo(bps.receiver.fullName)
+        assertThat(entity.receiver.iban).isEqualTo(bps.receiver.iban)
+        assertThat(entity.receiver.entityName).isEqualTo(bps.receiver.entityName)
     }
 
     @Test

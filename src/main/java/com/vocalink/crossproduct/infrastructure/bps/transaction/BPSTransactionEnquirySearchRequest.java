@@ -6,13 +6,16 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
 public class BPSTransactionEnquirySearchRequest {
 
-  private final ZonedDateTime createdDateFrom;
-  private final ZonedDateTime createdDateTo;
+  @Setter
+  private ZonedDateTime createdDateFrom;
+  @Setter
+  private ZonedDateTime createdDateTo;
   private final ZonedDateTime cycleDay;
   private final String cycleName;
   private final String messageDirection;

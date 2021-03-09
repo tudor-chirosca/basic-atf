@@ -308,19 +308,9 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "currency", source = "transaction.amount.currency"),
-      @Mapping(target = "amount", source = "transaction.amount.amount"),
-      @Mapping(target = "sender", source = "sender"),
+      @Mapping(target = "amount", source = "transaction.amount.amount")
   })
-  TransactionDetailsDto toDetailsDto(Transaction transaction, EnquirySenderDetails sender);
-
-  @Mappings({
-      @Mapping(target = "currency", source = "transaction.amount.currency"),
-      @Mapping(target = "amount", source = "transaction.amount.amount"),
-      @Mapping(target = "sender", source = "sender"),
-      @Mapping(target = "receiver", source = "receiver")
-  })
-  TransactionDetailsDto toDetailsDto(Transaction transaction, EnquirySenderDetails sender,
-      EnquirySenderDetails receiver);
+  TransactionDetailsDto toDetailsDto(Transaction transaction);
 
   EnquirySenderDetailsDto toDto(EnquirySenderDetails senderDetails);
 

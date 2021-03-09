@@ -104,6 +104,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantIns
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -247,6 +248,15 @@ public interface EntityMapper {
       @Mapping(target = "createdAt", source = "createdDateTime")
   })
   Transaction toEntity(BPSTransaction transaction);
+
+  @Mappings({
+      @Mapping(target = "instructionId", source = "txnsInstructionId"),
+      @Mapping(target = "status", source = "transactionStatus"),
+      @Mapping(target = "createdAt", source = "sentDateTime"),
+      @Mapping(target = "amount", source = "transactionAmount"),
+      @Mapping(target = "settlementCycleId", source = "settlementCycle")
+  })
+  Transaction toEntity(BPSTransactionDetails transaction);
 
   AlertPriorityData toEntity(BPSAlertPriority priorityData);
 

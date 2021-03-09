@@ -16,7 +16,6 @@ public class TransactionDetailsDto {
   private final String currency;
   private final String fileName;
   private final String batchId;
-  private final LocalDate valueDate;
   private final EnquirySenderDetailsDto receiver;
   private final LocalDate settlementDate;
   private final String settlementCycleId;

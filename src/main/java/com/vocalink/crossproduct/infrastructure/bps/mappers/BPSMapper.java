@@ -142,6 +142,14 @@ public interface BPSMapper {
   })
   BPSTransactionEnquirySearchRequest toBps(TransactionEnquirySearchCriteria criteria, @Context String currency);
 
+  @AfterMapping
+  default void updateRequest(@MappingTarget BPSTransactionEnquirySearchRequest request) {
+    if (request.getCycleDay() != null && request.getCycleName() != null) {
+      request.setCreatedDateFrom(null);
+      request.setCreatedDateTo(null);
+    }
+  }
+
   @Named("mapToBpsAmount")
   default BPSAmount mapToBpsAmount(BigDecimal amount, @Context String currency) {
     if (amount == null) {

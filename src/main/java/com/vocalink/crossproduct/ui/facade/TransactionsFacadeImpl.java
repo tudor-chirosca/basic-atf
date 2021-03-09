@@ -48,23 +48,7 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
 
     final Transaction transaction = repositoryFactory.getTransactionRepository(product)
         .findById(id);
-    final Account senderAccount = repositoryFactory.getAccountRepository(product)
-        .findByPartyCode(transaction.getSenderParticipantIdentifier());
-    final Participant senderParticipant = repositoryFactory.getParticipantRepository(product)
-        .findById(transaction.getSenderParticipantIdentifier());
-    final EnquirySenderDetails sender = MAPPER.toEntity(senderAccount, senderParticipant);
 
-    if (Objects.nonNull(transaction.getReceiverParticipantIdentifier())) {
-      final Account receiverAccount = repositoryFactory.getAccountRepository(product)
-          .findByPartyCode(transaction.getReceiverParticipantIdentifier());
-      final Participant receiverParticipant = repositoryFactory.getParticipantRepository(product)
-          .findById(transaction.getReceiverParticipantIdentifier());
-      final EnquirySenderDetails receiver = MAPPER.toEntity(receiverAccount, receiverParticipant);
-
-      return presenterFactory.getPresenter(clientType)
-          .presentTransactionDetails(transaction, sender, receiver);
-    }
-
-    return presenterFactory.getPresenter(clientType).presentTransactionDetails(transaction, sender);
+    return presenterFactory.getPresenter(clientType).presentTransactionDetails(transaction);
   }
 }

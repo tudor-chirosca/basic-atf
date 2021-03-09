@@ -155,7 +155,6 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "currency": "SEK",
             "fileName": "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
             "batchId": "P27ISTXBANKSESS",
-            "valueDate": "2021-01-14",
             "receiver": {
                 "entityName": "Meetoo",
                 "entityBic": "MEEOSES1",
@@ -336,7 +335,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 BigDecimal.valueOf(11112222.33), "SEK",
                 "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
                 "P27ISTXBANKSESS",
-                date, receiver, date,
+                 receiver, date,
                 "20201209001",
                 ZonedDateTime.of(2021, 1, 14, 15, 2, 14 ,0, ZoneId.of("UTC")),
                 "rejected",

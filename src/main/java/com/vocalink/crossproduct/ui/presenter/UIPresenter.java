@@ -387,15 +387,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender) {
-    return MAPPER.toDetailsDto(transaction, sender);
-  }
-
-  @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender, EnquirySenderDetails receiver) {
-    return MAPPER.toDetailsDto(transaction, sender, receiver);
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
+    return MAPPER.toDetailsDto(transaction);
   }
 
   @Override

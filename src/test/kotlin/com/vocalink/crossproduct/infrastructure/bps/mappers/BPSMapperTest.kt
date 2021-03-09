@@ -16,13 +16,14 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import kotlin.test.assertNull
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -141,7 +142,7 @@ class BPSMapperTest {
     }
 
     @Test
-    fun `should map BPSTransactionEnquirySearchRequest fields`() {
+    fun `should map BPSTransactionEnquirySearchRequest fields and remove dates if cycleName and cycleDay persist`() {
         val date = LocalDate.now()
         val currency = "SEK"
         val sorting = listOf(
@@ -167,8 +168,8 @@ class BPSMapperTest {
                 date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria, currency)
-        assertThat(request.createdDateFrom).isEqualTo(ZonedDateTime.of(criteria.dateFrom, LocalTime.MIN, ZoneId.of("UTC")))
-        assertThat(request.createdDateTo).isEqualTo(ZonedDateTime.of(criteria.dateTo, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
+        assertNull(request.createdDateFrom)
+        assertNull(request.createdDateTo)
         assertThat(request.cycleDay).isEqualTo(ZonedDateTime.of(criteria.cycleDay, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
         assertThat(request.cycleName).isEqualTo(criteria.cycleName)
         assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
@@ -215,6 +216,30 @@ class BPSMapperTest {
         assertThat(request.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
         assertThat(request.sortingOrder[11].sortOrderBy).isEqualTo("status")
         assertThat(request.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
+    }
+
+    @Test
+    fun `should map BPSTransactionEnquirySearchRequest fields`() {
+        val date = LocalDate.now()
+        val currency = "SEK"
+        val criteria = TransactionEnquirySearchCriteria(
+                0, 0, null, date, date,
+                null,
+                null,
+                "messageDirection",
+                "messageType",
+                "sendingBic",
+                "receivingBic",
+                "status",
+                "reasonCode",
+                "id",
+                "sendingAccount",
+                "receivingAccount",
+                date, BigDecimal.TEN, BigDecimal.ONE
+        )
+        val request = BPSMAPPER.toBps(criteria, currency)
+        assertThat(request.createdDateFrom).isEqualTo(ZonedDateTime.of(criteria.dateFrom, LocalTime.MIN, ZoneId.of("UTC")))
+        assertThat(request.createdDateTo).isEqualTo(ZonedDateTime.of(criteria.dateTo, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
     }
 
     @Test

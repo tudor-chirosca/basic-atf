@@ -65,7 +65,7 @@ public class BPSTransactionRepository implements TransactionRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(bpsRequest), BPSSingleTransactionRequest.class))
         .retrieve()
-        .bodyToMono(BPSTransaction.class)
+        .bodyToMono(BPSTransactionDetails.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)

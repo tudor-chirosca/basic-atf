@@ -58,7 +58,7 @@ class TransactionsFacadeImplTest {
                 Transaction(null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null, null
+                        null
                 )
         ), summary)
         val pageDto = PageDto<TransactionDto>(1, listOf(
@@ -93,12 +93,12 @@ class TransactionsFacadeImplTest {
         val transaction = Transaction(
                 null, null, null, null, null,
                 null, null, null, null,
-                null, null, null, null, null
+                null, null, null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
                 null, null, null, null, null, null,
                 null, null, null, null, null,
-                null, null, null
+                null, null
         )
         val account = Account(null, null, null)
 
@@ -116,14 +116,14 @@ class TransactionsFacadeImplTest {
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)
 
-        `when`(uiPresenter.presentTransactionDetails(any(), any()))
+        `when`(uiPresenter.presentTransactionDetails(any()))
                 .thenReturn(batchDetailsDto)
 
         val result = transactionsServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(transactionRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentTransactionDetails(any(), any())
+        verify(uiPresenter).presentTransactionDetails(any())
 
         assertNotNull(result)
     }

@@ -41,9 +41,6 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -52,6 +49,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -525,28 +525,39 @@ class DTOMapperTest {
     @Test
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
+        val sender = EnquirySenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                "Mark Twain"
+        )
+        val receiver = EnquirySenderDetails(
+                "entityName",
+                "entityBic",
+                "iban",
+                "Bob Sinclair"
+        )
         val transaction = Transaction(
                 "instructionId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "originator",
+                "messageType",
                 amount,
+                "status",
                 "fileName",
                 "batchId",
-                "senderEntityBic",
-                LocalDate.of(2021, 1, 15),
-                "receiverEntityBic",
                 LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "status",
                 "reasonCode",
-                "messageType",
-                "senderEntityBic"
+                sender,
+                receiver
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
-        assertThat(result.senderBic).isEqualTo(transaction.senderParticipantIdentifier)
+        assertThat(result.senderBic).isEqualTo(transaction.originator)
         assertThat(result.status).isEqualTo(transaction.status)
     }
 
@@ -557,37 +568,35 @@ class DTOMapperTest {
                 "entityName",
                 "entityBic",
                 "iban",
-                null
+                "fullName"
         )
         val receiver = EnquirySenderDetails(
                 "entityName",
                 "entityBic",
                 "iban",
-                null
+                "fullName"
         )
         val transaction = Transaction(
                 "instructionId",
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "originator",
+                "messageType",
                 amount,
+                "status",
                 "fileName",
                 "batchId",
-                "originator",
-                LocalDate.of(2021, 1, 15),
-                "receiverEntityBic",
                 LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "status",
                 "reasonCode",
-                "messageType",
-                "senderEntityBic"
+                sender,
+                receiver
         )
-        val result = MAPPER.toDetailsDto(transaction, sender, receiver)
+        val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.currency).isEqualTo(transaction.amount.currency)
         assertThat(result.fileName).isEqualTo(transaction.fileName)
         assertThat(result.batchId).isEqualTo(transaction.batchId)
-        assertThat(result.valueDate).isEqualTo(transaction.valueDate)
         assertThat(result.settlementDate).isEqualTo(transaction.settlementDate)
         assertThat(result.settlementCycleId).isEqualTo(transaction.settlementCycleId)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
@@ -658,7 +667,6 @@ class DTOMapperTest {
                 count, returnReceivedAmount
         )
         val netPositionAmount = Amount(BigDecimal(5000), "SEK")
-
         val previousPosition = ParticipantPosition(
                 LocalDate.now(),
                 "participantId",
@@ -666,7 +674,6 @@ class DTOMapperTest {
                 "currency",
                 paymentSent, paymentReceived, returnSent, returnReceived, netPositionAmount
         )
-
         val currentPosition = ParticipantPosition(
                 LocalDate.now(),
                 "participantId",
@@ -677,13 +684,11 @@ class DTOMapperTest {
 
         val debitCapAmount = Amount(BigDecimal(1000), "SEK")
         val debitPositionAmount = Amount(BigDecimal(2000), "SEK")
-
         val intraDay = IntraDayPositionGross(
                 "schemeId",
                 "debitParticipantId",
                 LocalDate.now(), debitCapAmount, debitPositionAmount
         )
-
         val participant = Participant(
                 "participantId",
                 "participantId",
@@ -700,12 +705,10 @@ class DTOMapperTest {
                 null,
                 null
         )
-
         val result = MAPPER.toDto(
                 currentCycle, previousCycle, currentPosition, previousPosition,
                 participant, participant, intraDay
         )
-
         assertThat(result.participant.bic).isEqualTo(participant.bic)
         assertThat(result.participant.id).isEqualTo(participant.id)
         assertThat(result.participant.name).isEqualTo(participant.name)

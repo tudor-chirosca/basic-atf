@@ -202,14 +202,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender) {
-    throw new RuntimeException("System API not implemented yet");
-  }
-
-  @Override
-  public TransactionDetailsDto presentTransactionDetails(Transaction transaction,
-      EnquirySenderDetails sender, EnquirySenderDetails receiver) {
+  public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
     throw new RuntimeException("System API not implemented yet");
   }
 

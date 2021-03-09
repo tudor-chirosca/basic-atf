@@ -84,7 +84,7 @@ bps-config:
       path: /enquiries/transactions/{schemeCode}/readAll
       base: MOCK
     single-transaction-path:
-      path: /enquiry/transactions/{schemeCode}/read
+      path: /enquiries/transactions/{schemeCode}/read
       base: MOCK
     single-account-path:
       path: /account/read
