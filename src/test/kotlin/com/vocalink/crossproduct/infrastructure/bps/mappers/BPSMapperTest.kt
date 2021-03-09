@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -141,7 +142,7 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSTransactionEnquirySearchRequest fields`() {
-        val date = ZonedDateTime.now()
+        val date = LocalDate.now()
         val currency = "SEK"
         val sorting = listOf(
                 "-instructionId", "+instructionId",
@@ -166,9 +167,9 @@ class BPSMapperTest {
                 date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria, currency)
-        assertThat(request.createdDateFrom).isEqualTo(criteria.dateFrom)
-        assertThat(request.createdDateTo).isEqualTo(criteria.dateTo)
-        assertThat(request.cycleDay).isEqualTo(criteria.cycleDay)
+        assertThat(request.createdDateFrom).isEqualTo(ZonedDateTime.of(criteria.dateFrom, LocalTime.MIN, ZoneId.of("UTC")))
+        assertThat(request.createdDateTo).isEqualTo(ZonedDateTime.of(criteria.dateTo, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
+        assertThat(request.cycleDay).isEqualTo(ZonedDateTime.of(criteria.cycleDay, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
         assertThat(request.cycleName).isEqualTo(criteria.cycleName)
         assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
@@ -179,7 +180,7 @@ class BPSMapperTest {
         assertThat(request.instructionIdentifier).isEqualTo(criteria.id)
         assertThat(request.sendingAccount).isEqualTo(criteria.sendingAccount)
         assertThat(request.receivingAccount).isEqualTo(criteria.receivingAccount)
-        assertThat(request.valueDate).isEqualTo(criteria.valueDate)
+        assertThat(request.valueDate).isEqualTo(ZonedDateTime.of(criteria.valueDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
         assertThat(request.transactionRangeFrom.amount).isEqualTo(criteria.txnFrom)
         assertThat(request.transactionRangeFrom.currency).isEqualTo(currency)
         assertThat(request.transactionRangeTo.amount).isEqualTo(criteria.txnTo)

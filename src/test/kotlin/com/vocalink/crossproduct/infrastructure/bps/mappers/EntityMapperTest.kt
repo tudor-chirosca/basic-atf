@@ -570,7 +570,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map TransactionEnquirySearchCriteria fields`() {
-        val date = ZonedDateTime.now()
+        val date = LocalDate.now()
         val request = TransactionEnquirySearchRequest(
                 0, 0, listOf("sortBy"), date, date, date,
                 "cycleName",

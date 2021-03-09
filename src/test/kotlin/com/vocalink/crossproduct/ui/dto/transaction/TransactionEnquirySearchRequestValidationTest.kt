@@ -1,12 +1,12 @@
 package com.vocalink.crossproduct.ui.dto.transaction
 
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import java.time.ZonedDateTime
+import java.time.LocalDate
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class TransactionEnquirySearchRequestValidationTest {
 
@@ -106,7 +106,6 @@ class TransactionEnquirySearchRequestValidationTest {
         )
 
         val result = ArrayList(validator.validate(request))
-
         assertThat(result).isEmpty()
     }
 
@@ -140,7 +139,7 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on longer then 30`() {
-        val older = ZonedDateTime.now().minusDays(31)
+        val older = LocalDate.now().minusDays(31)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
@@ -169,7 +168,7 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should pass on 30 days`() {
-        val older = ZonedDateTime.now().minusDays(30)
+        val older = LocalDate.now().minusDays(30)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,

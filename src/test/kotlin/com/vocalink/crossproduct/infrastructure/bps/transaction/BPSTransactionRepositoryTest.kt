@@ -29,7 +29,7 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
     companion object {
         const val VALID_TRANSACTIONS_REQUEST: String = """ 
         {
-            "createdDateFrom": "2021-02-18T16:00:00Z",
+            "createdDateFrom": "2021-02-18T00:00:00Z",
             "createdDateTo": null,
             "cycleDay": null,
             "cycleName": null,
@@ -114,7 +114,7 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                                 .withBody(VALID_TRANSACTION_RESULT_LIST_RESPONSE)))
 
         val request = TransactionEnquirySearchCriteria(
-                0, 1, null, ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 16, 0, 0, 0, ZoneId.of("UTC")),
+                0, 1, null, LocalDate.of(2021, Month.FEBRUARY.value, 18),
                 null, null, null, "sending", null,
                 null, null, null, null, null, 
                 null, null, null, null, BigDecimal.TEN

@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -30,9 +31,9 @@ public class TransactionEnquirySearchRequest {
   private final int limit;
   private final List<String> sort;
   @ValidFromDate
-  private final ZonedDateTime dateFrom;
-  private final ZonedDateTime dateTo;
-  private final ZonedDateTime cycleDay;
+  private final LocalDate dateFrom;
+  private final LocalDate dateTo;
+  private final LocalDate cycleDay;
   private final String cycleName;
   @ValidDirection
   private final String messageDirection;
@@ -45,7 +46,7 @@ public class TransactionEnquirySearchRequest {
   private final String id;
   private final String sendingAccount;
   private final String receivingAccount;
-  private final ZonedDateTime valueDate;
+  private final LocalDate valueDate;
   private final BigDecimal txnFrom;
   private final BigDecimal txnTo;
 
@@ -54,9 +55,9 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "offset") Integer offset,
       @JsonProperty(value = "limit") Integer limit,
       @JsonProperty(value = "sort") List<String> sort,
-      @JsonProperty(value = "dateFrom") ZonedDateTime dateFrom,
-      @JsonProperty(value = "dateTo") ZonedDateTime dateTo,
-      @JsonProperty(value = "cycleDay") ZonedDateTime cycleDay,
+      @JsonProperty(value = "dateFrom") LocalDate dateFrom,
+      @JsonProperty(value = "dateTo") LocalDate dateTo,
+      @JsonProperty(value = "cycleDay") LocalDate cycleDay,
       @JsonProperty(value = "cycleName") String cycleName,
       @JsonProperty(value = "messageDirection") String messageDirection,
       @JsonProperty(value = "messageType") String messageType,
@@ -67,14 +68,14 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "id") String id,
       @JsonProperty(value = "sendingAccount") String sendingAccount,
       @JsonProperty(value = "receivingAccount") String receivingAccount,
-      @JsonProperty(value = "valueDate") ZonedDateTime valueDate,
+      @JsonProperty(value = "valueDate") LocalDate valueDate,
       @JsonProperty(value = "txnFrom") BigDecimal txnFrom,
       @JsonProperty(value = "txnTo") BigDecimal txnTo) {
 
     this.offset = offset == null ? parseInt(getDefault(OFFSET)) : offset;
     this.limit = limit == null ? parseInt(getDefault(LIMIT)) : limit;
     this.dateFrom = dateFrom == null
-        ? ZonedDateTime.now().minusDays(parseLong(getDefault(DAYS_LIMIT))) : dateFrom;
+        ? LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT))) : dateFrom;
     this.dateTo = dateTo;
     this.cycleDay = cycleDay;
     this.cycleName = cycleName;

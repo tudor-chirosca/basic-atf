@@ -129,8 +129,10 @@ public interface BPSMapper {
   }
 
   @Mappings({
-      @Mapping(target = "createdDateFrom", source = "dateFrom"),
-      @Mapping(target = "createdDateTo", source = "dateTo"),
+      @Mapping(target = "createdDateFrom", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
+      @Mapping(target = "createdDateTo", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "cycleDay", source = "cycleDay", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "valueDate", source = "valueDate", qualifiedByName = "toZonedDateTimeConverter-EOD"),
       @Mapping(target = "sendingParticipant", source = "sendingBic"),
       @Mapping(target = "receivingParticipant", source = "receivingBic"),
       @Mapping(target = "instructionIdentifier", source = "id"),
