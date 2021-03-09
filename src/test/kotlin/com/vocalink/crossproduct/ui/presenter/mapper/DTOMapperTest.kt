@@ -305,7 +305,7 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map ParticipantSettlementDto fields`() {
+    fun `should map ParticipantSettlementDto fields with no funding Bic`() {
         val instruction = ParticipantInstruction(
                 "cycleId", "participantId", "reference", "ACCEPTED",
                 "counterpartyId", "settlementCounterpartyId",
@@ -327,6 +327,121 @@ class DTOMapperTest {
         val participant = Participant(
                 "participantId",
                 "participantId",
+                "name",
+                null,
+                ParticipantStatus.ACTIVE,
+                null,
+                ParticipantType.FUNDED,
+                null,
+                "organizationId",
+                null,
+                null,
+                null,
+                null,
+                null
+        )
+        val counterparty = Participant(
+                "counterpartyId",
+                "counterpartyId",
+                "counterpartyName",
+                "fundingBic",
+                ParticipantStatus.ACTIVE,
+                null,
+                ParticipantType.FUNDED,
+                null,
+                "organizationId",
+                null,
+                null,
+                null,
+                null,
+                null
+        )
+        val settlementCounterparty = Participant(
+                "settlementCounterpartyId",
+                "settlementCounterpartyId",
+                "settlementCounterpartyName",
+                "fundingBic",
+                ParticipantStatus.ACTIVE,
+                null,
+                ParticipantType.FUNDED,
+                null,
+                "organizationId",
+                null,
+                null,
+                null,
+                null,
+                null
+        )
+
+        val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty), participant)
+
+        assertThat(result).isNotNull
+        assertThat(result.cycleId).isEqualTo(settlement.cycleId)
+        assertThat(result.settlementTime).isEqualTo(cycle.settlementTime)
+        assertThat(result.status).isEqualTo(settlement.status)
+        assertThat(result.participant.participantIdentifier).isEqualTo(participant.bic)
+        assertThat(result.participant.name).isEqualTo(participant.name)
+        assertThat(result.participant.connectingParticipantId).isEqualTo(participant.fundingBic)
+        assertThat(result.participant.participantType).isEqualTo(participant.participantType.description)
+        assertThat(result.instructions.totalResults).isEqualTo(1)
+
+        val instructionResult = result.instructions.items[0] as ParticipantInstructionDto
+        assertThat(instructionResult.counterparty.participantIdentifier).isEqualTo(counterparty.bic)
+        assertThat(instructionResult.counterparty.name).isEqualTo(counterparty.name)
+        assertThat(instructionResult.counterparty.connectingParticipantId).isEqualTo(counterparty.fundingBic)
+        assertThat(instructionResult.counterparty.participantType).isEqualTo(counterparty.participantType.description)
+
+        assertThat(instructionResult.settlementCounterparty.participantIdentifier).isEqualTo(
+                settlementCounterparty.bic
+        )
+        assertThat(instructionResult.settlementCounterparty.name).isEqualTo(settlementCounterparty.name)
+        assertThat(instructionResult.settlementCounterparty.connectingParticipantId).isEqualTo(
+                settlementCounterparty.fundingBic
+        )
+        assertThat(instructionResult.settlementCounterparty.participantType).isEqualTo(
+                settlementCounterparty.participantType.description
+        )
+    }
+
+    @Test
+    fun `should map ParticipantSettlementDto fields with funding Bic`() {
+        val instruction = ParticipantInstruction(
+                "cycleId", "participantId", "reference", "ACCEPTED",
+                "counterpartyId", "settlementCounterpartyId",
+                BigDecimal.TEN, BigDecimal.TEN
+        )
+        val settlement = ParticipantSettlement(
+                "cycleId", ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
+                SettlementStatus.PARTIAL, "participantId", Page(1, listOf(instruction))
+        )
+        val cycle = Cycle(
+                "cycleId",
+                ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                CycleStatus.COMPLETED,
+                false,
+                ZonedDateTime.of(2020, 10, 10, 12, 10, 10, 0, ZoneId.of("UTC")),
+                emptyList()
+        )
+        val settlementBank = Participant(
+                "participantId",
+                "participantId",
+                "name",
+                "fundingBic",
+                ParticipantStatus.ACTIVE,
+                null,
+                ParticipantType.FUNDING,
+                null,
+                "organizationId",
+                null,
+                null,
+                null,
+                null,
+                null
+        )
+        val fundedParticipant = Participant(
+                "fundingBic",
+                "fundingBic",
                 "name",
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
@@ -373,16 +488,22 @@ class DTOMapperTest {
                 null
         )
 
-        val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty))
+        val result = MAPPER.toDto(settlement,
+                listOf(settlementBank, counterparty, settlementCounterparty, fundedParticipant),
+                fundedParticipant, settlementBank)
 
         assertThat(result).isNotNull
         assertThat(result.cycleId).isEqualTo(settlement.cycleId)
         assertThat(result.settlementTime).isEqualTo(cycle.settlementTime)
         assertThat(result.status).isEqualTo(settlement.status)
-        assertThat(result.participant.participantIdentifier).isEqualTo(participant.bic)
-        assertThat(result.participant.name).isEqualTo(participant.name)
-        assertThat(result.participant.connectingParticipantId).isEqualTo(participant.fundingBic)
-        assertThat(result.participant.participantType).isEqualTo(participant.participantType.description)
+        assertThat(result.participant.participantIdentifier).isEqualTo(fundedParticipant.bic)
+        assertThat(result.participant.name).isEqualTo(fundedParticipant.name)
+        assertThat(result.participant.connectingParticipantId).isEqualTo(fundedParticipant.fundingBic)
+        assertThat(result.participant.participantType).isEqualTo(fundedParticipant.participantType.description)
+        assertThat(result.settlementBank.participantIdentifier).isEqualTo(settlementBank.bic)
+        assertThat(result.settlementBank.name).isEqualTo(settlementBank.name)
+        assertThat(result.settlementBank.connectingParticipantId).isEqualTo(settlementBank.fundingBic)
+        assertThat(result.settlementBank.participantType).isEqualTo(settlementBank.participantType.description)
         assertThat(result.instructions.totalResults).isEqualTo(1)
 
         val instructionResult = result.instructions.items[0] as ParticipantInstructionDto

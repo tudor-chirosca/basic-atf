@@ -315,8 +315,14 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
-      List<Participant> participants) {
-    return MAPPER.toDto(settlement, participants);
+      List<Participant> participants, Participant participant) {
+    return MAPPER.toDto(settlement, participants, participant);
+  }
+
+  @Override
+  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+      List<Participant> participants, Participant participant, Participant settlementBank) {
+    return MAPPER.toDto(settlement, participants, participant, settlementBank);
   }
 
   @Override

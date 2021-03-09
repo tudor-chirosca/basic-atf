@@ -123,7 +123,10 @@ public interface Presenter {
       File file);
 
   ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
-      List<Participant> participants);
+      List<Participant> participants, Participant participant);
+
+  ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+      List<Participant> participants, Participant participant, Participant settlementBank);
 
   PageDto<ParticipantSettlementCycleDto> presentSettlements(Page<ParticipantSettlement> settlements,
       List<Participant> participants);

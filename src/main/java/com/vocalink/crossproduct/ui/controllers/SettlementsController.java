@@ -35,8 +35,8 @@ public class SettlementsController implements SettlementsApi {
       final @PathVariable String participantId,
       final ParticipantSettlementRequest request) {
 
-    ParticipantSettlementDetailsDto settlementDetails = settlementsFacade.getSettlementDetails(context,
-        clientType, request, cycleId, participantId);
+    ParticipantSettlementDetailsDto settlementDetails = settlementsFacade
+        .getSettlementDetails(context, clientType, request, cycleId, participantId);
 
     return ResponseEntity.ok().body(settlementDetails);
   }

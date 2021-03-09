@@ -88,7 +88,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
           "Number of Cycles is not equal with number of Position Details");
     }
 
-    if (participant.getParticipantType() == ParticipantType.FUNDED) {
+    if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
       Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(participant.getFundingBic());
 

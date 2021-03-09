@@ -176,7 +176,13 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
-      List<Participant> participants) {
+      List<Participant> participants, Participant participant) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+      List<Participant> participants, Participant participant, Participant settlementBank) {
     throw new RuntimeException("System API not implemented yet");
   }
 

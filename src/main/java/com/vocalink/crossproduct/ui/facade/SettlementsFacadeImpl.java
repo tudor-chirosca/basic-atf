@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
@@ -41,6 +42,9 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", cycleId,
         participantId, product);
 
+    final Participant participant = repositoryFactory.getParticipantRepository(product)
+        .findById(participantId);
+
     final ParticipantSettlement participantSettlement = repositoryFactory
         .getSettlementsRepository(product)
         .findBy(MAPPER.toEntity(request, cycleId, participantId));
@@ -49,8 +53,17 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .getParticipantRepository(product)
         .findAll();
 
+    if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
+      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
+          .findById(participant.getFundingBic());
+
+      return presenterFactory.getPresenter(clientType)
+          .presentSettlementDetails(participantSettlement, participants, participant,
+              fundingParticipant);
+    }
+
     return presenterFactory.getPresenter(clientType)
-        .presentSettlementDetails(participantSettlement, participants);
+        .presentSettlementDetails(participantSettlement, participants, participant);
   }
 
   @Override

@@ -262,9 +262,20 @@ public interface DTOMapper {
   ParticipantSettlementCycleDto toDto(@Context List<Participant> participants,
       ParticipantSettlement settlement);
 
-  @Mapping(target = "participant", source = "settlement.participantId", qualifiedByName = "findParticipant")
+  @Mappings({
+      @Mapping(target = "participant", source = "participant"),
+      @Mapping(target = "status", source = "settlement.status")
+  })
   ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement,
-      @Context List<Participant> participants);
+      @Context List<Participant> participants, Participant participant);
+
+  @Mappings({
+      @Mapping(target = "participant", source = "participant"),
+      @Mapping(target = "settlementBank", source = "settlementBank"),
+      @Mapping(target = "status", source = "settlement.status")
+  })
+  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement,
+      @Context List<Participant> participants, Participant participant, Participant settlementBank);
 
   @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
   @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
