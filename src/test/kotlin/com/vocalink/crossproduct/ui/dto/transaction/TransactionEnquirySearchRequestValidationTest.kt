@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.dto.transaction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 import javax.validation.Validation
@@ -195,34 +194,6 @@ class TransactionEnquirySearchRequestValidationTest {
 
         assertThat(result).isEmpty()
     }
-
-//    @Test //TODO: Validation is turned off.
-//    fun `should fail if both cycle and date to are present`() {
-//        request = TransactionEnquirySearchRequest(
-//                0, 20,
-//                null,
-//                null,
-//                LocalDate.now(),
-//                listOf("1", "2"),
-//                "sending",
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//        )
-//
-//        val result = ArrayList(validator.validate(request))
-//
-//        assertThat(result).isNotEmpty
-//        assertThat(result[0].message).isEqualTo(CYCLE_OR_DATE_ERROR)
-//    }
 
     @Test
     fun `should fail if limit is less than 1`() {

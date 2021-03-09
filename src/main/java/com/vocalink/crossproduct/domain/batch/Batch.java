@@ -21,5 +21,7 @@ public class Batch {
   private final String status;
   private final String reasonCode;
   private final String messageType;
-  private final String sender;
+  private final String senderBank;
+  private final String senderBic;
+  private final String senderIban;
 }

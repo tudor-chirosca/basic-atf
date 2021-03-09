@@ -241,7 +241,7 @@ class DTOMapperTest {
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
-                .sender(sender.entityBic)
+                .senderBic(sender.entityBic)
                 .status("status")
                 .build()
 
@@ -254,7 +254,7 @@ class DTOMapperTest {
         assertThat(result.totalResults).isEqualTo(totalResults)
         assertThat(resultItem.id).isEqualTo(batch.batchId)
         assertThat(resultItem.createdAt).isEqualTo(batch.createdAt)
-        assertThat(resultItem.senderBic).isEqualTo(batch.sender)
+        assertThat(resultItem.senderBic).isEqualTo(batch.senderBic)
         assertThat(resultItem.messageType).isEqualTo(batch.messageType)
         assertThat(resultItem.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
         assertThat(resultItem.status).isEqualTo(batch.status)
@@ -279,15 +279,13 @@ class DTOMapperTest {
                 .messageType("message_type")
                 .batchId("id")
                 .nrOfTransactions(12)
-                .sender("sender_bic")
+                .senderBic("sender_bic")
                 .status("status")
                 .build()
 
-        val participant = Participant.builder().id("id").build()
-
         val file = File.builder().fileSize(1).build()
 
-        val result = MAPPER.toDetailsDto(batch, participant, file)
+        val result = MAPPER.toDetailsDto(batch, file)
 
         assertThat(result).isNotNull
         assertThat(result.batchId).isEqualTo(batch.batchId)
@@ -301,7 +299,7 @@ class DTOMapperTest {
         assertThat(result.reasonCode).isEqualTo(batch.reasonCode)
         assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
         assertThat(result.messageType).isEqualTo(batch.messageType)
-        assertThat(result.sender.entityBic).isEqualTo(participant.bic)
+        assertThat(result.sender.entityBic).isEqualTo(batch.senderBic)
     }
 
     @Test

@@ -230,18 +230,6 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
     }
 
-//    @Test //TODO:  Validation turned off.
-//    fun `should fail with 400 when cycleIds and date_to are both in request`() {
-//        mockMvc.perform(post("/enquiry/transactions/searches")
-//                .contentType(UTF8_CONTENT_TYPE)
-//                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-//                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-//                .content(INVALID_DATE_AND_CYCLE_IDS_BODY_REQUEST))
-//                .andExpect(status().is4xxClientError)
-//                .andExpect(content().string(containsString("cycle_ids and date_to are both included "
-//                        + "in request params, exclude one of them")))
-//    }
-
     @Test
     fun `should fail with 400 when send_bic and recv_bic are with same values`() {
         mockMvc.perform(post("/enquiry/transactions/searches")

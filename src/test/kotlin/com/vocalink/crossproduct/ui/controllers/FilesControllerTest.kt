@@ -161,21 +161,6 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
     }
 
-//    @Test //TODO: fix validation
-//    fun `should fail with 400 when cycleIds and date_to are both in request`() {
-//        val dateTo = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
-//        mockMvc.perform(get("/enquiry/files")
-//                .contentType(UTF8_CONTENT_TYPE)
-//                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-//                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-//                .param("msg_direction", "Sending")
-//                .param("cycle_id", "01")
-//                .param("date_to", dateTo))
-//                .andExpect(status().is4xxClientError)
-//                .andExpect(content().string(containsString("cycle_ids and date_to are both included "
-//                        + "in request params, exclude one of them")))
-//    }
-
     @Test
     fun `should fail with 400 when send_bic and recv_bic are with same values`() {
         mockMvc.perform(get("/enquiry/files")

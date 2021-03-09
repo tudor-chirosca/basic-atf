@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -45,10 +44,8 @@ public class BatchesFacadeImpl implements BatchesFacade {
     log.info("Fetching batch details for id: {} from: {}", id, product);
 
     final Batch batch = repositoryFactory.getBatchRepository(product).findById(id);
-    final Participant sender = repositoryFactory.getParticipantRepository(product)
-        .findById(batch.getSender());
     final File file = repositoryFactory.getFileRepository(product).findById(batch.getFileName());
 
-    return presenterFactory.getPresenter(clientType).presentBatchDetails(batch, sender, file);
+    return presenterFactory.getPresenter(clientType).presentBatchDetails(batch, file);
   }
 }

@@ -99,7 +99,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
 
         assertThat(result.data[0].batchId).isEqualTo("C27ISTXBANKSESS")
         assertThat(result.data[0].createdAt).isEqualTo("2020-10-23T13:43Z")
-        assertThat(result.data[0].sender).isEqualTo("NDEASESSXXX")
+        assertThat(result.data[0].senderBic).isEqualTo("NDEASESSXXX")
         assertThat(result.data[0].messageType).isEqualTo("prtp.005-prtp.006")
         assertThat(result.data[0].nrOfTransactions).isEqualTo(12)
         assertThat(result.data[0].status).isEqualTo("Accepted")
@@ -120,7 +120,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         assertThat(result).isNotNull
         assertThat(result.batchId).isEqualTo("C27ISTXBANKSESS")
         assertThat(result.settlementCycleId).isEqualTo("02")
-        assertThat(result.sender).isEqualTo("NDEASESSXXX")
+        assertThat(result.senderBic).isEqualTo("NDEASESSXXX")
         assertThat(result.reasonCode).isNull()
         assertThat(result.nrOfTransactions).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")

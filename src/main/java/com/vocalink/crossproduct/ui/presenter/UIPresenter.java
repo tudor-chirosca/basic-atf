@@ -6,7 +6,6 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -308,9 +307,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public BatchDetailsDto presentBatchDetails(Batch batch, Participant participant,
-      File file) {
-    return MAPPER.toDetailsDto(batch, participant, file);
+  public BatchDetailsDto presentBatchDetails(Batch batch, File file) {
+    return MAPPER.toDetailsDto(batch, file);
   }
 
   @Override

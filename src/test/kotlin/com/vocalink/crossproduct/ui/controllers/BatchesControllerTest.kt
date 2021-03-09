@@ -161,21 +161,6 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
     }
 
-//    @Test //TODO: Failing because validation turned off
-//    fun `should fail with 400 when cycleId and date_to are both in request`() {
-//        val dateTo = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//        mockMvc.perform(get("/enquiry/batches")
-//                .contentType(UTF8_CONTENT_TYPE)
-//                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-//                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-//                .param("msg_direction", "Sending")
-//                .param("cycle_ids", "01")
-//                .param("date_to", dateTo))
-//                .andExpect(status().is4xxClientError)
-//                .andExpect(content().string(containsString("cycle_ids and date_to are both included "
-//                        + "in request params, exclude one of them")))
-//    }
-
     @Test
     fun `should fail with 400 when send_bic and recv_bic are with same values`() {
         mockMvc.perform(get("/enquiry/batches")

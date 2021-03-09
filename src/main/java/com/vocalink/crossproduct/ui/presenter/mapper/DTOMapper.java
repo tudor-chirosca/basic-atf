@@ -239,7 +239,6 @@ public interface DTOMapper {
   FileDto toDto(File file);
 
   @Mapping(target = "id", source = "batchId")
-  @Mapping(target = "senderBic", source = "sender")
   BatchDto toDto(Batch batch);
 
 
@@ -249,11 +248,12 @@ public interface DTOMapper {
       @Mapping(target = "reasonCode", source = "batch.reasonCode"),
       @Mapping(target = "messageType", source = "batch.messageType"),
       @Mapping(target = "settlementDate", source = "batch.settlementDate"),
-      @Mapping(target = "sender.entityName", source = "participant.name"),
-      @Mapping(target = "sender.entityBic", source = "participant.bic"),
-      @Mapping(target = "fileSize", source = "file.fileSize")
+      @Mapping(target = "fileSize", source = "file.fileSize"),
+      @Mapping(target = "sender.entityName", source = "batch.senderBank"),
+      @Mapping(target = "sender.entityBic", source = "batch.senderBic"),
+      @Mapping(target = "sender.iban", source = "batch.senderIban")
   })
-  BatchDetailsDto toDetailsDto(Batch batch, Participant participant, File file);
+  BatchDetailsDto toDetailsDto(Batch batch, File file);
 
   PageDto<ParticipantSettlementCycleDto> toDto(Page<ParticipantSettlement> settlements,
       @Context List<Participant> participants);

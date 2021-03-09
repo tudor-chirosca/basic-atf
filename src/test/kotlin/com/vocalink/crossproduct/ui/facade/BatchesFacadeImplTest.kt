@@ -74,7 +74,7 @@ class BatchesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get batch details`() {
-        val batch = Batch.builder().sender("any").build()
+        val batch = Batch.builder().senderBic("any").build()
         val participant = Participant.builder().id("any").build()
         val file = File.builder().build()
         val batchDetailsDto = BatchDetailsDto.builder().build()
@@ -88,14 +88,14 @@ class BatchesFacadeImplTest {
         `when`(fileRepository.findById(any()))
                 .thenReturn(file)
 
-        `when`(uiPresenter.presentBatchDetails(any(), any(), any()))
+        `when`(uiPresenter.presentBatchDetails(any(), any()))
                 .thenReturn(batchDetailsDto)
 
         val result = batchesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(batchRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentBatchDetails(any(), any(), any())
+        verify(uiPresenter).presentBatchDetails(any(), any())
 
         assertNotNull(result)
     }

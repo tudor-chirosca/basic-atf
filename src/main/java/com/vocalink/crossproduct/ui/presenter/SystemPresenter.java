@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -169,8 +168,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public BatchDetailsDto presentBatchDetails(Batch batch, Participant participant,
-      File file) {
+  public BatchDetailsDto presentBatchDetails(Batch batch, File file) {
     throw new RuntimeException("System API not implemented yet");
   }
 

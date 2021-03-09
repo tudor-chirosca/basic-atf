@@ -138,7 +138,6 @@ public interface EntityMapper {
 
   @Mappings({
       @Mapping(target = "settlementCycleId", source = "settlementCycle"),
-      @Mapping(target = "sender", source = "senderBic"),
       @Mapping(target = "nrOfTransactions", source = "numberOfTransactions"),
       @Mapping(target = "createdAt", source = "sentDateAndTime"),
   })
@@ -396,7 +395,7 @@ public interface EntityMapper {
   @Mappings({
    @Mapping(target = "batchId", source = "messageIdentifier"),
    @Mapping(target = "createdAt", source = "createdDateTime"),
-   @Mapping(target = "sender", source = "originator")
+   @Mapping(target = "senderBic", source = "originator")
   })
   Batch toEntity(BPSBatchPart partialBatch);
 

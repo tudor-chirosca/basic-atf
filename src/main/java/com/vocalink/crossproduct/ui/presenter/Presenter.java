@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.Result;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -119,8 +118,7 @@ public interface Presenter {
 
   PageDto<TransactionDto> presentTransactions(Integer totalResults, List<Transaction> items);
 
-  BatchDetailsDto presentBatchDetails(Batch batch, Participant participant,
-      File file);
+  BatchDetailsDto presentBatchDetails(Batch batch, File file);
 
   ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
       List<Participant> participants, Participant participant);
