@@ -33,6 +33,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
+import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -70,6 +71,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -487,4 +489,6 @@ public interface DTOMapper {
 
     return new PageDto<>(page.getTotalResults(), targetItems);
   }
+
+  ValidationApprovalDto toDto(ValidationApproval validationApproval);
 }

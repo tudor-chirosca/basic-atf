@@ -25,6 +25,7 @@ public class BPSProperties {
   private Map<String, String> baseUrls;
   private Map<String, Detail> paths;
   private List<Integer> retryable;
+  private Map<String, String> eodPeriod;
 
   @AllArgsConstructor
   @NoArgsConstructor

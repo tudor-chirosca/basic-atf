@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import com.vocalink.crossproduct.domain.ResourceService;
 import com.vocalink.crossproduct.domain.approval.ApprovalService;
 import com.vocalink.crossproduct.domain.exception.ServiceNotAvailableException;
+import com.vocalink.crossproduct.domain.validation.ValidationService;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -18,9 +19,11 @@ public class ServiceFactory {
 
   private final List<ApprovalService> approvalServices;
   private final List<ResourceService> resourceServices;
+  private final List<ValidationService> validationServices;
 
   private Map<String, ApprovalService> approvalServicesByProduct;
   private Map<String, ResourceService> downloadServicesByProduct;
+  private Map<String, ValidationService> validationServicesByProduct;
 
   @PostConstruct
   public void init() {
@@ -28,6 +31,8 @@ public class ServiceFactory {
         .collect(toMap(ResourceService::getProduct, Function.identity()));
     approvalServicesByProduct = approvalServices.stream()
         .collect(toMap(ApprovalService::getProduct, Function.identity()));
+    validationServicesByProduct = validationServices.stream()
+        .collect(toMap(ValidationService::getProduct, Function.identity()));
   }
 
   public ResourceService getDownloadService(String product) {
@@ -44,5 +49,13 @@ public class ServiceFactory {
           "Approval service not available for product " + product);
     }
     return approvalServicesByProduct.get(product);
+  }
+
+  public ValidationService getValidationService(String product) {
+    if(validationServicesByProduct.get(product) == null) {
+      throw new ServiceNotAvailableException(
+          "Validation service not available for product " + product);
+    }
+    return validationServicesByProduct.get(product);
   }
 }

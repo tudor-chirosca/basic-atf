@@ -11,7 +11,6 @@ import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
-import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
@@ -27,6 +26,7 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
+import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -56,6 +56,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
+import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
@@ -158,4 +159,6 @@ public interface Presenter {
   Resource presentStream(InputStream file);
 
   ApprovalConfirmationResponseDto presentApprovalResponse(ApprovalConfirmationResponse response);
+
+  ValidationApprovalDto presentApprovalValidation(ValidationApproval response);
 }
