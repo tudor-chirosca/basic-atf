@@ -7,6 +7,7 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
+import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class SettlementEnquiryRequest {
   private int limit = parseInt(getDefault(LIMIT));
   @Setter
   private List<String> sort;
+  @ValidFromDate
   private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
   private List<String> cycleIds;

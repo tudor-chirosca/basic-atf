@@ -10,8 +10,7 @@ import java.time.temporal.Temporal;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ValidFromDateValidator implements
-    ConstraintValidator<ValidFromDate, Temporal> {
+public class ValidFromDateValidator implements ConstraintValidator<ValidFromDate, Temporal> {
 
   @Override
   public boolean isValid(Temporal value, ConstraintValidatorContext context) {

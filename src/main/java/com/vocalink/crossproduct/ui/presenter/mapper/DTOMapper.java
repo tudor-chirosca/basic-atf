@@ -14,6 +14,7 @@ import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
+import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
@@ -45,6 +46,7 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
+import com.vocalink.crossproduct.ui.dto.configuration.ConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
@@ -483,4 +485,6 @@ public interface DTOMapper {
   }
 
   ValidationApprovalDto toDto(ValidationApproval validationApproval);
+
+  ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays);
 }

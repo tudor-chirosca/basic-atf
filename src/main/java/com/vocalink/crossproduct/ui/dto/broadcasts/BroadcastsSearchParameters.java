@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
+import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -23,6 +24,7 @@ public class BroadcastsSearchParameters {
   private String recipient;
   private String msg;
   private String id;
+  @ValidFromDate
   @Setter(AccessLevel.PRIVATE)
   private ZonedDateTime dateFrom;
   @Setter(AccessLevel.PRIVATE)

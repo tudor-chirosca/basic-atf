@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
 import com.vocalink.crossproduct.domain.batch.Batch
+import com.vocalink.crossproduct.domain.configuration.Configuration
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.cycle.DayCycle
@@ -40,6 +41,9 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,9 +52,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -1042,5 +1043,17 @@ class DTOMapperTest {
         assertThat(result.id).isEqualTo(entity.sessionInstanceId)
         assertThat(result.sessionCode).isEqualTo(entity.sessionCode)
         assertThat(result.status).isEqualTo(entity.status)
+    }
+
+    @Test
+    fun `should map ConfigurationDto fields`() {
+        val entity = Configuration("P27-SEK", "SEK")
+        val dataRetentionDays = 30
+
+        val result = MAPPER.toDto(entity, dataRetentionDays)
+
+        assertThat(result.scheme).isEqualTo(entity.scheme)
+        assertThat(result.schemeCurrency).isEqualTo(entity.schemeCurrency)
+        assertThat(result.dataRetentionDays).isEqualTo(dataRetentionDays)
     }
 }
