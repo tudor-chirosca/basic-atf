@@ -8,7 +8,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPS
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileReference;
@@ -55,7 +55,7 @@ public class BPSFileRepository implements FileRepository {
   }
 
   @Override
-  public Result<File> findBy(FileEnquirySearchCriteria request) {
+  public Page<File> findBy(FileEnquirySearchCriteria request) {
     final BPSFileEnquirySearchRequest bpsRequest = BPSMAPPER.toBps(request);
     final URI uri = UriComponentsBuilder.fromUri(resolve(FILE_ENQUIRIES_PATH, bpsProperties))
         .queryParam(OFFSET, request.getOffset())

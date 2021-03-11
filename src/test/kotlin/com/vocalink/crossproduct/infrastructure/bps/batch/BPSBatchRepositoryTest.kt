@@ -94,15 +94,15 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         val result = batchRepository.findPaginated(request)
 
         assertThat(result).isNotNull
-        assertThat(result.summary.totalCount).isEqualTo(1)
-        assertThat(result.data).isNotEmpty
+        assertThat(result.totalResults).isEqualTo(1)
+        assertThat(result.items).isNotEmpty
 
-        assertThat(result.data[0].batchId).isEqualTo("C27ISTXBANKSESS")
-        assertThat(result.data[0].createdAt).isEqualTo("2020-10-23T13:43Z")
-        assertThat(result.data[0].senderBic).isEqualTo("NDEASESSXXX")
-        assertThat(result.data[0].messageType).isEqualTo("prtp.005-prtp.006")
-        assertThat(result.data[0].nrOfTransactions).isEqualTo(12)
-        assertThat(result.data[0].status).isEqualTo("Accepted")
+        assertThat(result.items[0].batchId).isEqualTo("C27ISTXBANKSESS")
+        assertThat(result.items[0].createdAt).isEqualTo("2020-10-23T13:43Z")
+        assertThat(result.items[0].senderBic).isEqualTo("NDEASESSXXX")
+        assertThat(result.items[0].messageType).isEqualTo("prtp.005-prtp.006")
+        assertThat(result.items[0].nrOfTransactions).isEqualTo(12)
+        assertThat(result.items[0].status).isEqualTo("Accepted")
     }
 
     @Test

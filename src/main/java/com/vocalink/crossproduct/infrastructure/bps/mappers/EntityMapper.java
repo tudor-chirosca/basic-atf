@@ -6,8 +6,6 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.Result;
-import com.vocalink.crossproduct.domain.Result.ResultSummary;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
@@ -65,7 +63,6 @@ import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
-import com.vocalink.crossproduct.infrastructure.bps.BPSResult.BPSResultSummary;
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
@@ -123,7 +120,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.mapstruct.Mapper;
@@ -409,13 +405,11 @@ public interface EntityMapper {
   })
   Batch toEntity(BPSBatchPart partialBatch);
 
-  ResultSummary toEntity(BPSResultSummary summary);
-
-  default <T> Result<T> toEntity(BPSResult<?> result, Class<T> targetType) {
+  default <T> Page<T> toEntity(BPSResult<?> result, Class<T> targetType) {
     final List<?> sourceData = result.getData();
 
     if (Objects.isNull(sourceData) || sourceData.isEmpty()) {
-      return new Result<>(Collections.emptyList(), ResultSummary.empty());
+      return new Page<>(0, emptyList());
     }
 
     final Class<?> sourceType = sourceData.get(0).getClass();
@@ -439,8 +433,6 @@ public interface EntityMapper {
         .map(targetType::cast)
         .collect(toList());
 
-    final ResultSummary resultSummary = toEntity(result.getSummary());
-
-    return new Result<>(targetItems, resultSummary);
+    return new Page<>(result.getSummary().getTotalCount(), targetItems);
   }
 }

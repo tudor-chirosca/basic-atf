@@ -5,7 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.ServiceFactory;
-import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
@@ -41,10 +41,10 @@ public class FilesFacadeImpl implements FilesFacade {
 
     final FileEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
 
-    final Result<File> result = repositoryFactory.getFileRepository(product).findBy(request);
+    final Page<File> page = repositoryFactory.getFileRepository(product).findBy(request);
 
     return presenterFactory.getPresenter(clientType)
-        .presentFiles(result.getSummary().getTotalCount(), result.getData());
+        .presentFiles(page.getTotalResults(), page.getItems());
   }
 
   @Override

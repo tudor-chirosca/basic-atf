@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.Result
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -53,14 +53,13 @@ class TransactionsFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get transactions`() {
-        val summary = Result.ResultSummary(1, 0, 20)
-        val page = Result(listOf(
+        val page = Page(1, listOf(
                 Transaction(null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
                         null
                 )
-        ), summary)
+        ))
         val pageDto = PageDto<TransactionDto>(1, listOf(
                 TransactionDto(null, null, null, null,
                         null, null

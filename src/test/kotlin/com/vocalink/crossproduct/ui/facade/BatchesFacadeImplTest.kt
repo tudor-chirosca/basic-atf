@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.Result
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.batch.BatchRepository
 import com.vocalink.crossproduct.domain.files.File
@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -23,7 +24,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import kotlin.test.assertNotNull
 
 class BatchesFacadeImplTest {
 
@@ -53,7 +53,7 @@ class BatchesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get batches`() {
-        val page = Result<Batch>(listOf(), Result.ResultSummary.empty())
+        val page = Page<Batch>(0, emptyList())
         val pageDto = PageDto<BatchDto>(1, listOf(BatchDto.builder().build()))
         val request = BatchEnquirySearchRequest()
 

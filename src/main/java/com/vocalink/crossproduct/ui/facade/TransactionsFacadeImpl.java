@@ -3,10 +3,7 @@ package com.vocalink.crossproduct.ui.facade;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
-import com.vocalink.crossproduct.domain.Result;
-import com.vocalink.crossproduct.domain.account.Account;
-import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
-import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -16,7 +13,6 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.facade.api.TransactionsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -35,11 +31,11 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
     log.info("Fetching transactions from: {}", product);
 
     final TransactionEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
-    final Result<Transaction> result = repositoryFactory.getTransactionRepository(product)
+    final Page<Transaction> page = repositoryFactory.getTransactionRepository(product)
         .findPaginated(request);
 
     return presenterFactory.getPresenter(clientType)
-        .presentTransactions(result.getSummary().getTotalCount(), result.getData());
+        .presentTransactions(page.getTotalResults(), page.getItems());
   }
 
   @Override

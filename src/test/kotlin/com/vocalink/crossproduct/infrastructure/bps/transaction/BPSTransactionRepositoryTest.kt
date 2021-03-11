@@ -129,10 +129,10 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
         )
         val result = transactionRepository.findPaginated(request)
         assertThat(result).isNotNull
-        assertThat(result.summary.totalCount).isEqualTo(8)
-        assertThat(result.data).isNotEmpty
+        assertThat(result.totalResults).isEqualTo(8)
+        assertThat(result.items).isNotEmpty
 
-        val item = result.data[0]
+        val item = result.items[0]
         assertThat(item.instructionId).isEqualTo("20210115MEEOSES1B2187")
         assertThat(item.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 16, 0, 0, 0, ZoneId.of("UTC")))
         assertThat(item.originator).isEqualTo("MEEOSES1")

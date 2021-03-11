@@ -3,11 +3,10 @@ package com.vocalink.crossproduct.ui.facade
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.Result
-import com.vocalink.crossproduct.domain.account.Account
-import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.ResourceService
+import com.vocalink.crossproduct.domain.account.Account
+import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -61,7 +60,7 @@ class FilesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get files`() {
-        val resultFile = Result<File>(listOf(File.builder().build()), Result.ResultSummary(20, 0, 1))
+        val resultFile = Page<File>(1, listOf(File.builder().build()))
         val pageDto = PageDto<FileDto>(1, listOf(FileDto.builder().build()))
         val request = FileEnquirySearchRequest()
 

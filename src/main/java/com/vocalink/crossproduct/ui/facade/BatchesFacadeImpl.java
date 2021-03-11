@@ -3,7 +3,7 @@ package com.vocalink.crossproduct.ui.facade;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.RepositoryFactory;
-import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.files.File;
@@ -32,11 +32,11 @@ public class BatchesFacadeImpl implements BatchesFacade {
     log.info("Fetching batches from: {}", product);
 
     final BatchEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
-    final Result<Batch> result = repositoryFactory.getBatchRepository(product)
+    final Page<Batch> page = repositoryFactory.getBatchRepository(product)
         .findPaginated(request);
 
     return presenterFactory.getPresenter(clientType)
-        .presentBatches(result.getSummary().getTotalCount(), result.getData());
+        .presentBatches(page.getTotalResults(), page.getItems());
   }
 
   @Override

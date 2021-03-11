@@ -147,23 +147,21 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         val result = fileRepository.findBy(request)
 
         assertThat(result).isNotNull
-        assertThat(result.summary.totalCount).isEqualTo(1)
-        assertThat(result.summary.offset).isEqualTo(0)
-        assertThat(result.summary.pageSize).isEqualTo(20)
+        assertThat(result.totalResults).isEqualTo(1)
 
-        assertThat(result.data).isNotEmpty
-        assertThat(result.data[0].instructionId).isEqualTo("2641")
-        assertThat(result.data[0].fileName).isEqualTo("P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz")
-        assertThat(result.data[0].fileSize).isEqualTo(20954L)
-        assertThat(result.data[0].createdDate).isEqualTo("2020-12-28T17:32:28Z")
-        assertThat(result.data[0].originator).isEqualTo("NDEASESSXXX")
-        assertThat(result.data[0].messageType).isEqualTo("pacs.008")
-        assertThat(result.data[0].nrOfBatches).isEqualTo(12)
-        assertThat(result.data[0].status).isEqualTo("DEBULKED")
-        assertThat(result.data[0].reasonCode).isEqualTo("F001")
-        assertThat(result.data[0].settlementCycle).isEqualTo("20201113003")
-        assertThat(result.data[0].settlementDate).isEqualTo("2020-11-13T10:00:28Z")
-        assertThat(result.data[0].schemeParticipantIdentifier).isEqualTo("AABASESSXXX")
+        assertThat(result.items).isNotEmpty
+        assertThat(result.items[0].instructionId).isEqualTo("2641")
+        assertThat(result.items[0].fileName).isEqualTo("P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz")
+        assertThat(result.items[0].fileSize).isEqualTo(20954L)
+        assertThat(result.items[0].createdDate).isEqualTo("2020-12-28T17:32:28Z")
+        assertThat(result.items[0].originator).isEqualTo("NDEASESSXXX")
+        assertThat(result.items[0].messageType).isEqualTo("pacs.008")
+        assertThat(result.items[0].nrOfBatches).isEqualTo(12)
+        assertThat(result.items[0].status).isEqualTo("DEBULKED")
+        assertThat(result.items[0].reasonCode).isEqualTo("F001")
+        assertThat(result.items[0].settlementCycle).isEqualTo("20201113003")
+        assertThat(result.items[0].settlementDate).isEqualTo("2020-11-13T10:00:28Z")
+        assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("AABASESSXXX")
     }
 
     @Test

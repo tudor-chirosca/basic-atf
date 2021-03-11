@@ -7,7 +7,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPS
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
-import com.vocalink.crossproduct.domain.Result;
+import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionRepository;
@@ -38,7 +38,7 @@ public class BPSTransactionRepository implements TransactionRepository {
   private final WebClient webClient;
 
   @Override
-  public Result<Transaction> findPaginated(TransactionEnquirySearchCriteria criteria) {
+  public Page<Transaction> findPaginated(TransactionEnquirySearchCriteria criteria) {
     final String currency = bpsProperties.getCurrencies().get(bpsProperties.getSchemeCode());
     final BPSTransactionEnquirySearchRequest bpsRequest = BPSMAPPER.toBps(criteria, currency);
     final URI uri = UriComponentsBuilder.fromUri(resolve(TRANSACTION_ENQUIRIES_PATH, bpsProperties))
