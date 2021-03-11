@@ -39,7 +39,7 @@ bps-config:
       path: /io
       base: MOCK
     io-details-path:
-      path: /io-details
+      path: /schemeIO/participant/{schemeCode}/read
       base: MOCK
     alerts-path:
       path: /alerts

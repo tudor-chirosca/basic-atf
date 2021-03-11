@@ -35,16 +35,16 @@ public class InputOutputController implements InputOutputApi {
     return ResponseEntity.ok().body(settlementDto);
   }
 
-  @GetMapping(value = "/io-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/io/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<IODetailsDto> getIODetails(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       @PathVariable String participantId,
-      @RequestParam(required = false) String timestamp) {
+      @RequestParam(required = false) String forDate) {
 
-    LocalDate dateFrom = getDate(timestamp);
+    LocalDate dateFrom = getDate(forDate);
 
     IODetailsDto ioDetails = inputOutputFacade
-        .getInputOutputDetails(context.toUpperCase(), clientType, dateFrom, participantId);
+        .getInputOutputDetails(context.toUpperCase(), clientType, participantId, dateFrom);
 
     return ResponseEntity.ok().body(ioDetails);
   }

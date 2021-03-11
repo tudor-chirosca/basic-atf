@@ -83,9 +83,9 @@ class InputOutputControllerTest {
     fun `should get IO Details`() {
         val participantId = "NDEASESSXXX"
         `when`(inputOutputFacade
-                .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, LocalDate.now(), participantId))
+                .getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, participantId, LocalDate.now()))
                 .thenReturn(MockIOData().getIODetailsDto())
-        mockMvc.perform(MockMvcRequestBuilders.get("/io-details/" + participantId)
+        mockMvc.perform(MockMvcRequestBuilders.get("/io/$participantId")
                 .header("context", TestConstants.CONTEXT)
                 .header("client-type", TestConstants.CLIENT_TYPE))
                 .andExpect(MockMvcResultMatchers.status().isOk)

@@ -10,7 +10,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IODetails {
 
-  private final String schemeParticipantIdentifier;
   private final IODataDetails files;
   private final List<IOBatchesMessageTypes> batches;
   private final List<IOTransactionsMessageTypes> transactions;

@@ -9,6 +9,6 @@ public interface InputOutputFacade {
 
   IODashboardDto getInputOutputDashboard(String product, ClientType clientType, LocalDate date);
 
-  IODetailsDto getInputOutputDetails(String product, ClientType clientType, LocalDate date,
-      String participantId);
+  IODetailsDto getInputOutputDetails(String product, ClientType clientType, String participantId,
+      LocalDate date);
 }

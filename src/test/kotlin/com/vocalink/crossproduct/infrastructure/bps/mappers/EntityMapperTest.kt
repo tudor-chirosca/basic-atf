@@ -29,12 +29,7 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
@@ -315,36 +310,6 @@ class EntityMapperTest {
         assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
         assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
         assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
-    }
-
-    @Test
-    fun `should map all fields on IODetails`() {
-        val ioDataDetails = BPSIODataDetails(1, 2, 3, 4.00)
-        val ioDataAmountDetails = BPSIODataAmountDetails(5, 6, 7, 8.00, 9, 10)
-        val batches = BPSIOBatchesMessageTypes("batch_code", "batch_name", ioDataDetails)
-        val transactions = BPSIOTransactionsMessageTypes("transaction_code", "transaction_name", ioDataAmountDetails)
-        val bps = BPSIODetails("ident", ioDataDetails, listOf(batches), listOf(transactions))
-
-        val entity = MAPPER.toEntity(bps)
-        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
-        assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
-        assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
-        assertThat(entity.files.accepted).isEqualTo(bps.files.accepted)
-        assertThat(entity.files.output).isEqualTo(bps.files.output)
-        assertThat(entity.batches[0].name).isEqualTo(bps.batches[0].name)
-        assertThat(entity.batches[0].code).isEqualTo(bps.batches[0].code)
-        assertThat(entity.batches[0].data.rejected).isEqualTo(bps.batches[0].data.rejected)
-        assertThat(entity.batches[0].data.submitted).isEqualTo(bps.batches[0].data.submitted)
-        assertThat(entity.batches[0].data.accepted).isEqualTo(bps.batches[0].data.accepted)
-        assertThat(entity.batches[0].data.output).isEqualTo(bps.batches[0].data.output)
-        assertThat(entity.transactions[0].name).isEqualTo(bps.transactions[0].name)
-        assertThat(entity.transactions[0].code).isEqualTo(bps.transactions[0].code)
-        assertThat(entity.transactions[0].data.rejected).isEqualTo(bps.transactions[0].data.rejected)
-        assertThat(entity.transactions[0].data.submitted).isEqualTo(bps.transactions[0].data.submitted)
-        assertThat(entity.transactions[0].data.accepted).isEqualTo(bps.transactions[0].data.accepted)
-        assertThat(entity.transactions[0].data.output).isEqualTo(bps.transactions[0].data.output)
-        assertThat(entity.transactions[0].data.amountAccepted).isEqualTo(bps.transactions[0].data.amountAccepted)
-        assertThat(entity.transactions[0].data.amountOutput).isEqualTo(bps.transactions[0].data.amountOutput)
     }
 
     @Test

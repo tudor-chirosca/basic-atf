@@ -25,6 +25,5 @@ public interface InputOutputApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<IODetailsDto> getIODetails(ClientType clientType, String context,
-      String participantId,
-      String timestamp);
+      String participantId, String forDate);
 }

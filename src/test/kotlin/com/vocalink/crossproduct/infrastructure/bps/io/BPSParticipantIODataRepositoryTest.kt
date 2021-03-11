@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 
 @BPSTestConfiguration
@@ -24,9 +23,7 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
     companion object {
         const val VALID_IO_DETAILS_REQUEST_JSON: String = """
             {
-                "schemeCode" : "P27-SEK",
-                "participantId" : "NDEASESSXXX",
-                "date" : "2020-10-20"
+            "schemeParticipantIdentifier" : "NDEASESSXXX"
             }
         """
         const val VALID_IO_RESPONSE: String = """ 
@@ -49,216 +46,286 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
 
         const val VALID_IO_DETAILS_RESPONSE: String = """
         {
-           "schemeParticipantIdentifier": "NDEASESSXXX",
-           "files": {
-             "submitted": 1,
-             "accepted": 1,
-             "output": 2,
-             "rejected": 1.22
-           },
-           "batches": [
-             {
-               "name": "Customer Credit Transfer",
-               "code": "Pacs.008",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Payment Return",
-               "code": "Pacs.004",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Payment Reversal",
-               "code": "Pacs.002",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Cancellation Request",
-               "code": "Camt.056",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Resolution of Investigation",
-               "code": "Camt.029 v3",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Resolution of Investigation",
-               "code": "Camt.029 v8",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Request to Modify Payment",
-               "code": "Camt.087",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Claim Non-Receipt",
-               "code": "Camt.027",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             },
-             {
-               "name": "Admin Output",
-               "code": "Admi004",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22
-               }
-             }
-           ],
-           "transactions": [
-             {
-               "name": "Customer Credit Transfer",
-               "code": "Pacs.008",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Payment Return",
-               "code": "Pacs.004",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Payment Reversal",
-               "code": "Pacs.002",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Cancellation Request",
-               "code": "Camt.056",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Resolution of Investigation",
-               "code": "Camt.029 v3",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Resolution of Investigation",
-               "code": "Camt.029 v8",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Request to Modify Payment",
-               "code": "Camt.087",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Claim Non-Receipt",
-               "code": "Camt.027",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             },
-             {
-               "name": "Admin Output",
-               "code": "Admi004",
-               "data": {
-                 "submitted": 1,
-                 "accepted": 1,
-                 "output": 2,
-                 "rejected": 1.22,
-                 "amountAccepted": 1,
-                 "amountOutput": 1
-               }
-             }
-           ]
-         }
+            "files": {
+                "submitted": 1,
+                "accepted": 1,
+                "rejected": "0.00%"
+            },
+            "batches": [
+                {
+                    "messageType": "Pacs.008",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Pacs.004",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Pacs.002",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.056",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.029 v3",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.029 v8",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.087",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.027",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Admi.004",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                }
+            ],
+            "transactions": [
+                {
+                    "messageType": "Pacs.008",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Pacs.004",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Pacs.002",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.056",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.029 v3",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.029 v8",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.087",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Camt.027",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                },
+                {
+                    "messageType": "Admi.004",
+                    "submitted": 100,
+                    "accepted": 100,
+                    "amountAccepted": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "rejected": "2.31%",
+                    "output": 231,
+                    "amountOutput": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    }
+                }
+            ]
+        }
         """
     }
 
@@ -270,24 +337,21 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
     @Test
     fun `should pass io details with success`() {
         mockServer.stubFor(
-                post(urlEqualTo("/io-details"))
+                post(urlEqualTo("/schemeIO/participant/P27-SEK/read"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_IO_DETAILS_RESPONSE))
                         .withRequestBody(WireMock.equalToJson(VALID_IO_DETAILS_REQUEST_JSON)))
 
-        val string = "2020-10-20"
-        val date = LocalDate.parse(string, DateTimeFormatter.ISO_DATE)
-        val result = client.findIODetailsFor("NDEASESSXXX", date)
+        val result = client.findByParticipantId("NDEASESSXXX")
 
-        assertEquals("NDEASESSXXX", result[0].schemeParticipantIdentifier)
-        assertEquals(1, result[0].files.accepted)
-        assertEquals(1.22, result[0].files.rejected)
-        assertEquals(1, result[0].files.submitted)
-        assertEquals(2, result[0].files.output)
-        assertEquals(9, result[0].transactions.size)
-        assertEquals(9, result[0].batches.size)
+        assertEquals(1, result.files.accepted)
+        assertEquals(0.0, result.files.rejected)
+        assertEquals(1, result.files.submitted)
+        assertEquals(2, result.files.output)
+        assertEquals(9, result.transactions.size)
+        assertEquals(9, result.batches.size)
     }
 
     @Test

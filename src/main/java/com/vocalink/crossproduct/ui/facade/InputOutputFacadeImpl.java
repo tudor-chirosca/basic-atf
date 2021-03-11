@@ -4,7 +4,6 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.InputOutputFacade;
@@ -37,20 +36,15 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   }
 
   @Override
-  public IODetailsDto getInputOutputDetails(String product, ClientType clientType, LocalDate date,
-      String participantId) {
-
+  public IODetailsDto getInputOutputDetails(String product, ClientType clientType,
+      String participantId, LocalDate date) {
     log.info("Fetching IO Details for participantId: {} from: {}", participantId, product);
 
     Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);
 
     IODetails ioDetails = repositoryFactory.getParticipantsIODataRepository(product)
-        .findIODetailsFor(participantId, date)
-        .stream().findFirst().orElseThrow(
-            () -> new EntityNotFoundException(
-                "There are no IO Details for participant with id: " + participantId
-                    + " for date:" + date.toString()));
+        .findByParticipantId(participantId);
 
     return presenterFactory.getPresenter(clientType).presentIoDetails(participant, ioDetails, date);
   }

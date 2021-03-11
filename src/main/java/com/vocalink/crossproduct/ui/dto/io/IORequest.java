@@ -7,7 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IORequest {
 
-  private final String schemeCode;
-  private final String participantId;
-  private final String date;
+  private final String schemeParticipantIdentifier;
 }

@@ -8,20 +8,35 @@ import lombok.Getter;
 @Getter
 public class BPSIODetails {
 
-  private final String schemeParticipantIdentifier;
   private final BPSIODataDetails files;
-  private final List<BPSIOBatchesMessageTypes> batches;
-  private final List<BPSIOTransactionsMessageTypes> transactions;
+  private final List<BPSIOSummary> batches;
+  private final List<BPSIOSummary> transactions;
 
   @JsonCreator
   public BPSIODetails(
-      @JsonProperty(value = "schemeParticipantIdentifier") String schemeParticipantIdentifier,
       @JsonProperty(value = "files") BPSIODataDetails files,
-      @JsonProperty(value = "batches") List<BPSIOBatchesMessageTypes> batches,
-      @JsonProperty(value = "transactions") List<BPSIOTransactionsMessageTypes> transactions) {
-    this.schemeParticipantIdentifier = schemeParticipantIdentifier;
+      @JsonProperty(value = "batches") List<BPSIOSummary> batches,
+      @JsonProperty(value = "transactions") List<BPSIOSummary> transactions) {
     this.files = files;
     this.batches = batches;
     this.transactions = transactions;
+  }
+
+  @Getter
+  public static class BPSIODataDetails {
+
+    private final Integer submitted;
+    private final Integer accepted;
+    private final String rejected;
+
+    @JsonCreator
+    public BPSIODataDetails(
+        @JsonProperty(value = "submitted") Integer submitted,
+        @JsonProperty(value = "accepted") Integer accepted,
+        @JsonProperty(value = "rejected") String rejected) {
+      this.submitted = submitted;
+      this.rejected = rejected;
+      this.accepted = accepted;
+    }
   }
 }

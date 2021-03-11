@@ -47,6 +47,18 @@ abstract class MapperUtils {
     put("status", "status");
   }};
 
+  private static final Map<String, String> nameType = new HashMap<String, String>() {{
+    put("Pacs.008", "Customer Credit Transfer");
+    put("Pacs.004", "Payment Return");
+    put("Pacs.002", "Payment Reversal");
+    put("Camt.056", "Cancellation Request");
+    put("Camt.029 v3", "Resolution of Investigation");
+    put("Camt.029 v8", "Resolution of Investigation");
+    put("Camt.087", "Request to Modify Payment");
+    put("Camt.027", "Claim Non-Receipt");
+    put("Admi.004", "Admin Output");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -58,5 +70,8 @@ abstract class MapperUtils {
   }
   static Map<String, String> getTransactionSearchRequestSortParams() {
     return unmodifiableMap(transactionSearchRequestSortParams);
+  }
+  static String getNameByType(String type) {
+    return nameType.getOrDefault(type, "N/A");
   }
 }

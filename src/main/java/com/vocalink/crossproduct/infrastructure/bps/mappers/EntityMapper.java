@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -82,12 +83,9 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference;
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchesMessageTypes;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataAmountDetails;
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODataDetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionsMessageTypes;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
@@ -117,8 +115,6 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.mapstruct.Mapper;
@@ -141,24 +137,11 @@ public interface EntityMapper {
 
   File toEntity(BPSFile file);
 
-  @Named("convertToDate")
-  default LocalDate convertToDate(ZonedDateTime date) {
-    return date.toLocalDate();
-  }
-
   FileReference toEntity(BPSFileReference reference);
 
   AlertReferenceData toEntity(BPSAlertReferenceData alertReferenceData);
 
-  IOBatchesMessageTypes toEntity(BPSIOBatchesMessageTypes batchesMessageTypes);
-
   IOData toEntity(BPSIOData ioData);
-
-  IODataAmountDetails toEntity(BPSIODataAmountDetails ioDataAmountDetails);
-
-  IODataDetails toEntity(BPSIODataDetails ioDataDetails);
-
-  IOTransactionsMessageTypes toEntity(BPSIOTransactionsMessageTypes transactionsMessageTypes);
 
   Broadcast toEntity(BPSBroadcast broadcast);
 
@@ -172,7 +155,44 @@ public interface EntityMapper {
 
   IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDayPositionGross);
 
+  @Mappings({
+      @Mapping(target = "files.output", expression = "java(bPSIODataDetails.getAccepted() + bPSIODataDetails.getSubmitted())"),
+      @Mapping(target = "files.rejected", expression = "java(Double.valueOf(bPSIODataDetails.getRejected().replace(\"%\", \"\")))"),
+      @Mapping(target = "batches", source = "batches", qualifiedByName = "mapBatches"),
+      @Mapping(target = "transactions", source = "transactions", qualifiedByName = "mapTransactions")
+  })
   IODetails toEntity(BPSIODetails ioDetails);
+
+  @Named("mapBatches")
+  default List<IOBatchesMessageTypes> mapBatches(List<BPSIOSummary> batches) {
+    return batches.stream().map(e ->
+        new IOBatchesMessageTypes(
+            getNameByType(e.getMessageType()),
+            e.getMessageType(),
+            new IODataDetails(
+                e.getSubmitted(),
+                e.getAccepted(),
+                e.getSubmitted() + e.getAccepted(),
+                Double.valueOf(e.getRejected().replaceAll("%", "")))))
+        .collect(toList());
+  }
+
+  @Named("mapTransactions")
+  default List<IOTransactionsMessageTypes> mapTransactions(List<BPSIOSummary> transactions) {
+    return transactions.stream().map(e ->
+        new IOTransactionsMessageTypes(
+            getNameByType(e.getMessageType()),
+            e.getMessageType(),
+            new IODataAmountDetails(
+                e.getSubmitted(),
+                e.getAccepted(),
+                e.getSubmitted() + e.getAccepted(),
+                Double.valueOf(e.getRejected().replaceAll("%", "")),
+                e.getAmountAccepted().getAmount(),
+                e.getAmountOutput().getAmount()
+            )))
+        .collect(toList());
+  }
 
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
 

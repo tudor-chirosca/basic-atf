@@ -32,7 +32,6 @@ class IODetailsMapperTest {
         val transactions = listOf(IOTransactionsMessageTypes.builder().build())
 
         val ioDetails = IODetails.builder()
-                .schemeParticipantIdentifier(id)
                 .files(files)
                 .batches(batches)
                 .transactions(transactions)

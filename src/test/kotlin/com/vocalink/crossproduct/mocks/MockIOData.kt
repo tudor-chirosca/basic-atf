@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class MockIOData {
@@ -77,8 +78,8 @@ class MockIOData {
     )
 
     fun getIODataAmountDetails() = IODataAmountDetails.builder()
-            .amountAccepted(10)
-            .amountOutput(10)
+            .amountAccepted(BigDecimal.valueOf(10))
+            .amountOutput(BigDecimal.valueOf(10))
             .accepted(10)
             .output(10)
             .rejected(1.50)

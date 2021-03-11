@@ -46,19 +46,17 @@ public class BPSParticipantIODataRepository implements ParticipantIODataReposito
   }
 
   @Override
-  public List<IODetails> findIODetailsFor(String participantId, LocalDate localDate) {
-    final IORequest request = new IORequest(bpsProperties.getSchemeCode(), participantId,
-        localDate.toString());
+  public IODetails findByParticipantId(String participantId) {
+    final IORequest request = new IORequest(participantId);
     return webClient.post()
         .uri(resolve(IO_DETAILS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), IORequest.class))
         .retrieve()
-        .bodyToFlux(BPSIODetails.class)
+        .bodyToMono(BPSIODetails.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)
-        .collectList()
         .block();
   }
 

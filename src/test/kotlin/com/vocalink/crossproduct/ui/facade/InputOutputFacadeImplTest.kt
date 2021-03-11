@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
-import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes
 import com.vocalink.crossproduct.domain.io.IOData
 import com.vocalink.crossproduct.domain.io.IODataDetails
@@ -13,7 +12,6 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.ui.dto.IODashboardDto
 import com.vocalink.crossproduct.ui.dto.io.IOBatchesMessageTypesDto
 import com.vocalink.crossproduct.ui.dto.io.IODataDetailsDto
@@ -25,7 +23,6 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -135,7 +132,6 @@ class InputOutputFacadeImplTest {
                         .name("Customer Credit Transfer")
                         .build()))
                 .transactions(emptyList())
-                .schemeParticipantIdentifier("SCHEMA")
                 .files(IODataDetails.builder().build())
                 .build()
 
@@ -151,54 +147,17 @@ class InputOutputFacadeImplTest {
 
         `when`(participantRepository.findById("id"))
                 .thenReturn(participant)
-        `when`(participantIODataRepository.findIODetailsFor("id", LocalDate.now()))
-                .thenReturn(listOf(ioDetails))
+        `when`(participantIODataRepository.findByParticipantId("id"))
+                .thenReturn(ioDetails)
         `when`(uiPresenter.presentIoDetails(participant, ioDetails, LocalDate.now()))
                 .thenReturn(ioDetailsDto)
 
-        val result = inputOutputFacadeImpl.getInputOutputDetails(PRODUCT, ClientType.UI, LocalDate.now(), "id")
+        val result = inputOutputFacadeImpl.getInputOutputDetails(PRODUCT, ClientType.UI, "id", LocalDate.now())
 
         verify(participantRepository, atLeastOnce()).findById(any())
-        verify(participantIODataRepository, atLeastOnce()).findIODetailsFor(any(), any())
+        verify(participantIODataRepository, atLeastOnce()).findByParticipantId(any())
         verify(uiPresenter, atLeastOnce()).presentIoDetails(any(), any(), any())
 
         assertThat(result).isNotNull
-    }
-
-    @Test
-    fun `should throw EntityNotFoundException for participant id`() {
-
-        val participant = Participant.builder().id("HANDSESS").name("Name").build()
-
-        val ioDetails = IODetails.builder()
-                .batches(listOf(IOBatchesMessageTypes.builder()
-                        .code("Pacs.008")
-                        .name("Customer Credit Transfer")
-                        .build()))
-                .transactions(emptyList())
-                .schemeParticipantIdentifier("SCHEMA")
-                .files(IODataDetails.builder().build())
-                .build()
-
-        val ioDetailsDto = IODetailsDto.builder()
-                .participant(ParticipantDto.builder()
-                        .build())
-                .dateFrom(null)
-                .batches(listOf(IOBatchesMessageTypesDto.builder()
-                        .build()))
-                .transactions(emptyList())
-                .files(IODataDetailsDto.builder().build())
-                .build()
-
-        `when`(participantRepository.findById("HANDSESS"))
-                .thenReturn(participant)
-        `when`(participantIODataRepository.findIODetailsFor("id", LocalDate.now()))
-                .thenReturn(listOf(ioDetails))
-        `when`(uiPresenter.presentIoDetails(participant, ioDetails, LocalDate.now()))
-                .thenReturn(ioDetailsDto)
-
-        assertThrows(EntityNotFoundException::class.java) {
-            inputOutputFacadeImpl.getInputOutputDetails(TestConstants.CONTEXT, ClientType.UI, LocalDate.now(), participant.id)
-        }
     }
 }

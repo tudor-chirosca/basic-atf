@@ -225,8 +225,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public IODetailsDto presentIoDetails(Participant participant,
-      IODetails ioDetails, LocalDate date) {
+  public IODetailsDto presentIoDetails(Participant participant, IODetails ioDetails,
+      LocalDate date) {
     return MAPPER.toDto(ioDetails, participant, date);
   }
 
@@ -299,7 +299,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<TransactionDto> presentTransactions(Integer totalResults, List<Transaction> items) {
+  public PageDto<TransactionDto> presentTransactions(Integer totalResults,
+      List<Transaction> items) {
     final List<TransactionDto> files = items.stream()
         .map(MAPPER::toDto)
         .collect(toList());

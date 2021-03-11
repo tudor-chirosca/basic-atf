@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.io;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,6 @@ public class IODataAmountDetails {
   private final Integer accepted;
   private final Integer output;
   private final Double rejected;
-  private final Integer amountAccepted;
-  private final Integer amountOutput;
+  private final BigDecimal amountAccepted;
+  private final BigDecimal amountOutput;
 }

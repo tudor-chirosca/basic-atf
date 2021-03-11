@@ -8,5 +8,5 @@ public interface ParticipantIODataRepository extends CrossproductRepository {
 
   List<ParticipantIOData> findByTimestamp(LocalDate dateFrom);
 
-  List<IODetails> findIODetailsFor(String participantId, LocalDate date);
+  IODetails findByParticipantId(String participantId);
 }
