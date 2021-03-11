@@ -52,7 +52,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                     "senderBic": "HANDSESS",
                     "messageType": "admi.004",
                     "nrOfBatches": 12,
-                    "status": "Accepted"
+                    "status": "ACK"
                 }
             ]
         }"""
@@ -64,7 +64,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "settlementDate": "2020-11-03",
             "settlementCycleId": "04",
             "createdAt": "2020-10-30T10:10:10Z",
-            "status": "Accepted",
+            "status": "ACK",
             "messageType": "prtp.001SO",
             "sender": {
                 "entityName": "Nordea Bank",
@@ -89,7 +89,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("date_to", dateTo)
                 .param("send_bic", "HANDSESS")
                 .param("recv_bic", "NDEASESSSX")
-                .param("status", "Accepted")
+                .param("status", "ACK")
                 .param("id", "2342")
                 .param("limit", "20")
                 .param("offset", "0")
@@ -111,7 +111,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("date_from", dateFrom)
                 .param("cycle_ids", "HANDSESS")
                 .param("recv_bic", "NDEASESSSX")
-                .param("status", "Accepted")
+                .param("status", "ACK")
                 .param("id", "*2342.gz")
                 .param("limit", "20")
                 .param("offset", "0")
@@ -127,7 +127,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .senderBic("HANDSESS")
                 .messageType("admi.004")
                 .nrOfBatches(12)
-                .status("Accepted")
+                .status("ACK")
                 .build()
         `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(1, listOf(file)))
@@ -260,7 +260,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("status", "rejected")
+                .param("status", "NACK")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
     }
@@ -275,7 +275,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .settlementDate(LocalDate.of(2020, 11, 3))
                 .settlementCycleId("04")
                 .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
-                .status("Accepted")
+                .status("ACK")
                 .messageType("prtp.001SO")
                 .sender(EnquirySenderDetailsDto.builder()
                         .entityName("Nordea Bank")

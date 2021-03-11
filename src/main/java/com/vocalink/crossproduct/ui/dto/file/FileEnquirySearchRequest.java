@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Getter
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
-@ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"rejected"})
+@ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"NACK"})
 public class FileEnquirySearchRequest {
 
   @Setter
