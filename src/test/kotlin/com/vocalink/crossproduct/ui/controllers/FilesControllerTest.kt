@@ -260,7 +260,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("status", "NACK")
+                .param("status", "NAK")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
     }
