@@ -47,7 +47,6 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
@@ -287,14 +286,6 @@ public interface EntityMapper {
   }
 
   AlertStats toEntity(BPSAlertStats alertStats);
-
-  @Mappings({
-      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier"),
-      @Mapping(target = "name", source = "participantName"),
-      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
-      @Mapping(target = "connectingParticipantId", source = "connectingParty"),
-  })
-  ParticipantReference toReference(BPSParticipant bpsParticipant);
 
   @Mappings({
       @Mapping(target = "id", source = "schemeParticipantIdentifier"),

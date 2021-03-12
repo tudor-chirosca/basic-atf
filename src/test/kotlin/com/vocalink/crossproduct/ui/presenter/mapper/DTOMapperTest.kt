@@ -28,7 +28,6 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
@@ -139,13 +138,13 @@ class DTOMapperTest {
                 .dateRaised(dateRaised)
                 .type("rejected-central-bank")
                 .entities(
-                        listOf(
-                                ParticipantReference(
-                                        "NDEASESSXXX", "Nordea",
-                                        ParticipantType.DIRECT, null, null
+                        listOf(Participant.builder()
+                                .id("NDEASESSXXX")
+                                .name("Nordea")
+                                .participantType(ParticipantType.DIRECT)
+                                .build()
                                 )
                         )
-                )
                 .build()
 
         val alerts = Page<Alert>(1, listOf(alert))
@@ -159,7 +158,7 @@ class DTOMapperTest {
         assertThat(alertItem.dateRaised).isEqualTo(dateRaised)
         assertThat(alertItem.type).isEqualTo(alert.type)
         assertThat(alertItem.entities[0].name).isEqualTo(alert.entities[0].name)
-        assertThat(alertItem.entities[0].participantIdentifier).isEqualTo(alert.entities[0].participantIdentifier)
+        assertThat(alertItem.entities[0].participantIdentifier).isEqualTo(alert.entities[0].id)
     }
 
     @Test
@@ -171,12 +170,16 @@ class DTOMapperTest {
                 .name("name")
                 .suspendedTime(null)
                 .fundingBic("fundingBic")
+                .participantType(ParticipantType.DIRECT)
                 .build()
-        val result = MAPPER.toReference(participant)
+        val result = MAPPER.toReferenceDto(participant)
 
         assertThat(result).isNotNull
         assertThat(result.name).isEqualTo(participant.name)
         assertThat(result.participantIdentifier).isEqualTo(participant.id)
+        assertThat(result.connectingParticipantId).isEqualTo(participant.fundingBic)
+        assertThat(result.status).isEqualTo(participant.status)
+        assertThat(result.participantType).isEqualTo(participant.participantType.description)
     }
 
     @Test
@@ -892,9 +895,12 @@ class DTOMapperTest {
         assertThat(managedParticipant.fundedParticipants[0].participantIdentifier).isEqualTo(
                 participant.fundedParticipants[0].id
         )
-        assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(participant.fundedParticipants[0].participantType.description)
+        assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(
+                participant.fundedParticipants[0].participantType.description
+        )
         assertThat(managedParticipant.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
-        assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic)
+        assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic
+        )
         assertThat(managedParticipant.reachableBics[0].validFrom).isEqualTo(participant.reachableBics[0].validFrom)
         assertThat(managedParticipant.reachableBics[0].validTo).isEqualTo(participant.reachableBics[0].validTo)
         assertThat(managedParticipant.reachableBics[0].currency).isEqualTo(participant.reachableBics[0].currency)
@@ -923,6 +929,7 @@ class DTOMapperTest {
                 "00002121", "Nordnet Bank", "475347837892",
                 emptyList(), 1, null
         )
+        participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant(
                 "participantId",
                 "participantId",
@@ -969,6 +976,18 @@ class DTOMapperTest {
         assertThat(result.organizationId).isEqualTo(participant.organizationId)
         assertThat(result.tpspName).isEqualTo(participant.tpspName)
         assertThat(result.tpspId).isEqualTo(participant.tpspId)
+
+        assertThat(result.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
+        assertThat(result.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
+        assertThat(result.fundedParticipants[0].connectingParticipantId).isEqualTo(
+                participant.fundedParticipants[0].fundingBic
+        )
+        assertThat(result.fundedParticipants[0].participantIdentifier).isEqualTo(
+                participant.fundedParticipants[0].id
+        )
+        assertThat(result.fundedParticipants[0].participantType).isEqualTo(
+                participant.fundedParticipants[0].participantType.description
+        )
 
         assertThat(result.fundingParticipant.connectingParticipantId).isEqualTo(fundingParticipant.fundingBic)
         assertThat(result.fundingParticipant.participantIdentifier).isEqualTo(fundingParticipant.bic)

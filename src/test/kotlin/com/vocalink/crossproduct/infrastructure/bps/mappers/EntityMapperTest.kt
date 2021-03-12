@@ -266,10 +266,10 @@ class EntityMapperTest {
         assertThat(entity.priority).isEqualTo(AlertPriorityType.HIGH)
         assertThat(entity.dateRaised).isEqualTo(bps.dateRaised)
         assertThat(entity.type).isEqualTo(bps.type)
-        assertThat(entity.entities[0].participantIdentifier).isEqualTo(bps.entities[0].schemeParticipantIdentifier)
+        assertThat(entity.entities[0].id).isEqualTo(bps.entities[0].schemeParticipantIdentifier)
         assertThat(entity.entities[0].name).isEqualTo(bps.entities[0].participantName)
         assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT)
-        assertThat(entity.entities[0].connectingParticipantId).isEqualTo(bps.entities[0].connectingParty)
+        assertThat(entity.entities[0].fundingBic).isEqualTo(bps.entities[0].connectingParty)
         assertThat(entity.entities[0].schemeCode).isEqualTo(bps.entities[0].schemeCode)
     }
 

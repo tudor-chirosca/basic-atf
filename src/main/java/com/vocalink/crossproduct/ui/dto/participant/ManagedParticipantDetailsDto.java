@@ -31,6 +31,8 @@ public class ManagedParticipantDetailsDto {
   private final String tpspId;
   @JsonInclude(Include.NON_EMPTY)
   private final ParticipantReferenceDto fundingParticipant;
+  @JsonInclude(Include.NON_EMPTY)
+  private final List<ParticipantReferenceDto> fundedParticipants;
   private final String outputChannel;
   private final Integer outputTxnVolume;
   @JsonInclude(Include.NON_EMPTY)

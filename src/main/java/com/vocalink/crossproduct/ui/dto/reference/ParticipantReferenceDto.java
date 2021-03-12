@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.dto.reference;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ public class ParticipantReferenceDto {
   private final String participantIdentifier;
   private final String name;
   private final ParticipantType participantType;
+  private final ParticipantStatus status;
   private final String schemeCode;
 
   @Setter

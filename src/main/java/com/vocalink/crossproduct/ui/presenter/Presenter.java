@@ -20,7 +20,6 @@ import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -100,7 +99,7 @@ public interface Presenter {
   PageDto<AlertDto> presentAlert(Page<Alert> alerts);
 
   List<ParticipantReferenceDto> presentParticipantReferences(
-      List<ParticipantReference> participants);
+      List<Participant> participants);
 
   List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences,
       String enquiryType);

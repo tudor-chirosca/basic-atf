@@ -8,22 +8,15 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.files.FileReference
+import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.domain.reference.ParticipantReference
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestPropertySource
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
@@ -31,6 +24,13 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class])
@@ -195,9 +195,21 @@ class UIPresenterTest {
         val id = "id"
         val participantType = ParticipantType.DIRECT
         val model = listOf(
-                ParticipantReference(id, ccc, participantType, null, null),
-                ParticipantReference(id, aaa, participantType, null, null),
-                ParticipantReference(id, bbb, participantType, null, null)
+                Participant.builder()
+                        .id(id)
+                        .name(ccc)
+                        .participantType(participantType)
+                        .build(),
+                Participant.builder()
+                        .id(id)
+                        .name(aaa)
+                        .participantType(participantType)
+                        .build(),
+                Participant.builder()
+                        .id(id)
+                        .name(bbb)
+                        .participantType(participantType)
+                        .build()
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
@@ -219,9 +231,21 @@ class UIPresenterTest {
         val pTypeScheme = ParticipantType.SCHEME_OPERATOR
 
         val model = listOf(
-                ParticipantReference(id, aaa, pTypeDirect, null, null),
-                ParticipantReference(id, p27, pTypeScheme, null, null),
-                ParticipantReference(id, bbb, pTypeFunding, null, null)
+                Participant.builder()
+                        .id(id)
+                        .name(aaa)
+                        .participantType(pTypeDirect)
+                        .build(),
+                Participant.builder()
+                        .id(id)
+                        .name(p27)
+                        .participantType(pTypeScheme)
+                        .build(),
+                Participant.builder()
+                        .id(id)
+                        .name(bbb)
+                        .participantType(pTypeFunding)
+                        .build()
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
@@ -272,14 +296,26 @@ class UIPresenterTest {
                         .priority(AlertPriorityType.HIGH)
                         .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, nordea, participantType, null, null)))
+                        .entities(listOf(
+                                Participant.builder()
+                                        .id(id)
+                                        .name(nordea)
+                                        .participantType(participantType)
+                                        .build()
+                        ))
                         .build(),
                 Alert.builder()
                         .alertId(3142)
                         .priority(AlertPriorityType.HIGH)
                         .dateRaised(ZonedDateTime.now())
                         .type("rejected-central-bank")
-                        .entities(listOf(ParticipantReference(id, seb, participantType, null, null)))
+                        .entities(listOf(
+                                Participant.builder()
+                                        .id(id)
+                                        .name(seb)
+                                        .participantType(participantType)
+                                        .build()
+                        ))
                         .build())
 
         val alertsResponse = Page<Alert>(2, alerts)

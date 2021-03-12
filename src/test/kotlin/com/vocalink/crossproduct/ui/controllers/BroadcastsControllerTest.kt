@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto
@@ -57,6 +58,7 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                         "participantIdentifier": "123",
                         "name": "name",
                         "participantType": "DIRECT",
+                        "status": "ACTIVE",
                         "connectingParticipantId": "id",
                         "schemeCode": "p27"
                     }
@@ -83,6 +85,7 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                      "participantIdentifier":"123",
                      "name":"name",
                      "participantType":"DIRECT",
+                     "status": "ACTIVE",
                      "schemeCode":"p27",
                      "connectingParticipantId":"id"
                   }
@@ -112,7 +115,7 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 Pair("msg", listOf("any")),
                 Pair("recipient", listOf("any"))
         ))
-        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, "p27")
+        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, ParticipantStatus.ACTIVE,"p27")
         ref.connectingParticipantId = "id"
         val broadcastDto = BroadcastDto(ZonedDateTime.parse("2021-01-25T00:00:00Z"), "123", "msg", listOf(ref))
 
@@ -131,7 +134,7 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return newly created broadcast`() {
 
-        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, "p27")
+        val ref = ParticipantReferenceDto("123", "name", ParticipantType.DIRECT, ParticipantStatus.ACTIVE,"p27")
         ref.connectingParticipantId = "id"
         val broadcastDto = BroadcastDto(ZonedDateTime.parse("2021-01-25T00:00:00Z"), "00000100", "Sample message", listOf(ref))
 

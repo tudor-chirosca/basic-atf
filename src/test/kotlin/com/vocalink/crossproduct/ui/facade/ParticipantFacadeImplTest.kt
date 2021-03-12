@@ -174,7 +174,7 @@ class ParticipantFacadeImplTest {
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null)
+                null, null)
         val account = Account(null, null, null)
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,
@@ -214,7 +214,7 @@ class ParticipantFacadeImplTest {
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null)
+                null, null)
         val account = Account(null, null, null)
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,

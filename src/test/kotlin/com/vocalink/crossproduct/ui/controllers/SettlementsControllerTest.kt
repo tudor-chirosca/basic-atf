@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
@@ -102,7 +103,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val cycleId = "20201209001"
         val participantId = "HANDSESS"
         val participant = ParticipantReferenceDto(
-                participantId, "Svenska Handelsbanken", ParticipantType.FUNDED, null)
+                participantId, "Svenska Handelsbanken", ParticipantType.FUNDED, ParticipantStatus.ACTIVE, null)
         participant.connectingParticipantId = "NDEASESSXXX"
         val instruction = ParticipantInstructionDto.builder()
                 .reference("538264950")

@@ -63,6 +63,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
     final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(bic);
+    setFundedParticipants(participant, product);
 
     final Account account = repositoryFactory.getAccountRepository(product)
         .findByPartyCode(bic);

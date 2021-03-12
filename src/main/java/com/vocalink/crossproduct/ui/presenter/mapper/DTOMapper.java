@@ -25,7 +25,6 @@ import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
@@ -115,15 +114,7 @@ public interface DTOMapper {
       @Mapping(target = "participantIdentifier", source = "id"),
       @Mapping(target = "connectingParticipantId", source = "fundingBic")
   })
-  ParticipantReference toReference(Participant input);
-
-  @Mappings({
-      @Mapping(target = "participantIdentifier", source = "id"),
-      @Mapping(target = "connectingParticipantId", source = "fundingBic")
-  })
   ParticipantReferenceDto toReferenceDto(Participant participant);
-
-  ParticipantReferenceDto toDto(ParticipantReference participant);
 
   @Mappings({
       @Mapping(target = "debitCap", source = "debitCapAmount.amount"),
@@ -435,6 +426,7 @@ public interface DTOMapper {
       @Mapping(target = "tpspName", source = "participant.tpspName"),
       @Mapping(target = "tpspId", source = "participant.tpspId"),
       @Mapping(target = "fundingParticipant", source = "fundingParticipant"),
+      @Mapping(target = "fundedParticipants", source = "participant.fundedParticipants"),
       @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
       @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),

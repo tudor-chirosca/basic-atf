@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.domain.alert;
 
-import com.vocalink.crossproduct.domain.reference.ParticipantReference;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,5 +16,5 @@ public class Alert {
   private final AlertPriorityType priority;
   private final ZonedDateTime dateRaised;
   private final String type;
-  private final List<ParticipantReference> entities;
+  private final List<Participant> entities;
 }
