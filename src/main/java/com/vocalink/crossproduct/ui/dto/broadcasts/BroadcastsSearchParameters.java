@@ -21,7 +21,7 @@ public class BroadcastsSearchParameters {
   private int offset = parseInt(getDefault(OFFSET));
   private int limit = parseInt(getDefault(LIMIT));
   private List<String> sort;
-  private String recipient;
+  private List<String> recipients;
   private String msg;
   private String id;
   @ValidFromDate

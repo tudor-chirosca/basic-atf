@@ -34,7 +34,7 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
             "dateFrom": "2021-01-22T00:00:00Z",
             "dateTo": "2021-01-23T00:00:00Z",
             "msg": "any",
-            "recipient": "rspnt"
+            "recipients": ["rspnt"]
             }
         """
         var SIMPLE_RESPONSE = """
@@ -97,7 +97,7 @@ class BPSBroadcastsRepositoryTest @Autowired constructor(var repository: BPSBroa
                 .dateFrom(ZonedDateTime.parse("2021-01-22T00:00:00Z"))
                 .dateTo(ZonedDateTime.parse("2021-01-23T00:00:00Z"))
                 .msg("any")
-                .recipient("rspnt")
+                .recipients(listOf("rspnt"))
                 .build()
 
         mockServer.stubFor(
