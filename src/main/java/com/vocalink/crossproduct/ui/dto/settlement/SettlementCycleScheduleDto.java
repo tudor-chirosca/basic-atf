@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Builder
 public class SettlementCycleScheduleDto {
 
   private final String cycleName;

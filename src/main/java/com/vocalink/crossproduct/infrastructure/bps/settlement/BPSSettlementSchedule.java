@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
@@ -8,14 +7,13 @@ import lombok.Getter;
 @Getter
 public class BPSSettlementSchedule {
 
-  private final List<BPSSettlementCycleSchedule> weekdayCycles;
-  private final List<BPSSettlementCycleSchedule> weekendCycles;
+  private final String weekDay;
+  private final List<BPSSettlementCycleSchedule> cycles;
 
-  @JsonCreator
   public BPSSettlementSchedule(
-      @JsonProperty("weekdayCycles") List<BPSSettlementCycleSchedule> weekdayCycles,
-      @JsonProperty("weekendCycles") List<BPSSettlementCycleSchedule> weekendCycles) {
-    this.weekdayCycles = weekdayCycles;
-    this.weekendCycles = weekendCycles;
+      @JsonProperty(value = "weekDay") String weekDay,
+      @JsonProperty(value = "cycles") List<BPSSettlementCycleSchedule> cycles) {
+    this.weekDay = weekDay;
+    this.cycles = cycles;
   }
 }

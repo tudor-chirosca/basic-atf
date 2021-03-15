@@ -31,6 +31,7 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
@@ -69,6 +70,7 @@ import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
@@ -293,7 +295,7 @@ public interface DTOMapper {
         .orElse(null);
   }
 
-  SettlementScheduleDto toDto(SettlementSchedule schedule);
+  SettlementCycleScheduleDto toDto(SettlementCycleSchedule schedule);
 
   @Mappings({
       @Mapping(target = "amount", source = "amount.amount"),

@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -93,17 +94,17 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   }
 
   @Override
-  public SettlementSchedule findSchedule() {
+  public List<SettlementSchedule> findSchedules() {
     return webClient.post()
         .uri(resolve(SETTLEMENT_SCHEDULE_ENQUIRIES_PATH, bpsProperties))
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just("{}"), String.class))
         .retrieve()
-        .bodyToMono(BPSSettlementSchedule.class)
+        .bodyToFlux(BPSSettlementSchedule.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)
+        .collectList()
         .block();
   }
 

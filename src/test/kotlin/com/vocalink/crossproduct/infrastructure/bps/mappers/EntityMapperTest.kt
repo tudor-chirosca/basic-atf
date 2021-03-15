@@ -36,6 +36,8 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
@@ -46,15 +48,15 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -727,5 +729,41 @@ class EntityMapperTest {
         assertThat(result.status).isEqualTo(bps.status)
         assertThat(result.createdDate).isEqualTo(bps.createdDate)
         assertThat(result.updatedDate).isEqualTo(bps.updatedDate)
+    }
+
+    @Test
+    fun `should map to SettlementCycleSchedule fields`() {
+        val bps = BPSSettlementCycleSchedule(
+                "sessionCode",
+                "startTime",
+                "endTime",
+                "settlementTime"
+        )
+        val result = MAPPER.toEntity(bps)
+        assertThat(result.cycleName).isEqualTo(bps.sessionCode)
+        assertThat(result.startTime).isEqualTo(bps.startTime)
+        assertThat(result.cutOffTime).isEqualTo(bps.endTime)
+        assertThat(result.settlementStartTime).isEqualTo(bps.settlementTime)
+    }
+
+    @Test
+    fun `should map to SettlementSchedule fields`() {
+        val bpsCycle = BPSSettlementCycleSchedule(
+                "sessionCode",
+                "startTime",
+                "endTime",
+                "settlementTime"
+        )
+        val bps = BPSSettlementSchedule(
+                "weekDay",
+                listOf(bpsCycle)
+        )
+        val result = MAPPER.toEntity(bps)
+        assertThat(result.weekDay).isEqualTo(bps.weekDay)
+
+        assertThat(result.cycles[0].cycleName).isEqualTo(bpsCycle.sessionCode)
+        assertThat(result.cycles[0].startTime).isEqualTo(bpsCycle.startTime)
+        assertThat(result.cycles[0].cutOffTime).isEqualTo(bpsCycle.endTime)
+        assertThat(result.cycles[0].settlementStartTime).isEqualTo(bpsCycle.settlementTime)
     }
 }

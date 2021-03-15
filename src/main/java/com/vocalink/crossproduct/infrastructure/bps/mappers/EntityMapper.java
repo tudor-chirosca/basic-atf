@@ -56,6 +56,7 @@ import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCrite
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
@@ -96,6 +97,7 @@ import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
@@ -251,11 +253,14 @@ public interface EntityMapper {
 
   SettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);
 
+  SettlementSchedule toEntity(BPSSettlementSchedule cycleSchedule);
+
   @Mappings({
-      @Mapping(target = "weekdayCycles", source = "weekdayCycles"),
-      @Mapping(target = "weekendCycles", source = "weekendCycles")
+      @Mapping(target = "cycleName", source = "sessionCode"),
+      @Mapping(target = "cutOffTime", source = "endTime"),
+      @Mapping(target = "settlementStartTime", source = "settlementTime")
   })
-  SettlementSchedule toEntity(BPSSettlementSchedule bpsSettlementSchedule);
+  SettlementCycleSchedule toEntity(BPSSettlementCycleSchedule cycleSchedule);
 
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 

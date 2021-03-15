@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
+import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -66,6 +67,7 @@ import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
@@ -94,6 +96,7 @@ public class UIPresenter implements Presenter {
 
   private final String PREVIOUS_CYCLE = "PREVIOUS";
   private final String CURRENT_CYCLE = "CURRENT";
+  private final List<String> weekends = asList("Saturday", "Sunday");
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
@@ -385,8 +388,21 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
-    return MAPPER.toDto(schedule);
+  public SettlementScheduleDto presentSchedules(List<SettlementSchedule> schedules) {
+    final List<SettlementCycleScheduleDto> weekdayCycles = schedules.stream()
+        .filter(s -> !weekends.contains(s.getWeekDay()))
+        .map(SettlementSchedule::getCycles)
+        .flatMap(List::stream)
+        .map(MAPPER::toDto)
+        .collect(toList());
+    final List<SettlementCycleScheduleDto> weekendCycles = schedules.stream()
+        .filter(s -> weekends.contains(s.getWeekDay()))
+        .map(SettlementSchedule::getCycles)
+        .flatMap(List::stream)
+        .map(MAPPER::toDto)
+        .collect(toList());
+
+    return new SettlementScheduleDto(weekdayCycles, weekendCycles);
   }
 
   @Override

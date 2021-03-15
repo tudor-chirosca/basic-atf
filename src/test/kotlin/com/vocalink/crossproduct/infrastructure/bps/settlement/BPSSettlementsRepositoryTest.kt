@@ -76,23 +76,39 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         """
 
         const val VALID_SETTLEMENTS_RESPONSE: String = """
-            {
-                "totalResults": 2,
-                "items": [
-                    {
-                        "cycleId": "20201209001",
-                        "settlementTime": "2020-12-09T14:58:19Z",
-                        "status": "partial",
-                        "participantId": "NDEASESSXXY"
-                    },
-                    {   "cycleId": "20201209002",
-                        "settlementTime": "2020-12-09T14:58:19Z",
-                        "status": "no-response",
-                        "participantId": "HANDSESS"
-                    }    
-                ]
-            }
-    """
+        {
+            "totalResults": 2,
+            "items": [
+                {
+                    "cycleId": "20201209001",
+                    "settlementTime": "2020-12-09T14:58:19Z",
+                    "status": "partial",
+                    "participantId": "NDEASESSXXY"
+                },
+                {   "cycleId": "20201209002",
+                    "settlementTime": "2020-12-09T14:58:19Z",
+                    "status": "no-response",
+                    "participantId": "HANDSESS"
+                }    
+            ]
+        }
+       """
+
+        const val VALID_SCHEDULES_RESPONSE: String = """
+        [
+          {
+            "weekDay": "Monday",
+            "cycles": [
+              {
+                "sessionCode": "01",
+                "startTime": "09:00",
+                "endTime": "10:00",
+                "settlementTime": "9:45"
+              }
+            ]
+          }
+        ]
+       """
     }
 
     @AfterEach
@@ -156,5 +172,22 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result).isNotNull
         assertThat(result.totalResults).isEqualTo(2)
         assertThat(result.items.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `should return schedules`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/enquiries/settlement/schedule/P27-SEK/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_SCHEDULES_RESPONSE)))
+
+        val result = repository.findSchedules()
+        assertThat(result[0].weekDay).isEqualTo("Monday")
+        assertThat(result[0].cycles[0].cycleName).isEqualTo("01")
+        assertThat(result[0].cycles[0].startTime).isEqualTo("09:00")
+        assertThat(result[0].cycles[0].cutOffTime).isEqualTo("10:00")
+        assertThat(result[0].cycles[0].settlementStartTime).isEqualTo("9:45")
     }
 }

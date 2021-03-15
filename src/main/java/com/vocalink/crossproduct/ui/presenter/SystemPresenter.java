@@ -200,7 +200,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
+  public SettlementScheduleDto presentSchedules(List<SettlementSchedule> schedules) {
     throw new RuntimeException("System API not implemented yet");
   }
 

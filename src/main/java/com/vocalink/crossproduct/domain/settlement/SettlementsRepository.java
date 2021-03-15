@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.domain.settlement;
 
 import com.vocalink.crossproduct.domain.CrossproductRepository;
 import com.vocalink.crossproduct.domain.Page;
+import java.util.List;
 
 public interface SettlementsRepository extends CrossproductRepository {
 
@@ -9,5 +10,5 @@ public interface SettlementsRepository extends CrossproductRepository {
 
   Page<ParticipantSettlement> findPaginated(SettlementEnquirySearchCriteria criteria);
 
-  SettlementSchedule findSchedule();
+  List<SettlementSchedule> findSchedules();
 }

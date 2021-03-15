@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SettlementSchedule {
 
-  private final List<SettlementCycleSchedule> weekdayCycles;
-  private final List<SettlementCycleSchedule> weekendCycles;
+  private final String weekDay;
+  private final List<SettlementCycleSchedule> cycles;
+
 }

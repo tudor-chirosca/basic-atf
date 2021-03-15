@@ -133,7 +133,7 @@ public interface Presenter {
 
   LatestSettlementCyclesDto presentLatestCycles(List<Cycle> cycles);
 
-  SettlementScheduleDto presentSchedule(SettlementSchedule schedule);
+  SettlementScheduleDto presentSchedules(List<SettlementSchedule> schedules);
 
   TransactionDetailsDto presentTransactionDetails(Transaction transaction);
 

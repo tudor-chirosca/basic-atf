@@ -13,6 +13,8 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto
 import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -96,6 +98,20 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
            }
         }
         """
+
+        const val VALID_SCHEDULE_RESPONSE = """
+        {
+            "weekdayCycles": [
+                {
+                    "cycleName": "01",
+                    "startTime": "09:00",
+                    "cutOffTime": "10:00",
+                    "settlementStartTime": "9:45"
+                }
+            ],
+            "weekendCycles": []
+        }
+        """
     }
 
     @Test
@@ -154,4 +170,22 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().json(VALID_CYCLES_RESPONSE))
     }
 
+    @Test
+    fun `should return 200 on get settlement schedule` () {
+        val schedule = SettlementScheduleDto(
+                listOf(SettlementCycleScheduleDto(
+                        "01",
+                        "09:00",
+                        "10:00",
+                        "9:45"
+                )), emptyList()
+        )
+        `when`(settlementsFacade.getSettlementsSchedule(any(), any())).thenReturn(schedule)
+        mockMvc.perform(get("/enquiry/settlements/schedule")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_SCHEDULE_RESPONSE))
+    }
 }

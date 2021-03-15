@@ -33,6 +33,7 @@ import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
+import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
@@ -1055,5 +1056,20 @@ class DTOMapperTest {
         assertThat(result.scheme).isEqualTo(entity.scheme)
         assertThat(result.schemeCurrency).isEqualTo(entity.schemeCurrency)
         assertThat(result.dataRetentionDays).isEqualTo(dataRetentionDays)
+    }
+
+    @Test
+    fun `should map SettlementCycleScheduleDto fields`() {
+        val entity = SettlementCycleSchedule(
+                "cycleName",
+                "startTime",
+                "cutOffTime",
+                "settlementStartTime"
+        )
+        val dto = MAPPER.toDto(entity)
+        assertThat(dto.cycleName).isEqualTo(entity.cycleName)
+        assertThat(dto.startTime).isEqualTo(entity.startTime)
+        assertThat(dto.cutOffTime).isEqualTo(entity.cutOffTime)
+        assertThat(dto.settlementStartTime).isEqualTo(entity.settlementStartTime)
     }
 }
