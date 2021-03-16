@@ -26,11 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ApprovalApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -428,14 +426,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 on date older than 30 days`() {
+    fun `should fail with 400 on date older than DAYS_LIMIT`() {
         mockMvc.perform(get("/approvals")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("from_date", "2020-02-15T00:00:00Z"))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 
     @Test

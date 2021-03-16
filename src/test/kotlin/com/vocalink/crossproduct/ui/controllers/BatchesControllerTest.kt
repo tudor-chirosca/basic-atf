@@ -4,6 +4,8 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.ui.controllers.api.BatchesApi
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -175,8 +177,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
-        val dateFrom = LocalDate.now().minusDays(31).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
+        val dateFrom = LocalDate.now().minusDays(
+            (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
@@ -184,7 +187,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 
     @Test

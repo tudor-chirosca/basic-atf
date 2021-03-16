@@ -16,7 +16,7 @@ import javax.validation.Payload;
 @Documented
 public @interface ValidFromDate {
 
-  String message() default "date_from can not be earlier than 30 days";
+  String message() default "date_from can not be earlier than DAYS_LIMIT";
 
   Class<?>[] groups() default {};
 

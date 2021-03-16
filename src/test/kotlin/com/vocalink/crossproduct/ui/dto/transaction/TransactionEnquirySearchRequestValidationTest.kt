@@ -1,12 +1,14 @@
 package com.vocalink.crossproduct.ui.dto.transaction
 
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 class TransactionEnquirySearchRequestValidationTest {
 
@@ -17,7 +19,7 @@ class TransactionEnquirySearchRequestValidationTest {
         const val MSG_DIRECTION_ERROR = "msg_direction in request parameters in empty or missing"
         const val WILDCARD_ERROR = "wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"
         const val DIFFERENT_BIC_ERROR = "send_bic and recv_bic should not be the same"
-        const val OLDER_THEN_30_ERROR = "date_from can not be earlier than 30 days"
+        const val OLDER_THEN_DAYS_LIMIT_ERROR = "date_from can not be earlier than DAYS_LIMIT"
         const val CYCLE_OR_DATE_ERROR = "cycle_ids and date_to are both included in request params, exclude one of them"
         const val LIMIT_LESS_THAN_ONE = "Limit should be equal or higher than 1"
     }
@@ -138,8 +140,8 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should fail on longer then 30`() {
-        val older = LocalDate.now().minusDays(31)
+    fun `should fail on longer then DAYS_LIMIT`() {
+        val older = LocalDate.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong()+1)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
@@ -163,12 +165,12 @@ class TransactionEnquirySearchRequestValidationTest {
         val result = ArrayList(validator.validate(request))
 
         assertThat(result).isNotEmpty
-        assertThat(result[0].message).isEqualTo(OLDER_THEN_30_ERROR)
+        assertThat(result[0].message).isEqualTo(OLDER_THEN_DAYS_LIMIT_ERROR)
     }
 
     @Test
-    fun `should pass on 30 days`() {
-        val older = LocalDate.now().minusDays(30)
+    fun `should pass if days are equal to DAYS_LIMIT`() {
+        val older = LocalDate.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,

@@ -4,13 +4,11 @@ import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.ui.controllers.api.ReportApi
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.report.ReportDto
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade
-import java.io.ByteArrayInputStream
-import java.nio.charset.Charset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -29,6 +27,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
+import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(ReportApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -113,13 +115,15 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
         val queryParams = LinkedMultiValueMap(
             mapOf(
                 Pair("offset", listOf("0")),
                 Pair("limit", listOf("10")),
-                Pair("date_from", listOf(ZonedDateTime.now().minusDays(31).format(DateTimeFormatter.ISO_ZONED_DATE_TIME)))
-            )
+                Pair("date_from", listOf(
+                        ZonedDateTime.now()
+                            .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
+                            .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
         )
         mockMvc.perform(
             get("/reports")
@@ -128,7 +132,7 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .queryParams(queryParams))
             .andExpect(status().is4xxClientError)
-            .andExpect(content().string(CoreMatchers.containsString("date_from can not be earlier than 30 days")))
+            .andExpect(content().string(CoreMatchers.containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 
     @Test

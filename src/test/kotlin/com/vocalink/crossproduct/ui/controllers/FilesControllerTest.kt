@@ -2,6 +2,8 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
@@ -175,8 +177,9 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
-        val dateFrom = LocalDate.now().minusDays(31).format(ofPattern("yyyy-MM-dd"))
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT`() {
+        val dateFrom = LocalDate.now().minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong())+1)
+                .format(ofPattern("yyyy-MM-dd"))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
@@ -184,7 +187,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 
     @Test
@@ -226,7 +229,7 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
 
     @Test
-    fun `should fail with 400 when id wildcard search string has * on middle of the word`() {
+    fun `should fail with 400 when id wildcard search string has wildcard on middle of the word`() {
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)

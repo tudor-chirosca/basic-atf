@@ -53,7 +53,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             ]
         }"""
 
-        const val INVALID_DATE_FROM_EARLIER_THAN_30_DAYS_BODY_REQUEST = """{
+        const val INVALID_DATE_FROM_EARLIER_THAN_DATE_LIMIT_BODY_REQUEST = """{
             "messageDirection" : "sending",
             "dateFrom": "2020-10-23T23:59:59Z"
         }"""
@@ -241,14 +241,14 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when dateFrom is earlier than 30 days from today`() {
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
         mockMvc.perform(post("/enquiry/transactions/searches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(INVALID_DATE_FROM_EARLIER_THAN_30_DAYS_BODY_REQUEST))
+                .content(INVALID_DATE_FROM_EARLIER_THAN_DATE_LIMIT_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("date_from can not be earlier than 30 days")))
+                .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 
     @Test
@@ -274,7 +274,7 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when id wildcard search string has * on middle of the word`() {
+    fun `should fail with 400 when id wildcard search string has wildcard on middle of the word`() {
         mockMvc.perform(post("/enquiry/transactions/searches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
