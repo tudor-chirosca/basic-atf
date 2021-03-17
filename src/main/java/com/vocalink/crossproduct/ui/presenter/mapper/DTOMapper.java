@@ -19,7 +19,6 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
@@ -32,7 +31,6 @@ import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
-import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -62,7 +60,6 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
@@ -71,7 +68,6 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto;
-import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
@@ -225,8 +221,6 @@ public interface DTOMapper {
             .reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
         .build();
   }
-
-  List<FileStatusesTypeDto> toDtoType(List<FileReference> fileReferences);
 
   @Mappings({
       @Mapping(target = "name", source = "fileName"),

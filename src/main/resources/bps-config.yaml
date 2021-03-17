@@ -53,8 +53,11 @@ bps-config:
     alert-stats-path:
       path: /alerts/stats
       base: MOCK
-    file-references-path:
-      path: /reference/files
+    reason-codes-path:
+      path: /reference/reasonCode/{schemeCode}/readAll
+      base: MOCK
+    statuses-path:
+      path: /reference/status/{schemeCode}/{level}/readAll
       base: MOCK
     batch-enquiries-path:
       path: /enquiries/batches/{schemeCode}/readAll

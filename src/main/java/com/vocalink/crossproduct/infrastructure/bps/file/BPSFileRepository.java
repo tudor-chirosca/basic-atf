@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.bps.file;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.FILE_ENQUIRIES_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.FILE_REFERENCES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_FILE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
@@ -11,7 +10,6 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
@@ -19,7 +17,6 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -39,20 +36,6 @@ public class BPSFileRepository implements FileRepository {
   private final BPSProperties bpsProperties;
   private final BPSRetryWebClientConfig retryWebClientConfig;
   private final WebClient webClient;
-
-  @Override
-  public List<FileReference> findFileReferences() {
-    return webClient.post()
-        .uri(resolve(FILE_REFERENCES_PATH, bpsProperties))
-        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .retrieve()
-        .bodyToFlux(BPSFileReference.class)
-        .retryWhen(retryWebClientConfig.fixedRetry())
-        .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toEntity)
-        .collectList()
-        .block();
-  }
 
   @Override
   public Page<File> findBy(FileEnquirySearchCriteria request) {

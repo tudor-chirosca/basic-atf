@@ -79,7 +79,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present present file references with type for System`() {
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFileReferencesFor(emptyList(), "")
+            systemPresenter.presentReasonCodeReferences(null, emptyList())
         }
     }
 

@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
@@ -27,13 +28,14 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
-import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileReference
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule
@@ -223,17 +225,26 @@ class EntityMapperTest {
 
     @Test
     fun `should map FileReference fields`() {
-        val bps = BPSFileReference(
-                "status",
-                true,
-                "enquiryType",
-                listOf("reasonCodes")
+        val reasonCodes = listOf(BPSReasonCodeReference.BPSReasonCode(
+                "reasonCode",
+                "description",
+                true
+        ))
+        val bps = BPSReasonCodeReference.BPSReasonCodeValidation(
+                BPSEnquiryType.FILES,
+                reasonCodes
         )
         val entity = MAPPER.toEntity(bps)
-        assertThat(entity.status).isEqualTo(bps.status)
-        assertThat(entity.isHasReason).isEqualTo(bps.isHasReason)
-        assertThat(entity.enquiryType).isEqualTo(bps.enquiryType)
-        assertThat(entity.reasonCodes).isEqualTo(bps.reasonCodes)
+        assertThat(entity.validationLevel).isEqualTo(EnquiryType.FILES)
+        assertThat(entity.reasonCodes[0].reasonCode).isEqualTo(
+                bps.reasonCodes[0].reasonCode
+        )
+        assertThat(entity.reasonCodes[0].description).isEqualTo(
+                bps.reasonCodes[0].description
+        )
+        assertThat(entity.reasonCodes[0].active).isEqualTo(
+                bps.reasonCodes[0].active
+        )
     }
 
     @Test

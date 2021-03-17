@@ -5,8 +5,9 @@ public interface ResourcePath {
   String CYCLES_PATH = "cycles-path";
   String DAY_CYCLES_PATH = "day-cycles-path";
   String SETTLEMENT_POSITION_PATH = "settlement-position-path";
-  String FILE_REFERENCES_PATH = "file-references-path";
+  String REASON_CODES_PATH = "reason-codes-path";
   String FILE_ENQUIRIES_PATH = "file-enquiries-path";
+  String STATUSES_PATH = "statuses-path";
   String BATCH_ENQUIRIES_PATH = "batch-enquiries-path";
   String IO_PARTICIPANTS_PATH = "io-participants-path";
   String IO_DETAILS_PATH = "io-details-path";

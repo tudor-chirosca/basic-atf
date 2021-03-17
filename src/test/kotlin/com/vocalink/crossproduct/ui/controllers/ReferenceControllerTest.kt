@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade
@@ -242,9 +242,9 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 for enquiry statuses and return valid response`() {
-        val fileStatusesTypeDto = FileStatusesTypeDto("Rejected", true, listOf("F01", "F02"), "FILES")
+        val fileStatusesTypeDto = ReasonCodeReferenceDto("Rejected", true, listOf("F01", "F02"), "FILES")
 
-        `when`(referencesServiceFacade.getFileReferences(anyString(), any(), anyString()))
+        `when`(referencesServiceFacade.getReasonCodeReferences(anyString(), any(), anyString()))
                 .thenReturn(listOf(fileStatusesTypeDto))
 
         mockMvc.perform(get("/reference/enquiry-statuses")

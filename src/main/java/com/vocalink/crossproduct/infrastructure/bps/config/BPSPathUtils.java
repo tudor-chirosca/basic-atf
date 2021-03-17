@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.infrastructure.bps.config;
 
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail;
 import java.net.URI;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -10,6 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 public final class BPSPathUtils {
 
   public static URI resolve(String path, BPSProperties properties) {
+    return resolve(path, properties, properties.getSchemeCode());
+  }
+
+  public static URI resolve(String path, BPSProperties properties, String... params) {
 
     final Detail detail = properties.getPaths().get(path);
 
@@ -17,6 +22,6 @@ public final class BPSPathUtils {
 
     return UriComponentsBuilder.fromUriString(baseUrl)
         .path(detail.getPath())
-        .build(properties.getSchemeCode());
+        .build((Object[]) params);
   }
 }

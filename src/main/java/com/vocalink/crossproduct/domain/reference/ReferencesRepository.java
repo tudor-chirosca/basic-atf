@@ -5,5 +5,10 @@ import java.util.List;
 
 public interface ReferencesRepository extends CrossproductRepository {
 
-  List<MessageDirectionReference> findAll();
+  List<MessageDirectionReference> findMessageDirectionReferences();
+
+  List<ReasonCodeValidation> findReasonCodes();
+
+  List<String> findStatuses(String enquiryType);
+
 }

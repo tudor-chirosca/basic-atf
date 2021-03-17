@@ -34,29 +34,6 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         {
             "fileName": "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
         }"""
-        const val VALID_FILE_REFERENCES_RESPONSE: String = """
-         [
-            {
-                "status": "Rejected",
-                "hasReason": true,
-                "reasonCodes": [
-                    "F01",
-                    "F02",
-                    "F03",
-                    "F04",
-                    "F05",
-                    "F06"
-                ],
-                "enquiryType": "FILES"
-            },
-            {
-                "status": "Accepted",
-                "hasReason": false,
-                "enquiryType": "FILES"
-            }
-        ]
-        """
-
         const val VALID_FILE_RESULT_LIST_RESPONSE: String = """
             {
             "data": [
@@ -103,24 +80,6 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
     @AfterEach
     fun cleanUp() {
         mockServer.resetAll()
-    }
-
-    @Test
-    fun `post for file references with success`() {
-        mockServer.stubFor(
-                post(urlEqualTo("/reference/files"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(VALID_FILE_REFERENCES_RESPONSE)))
-
-        val result = fileRepository.findFileReferences()
-
-        assertThat(result).isNotEmpty
-        assertThat(result[0].status).isEqualTo("Rejected")
-        assertThat(result[0].isHasReason).isEqualTo(true)
-        assertThat(result[1].status).isEqualTo("Accepted")
-        assertThat(result[1].isHasReason).isEqualTo(false)
     }
 
     @Test

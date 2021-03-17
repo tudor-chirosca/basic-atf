@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import com.vocalink.crossproduct.ui.controllers.api.ReferenceApi;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
@@ -35,12 +35,12 @@ public class ReferenceController implements ReferenceApi {
   }
 
   @GetMapping(value = "/reference/enquiry-statuses", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<FileStatusesTypeDto>> findFileReferencesByType(
+  public ResponseEntity<List<ReasonCodeReferenceDto>> findFileReferencesByType(
       final @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
       final @RequestParam String type) {
 
-    final List<FileStatusesTypeDto> files = referencesServiceFacade
-        .getFileReferences(context.toUpperCase(), clientType, type);
+    final List<ReasonCodeReferenceDto> files = referencesServiceFacade
+        .getReasonCodeReferences(context.toUpperCase(), clientType, type);
 
     return ResponseEntity.ok().body(files);
   }

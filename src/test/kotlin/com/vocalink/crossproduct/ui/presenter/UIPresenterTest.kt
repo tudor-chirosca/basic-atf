@@ -7,11 +7,12 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
-import com.vocalink.crossproduct.domain.files.FileReference
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation
 import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
@@ -333,14 +334,26 @@ class UIPresenterTest {
 
     @Test
     fun `should present filtered File references by enquiryType`() {
-        val batchType = "BATCH"
-        val fileReferences = listOf(
-                FileReference.builder().enquiryType(batchType).build(),
-                FileReference.builder().enquiryType("TRANSACTION").build(),
-                FileReference.builder().enquiryType("FILES").build()
+        val reasonCode = ReasonCodeValidation.ReasonCode(
+                "F01",
+                "description",
+                true
         )
-        val result = uiPresenter.presentFileReferencesFor(fileReferences, batchType)
-        assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].enquiryType).isEqualTo(batchType)
+        val validation = ReasonCodeValidation(
+                EnquiryType.FILES,
+                listOf(reasonCode)
+        )
+        val statuses = listOf("NAK", "ACK")
+        val result = uiPresenter.presentReasonCodeReferences(validation, statuses)
+        assertThat(result.size).isEqualTo(2)
+        assertThat(result[0].enquiryType).isEqualTo(validation.validationLevel.name)
+        assertThat(result[0].isHasReason).isEqualTo(true)
+        assertThat(result[0].status).isEqualTo(statuses[0])
+        assertThat(result[0].reasonCodes[0]).isEqualTo(reasonCode.reasonCode)
+
+        assertThat(result[1].enquiryType).isEqualTo(validation.validationLevel.name)
+        assertThat(result[1].isHasReason).isEqualTo(false)
+        assertThat(result[1].status).isEqualTo(statuses[1])
+        assertThat(result[1].reasonCodes).isEmpty()
     }
 }

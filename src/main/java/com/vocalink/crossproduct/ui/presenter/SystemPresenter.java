@@ -13,7 +13,6 @@ import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -21,6 +20,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -46,7 +46,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
@@ -121,12 +121,6 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public List<FileStatusesTypeDto> presentFileReferencesFor(List<FileReference> fileReferences,
-      String enquiryType) {
-    throw new RuntimeException("System API not implemented yet");
-  }
-
-  @Override
   public PageDto<AlertDto> presentAlert(Page<Alert> alerts) {
     throw new RuntimeException("System API not implemented yet");
   }
@@ -150,6 +144,12 @@ public class SystemPresenter implements Presenter {
   @Override
   public List<ParticipantReferenceDto> presentParticipantReferences(
       List<Participant> participants) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public List<ReasonCodeReferenceDto> presentReasonCodeReferences(
+      ReasonCodeValidation reasonCodeValidation, List<String> statuses) {
     throw new RuntimeException("System API not implemented yet");
   }
 

@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers.api;
 
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -24,10 +24,10 @@ public interface ReferenceApi {
 
   @ApiOperation("Get statuses for an enquiry type")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "File reference retrieved successfully", response = FileStatusesTypeDto.class),
+      @ApiResponse(code = 200, message = "File reference retrieved successfully", response = ReasonCodeReferenceDto.class),
       @ApiResponse(code = 500, message = "Invalid context")
   })
-  ResponseEntity<List<FileStatusesTypeDto>> findFileReferencesByType(ClientType clientType, String context,
+  ResponseEntity<List<ReasonCodeReferenceDto>> findFileReferencesByType(ClientType clientType, String context,
       String enquiryType);
 
   @ApiOperation("Fetch all message directions references")

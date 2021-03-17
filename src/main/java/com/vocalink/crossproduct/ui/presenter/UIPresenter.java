@@ -3,6 +3,8 @@ package com.vocalink.crossproduct.ui.presenter;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -19,7 +21,6 @@ import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -27,6 +28,8 @@ import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation.ReasonCode;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -59,9 +62,9 @@ import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
@@ -96,7 +99,9 @@ public class UIPresenter implements Presenter {
 
   private final String PREVIOUS_CYCLE = "PREVIOUS";
   private final String CURRENT_CYCLE = "CURRENT";
-  private final List<String> weekends = asList("Saturday", "Sunday");
+  private final List<String> weekends = unmodifiableList(asList("Saturday", "Sunday"));
+  private final List<String> rejectedStatuses =
+      unmodifiableList(asList("NAK", "PRE-RJCT", "POST-RJCT"));
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
@@ -379,12 +384,21 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public List<FileStatusesTypeDto> presentFileReferencesFor(
-      List<FileReference> fileReferences, String enquiryType) {
-    List<FileReference> filteredReferences = fileReferences.stream()
-        .filter(f -> f.getEnquiryType().equalsIgnoreCase(enquiryType))
-        .collect(toList());
-    return MAPPER.toDtoType(filteredReferences);
+  public List<ReasonCodeReferenceDto> presentReasonCodeReferences(
+      ReasonCodeValidation reasonCodeValidation, List<String> statuses) {
+    return statuses.stream()
+        .map(status -> ReasonCodeReferenceDto.builder()
+            .enquiryType(reasonCodeValidation.getValidationLevel().name())
+            .hasReason(rejectedStatuses.contains(status))
+            .reasonCodes(
+                rejectedStatuses.contains(status) ? reasonCodeValidation.getReasonCodes()
+                    .stream()
+                    .map(ReasonCode::getReasonCode)
+                    .collect(toList()) : emptyList()
+            )
+            .status(status)
+            .build()
+        ).collect(toList());
   }
 
   @Override

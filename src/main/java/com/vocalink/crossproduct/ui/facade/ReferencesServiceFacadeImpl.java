@@ -5,11 +5,13 @@ import static java.util.stream.Collectors.toList;
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
-import com.vocalink.crossproduct.domain.files.FileReference;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.reference.EnquiryType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
+import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.ui.dto.reference.FileStatusesTypeDto;
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
@@ -48,22 +50,32 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
     log.info("Fetching message direction references from: {}", product);
 
     final List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
-        .getReferencesRepository(product).findAll();
+        .getReferencesRepository(product).findMessageDirectionReferences();
 
     return presenterFactory.getPresenter(clientType)
         .presentMessageDirectionReferences(messageDirectionReferences);
   }
 
   @Override
-  public List<FileStatusesTypeDto> getFileReferences(String product, ClientType clientType,
+  public List<ReasonCodeReferenceDto> getReasonCodeReferences(String product, ClientType clientType,
       String enquiryType) {
     log.info("Fetching file references with type: {} from: {}", enquiryType, product);
 
-    final List<FileReference> fileReferences = repositoryFactory.getFileRepository(product)
-        .findFileReferences();
+    final ReasonCodeValidation reasonCodeReferences = repositoryFactory
+        .getReferencesRepository(product)
+        .findReasonCodes()
+        .stream()
+        .filter(v -> v.getValidationLevel().equals(EnquiryType.valueOf(enquiryType)))
+        .findFirst()
+        .orElseThrow(() -> new NonConsistentDataException(
+            "No reason codes found for type: " + enquiryType)
+        );
+
+    final List<String> reasonCodes = repositoryFactory.getReferencesRepository(product)
+        .findStatuses(enquiryType);
 
     return presenterFactory.getPresenter(clientType)
-        .presentFileReferencesFor(fileReferences, enquiryType);
+        .presentReasonCodeReferences(reasonCodeReferences, reasonCodes);
   }
 
   @Override
