@@ -174,7 +174,7 @@ public interface EntityMapper {
             new IODataDetails(
                 e.getSubmitted(),
                 e.getAccepted(),
-                e.getSubmitted() + e.getAccepted(),
+                e.getOutput(),
                 Double.valueOf(e.getRejected().replaceAll("%", "")))))
         .collect(toList());
   }
@@ -188,7 +188,7 @@ public interface EntityMapper {
             new IODataAmountDetails(
                 e.getSubmitted(),
                 e.getAccepted(),
-                e.getSubmitted() + e.getAccepted(),
+                e.getOutput(),
                 Double.valueOf(e.getRejected().replaceAll("%", "")),
                 e.getAmountAccepted().getAmount(),
                 e.getAmountOutput().getAmount()
