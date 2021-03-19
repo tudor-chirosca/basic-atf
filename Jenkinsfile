@@ -129,6 +129,7 @@ pipeline {
                             echo "Deploying ${env.gitTag} to ${PREPROD_IP}"
                             def envVars = "-e BPS_CONFIG.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRING_PROFILES_ACTIVE=preprod -e JAVA_OPTS='-Xmx2g'"
                             def dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
+                            
                             deployContainer(
                                     containerName: projectName,
                                     deployHost: PREPROD_IP,
@@ -136,6 +137,16 @@ pipeline {
                                     dockerArgs: dockerArgs,
                                     imageTag: env.gitTag
                             )
+                            
+                            environmentDashboard (
+                                addColumns: false, 
+                                buildJob: '', 
+                                buildNumber: BUILD_NUMBER, 
+                                componentName: projectName, 
+                                data: [], 
+                                nameOfEnv: 'PREPROD', 
+                                packageName: env.gitTag
+                            ) {}
                         }
                     }
                 }
