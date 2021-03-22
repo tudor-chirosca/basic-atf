@@ -59,6 +59,13 @@ abstract class MapperUtils {
     put("Admi.004", "Admin Output");
   }};
 
+  private static final Map<String, String> settlementSearchRequestSortParams = new HashMap<String, String>() {{
+    put("cycleId", "cycleId");
+    put("settlementTime", "settlementStartDate");
+    put("status", "status");
+    put("participantId", "schemeParticipantIdentifier");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -70,6 +77,9 @@ abstract class MapperUtils {
   }
   static Map<String, String> getTransactionSearchRequestSortParams() {
     return unmodifiableMap(transactionSearchRequestSortParams);
+  }
+  static Map<String, String> getSettlementSearchRequestSortParams() {
+    return unmodifiableMap(settlementSearchRequestSortParams);
   }
   static String getNameByType(String type) {
     return nameType.getOrDefault(type, "N/A");

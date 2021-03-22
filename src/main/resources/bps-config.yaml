@@ -79,7 +79,7 @@ bps-config:
       path: /enquiry/instructions
       base: MOCK
     settlement-enquiries-path:
-      path: /enquiry/settlements
+      path: /enquiries/settlement/enquiry/{schemeCode}/readAll
       base: MOCK
     settlement-schedule-path:
       path: /enquiries/settlement/schedule/{schemeCode}/readAll

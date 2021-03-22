@@ -12,8 +12,8 @@ import lombok.Getter;
 public class ParticipantSettlement {
 
   private final String cycleId;
-  private final ZonedDateTime settlementTime;
+  private final ZonedDateTime settlementStartDate;
   private final SettlementStatus status;
-  private final String participantId;
+  private final String schemeParticipantIdentifier;
   private final Page<ParticipantInstruction> instructions;
 }

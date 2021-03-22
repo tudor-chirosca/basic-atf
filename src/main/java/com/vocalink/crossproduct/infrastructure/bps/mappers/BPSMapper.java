@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.re
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -167,7 +168,32 @@ public interface BPSMapper {
 
   BPSInstructionEnquiryRequest toBps(InstructionEnquirySearchCriteria criteria);
 
+  @Mappings({
+      @Mapping(target = "participant", source = "participants", qualifiedByName = "getFirstParticipant"),
+      @Mapping(target = "sessionInstanceId", source = "cycleId"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapSettlementSortParams"),
+      @Mapping(target = "dateFrom", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
+      @Mapping(target = "dateTo", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+  })
   BPSSettlementEnquiryRequest toBps(SettlementEnquirySearchCriteria criteria);
+
+  @Named("getFirstParticipant")
+  default String getFirstParticipant(List<String> participants) {
+    return participants.get(0);
+  }
+
+  @Named("mapSettlementSortParams")
+  default List<BPSSortingQuery> mapSettlementSortParams(List<String> sortParams) {
+    return map(sortParams, getSettlementSearchRequestSortParams());
+  }
+
+  @AfterMapping
+  default void updateRequest(@MappingTarget BPSSettlementEnquiryRequest request) {
+    if(request.getSessionInstanceId() != null && !request.getSessionInstanceId().isEmpty()) {
+      request.setDateFrom(null);
+      request.setDateTo(null);
+    }
+  }
 
   BPSManagedParticipantsSearchRequest toBps(ManagedParticipantsSearchCriteria criteria);
 

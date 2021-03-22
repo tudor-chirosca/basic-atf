@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
+import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
@@ -19,13 +20,14 @@ public class SettlementEnquiryRequest {
   @Setter
   private int offset = parseInt(getDefault(OFFSET));
   @Setter
+  @ValidLimit
   private int limit = parseInt(getDefault(LIMIT));
   @Setter
   private List<String> sort;
   @ValidFromDate
   private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private LocalDate dateTo;
-  private List<String> cycleIds;
+  private String cycleId;
   @Setter
   private List<String> participants;
 
@@ -37,7 +39,7 @@ public class SettlementEnquiryRequest {
     this.dateTo = LocalDate.parse(dateTo);
   }
 
-  public void setCycle_ids(List<String> cycleIds) {
-    this.cycleIds = cycleIds;
+  public void setCycle_id(String cycleId) {
+    this.cycleId = cycleId;
   }
 }

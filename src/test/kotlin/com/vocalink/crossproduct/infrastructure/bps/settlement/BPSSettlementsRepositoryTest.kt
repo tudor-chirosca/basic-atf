@@ -1,10 +1,13 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
@@ -42,7 +45,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         {
           "cycleId": "20201209001",
           "status": "PARTIAL",
-          "participantId": "NDEASESSXXX"
+          "schemeParticipantIdentifier": "NDEASESSXXX"
         }
         """
         const val VALID_INSTRUCTION_PAGE_RESPONSE: String = """
@@ -65,32 +68,34 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
 
         const val VALID_SETTLEMENTS_REQUEST: String = """
         {
-            "offset": 0,
-            "limit": 10,
-            "sort": null,
             "dateFrom": null,
             "dateTo": null,
-            "cycleIds": null,
-            "participants": ["HANDSESS", "NDEASESSXXX"]
+            "sessionInstanceId": null,
+            "participant": "HANDSESS",
+            "sortingOrder" : [ ]
         }
         """
 
         const val VALID_SETTLEMENTS_RESPONSE: String = """
         {
-            "totalResults": 2,
-            "items": [
+            "data": [
                 {
                     "cycleId": "20201209001",
-                    "settlementTime": "2020-12-09T14:58:19Z",
+                    "settlementStartDate": "2020-12-09T14:58:19Z",
                     "status": "partial",
-                    "participantId": "NDEASESSXXY"
+                    "schemeParticipantIdentifier": "HANDSESS"
                 },
                 {   "cycleId": "20201209002",
-                    "settlementTime": "2020-12-09T14:58:19Z",
+                    "settlementStartDate": "2020-12-09T14:58:19Z",
                     "status": "no-response",
-                    "participantId": "HANDSESS"
+                    "schemeParticipantIdentifier": "HANDSESS"
                 }    
-            ]
+            ],
+            "summary": {
+                "offset": 0,
+                "pageSize": 20,
+                "totalCount": 2
+            }
         }
        """
 
@@ -140,7 +145,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result).isNotNull
         assertThat(result.cycleId).isEqualTo("20201209001")
         assertThat(result.status).isEqualTo(SettlementStatus.PARTIAL)
-        assertThat(result.participantId).isEqualTo("NDEASESSXXX")
+        assertThat(result.schemeParticipantIdentifier).isEqualTo("NDEASESSXXX")
         assertThat(result.instructions.items[0].cycleId).isEqualTo("20201209001")
         assertThat(result.instructions.items[0].participantId).isEqualTo("NDEASESSXXY")
         assertThat(result.instructions.items[0].reference).isEqualTo("2342631")
@@ -154,17 +159,19 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
     @Test
     fun `should return settlements for given parameters`() {
         mockServer.stubFor(
-                post(urlEqualTo("/enquiry/settlements"))
+                post(urlPathEqualTo("/enquiries/settlement/enquiry/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("20"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(VALID_SETTLEMENTS_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST)))
+                                .withBody(VALID_SETTLEMENTS_RESPONSE)))
 
         val criteria = SettlementEnquirySearchCriteria.builder()
                 .offset(0)
-                .limit(10)
-                .participants(listOf("HANDSESS", "NDEASESSXXX"))
+                .limit(20)
+                .participants(listOf("HANDSESS"))
                 .build()
 
         val result = repository.findPaginated(criteria)

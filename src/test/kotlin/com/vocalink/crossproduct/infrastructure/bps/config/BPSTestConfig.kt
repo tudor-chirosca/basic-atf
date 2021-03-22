@@ -44,7 +44,7 @@ open class BPSTestConfig {
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
                 Pair("instruction-enquiries-path", Detail("MOCK", "/enquiry/instructions")),
                 Pair("single-settlement-path", Detail("MOCK", "/enquiry/settlements/read")),
-                Pair("settlement-enquiries-path", Detail("MOCK", "/enquiry/settlements")),
+                Pair("settlement-enquiries-path", Detail("MOCK", "/enquiries/settlement/enquiry/P27-SEK/readAll")),
                 Pair("transaction-enquiries-path", Detail("MOCK", "/enquiries/transactions/P27-SEK/readAll")),
                 Pair("single-transaction-path", Detail("MOCK", "/enquiries/transactions/P27-SEK/read")),
                 Pair("single-account-path", Detail("MOCK", "/account/read")),

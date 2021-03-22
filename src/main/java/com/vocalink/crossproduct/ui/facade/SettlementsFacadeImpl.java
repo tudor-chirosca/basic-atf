@@ -10,7 +10,9 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
+import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
@@ -68,12 +70,15 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
   @Override
   public PageDto<ParticipantSettlementCycleDto> getSettlements(String product,
-      ClientType clientType, SettlementEnquiryRequest request) {
+      ClientType clientType, SettlementEnquiryRequest requestDto) {
     log.info("Fetching settlements from: {}", product);
 
-    final Page<ParticipantSettlement> participantSettlements = repositoryFactory
-        .getSettlementsRepository(product)
-        .findPaginated(MAPPER.toEntity(request));
+    final SettlementEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
+
+    final SettlementsRepository settlementsRepository = repositoryFactory
+        .getSettlementsRepository(product);
+
+    final Page<ParticipantSettlement> participantSettlements = settlementsRepository.findPaginated(request);
 
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);
