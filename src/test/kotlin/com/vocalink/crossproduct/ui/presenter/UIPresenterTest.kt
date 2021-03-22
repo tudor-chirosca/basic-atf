@@ -7,18 +7,20 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
+import com.vocalink.crossproduct.domain.cycle.Cycle
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation
-import com.vocalink.crossproduct.mocks.MockCycles
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -43,7 +45,19 @@ class UIPresenterTest {
 
     @Test
     fun `should get Settlement Dashboard DTO for paramId with null values if missing IntraDay or Positions`() {
-        val cycles = MockCycles().cycles
+        val cycles = listOf(Cycle.builder()
+                .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
+                .id("02")
+                .status(CycleStatus.OPEN)
+                .build(),
+                Cycle.builder()
+                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
+                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
+                        .id("01")
+                        .status(CycleStatus.COMPLETED)
+                        .build()
+        )
         val participants = MockParticipants().participants
         val fundingParticipant = MockParticipants().getParticipant(false)
 

@@ -38,22 +38,6 @@ class MockParticipants {
                 .build()
     }
 
-    val fundingParticipant = Participant.builder()
-            .id("DABASESX")
-            .bic("DABASESX")
-            .name("Danske Bank AG")
-            .suspendedTime(ZonedDateTime.now().plusDays(15))
-            .status(ParticipantStatus.SUSPENDED)
-            .build()
-
-    val fundingParticipantDto = ParticipantDto.builder()
-            .id("NDEASESSXXX")
-            .bic("NDEASESSXXX")
-            .name("Nordea")
-            .suspendedTime(ZonedDateTime.now().plusDays(15))
-            .status(ParticipantStatus.ACTIVE)
-            .build()
-
     fun getParticipant(isFirst: Boolean): Participant {
         return if (isFirst)
             Participant.builder()

@@ -32,7 +32,7 @@ class WebFilterTest @Autowired constructor(var mockMvc: MockMvc) {
                 .header("client-type", "UI"))
                 .andExpect(status().isOk)
 
-        verify(dashboard, atMostOnce()).getSettlement(anyString(), any())
+        verify(dashboard, atMostOnce()).getParticipantSettlement(anyString(), any(), anyString())
     }
 
     @Test

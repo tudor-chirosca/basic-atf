@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -19,33 +20,25 @@ public class SettlementDashboardController implements SettlementDashboardApi {
 
   private final SettlementDashboardFacade settlementDashboardFacade;
 
-  @GetMapping(value = "/settlement/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SettlementDashboardDto> getSettlement(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @PathVariable String participantId) {
-
-    SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
-        .getParticipantSettlement(context.toUpperCase(), clientType, participantId);
-
-    return ResponseEntity.ok().body(settlementDashboardDto);
-  }
-
   @GetMapping(value = "/settlement", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SettlementDashboardDto> getSettlement(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context) {
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final @RequestParam(required = false) String fundingParticipantId) {
 
-    SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
-        .getSettlement(context.toUpperCase(), clientType);
+    final SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
+        .getParticipantSettlement(context.toUpperCase(), clientType, fundingParticipantId);
 
     return ResponseEntity.ok().body(settlementDashboardDto);
   }
 
-  @GetMapping(value = "/settlement-details/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/settlement/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSettlementDetails(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @PathVariable String participantId) {
+      final @RequestHeader("client-type") ClientType clientType,
+      final @RequestHeader String context,
+      final @PathVariable String participantId) {
 
-    ParticipantDashboardSettlementDetailsDto selfFundingDetailsDto = settlementDashboardFacade
+    final ParticipantDashboardSettlementDetailsDto selfFundingDetailsDto = settlementDashboardFacade
         .getParticipantSettlementDetails(context.toUpperCase(), clientType, participantId);
 
     return ResponseEntity.ok().body(selfFundingDetailsDto);

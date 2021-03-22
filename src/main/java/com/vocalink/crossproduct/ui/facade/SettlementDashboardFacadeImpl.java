@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -16,6 +17,7 @@ import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +29,28 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   private final PresenterFactory presenterFactory;
 
   @Override
-  public SettlementDashboardDto getSettlement(String product, ClientType clientType) {
+  public SettlementDashboardDto getParticipantSettlement(String product, ClientType clientType,
+      String fundingParticipantId) {
 
     List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
 
     if (cycles.size() < 2) {
       throw new NonConsistentDataException("Expected at least two cycles!");
+    }
+
+    if (nonNull(fundingParticipantId)) {
+      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
+          .findById(fundingParticipantId);
+
+      List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+          .findByConnectingPartyAndType(fundingParticipantId, ParticipantType.FUNDED.getDescription());
+
+      List<IntraDayPositionGross> intraDays = repositoryFactory
+          .getIntradayPositionGrossRepository(product)
+          .findById(fundingParticipantId);
+
+      return presenterFactory.getPresenter(clientType)
+          .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
     }
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll()
@@ -42,29 +60,6 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     return presenterFactory.getPresenter(clientType)
         .presentAllParticipantsSettlement(cycles, participants);
-  }
-
-  @Override
-  public SettlementDashboardDto getParticipantSettlement(String product, ClientType clientType,
-      String participantId) {
-
-    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
-
-    if (cycles.size() < 2) {
-      throw new NonConsistentDataException("Expected at least two cycles!");
-    }
-
-    Participant fundingParticipant = repositoryFactory.getParticipantRepository(product).findById(participantId);
-
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product)
-        .findByConnectingPartyAndType(participantId, ParticipantType.FUNDED.getDescription());
-
-    List<IntraDayPositionGross> intraDays = repositoryFactory
-        .getIntradayPositionGrossRepository(product)
-        .findById(participantId);
-
-    return presenterFactory.getPresenter(clientType)
-        .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
   }
 
   @Override

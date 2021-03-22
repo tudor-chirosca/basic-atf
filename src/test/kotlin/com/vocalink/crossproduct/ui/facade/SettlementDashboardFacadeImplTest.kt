@@ -14,13 +14,13 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException
-import com.vocalink.crossproduct.mocks.MockCycles
-import com.vocalink.crossproduct.mocks.MockDashboardModels
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
+import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -31,7 +31,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.time.ZonedDateTime
 
 open class SettlementDashboardFacadeImplTest {
 
@@ -73,13 +72,17 @@ open class SettlementDashboardFacadeImplTest {
     fun `should get settlement dto by participant id`() {
         val participantId = "NDEASESSXXX"
         val fundedParticipantId = MockParticipants().getParticipant(false).id
-        val mockModel = MockDashboardModels().getFundingParticipantsSettlementDashboardDto()
+        val mockModel = SettlementDashboardDto.builder().build()
         val intraDay = IntraDayPositionGross(
                 null, null,null,null,
                 null
         )
+        val cycles = listOf(
+                Cycle.builder().build(),
+                Cycle.builder().build()
+        )
         `when`(cycleRepository.findAll())
-                .thenReturn(MockCycles().cycles)
+                .thenReturn(cycles)
         `when`(participantRepository
                 .findById(participantId))
                 .thenReturn(MockParticipants().getParticipant(false))
@@ -105,7 +108,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
         assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getSettlement(CONTEXT, UI)
+            settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
         }
     }
 
@@ -234,12 +237,16 @@ open class SettlementDashboardFacadeImplTest {
     @Test
     fun `should throw NonConsistentDataException when positions and cycle size differs`() {
         val participantId = "HANDSESS"
+        val cycles = listOf(
+                Cycle.builder().build(),
+                Cycle.builder().build()
+        )
         `when`(participantRepository.findById(any()))
                 .thenReturn(MockParticipants().getParticipant(false))
         `when`(positionRepository.findByParticipantId(any()))
                 .thenReturn(emptyList())
         `when`(cycleRepository.findLatest(2))
-                .thenReturn(MockCycles().cycles)
+                .thenReturn(cycles)
         assertThrows(NonConsistentDataException::class.java) {
             settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
         }
@@ -276,12 +283,16 @@ open class SettlementDashboardFacadeImplTest {
                 null, null,null,null,null,
                 null,null,null,null
         )
+        val cycles = listOf(
+                Cycle.builder().build(),
+                Cycle.builder().build()
+        )
         `when`(participantRepository.findById(any()))
                 .thenReturn(MockParticipants().getParticipant(true))
         `when`(positionRepository.findByParticipantId(any()))
                 .thenReturn(listOf(positionsDetails))
         `when`(cycleRepository.findByIds(any()))
-                .thenReturn(MockCycles().cycles)
+                .thenReturn(cycles)
         `when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any()))
                 .thenReturn(mockModel)
 
@@ -301,12 +312,16 @@ open class SettlementDashboardFacadeImplTest {
                 null, null,null,null,null,
                 null,null,null,null
         )
+        val cycles = listOf(
+                Cycle.builder().build(),
+                Cycle.builder().build()
+        )
         `when`(participantRepository.findById(any()))
                 .thenReturn(selfFundingParticipant)
         `when`(positionRepository.findByParticipantId(any()))
                 .thenReturn(listOf(positionsDetails))
         `when`(cycleRepository.findLatest(2))
-                .thenReturn(MockCycles().cycles)
+                .thenReturn(cycles)
         `when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any()))
                 .thenReturn(mockModel)
 
@@ -338,15 +353,18 @@ open class SettlementDashboardFacadeImplTest {
                 .participantType(typeFunded)
                 .build()
         )
-
+        val cycles = listOf(
+                Cycle.builder().build(),
+                Cycle.builder().build()
+        )
         `when`(cycleRepository.findAll())
-            .thenReturn(MockCycles().cycles)
+            .thenReturn(cycles)
         `when`(participantRepository.findAll())
             .thenReturn(participants)
         `when`(presenterFactory.getPresenter(UI))
             .thenReturn(UIPresenter())
 
-        val result = settlementServiceFacadeImpl.getSettlement(CONTEXT, UI)
+        val result = settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
 
         assertThat(result.positions.size).isEqualTo(1)
         assertThat(result.positions[0].participant.participantType).isEqualTo(typeDirect.toString())

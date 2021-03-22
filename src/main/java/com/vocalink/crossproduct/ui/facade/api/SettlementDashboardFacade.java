@@ -6,9 +6,8 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 
 public interface SettlementDashboardFacade {
 
-  SettlementDashboardDto getSettlement(String context, ClientType clientType);
-
-  SettlementDashboardDto getParticipantSettlement(String context, ClientType clientType, String participantId);
+  SettlementDashboardDto getParticipantSettlement(String context, ClientType clientType,
+      String fundingParticipantId);
 
   ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String context,
       ClientType clientType, String participantId);
