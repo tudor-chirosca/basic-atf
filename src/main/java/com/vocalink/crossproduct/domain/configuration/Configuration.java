@@ -9,4 +9,5 @@ public class Configuration {
 
   private final String scheme;
   private final String schemeCurrency;
+  private final Integer ioDetailsThreshold;
 }

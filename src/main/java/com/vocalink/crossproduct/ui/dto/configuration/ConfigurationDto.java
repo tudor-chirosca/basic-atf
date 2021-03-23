@@ -10,4 +10,5 @@ public class ConfigurationDto {
   private final String scheme;
   private final String schemeCurrency;
   private final Integer dataRetentionDays;
+  private final Integer ioDetailsThreshold;
 }

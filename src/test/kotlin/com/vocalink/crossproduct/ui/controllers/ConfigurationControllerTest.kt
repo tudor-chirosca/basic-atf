@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
+import org.mockito.Mockito.`when`
 
 @WebMvcTest(ConfigurationController::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -37,7 +38,8 @@ class ConfigurationControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val VALID_CONFIGURATION_RESPONSE = """{
             "scheme": "P27-SEK",
             "schemeCurrency": "SEK",
-            "dataRetentionDays": 30
+            "dataRetentionDays": 30,
+            "ioDetailsThreshold": 2
         }
         """
     }
@@ -45,10 +47,10 @@ class ConfigurationControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 on configuration request`() {
         val configurationDto = ConfigurationDto(
-            "P27-SEK", "SEK", 30
+            "P27-SEK", "SEK", 30, 2
         )
 
-        Mockito.`when`(configurationFacade.getConfiguration(any(), any()))
+        `when`(configurationFacade.getConfiguration(any(), any()))
             .thenReturn(configurationDto)
 
         mockMvc.perform(

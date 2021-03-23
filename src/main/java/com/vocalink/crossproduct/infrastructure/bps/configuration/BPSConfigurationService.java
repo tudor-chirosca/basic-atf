@@ -16,7 +16,9 @@ public class BPSConfigurationService implements ConfigurationService {
   @Override
   public Configuration getConfiguration() {
     return new Configuration(bpsProperties.getSchemeCode(),
-        bpsProperties.getCurrencies().get(bpsProperties.getSchemeCode()));
+        bpsProperties.getCurrencies().get(bpsProperties.getSchemeCode()),
+        bpsProperties.getIoDetailsThreshold()
+    );
   }
 
   @Override

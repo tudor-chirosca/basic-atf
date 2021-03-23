@@ -1048,7 +1048,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map ConfigurationDto fields`() {
-        val entity = Configuration("P27-SEK", "SEK")
+        val entity = Configuration("P27-SEK", "SEK", 2)
         val dataRetentionDays = 30
 
         val result = MAPPER.toDto(entity, dataRetentionDays)
@@ -1056,6 +1056,7 @@ class DTOMapperTest {
         assertThat(result.scheme).isEqualTo(entity.scheme)
         assertThat(result.schemeCurrency).isEqualTo(entity.schemeCurrency)
         assertThat(result.dataRetentionDays).isEqualTo(dataRetentionDays)
+        assertThat(result.ioDetailsThreshold).isEqualTo(entity.ioDetailsThreshold)
     }
 
     @Test

@@ -45,9 +45,10 @@ class ConfigurationFacadeImplTest {
         val scheme = "P27-SEK"
         val schemeCurrency = "SEK"
         val dataRetentionDays = parseInt(getDefault(DAYS_LIMIT))
+        val ioDetailsThreshold = 2
 
-        val configuration = Configuration(scheme, schemeCurrency)
-        val configurationDto = ConfigurationDto(scheme, schemeCurrency, dataRetentionDays)
+        val configuration = Configuration(scheme, schemeCurrency, ioDetailsThreshold)
+        val configurationDto = ConfigurationDto(scheme, schemeCurrency, dataRetentionDays, ioDetailsThreshold)
 
         `when`(configurationService.configuration)
             .thenReturn(configuration)

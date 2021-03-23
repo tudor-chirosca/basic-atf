@@ -15,6 +15,7 @@ open class BPSTestConfig {
         props.retryCount = 3
         props.timeoutDuration = Duration.ofMillis(1000)
         props.schemeCode = "P27-SEK"
+        props.ioDetailsThreshold = 2
         props.currencies = hashMapOf(Pair("P27-SEK", "SEK"))
         props.baseUrls = hashMapOf(Pair("MOCK", "http://localhost:54001"))
         props.eodPeriod = hashMapOf(Pair("start", "16"), Pair("end", "20"))
