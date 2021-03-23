@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Entity
 @Table(name = "UI_PERMISSION")
@@ -20,11 +19,9 @@ import lombok.NonNull;
 public class UIPermissionJpa implements Serializable {
 
   @Id
-  @NonNull
   @Column(name = "id", nullable = false)
   private String id;
 
-  @NonNull
   @Column(name = "key", nullable = false)
   private String key;
 }

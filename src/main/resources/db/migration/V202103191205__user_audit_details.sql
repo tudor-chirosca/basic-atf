@@ -1,26 +1,26 @@
 create table user_audit_details
 (
-    id                         varchar(36)   not null,
-    activity_id                varchar(36)   not null,
-    timestamp                  timestamp     not null,
+    id                         varchar(36)                         not null,
+    activity_id                varchar(36)                         not null,
+    timestamp                  timestamp                           not null,
     customer                   varchar(10),
     ips_suite_application_name varchar(5),
-    channel                    varchar(20)   not null,
+    channel                    varchar(20)                         not null,
     ip_address                 varchar(20),
-    username                   varchar(50)   not null,
+    username                   varchar(50)                         not null,
     employer_or_representation varchar(10),
     user_role_list             varchar(100),
-    user_activity_string       varchar(36)   not null,
-    correlation_id             varchar(20)   not null,
-    service_id                 number        not null,
-    approval_request_id        varchar(5)    not null,
-    request_or_response_enum   varchar(10)   not null,
-    request_url                varchar(50)   not null,
-    contents                   varchar(1000) not null,
-    user_id                    varchar(10)   not null,
-    first_name                 varchar(15)   not null,
-    last_name                  varchar(20)   not null,
-    participant_id             varchar(10)   not null
+    user_activity_string       varchar(36)                         not null,
+    correlation_id             varchar(20)                         not null,
+    service_id                 number generated always as identity not null,
+    approval_request_id        varchar(5)                          not null,
+    request_or_response_enum   varchar(10)                         not null,
+    request_url                varchar(50)                         not null,
+    contents                   varchar(1000)                       not null,
+    user_id                    varchar(10)                         not null,
+    first_name                 varchar(15)                         not null,
+    last_name                  varchar(20)                         not null,
+    participant_id             varchar(10)                         not null
 );
 
 comment on column user_audit_details.id is 'User activity identifier UUID.';

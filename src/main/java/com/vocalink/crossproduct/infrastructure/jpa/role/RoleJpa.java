@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Entity
 @Table(name = "ROLE")
@@ -22,11 +21,9 @@ import lombok.NonNull;
 public class RoleJpa {
 
   @Id
-  @NonNull
   private String id;
 
   @Enumerated(EnumType.STRING)
-  @NonNull
   @Column(nullable = false)
   private Role.Function function;
 }
