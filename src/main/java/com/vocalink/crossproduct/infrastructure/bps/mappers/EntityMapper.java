@@ -63,6 +63,7 @@ import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
+import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -102,6 +103,7 @@ import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
@@ -270,6 +272,8 @@ public interface EntityMapper {
   SettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);
 
   SettlementSchedule toEntity(BPSSettlementSchedule cycleSchedule);
+
+  ScheduleDayDetails toEntity(BPSScheduleDayDetails weekDaySchedule);
 
   @Mappings({
       @Mapping(target = "cycleName", source = "sessionCode"),

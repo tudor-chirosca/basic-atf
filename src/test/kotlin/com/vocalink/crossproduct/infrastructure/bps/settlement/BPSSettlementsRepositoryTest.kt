@@ -13,6 +13,8 @@ import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriter
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.math.BigDecimal
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -100,19 +102,22 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
        """
 
         const val VALID_SCHEDULES_RESPONSE: String = """
-        [
-          {
-            "weekDay": "Monday",
-            "cycles": [
-              {
-                "sessionCode": "01",
-                "startTime": "09:00",
-                "endTime": "10:00",
-                "settlementTime": "9:45"
-              }
+        {
+            "updatedAt": "2021-01-11T12:00:00Z",
+            "scheduleDayDetails": [
+                {
+                    "weekDay": "Monday",
+                    "cycles": [
+                        {
+                        "sessionCode": "01",
+                        "startTime": "09:00",
+                        "endTime": "10:00",
+                        "settlementTime": "9:45"
+                        }
+                    ]
+                }
             ]
-          }
-        ]
+       }
        """
     }
 
@@ -190,11 +195,12 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_SCHEDULES_RESPONSE)))
 
-        val result = repository.findSchedules()
-        assertThat(result[0].weekDay).isEqualTo("Monday")
-        assertThat(result[0].cycles[0].cycleName).isEqualTo("01")
-        assertThat(result[0].cycles[0].startTime).isEqualTo("09:00")
-        assertThat(result[0].cycles[0].cutOffTime).isEqualTo("10:00")
-        assertThat(result[0].cycles[0].settlementStartTime).isEqualTo("9:45")
+        val result = repository.findSchedule()
+        assertThat(result.updatedAt).isEqualTo(ZonedDateTime.of(2021,1,11,12,0,0, 0, ZoneId.of("UTC")))
+        assertThat(result.scheduleDayDetails[0].weekDay).isEqualTo("Monday")
+        assertThat(result.scheduleDayDetails[0].cycles[0].cycleName).isEqualTo("01")
+        assertThat(result.scheduleDayDetails[0].cycles[0].startTime).isEqualTo("09:00")
+        assertThat(result.scheduleDayDetails[0].cycles[0].cutOffTime).isEqualTo("10:00")
+        assertThat(result.scheduleDayDetails[0].cycles[0].settlementStartTime).isEqualTo("9:45")
     }
 }

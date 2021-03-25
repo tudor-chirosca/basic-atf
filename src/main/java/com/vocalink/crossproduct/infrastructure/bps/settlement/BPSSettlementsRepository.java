@@ -103,17 +103,16 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   }
 
   @Override
-  public List<SettlementSchedule> findSchedules() {
+  public SettlementSchedule findSchedule() {
     return webClient.post()
         .uri(resolve(SETTLEMENT_SCHEDULE_ENQUIRIES_PATH, bpsProperties))
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
-        .bodyToFlux(BPSSettlementSchedule.class)
+        .bodyToMono(BPSSettlementSchedule.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)
-        .collectList()
         .block();
   }
 

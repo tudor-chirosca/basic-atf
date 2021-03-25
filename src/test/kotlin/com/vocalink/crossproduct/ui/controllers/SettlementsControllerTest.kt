@@ -88,7 +88,6 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             }
         }
         """
-
         const val VALID_CYCLES_RESPONSE = """{
            "previousCycle": {
                "id": "20210111002",
@@ -104,7 +103,6 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
            }
         }
         """
-
         const val VALID_SCHEDULE_RESPONSE = """
         {
             "weekdayCycles": [
@@ -115,7 +113,8 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                     "settlementStartTime": "9:45"
                 }
             ],
-            "weekendCycles": []
+            "weekendCycles": [],
+            "updatedAt": "2021-01-11T12:00:00Z"
         }
         """
     }
@@ -184,7 +183,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                         "09:00",
                         "10:00",
                         "9:45"
-                )), emptyList()
+                )), emptyList(), ZonedDateTime.of(2021,1,11,12,0,0, 0, ZoneId.of("UTC"))
         )
         `when`(settlementsFacade.getSettlementsSchedule(any(), any())).thenReturn(schedule)
         mockMvc.perform(get("/enquiry/settlements/schedule")

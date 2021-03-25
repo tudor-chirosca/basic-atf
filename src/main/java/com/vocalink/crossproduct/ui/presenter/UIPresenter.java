@@ -35,6 +35,7 @@ import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
+import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
@@ -404,21 +405,21 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public SettlementScheduleDto presentSchedules(List<SettlementSchedule> schedules) {
-    final List<SettlementCycleScheduleDto> weekdayCycles = schedules.stream()
+  public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
+    final List<SettlementCycleScheduleDto> weekdayCycles = schedule.getScheduleDayDetails().stream()
         .filter(s -> !weekends.contains(s.getWeekDay()))
-        .map(SettlementSchedule::getCycles)
+        .map(ScheduleDayDetails::getCycles)
         .flatMap(List::stream)
         .map(MAPPER::toDto)
         .collect(toList());
-    final List<SettlementCycleScheduleDto> weekendCycles = schedules.stream()
+    final List<SettlementCycleScheduleDto> weekendCycles = schedule.getScheduleDayDetails().stream()
         .filter(s -> weekends.contains(s.getWeekDay()))
-        .map(SettlementSchedule::getCycles)
+        .map(ScheduleDayDetails::getCycles)
         .flatMap(List::stream)
         .map(MAPPER::toDto)
         .collect(toList());
 
-    return new SettlementScheduleDto(weekdayCycles, weekendCycles);
+    return new SettlementScheduleDto(weekdayCycles, weekendCycles, schedule.getUpdatedAt());
   }
 
   @Override

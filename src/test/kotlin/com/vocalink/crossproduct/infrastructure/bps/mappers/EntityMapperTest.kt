@@ -40,6 +40,7 @@ import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
@@ -765,16 +766,21 @@ class EntityMapperTest {
                 "endTime",
                 "settlementTime"
         )
-        val bps = BPSSettlementSchedule(
+        val scheduleDayDetails = BPSScheduleDayDetails(
                 "weekDay",
                 listOf(bpsCycle)
         )
+        val bps = BPSSettlementSchedule(
+                ZonedDateTime.now(),
+                listOf(scheduleDayDetails)
+        )
         val result = MAPPER.toEntity(bps)
-        assertThat(result.weekDay).isEqualTo(bps.weekDay)
+        assertThat(result.updatedAt).isEqualTo(bps.updatedAt)
+        assertThat(result.scheduleDayDetails[0].weekDay).isEqualTo(scheduleDayDetails.weekDay)
 
-        assertThat(result.cycles[0].cycleName).isEqualTo(bpsCycle.sessionCode)
-        assertThat(result.cycles[0].startTime).isEqualTo(bpsCycle.startTime)
-        assertThat(result.cycles[0].cutOffTime).isEqualTo(bpsCycle.endTime)
-        assertThat(result.cycles[0].settlementStartTime).isEqualTo(bpsCycle.settlementTime)
+        assertThat(result.scheduleDayDetails[0].cycles[0].cycleName).isEqualTo(bpsCycle.sessionCode)
+        assertThat(result.scheduleDayDetails[0].cycles[0].startTime).isEqualTo(bpsCycle.startTime)
+        assertThat(result.scheduleDayDetails[0].cycles[0].cutOffTime).isEqualTo(bpsCycle.endTime)
+        assertThat(result.scheduleDayDetails[0].cycles[0].settlementStartTime).isEqualTo(bpsCycle.settlementTime)
     }
 }

@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.settlement;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SettlementSchedule {
 
-  private final String weekDay;
-  private final List<SettlementCycleSchedule> cycles;
-
+  private final ZonedDateTime updatedAt;
+  private final List<ScheduleDayDetails> scheduleDayDetails;
 }

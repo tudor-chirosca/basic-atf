@@ -107,10 +107,10 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
       ClientType clientType) {
     log.info("Fetching settlements schedule from: {}", product);
 
-    final List<SettlementSchedule> schedules = repositoryFactory.getSettlementsRepository(product)
-        .findSchedules();
+    final SettlementSchedule schedule = repositoryFactory.getSettlementsRepository(product)
+        .findSchedule();
 
     return presenterFactory.getPresenter(clientType)
-        .presentSchedules(schedules);
+        .presentSchedule(schedule);
   }
 }
