@@ -22,6 +22,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
+import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -106,6 +107,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSche
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
+import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsJpa;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
@@ -465,4 +467,6 @@ public interface EntityMapper {
 
     return new Page<>(result.getSummary().getTotalCount(), targetItems);
   }
+
+  AuditDetails toEntity(AuditDetailsJpa details);
 }

@@ -15,6 +15,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
+import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -46,6 +47,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
@@ -500,5 +502,10 @@ public class UIPresenter implements Presenter {
   public ConfigurationDto presentConfiguration(Configuration configuration,
       Integer dataRetentionDays) {
     return MAPPER.toDto(configuration, dataRetentionDays);
+  }
+
+  @Override
+  public List<UserDetailsDto> presentUserDetails(List<AuditDetails> details) {
+   return details.stream().map(d -> new UserDetailsDto(d.getUsername())).collect(toList());
   }
 }

@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user_activity")
@@ -21,12 +22,13 @@ import org.hibernate.annotations.GenericGenerator;
 public class UserActivity {
 
   @Id
+  @Type(type="uuid-char")
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column(updatable = false, nullable = false)
+  @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
-  @Column(nullable = false)
+  @Column(name = "name", nullable = false)
   private String name;
-  @Column(nullable = false)
+  @Column(name = "description", nullable = false)
   private String description;
 }

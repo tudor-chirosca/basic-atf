@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
+import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
@@ -46,6 +47,7 @@ public class RepositoryFactory {
   private final List<BroadcastsRepository> broadcastsRepositories;
   private final List<RoutingRepository> routingRepositories;
   private final List<ReportRepository> reportRepositories;
+  private final List<AuditDetailsRepository> auditDetailsRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -63,6 +65,7 @@ public class RepositoryFactory {
   private Map<String, BroadcastsRepository> broadcastsRepositoriesByProduct;
   private Map<String, RoutingRepository> routingRepositoriesByProduct;
   private Map<String, ReportRepository> reportRepositoriesByProduct;
+  private Map<String, AuditDetailsRepository> auditDetailsRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -98,6 +101,8 @@ public class RepositoryFactory {
         .collect(toMap(RoutingRepository::getProduct, Function.identity()));
     reportRepositoriesByProduct = reportRepositories.stream()
         .collect(toMap(ReportRepository::getProduct, Function.identity()));
+    auditDetailsRepositoriesByProduct = auditDetailsRepositories.stream()
+        .collect(toMap(AuditDetailsRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -226,5 +231,13 @@ public class RepositoryFactory {
           "Reports repository not available for product " + product);
     }
     return reportRepositoriesByProduct.get(product);
+  }
+
+  public AuditDetailsRepository getAuditDetailsRepository(String product) {
+    if (!auditDetailsRepositoriesByProduct.containsKey(product)) {
+      throw new RepositoryNotAvailableException(
+          "Audit details repository not available for product " + product);
+    }
+    return auditDetailsRepositoriesByProduct.get(product);
   }
 }

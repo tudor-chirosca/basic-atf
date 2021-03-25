@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @DataJpaTest
 @ActiveProfiles("test")
-open class UserActivityRepositoryJpaTest @Autowired constructor(var userActivityRepository: UserActivityRepositoryJpa) {
+open class AuditDetailsActivityRepositoryJpaTest @Autowired constructor(var userActivityRepository: UserActivityRepositoryJpa) {
 
     companion object {
         val details = UserActivity.builder()

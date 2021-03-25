@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -24,48 +26,54 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AuditDetails {
+public class AuditDetailsJpa {
 
   @Id
+  @Type(type="uuid-char")
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Column(updatable = false, nullable = false)
+  @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
   @ManyToOne
-  @JoinColumn(name = "activity_id", nullable = false, updatable = false)
+  @JoinColumn(name = "activity_id", foreignKey = @ForeignKey(name = "AI_FK"), nullable = false, updatable = false)
   private UserActivity activityId;
-  @Column(updatable = false, insertable = false)
+  @Column(name = "timestamp", updatable = false, insertable = false)
   private ZonedDateTime timestamp;
+  @Column(name = "customer")
   private String customer;
+  @Column(name = "ips_suite_application_name")
   private String ipsSuiteApplicationName;
-  @Column(nullable = false)
+  @Column(name = "channel", nullable = false)
   private String channel;
+  @Column(name = "ip_address")
   private String ipAddress;
-  @Column(nullable = false)
+  @Column(name = "username", nullable = false)
   private String username;
+  @Column(name = "employer_or_representation")
   private String employerOrRepresentation;
+  @Column(name = "user_role_list")
   private String userRoleList;
-  @Column(nullable = false)
+  @Column(name = "user_activity_string", nullable = false)
   private String userActivityString;
-  @Column(nullable = false)
+  @Column(name = "correlation_id", nullable = false)
   private String correlationId;
-  @Column(updatable = false, insertable = false, unique = true)
+  @Column(name = "service_id", updatable = false, insertable = false, unique = true)
   private Long serviceId;
-  @Column(nullable = false)
+  @Column(name = "approval_request_id", nullable = false)
   private String approvalRequestId;
-  @Column(nullable = false)
+  @Column(name = "request_or_response_enum", nullable = false)
   private String requestOrResponseEnum;
-  @Column(nullable = false)
+  @Column(name = "request_url", nullable = false)
   private String requestUrl;
-  @Column(nullable = false)
+  @Column(name = "contents", nullable = false)
   private String contents;
-  @Column(nullable = false)
+  @Column(name = "user_id", nullable = false)
   private String userId;
-  @Column(nullable = false)
+  @Column(name = "first_name", nullable = false)
   private String firstName;
-  @Column(nullable = false)
+  @Column(name = "last_name", nullable = false)
   private String lastName;
-  @Column(nullable = false)
+  @Column(name = "participant_id", nullable = false)
   private String participantId;
 
   @PrePersist

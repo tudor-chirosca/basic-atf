@@ -12,8 +12,8 @@ import java.util.*
 
 @DataJpaTest
 @ActiveProfiles("test")
-open class AuditDetailsRepositoryJpaTest @Autowired constructor(var auditDetailsRepository: AuditDetailsRepositoryJpa,
-                                                                var userActivityRepository: UserActivityRepositoryJpa) {
+open class AuditDetailsJpaRepositoryJpaTest @Autowired constructor(var auditDetailsRepository: AuditDetailsRepositoryJpa,
+                                                                   var userActivityRepository: UserActivityRepositoryJpa) {
 
     companion object {
         val activity = UserActivity.builder()
@@ -21,7 +21,7 @@ open class AuditDetailsRepositoryJpaTest @Autowired constructor(var auditDetails
                 .name("name")
                 .build()
 
-        val details = AuditDetails.builder()
+        val details = AuditDetailsJpa.builder()
                 .activityId(activity)
                 .approvalRequestId("1")
                 .correlationId("corId")

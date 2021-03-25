@@ -15,12 +15,12 @@ create table user_audit_details
     service_id                 number generated always as identity not null,
     approval_request_id        varchar(5)                          not null,
     request_or_response_enum   varchar(10)                         not null,
-    request_url                varchar(50)                         not null,
+    request_url                varchar(100)                         not null,
     contents                   varchar(1000)                       not null,
     user_id                    varchar(10)                         not null,
     first_name                 varchar(15)                         not null,
     last_name                  varchar(20)                         not null,
-    participant_id             varchar(10)                         not null
+    participant_id             varchar(20)                         not null
 );
 
 comment on column user_audit_details.id is 'User activity identifier UUID.';
