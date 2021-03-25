@@ -5,10 +5,12 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.CoreMatchers.containsString
@@ -124,8 +126,13 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "createdAt": "2021-01-28T14:55:00Z",
             "jobId": "10000004",
             "requestType": "BATCH_CANCELLATION",
-            "participantIdentifier": "ESSESESS",
-            "participantName": "SEB Bank",
+            "participants": [{
+                "participantIdentifier": "ESSESESS",
+                "name": "SEB Bank",
+                "participantType": "FUNDED",
+                "status": null,
+                "schemeCode": null
+            }],
             "requestComment": "This is the reason that I...",
             "requestedChange": {
                 "status": "suspended"
@@ -145,8 +152,13 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                    "createdAt": "2021-02-08T14:55:00Z",
                    "jobId": "10000004",
                    "requestType": "STATUS_CHANGE",
-                   "participantIdentifier": "ESSESESS",
-                   "participantName": "SEB Bank",
+                   "participants": [{
+                        "participantIdentifier": "ESSESESS",
+                        "name": "SEB Bank",
+                        "participantType": "FUNDED",
+                        "status": null,
+                        "schemeCode": null
+                    }],
                    "requestComment": "This is the reason that I have requested this change to be made.",
                    "notes": "Please check ticket number 342 and resubmit the change.",
                    "originalData": {
@@ -168,14 +180,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
             approvalUser, approvalUser,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
-            "ESSESESS",
-            "SEB Bank",
+            listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, "Notes",
             originalData, requestedChange
@@ -201,14 +213,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
             approvalUser, approvalUser,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
-            "ESSESESS",
-            "SEB Bank",
+            listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, "Notes",
             originalData, requestedChange
@@ -235,14 +247,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
             approvalUser, approvalUser,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
-            "ESSESESS",
-            "SEB Bank",
+            listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, "Notes",
             originalData, requestedChange
@@ -269,14 +281,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
             approvalUser, approvalUser,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
-            "ESSESESS",
-            "SEB Bank",
+            listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, "Notes",
             originalData, requestedChange
@@ -355,14 +367,14 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val createdAt = ZonedDateTime.parse("2021-02-08T14:55:00Z")
         val requestedChange = mapOf("status" to "REJECTED")
         val originalData = mapOf("status" to "WAITING-FORAPPROVAL")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.PENDING,
             approvalUser, approvalUser,
             createdAt, jobId,
             ApprovalRequestType.STATUS_CHANGE,
-            "ESSESESS",
-            "SEB Bank",
+            listOf(participantReferenceDto),
             "This is the reason that I have requested this change to be made.",
             approvalUser, "Please check ticket number 342 and resubmit the change.",
             originalData, requestedChange

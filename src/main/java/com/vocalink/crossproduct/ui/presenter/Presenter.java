@@ -139,7 +139,7 @@ public interface Presenter {
 
   TransactionDetailsDto presentTransactionDetails(Transaction transaction);
 
-  ApprovalDetailsDto presentApprovalDetails(Approval approval);
+  ApprovalDetailsDto presentApprovalDetails(Approval approval, List<Participant> participants);
 
   PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
 
@@ -147,7 +147,7 @@ public interface Presenter {
 
   BroadcastDto presentBroadcast(Broadcast broadcastDto, List<Participant> participants);
 
-  PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals);
+  PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals, List<Participant> participants);
 
   PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords);
 

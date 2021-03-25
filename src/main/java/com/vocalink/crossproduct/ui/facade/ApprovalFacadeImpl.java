@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
@@ -19,6 +20,7 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -39,7 +41,9 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
     final Approval approval = repositoryFactory.getApprovalRepository(product).findByJobId(id);
 
-    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+
+    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval, participants);
   }
 
   @Override
@@ -52,7 +56,10 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
     final Page<Approval> approvals = repositoryFactory.getApprovalRepository(product)
         .findPaginated(request);
 
-    return presenterFactory.getPresenter(clientType).presentApproval(approvals);
+    List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+        .findAll();
+
+    return presenterFactory.getPresenter(clientType).presentApproval(approvals, participants);
   }
 
   @Override
@@ -66,7 +73,9 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
     final Approval approval = repositoryFactory.getApprovalRepository(product)
         .requestApproval(request);
 
-    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval);
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+
+    return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval, participants);
   }
 
   @Override

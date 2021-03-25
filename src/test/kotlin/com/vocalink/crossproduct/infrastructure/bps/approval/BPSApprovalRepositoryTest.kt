@@ -64,7 +64,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
             {
                 "approvalId": "10000004",
                 "requestType": "PARTICIPANTCONF",
-                "schemeParticipantIdentifier": "ELLFSESP",
+                "participantIds": ["ELLFSESP"],
                 "date": "2021-02-03T14:55:00Z",
                 "requestedBy": {
                     "name": "John Doe",
@@ -72,7 +72,6 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                     "participantName": "P27-SEK"
                 },
                 "status": "REJECTED",
-                "participantName": "Lansfosakringar Bank II",
                 "requestComment": "This is the reason...",
                 "rejectedBy": {
                       "name": "John Doe",
@@ -97,7 +96,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                     {
                         "approvalId": "10000000",
                         "requestType": "BATCHCANCELLATION",
-                        "schemeParticipantIdentifier": "P27",
+                        "participantIds": ["P27"],
                         "date": "2021-02-03T14:55:00Z",
                         "requestedBy": {
                             "name": "John Doe",
@@ -105,7 +104,6 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                             "participantName": "P27-SEK"
                         },
                         "status": "WAITING-FORAPPROVAL",
-                        "participantName": "P27",
                         "requestComment": "This is the reason...",
                         "originalData": {
                             "data": "some original data"
@@ -135,11 +133,10 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
         assertThat(result.approvalId).isEqualTo("10000004")
         assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
-        assertThat(result.schemeParticipantIdentifier).isEqualTo("ELLFSESP")
+        assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
         assertThat(result.date).isEqualTo(date)
         assertThat(result.requestedBy.name).isEqualTo("John Doe")
         assertThat(result.status).isEqualTo(REJECTED)
-        assertThat(result.participantName).isEqualTo("Lansfosakringar Bank II")
         assertThat(result.requestComment).isEqualTo("This is the reason...")
         assertThat(result.requestedChange["status"]).isEqualTo("suspended")
     }
@@ -166,10 +163,9 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         val item = result.items[0]
         assertThat(item.approvalId).isEqualTo("10000000")
         assertThat(item.requestType).isEqualTo(BATCH_CANCELLATION)
-        assertThat(item.schemeParticipantIdentifier).isEqualTo("P27")
+        assertThat(item.participantIds[0]).isEqualTo("P27")
         assertThat(item.requestedBy.name).isEqualTo("John Doe")
         assertThat(item.status).isEqualTo(PENDING)
-        assertThat(item.participantName).isEqualTo("P27")
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
     }
@@ -200,10 +196,9 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         val item = result.items[0]
         assertThat(item.approvalId).isEqualTo("10000000")
         assertThat(item.requestType).isEqualTo(BATCH_CANCELLATION)
-        assertThat(item.schemeParticipantIdentifier).isEqualTo("P27")
+        assertThat(item.participantIds[0]).isEqualTo("P27")
         assertThat(item.requestedBy.name).isEqualTo("John Doe")
         assertThat(item.status).isEqualTo(PENDING)
-        assertThat(item.participantName).isEqualTo("P27")
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
     }
@@ -228,11 +223,10 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
         assertThat(result.approvalId).isEqualTo("10000004")
         assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
-        assertThat(result.schemeParticipantIdentifier).isEqualTo("ELLFSESP")
+        assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
         assertThat(result.date).isEqualTo(date)
         assertThat(result.requestedBy.name).isEqualTo("John Doe")
         assertThat(result.status).isEqualTo(REJECTED)
-        assertThat(result.participantName).isEqualTo("Lansfosakringar Bank II")
         assertThat(result.requestComment).isEqualTo("This is the reason...")
         assertThat(result.requestedChange["status"]).isEqualTo("suspended")
     }

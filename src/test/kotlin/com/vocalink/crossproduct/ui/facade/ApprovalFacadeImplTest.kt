@@ -10,30 +10,35 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalService
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
+import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import kotlin.test.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.test.assertNotNull
 
 class ApprovalFacadeImplTest {
 
     private val approvalRepository = mock(ApprovalRepository::class.java)!!
+    private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val approvalService = mock(ApprovalService::class.java)!!
 
     private val presenterFactory = mock(PresenterFactory::class.java)!!
@@ -53,6 +58,8 @@ class ApprovalFacadeImplTest {
                 .thenReturn(approvalService)
         `when`(repositoryFactory.getApprovalRepository(anyString()))
                 .thenReturn(approvalRepository)
+        `when`(repositoryFactory.getParticipantRepository(anyString()))
+                .thenReturn(participantRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }
@@ -64,15 +71,21 @@ class ApprovalFacadeImplTest {
         val date = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
         val requestedChange = mapOf("status" to "Suspended")
         val originalData = mapOf("data" to "data")
+        val participantReferenceDto = ParticipantReferenceDto("ESSESESS", "SEB Bank", FUNDED, ACTIVE, "P27-SEK")
+        val participants = listOf(Participant.builder()
+                .id("ESSESESS")
+                .name("SEB Bank")
+                .participantType(FUNDED)
+                .schemeCode("P27-SEK")
+                .build())
 
         val approvalDetails = Approval(
                 approvalId,
                 ApprovalRequestType.STATUS_CHANGE,
-                "FORXSES1",
+                listOf("ESSESESS"),
                 date, approvalUser,
                 ApprovalStatus.APPROVED,
                 approvalUser,
-                "Forex Bank",
                 "This is the reason that I...",
                 approvalUser,
                 originalData,
@@ -86,8 +99,7 @@ class ApprovalFacadeImplTest {
                 approvalUser, approvalUser,
                 date, approvalId,
                 ApprovalRequestType.BATCH_CANCELLATION,
-                "ESSESESS",
-                "SEB Bank",
+                listOf(participantReferenceDto),
                 "This is the reason that I...",
                 approvalUser, "Notes",
                 originalData, requestedChange)
@@ -95,14 +107,17 @@ class ApprovalFacadeImplTest {
         `when`(approvalRepository.findByJobId(approvalId))
                 .thenReturn(approvalDetails)
 
-        `when`(uiPresenter.presentApprovalDetails(any()))
+        `when`(participantRepository.findAll())
+                .thenReturn(participants)
+
+        `when`(uiPresenter.presentApprovalDetails(any(), any()))
                 .thenReturn(approvalDetailsDto)
 
         val result = approvalFacadeImpl.getApprovalDetailsById(TestConstants.CONTEXT, ClientType.UI, approvalId)
 
         verify(approvalRepository).findByJobId(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentApprovalDetails(any())
+        verify(uiPresenter).presentApprovalDetails(any(), any())
 
         assertThat(result).isNotNull
     }
@@ -112,23 +127,26 @@ class ApprovalFacadeImplTest {
         val page = Page<Approval>(1, listOf(Approval(null, null,
             null, null, null, null, null,
             null, null, null, null, null,
-            null, null, null)))
+            null, null)))
         val pageDto = PageDto<ApprovalDetailsDto>(1, listOf(ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null, null)))
+            null, null, null, null, null)))
         val request = ApprovalSearchRequest()
 
         `when`(approvalRepository.findPaginated(any()))
             .thenReturn(page)
 
-        `when`(uiPresenter.presentApproval(any()))
+        `when`(participantRepository.findAll())
+                .thenReturn(emptyList())
+
+        `when`(uiPresenter.presentApproval(any(), any()))
             .thenReturn(pageDto)
 
         val result = approvalFacadeImpl.getApprovals(TestConstants.CONTEXT, ClientType.UI, request)
 
         verify(approvalRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentApproval(any())
+        verify(uiPresenter).presentApproval(any(), any())
 
         assertNotNull(result)
     }
@@ -138,25 +156,28 @@ class ApprovalFacadeImplTest {
         val approval = Approval(null, null,
             null, null, null, null, null,
             null, null, null, null, null,
-            null, null, null)
+            null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null, null)
+            null, null, null, null, null)
 
         val request = ApprovalChangeRequest("STATUS_CHANGE", mapOf("status" to "suspended"),"notes")
 
         `when`(approvalRepository.requestApproval(any()))
             .thenReturn(approval)
 
-        `when`(uiPresenter.presentApprovalDetails(any()))
+        `when`(participantRepository.findAll())
+                .thenReturn(emptyList())
+
+        `when`(uiPresenter.presentApprovalDetails(any(), any()))
             .thenReturn(approvalDetailsDto)
 
         val result = approvalFacadeImpl.requestApproval(TestConstants.CONTEXT, ClientType.UI, request)
 
         verify(approvalRepository).requestApproval(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentApprovalDetails(any())
+        verify(uiPresenter).presentApprovalDetails(any(), any())
 
         assertNotNull(result)
     }

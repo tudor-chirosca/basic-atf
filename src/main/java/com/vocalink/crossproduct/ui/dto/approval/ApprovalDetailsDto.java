@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.approval.ApprovalUser;
+import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +23,7 @@ public class ApprovalDetailsDto {
   private final ZonedDateTime createdAt;
   private final String jobId;
   private final ApprovalRequestType requestType;
-  private final String participantIdentifier;
-  private final String participantName;
+  private final List<ParticipantReferenceDto> participants;
   private final String requestComment;
   @JsonInclude(Include.NON_EMPTY)
   private final ApprovalUser rejectedBy;

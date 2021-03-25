@@ -425,14 +425,15 @@ class EntityMapperTest {
         val approvalId = "10000006"
         val requestedChange = mapOf("status" to "Suspended")
         val originalData = mapOf("data" to "data")
+        val participantId = "NDEASESSXXX"
 
         val bpsApprovalDetails = BPSApproval(
                 approvalId,
                 BPSApprovalRequestType.STATUS_CHANGE,
-                "FORXSES1",
+                listOf(participantId),
                 date, approvalUser,
                 BPSApprovalStatus.APPROVED,
-                approvalUser, "Forex Bank",
+                approvalUser,
                 "This is the reason that I...",
                 approvalUser, originalData,
                 requestedChange, "hashed data",
@@ -441,14 +442,13 @@ class EntityMapperTest {
         )
         val result = MAPPER.toEntity(bpsApprovalDetails)
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
-        assertThat(result.requestedBy.name).isEqualTo("John Doe")
-        assertThat(result.requestedBy.id).isEqualTo("12a514")
+        assertThat(result.requestedBy.name).isEqualTo(approvalUser.name)
+        assertThat(result.requestedBy.id).isEqualTo(approvalUser.id)
         assertThat(result.date).isEqualTo(date)
-        assertThat(result.approvalId).isEqualTo("10000006")
+        assertThat(result.approvalId).isEqualTo(approvalId)
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
-        assertThat(result.schemeParticipantIdentifier).isEqualTo("FORXSES1")
-        assertThat(result.participantName).isEqualTo("Forex Bank")
-        assertThat(result.rejectedBy.name).isEqualTo("John Doe")
+        assertThat(result.participantIds[0]).isEqualTo(participantId)
+        assertThat(result.rejectedBy.name).isEqualTo(approvalUser.name)
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 

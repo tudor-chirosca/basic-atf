@@ -427,8 +427,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ApprovalDetailsDto presentApprovalDetails(Approval approval) {
-    return MAPPER.toDto(approval);
+  public ApprovalDetailsDto presentApprovalDetails(Approval approval, List<Participant> participants) {
+    return MAPPER.toDto(approval, participants);
   }
 
   @Override
@@ -456,8 +456,9 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals) {
-    return MAPPER.toDto(approvals, ApprovalDetailsDto.class);
+  public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals,
+      List<Participant> participants) {
+    return  MAPPER.toApprovalDetailsDto(approvals, participants);
   }
 
   @Override

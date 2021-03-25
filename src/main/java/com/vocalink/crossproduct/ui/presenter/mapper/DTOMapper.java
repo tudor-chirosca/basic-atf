@@ -403,12 +403,23 @@ public interface DTOMapper {
       Participant participant, Participant fundingParticipant,
       IntraDayPositionGross intradayPositionGross);
 
+  PageDto<ApprovalDetailsDto> toApprovalDetailsDto(Page<Approval> approval, @Context List<Participant> participants);
+
   @Mappings({
       @Mapping(target = "createdAt", source = "date"),
       @Mapping(target = "jobId", source = "approvalId"),
-      @Mapping(target = "participantIdentifier", source = "schemeParticipantIdentifier")
+      @Mapping(target = "participants", source = "participantIds", qualifiedByName = "getApprovalReferenceParticipants")
   })
-  ApprovalDetailsDto toDto(Approval approval);
+  ApprovalDetailsDto toDto(Approval approval, @Context List<Participant> participants);
+
+
+  @Named("getApprovalReferenceParticipants")
+  default List<ParticipantReferenceDto> getApprovalReferenceParticipants(List<String> participantIds, @Context List<Participant> participants) {
+    return participants.stream()
+        .filter(p -> participantIds.contains(p.getId()))
+        .map(this::toReferenceDto)
+        .collect(toList());
+  }
 
   @Mapping(target = "recipients", ignore = true)
   BroadcastDto toDto(Broadcast broadcast);

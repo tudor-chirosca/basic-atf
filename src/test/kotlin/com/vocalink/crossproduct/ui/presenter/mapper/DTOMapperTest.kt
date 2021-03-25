@@ -24,7 +24,9 @@ import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
+import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
+import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
@@ -143,7 +145,7 @@ class DTOMapperTest {
                         listOf(Participant.builder()
                                 .id("NDEASESSXXX")
                                 .name("Nordea")
-                                .participantType(ParticipantType.DIRECT)
+                                .participantType(DIRECT)
                                 .build()
                                 )
                         )
@@ -172,7 +174,7 @@ class DTOMapperTest {
                 .name("name")
                 .suspendedTime(null)
                 .fundingBic("fundingBic")
-                .participantType(ParticipantType.DIRECT)
+                .participantType(DIRECT)
                 .build()
         val result = MAPPER.toReferenceDto(participant)
 
@@ -334,7 +336,7 @@ class DTOMapperTest {
                 null,
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -350,7 +352,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -366,7 +368,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -433,7 +435,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDING,
+                FUNDING,
                 null,
                 "organizationId",
                 null,
@@ -449,7 +451,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -465,7 +467,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -481,7 +483,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -701,7 +703,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDED,
+                FUNDED,
                 null,
                 "organizationId",
                 null,
@@ -817,15 +819,20 @@ class DTOMapperTest {
         val date = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
+        val participant = Participant.builder()
+                .id("FORXSES1")
+                .name("Forex Bank")
+                .participantType(FUNDING)
+                .schemeCode("P27-SEK")
+                .build()
 
         val approvalDetails = Approval(
                 approvalId,
                 ApprovalRequestType.STATUS_CHANGE,
-                "FORXSES1",
+                listOf(participant.id),
                 date, approvalUser,
                 ApprovalStatus.APPROVED,
                 approvalUser,
-                "Forex Bank",
                 "This is the reason that I...",
                 approvalUser,
                 originalData,
@@ -835,17 +842,19 @@ class DTOMapperTest {
                 "Notes"
         )
 
-        val result = MAPPER.toDto(approvalDetails)
+        val result = MAPPER.toDto(approvalDetails, listOf(participant))
 
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
-        assertThat(result.requestedBy.name).isEqualTo("John Doe")
-        assertThat(result.requestedBy.id).isEqualTo("12a514")
+        assertThat(result.requestedBy.name).isEqualTo(approvalUser.name)
+        assertThat(result.requestedBy.id).isEqualTo(approvalUser.id)
         assertThat(result.createdAt).isEqualTo(date)
         assertThat(result.jobId).isEqualTo(approvalId)
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
-        assertThat(result.participantIdentifier).isEqualTo("FORXSES1")
-        assertThat(result.participantName).isEqualTo("Forex Bank")
-        assertThat(result.rejectedBy.name).isEqualTo("John Doe")
+        assertThat(result.participants[0].participantIdentifier).isEqualTo(participant.id)
+        assertThat(result.participants[0].name).isEqualTo(participant.name)
+        assertThat(result.participants[0].participantType.toString()).isEqualTo(participant.participantType.toString())
+        assertThat(result.participants[0].schemeCode).isEqualTo(participant.schemeCode)
+        assertThat(result.rejectedBy.name).isEqualTo(approvalUser.name)
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 
@@ -853,12 +862,12 @@ class DTOMapperTest {
     fun `should map all fields of Participant to ManagedParticipantDto`() {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
+                null, ParticipantStatus.ACTIVE, null, FUNDING, null,
                 "00002121", "Nordnet Bank", "475347837892",
                 listOf(
                         Participant(
                                 "FORXSES1", "FORXSES1", "Forex Bank", null,
-                                ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
+                                ParticipantStatus.ACTIVE, null, FUNDING, null,
                                 "00002121", "Nordnet Bank", "475347837892",
                                 null, 0, null
                         )
@@ -927,7 +936,7 @@ class DTOMapperTest {
     fun `should map to ManagedParticipantDetailsDto fields`() {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDED, null,
+                null, ParticipantStatus.ACTIVE, null, FUNDED, null,
                 "00002121", "Nordnet Bank", "475347837892",
                 emptyList(), 1, null
         )
@@ -939,7 +948,7 @@ class DTOMapperTest {
                 "fundingBic",
                 ParticipantStatus.ACTIVE,
                 null,
-                ParticipantType.FUNDING,
+                FUNDING,
                 null,
                 "organizationId",
                 null,
