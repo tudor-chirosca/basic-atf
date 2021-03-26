@@ -7,6 +7,8 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
@@ -16,6 +18,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto
 import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -28,10 +31,13 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.LinkedMultiValueMap
 import java.math.BigDecimal
 import java.nio.charset.Charset
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(SettlementsController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -187,5 +193,26 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_SCHEDULE_RESPONSE))
+    }
+
+    @Test
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
+        val queryParams = LinkedMultiValueMap(
+            mapOf(
+                Pair("offset", listOf("0")),
+                Pair("limit", listOf("10")),
+                Pair("date_from", listOf(
+                    LocalDate.now()
+                        .minusDays((DefaultDtoConfiguration.getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE))))
+        )
+        mockMvc.perform(
+            get("/enquiry/settlements")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .queryParams(queryParams))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 }

@@ -4,10 +4,13 @@ import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.BroadcastsFacade
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
@@ -24,6 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
 import java.nio.charset.Charset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(BroadcastsController::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -147,5 +151,26 @@ class BroadcastsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(NEW_MESSAGE_REQUEST))
                 .andExpect(status().isOk)
                 .andExpect(content().json(NEW_BROADCAST_RESPONSE, true))
+    }
+
+    @Test
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
+        val queryParams = LinkedMultiValueMap(
+            mapOf(
+                Pair("offset", listOf("0")),
+                Pair("limit", listOf("10")),
+                Pair("date_from", listOf(
+                    ZonedDateTime.now()
+                        .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
+                        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
+        )
+        mockMvc.perform(
+            get("/broadcasts")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .queryParams(queryParams))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 }

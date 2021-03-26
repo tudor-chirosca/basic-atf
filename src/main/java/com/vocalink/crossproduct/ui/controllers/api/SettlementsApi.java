@@ -11,8 +11,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface SettlementsApi {
 
   @ApiOperation("Fetch Settlement Cycle Details")
@@ -34,7 +37,7 @@ public interface SettlementsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<ParticipantSettlementCycleDto>> getSettlements(
-      ClientType clientType, String context, SettlementEnquiryRequest request);
+      ClientType clientType, String context, @Valid final SettlementEnquiryRequest request);
 
   @ApiOperation("Fetch latest settlement cycles")
   @ApiResponses({

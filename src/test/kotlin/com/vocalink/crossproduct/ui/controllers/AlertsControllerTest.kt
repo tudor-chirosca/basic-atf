@@ -3,12 +3,15 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
+import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto
 import com.vocalink.crossproduct.ui.facade.api.AlertsServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
@@ -22,7 +25,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.LinkedMultiValueMap
 import java.nio.charset.Charset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @WebMvcTest(AlertsController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -107,5 +113,26 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_PARTIAL_ALERT_REQUEST))
                 .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
+        val queryParams = LinkedMultiValueMap(
+            mapOf(
+                Pair("offset", listOf("0")),
+                Pair("limit", listOf("10")),
+                Pair("date_from", listOf(
+                    ZonedDateTime.now()
+                        .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
+                        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
+        )
+        mockMvc.perform(
+            get("/alerts")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, CONTEXT)
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .queryParams(queryParams))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
     }
 }

@@ -8,9 +8,12 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+@Validated
 public interface BroadcastsApi {
 
   @ApiOperation("Fetch Broadcast")
@@ -20,7 +23,7 @@ public interface BroadcastsApi {
   })
   ResponseEntity<PageDto<BroadcastDto>> getPaginatedBroadcasts(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      BroadcastsSearchParameters searchParameters);
+      @Valid final BroadcastsSearchParameters searchParameters);
 
   @ApiOperation("Create new broadcast")
   @ApiResponses({

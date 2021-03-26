@@ -9,8 +9,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface AlertsApi {
 
   @ApiOperation("Fetch Priorities AlertTypes and Thresholds")
@@ -33,5 +36,5 @@ public interface AlertsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<AlertDto>> getAlerts(final ClientType clientType, final String context,
-      final AlertSearchRequest request);
+      @Valid final AlertSearchRequest request);
 }
