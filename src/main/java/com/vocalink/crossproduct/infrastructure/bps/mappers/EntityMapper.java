@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
+import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -59,11 +60,11 @@ import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCrite
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
 import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
-import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -109,6 +110,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSche
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
+import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsJpa;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -472,5 +474,10 @@ public interface EntityMapper {
     return new Page<>(result.getSummary().getTotalCount(), targetItems);
   }
 
+  @Mappings({
+      @Mapping(target = "activityId", source = "activityId.id")
+  })
   AuditDetails toEntity(AuditDetailsJpa details);
+
+  UserActivity toEntity(UserActivityJpa activityJpa);
 }

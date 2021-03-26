@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain.audit;
 
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivity;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,7 @@ import lombok.Getter;
 public class AuditDetails {
 
   private final UUID id;
-  private final UserActivity activityId;
+  private final UUID activityId;
   private final ZonedDateTime timestamp;
   private final String customer;
   private final String ipsSuiteApplicationName;

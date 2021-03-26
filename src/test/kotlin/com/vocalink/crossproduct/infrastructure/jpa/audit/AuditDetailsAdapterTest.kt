@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import java.util.*
+import javax.persistence.EntityManager
 
 open class AuditDetailsAdapterTest {
 
     private val repositoryJpa = mock(AuditDetailsRepositoryJpa::class.java)!!
+    private val entityManager = mock(EntityManager::class.java)!!
 
-    private val adapter = AuditDetailsAdapter(repositoryJpa)
+    private val adapter = AuditDetailsAdapter(entityManager, repositoryJpa)
 
     companion object {
         private var PARTICIPANT_ID = "anyId"

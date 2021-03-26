@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
+import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -37,6 +38,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -105,7 +107,8 @@ public interface Presenter {
   List<ParticipantReferenceDto> presentParticipantReferences(
       List<Participant> participants);
 
-  List<ReasonCodeReferenceDto> presentReasonCodeReferences(ReasonCodeValidation reasonCodeValidation,
+  List<ReasonCodeReferenceDto> presentReasonCodeReferences(
+      ReasonCodeValidation reasonCodeValidation,
       List<String> status);
 
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
@@ -147,7 +150,8 @@ public interface Presenter {
 
   BroadcastDto presentBroadcast(Broadcast broadcastDto, List<Participant> participants);
 
-  PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals, List<Participant> participants);
+  PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals,
+      List<Participant> participants);
 
   PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords);
 
@@ -169,4 +173,7 @@ public interface Presenter {
       String timeZone);
 
   List<UserDetailsDto> presentUserDetails(List<AuditDetails> details);
+
+  Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
+      List<UserActivity> activities);
 }

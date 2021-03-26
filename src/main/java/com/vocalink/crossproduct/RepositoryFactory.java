@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository;
+import com.vocalink.crossproduct.domain.audit.UserActivityRepository;
 import com.vocalink.crossproduct.domain.batch.BatchRepository;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsRepository;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
@@ -48,6 +49,7 @@ public class RepositoryFactory {
   private final List<RoutingRepository> routingRepositories;
   private final List<ReportRepository> reportRepositories;
   private final List<AuditDetailsRepository> auditDetailsRepositories;
+  private final List<UserActivityRepository> userActivityRepositories;
 
   private Map<String, ParticipantRepository> participantRepositoriesByProduct;
   private Map<String, CycleRepository> cycleRepositoriesByProduct;
@@ -66,6 +68,7 @@ public class RepositoryFactory {
   private Map<String, RoutingRepository> routingRepositoriesByProduct;
   private Map<String, ReportRepository> reportRepositoriesByProduct;
   private Map<String, AuditDetailsRepository> auditDetailsRepositoriesByProduct;
+  private Map<String, UserActivityRepository> userActivityRepositoriesByProduct;
 
   @PostConstruct
   public void init() {
@@ -103,6 +106,8 @@ public class RepositoryFactory {
         .collect(toMap(ReportRepository::getProduct, Function.identity()));
     auditDetailsRepositoriesByProduct = auditDetailsRepositories.stream()
         .collect(toMap(AuditDetailsRepository::getProduct, Function.identity()));
+    userActivityRepositoriesByProduct = userActivityRepositories.stream()
+        .collect(toMap(UserActivityRepository::getProduct, Function.identity()));
   }
 
   public ParticipantRepository getParticipantRepository(String product) {
@@ -239,5 +244,13 @@ public class RepositoryFactory {
           "Audit details repository not available for product " + product);
     }
     return auditDetailsRepositoriesByProduct.get(product);
+  }
+
+  public UserActivityRepository getUserActivityRepository(String product) {
+    if (!userActivityRepositoriesByProduct.containsKey(product)) {
+      throw new RepositoryNotAvailableException(
+          "User activity repository not available for product " + product);
+    }
+    return userActivityRepositoriesByProduct.get(product);
   }
 }

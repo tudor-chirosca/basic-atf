@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class UserActivity {
+public class UserActivityJpa {
 
   @Id
   @Type(type="uuid-char")

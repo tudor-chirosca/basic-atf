@@ -12,6 +12,8 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
+import com.vocalink.crossproduct.domain.audit.AuditDetails;
+import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -42,6 +44,8 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
+import com.vocalink.crossproduct.ui.dto.audit.UserActivityDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
@@ -250,7 +254,7 @@ public interface DTOMapper {
       @Context List<Participant> participants);
 
   @Mappings({
-      @Mapping(target = "participant", source = "settlement.schemeParticipantIdentifier", qualifiedByName = "findParticipant") ,
+      @Mapping(target = "participant", source = "settlement.schemeParticipantIdentifier", qualifiedByName = "findParticipant"),
       @Mapping(target = "settlementTime", source = "settlement.settlementStartDate")
   })
   ParticipantSettlementCycleDto toDto(@Context List<Participant> participants,
@@ -499,4 +503,21 @@ public interface DTOMapper {
   ValidationApprovalDto toDto(ValidationApproval validationApproval);
 
   ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays, String timeZone);
+
+  @Mappings({
+      @Mapping(target = "id", source = "id"),
+      @Mapping(target = "service", source = "serviceId"),
+      @Mapping(target = "createdAt", source = "timestamp"),
+      @Mapping(target = "eventType", ignore = true),
+      @Mapping(target = "data", ignore = true),
+      @Mapping(target = "user.name", source = "username"),
+      @Mapping(target = "user.id", source = "participantId"),
+      @Mapping(target = "user.participantName",
+          expression = "java(auditDetails.getFirstName()"
+              + ".concat(\" \")"
+              + ".concat(auditDetails.getLastName()))"),
+  })
+  AuditDto toDto(AuditDetails auditDetails);
+
+  UserActivityDto toDto(UserActivity userActivity);
 }

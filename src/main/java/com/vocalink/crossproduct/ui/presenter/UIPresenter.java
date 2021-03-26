@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
+import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -34,8 +35,8 @@ import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation.ReasonCod
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
-import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
+import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
@@ -48,6 +49,8 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
+import com.vocalink.crossproduct.ui.dto.audit.UserActivityDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -428,7 +431,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ApprovalDetailsDto presentApprovalDetails(Approval approval, List<Participant> participants) {
+  public ApprovalDetailsDto presentApprovalDetails(Approval approval,
+      List<Participant> participants) {
     return MAPPER.toDto(approval, participants);
   }
 
@@ -459,7 +463,7 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals,
       List<Participant> participants) {
-    return  MAPPER.toApprovalDetailsDto(approvals, participants);
+    return MAPPER.toApprovalDetailsDto(approvals, participants);
   }
 
   @Override
@@ -508,6 +512,26 @@ public class UIPresenter implements Presenter {
 
   @Override
   public List<UserDetailsDto> presentUserDetails(List<AuditDetails> details) {
-   return details.stream().map(d -> new UserDetailsDto(d.getUsername())).collect(toList());
+    return details.stream().map(d -> new UserDetailsDto(d.getUsername())).collect(toList());
+  }
+
+  @Override
+  public Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
+      List<UserActivity> activities) {
+
+    final List<UserActivityDto> dtoActivities = activities.stream().map(MAPPER::toDto)
+        .collect(toList());
+
+    final List<AuditDto> dtoDetails = details.stream()
+        .map(MAPPER::toDto)
+        .peek(d -> d.setEventType(
+            dtoActivities.stream()
+                .filter(a -> a.getId().equals(d.getActivityId()))
+                .map(UserActivityDto::getName)
+                .findFirst()
+                .orElse(null)))
+        .collect(toList());
+
+    return new Page<>(dtoDetails.size(), dtoDetails);
   }
 }

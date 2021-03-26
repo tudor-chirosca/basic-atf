@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivity
+import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityRepositoryJpa
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -19,12 +19,12 @@ open class AuditDetailsJpaRepositoryJpaTest @Autowired constructor(var auditDeta
     companion object {
         private const val PARTICIPANT_ID = "any_id"
 
-        private val activity = UserActivity.builder()
+        private val activity = UserActivityJpa.builder()
                 .description("desc")
                 .name("name")
                 .build()
 
-        private val details = AuditDetailsJpa.builder()
+        val details = AuditDetailsJpa.builder()
                 .activityId(activity)
                 .approvalRequestId("1")
                 .correlationId("corId")

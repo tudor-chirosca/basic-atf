@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.facade;
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivity
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -31,7 +30,7 @@ class AuditFacadeImplTest {
 
         private var details = listOf(AuditDetails.builder()
                 .id(UUID.randomUUID())
-                .activityId(UserActivity.builder().id(UUID.randomUUID()).build())
+                .activityId(UUID.randomUUID())
                 .approvalRequestId("1")
                 .correlationId("corId")
                 .channel("BPS")

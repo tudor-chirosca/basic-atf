@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivity;
+import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class AuditDetailsJpa {
   private UUID id;
   @ManyToOne
   @JoinColumn(name = "activity_id", foreignKey = @ForeignKey(name = "AI_FK"), nullable = false, updatable = false)
-  private UserActivity activityId;
+  private UserActivityJpa activityId;
   @Column(name = "timestamp", updatable = false, insertable = false)
   private ZonedDateTime timestamp;
   @Column(name = "customer")
