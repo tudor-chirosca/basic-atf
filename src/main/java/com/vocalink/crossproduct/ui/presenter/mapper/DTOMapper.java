@@ -498,5 +498,5 @@ public interface DTOMapper {
 
   ValidationApprovalDto toDto(ValidationApproval validationApproval);
 
-  ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays);
+  ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays, String timeZone);
 }

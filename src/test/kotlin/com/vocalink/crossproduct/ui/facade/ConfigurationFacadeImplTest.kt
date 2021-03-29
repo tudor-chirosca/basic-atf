@@ -46,19 +46,21 @@ class ConfigurationFacadeImplTest {
         val schemeCurrency = "SEK"
         val dataRetentionDays = parseInt(getDefault(DAYS_LIMIT))
         val ioDetailsThreshold = 2
+        val timeZone = "CET"
 
         val configuration = Configuration(scheme, schemeCurrency, ioDetailsThreshold)
-        val configurationDto = ConfigurationDto(scheme, schemeCurrency, dataRetentionDays, ioDetailsThreshold)
+        val configurationDto = ConfigurationDto(scheme, schemeCurrency, dataRetentionDays,
+                ioDetailsThreshold, timeZone)
 
         `when`(configurationService.configuration)
             .thenReturn(configuration)
-        `when`(uiPresenter.presentConfiguration(configuration, dataRetentionDays))
+        `when`(uiPresenter.presentConfiguration(configuration, dataRetentionDays, timeZone))
             .thenReturn(configurationDto)
 
         val result = configurationFacadeImpl.getConfiguration(CONTEXT, UI)
 
         verify(configurationService).configuration
-        verify(uiPresenter).presentConfiguration(configuration, dataRetentionDays)
+        verify(uiPresenter).presentConfiguration(configuration, dataRetentionDays, timeZone)
 
         assertThat(result.dataRetentionDays).isEqualTo(parseInt(getDefault(DAYS_LIMIT)))
         assertThat(result.scheme).isEqualTo(scheme)

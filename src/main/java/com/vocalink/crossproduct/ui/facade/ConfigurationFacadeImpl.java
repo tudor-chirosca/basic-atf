@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT;
+import static com.vocalink.crossproduct.ui.dto.DtoProperties.TIME_ZONE;
 import static java.lang.Integer.parseInt;
 
 import com.vocalink.crossproduct.ServiceFactory;
@@ -30,8 +31,9 @@ public class ConfigurationFacadeImpl implements ConfigurationFacade {
         .getConfiguration();
 
     final Integer dataRetentionDays = parseInt(getDefault(DAYS_LIMIT));
+    final String timeZone = getDefault(TIME_ZONE);
 
     return presenterFactory.getPresenter(clientType)
-        .presentConfiguration(configuration, dataRetentionDays);
+        .presentConfiguration(configuration, dataRetentionDays, timeZone);
   }
 }

@@ -280,7 +280,7 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public ConfigurationDto presentConfiguration(Configuration configuration,
-      Integer dataRetentionDays) {
+      Integer dataRetentionDays, String timeZone) {
     throw new RuntimeException("System API not implemented yet");
   }
 

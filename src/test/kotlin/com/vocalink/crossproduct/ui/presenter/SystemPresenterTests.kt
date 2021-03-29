@@ -160,7 +160,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present configuration for System`() {
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentConfiguration(null,null)
+            systemPresenter.presentConfiguration(null,null, null)
         }
     }
 }

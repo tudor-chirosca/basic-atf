@@ -97,7 +97,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UIPresenter implements Presenter {
 
-  @Value("${default.message.reference.name}")
+  @Value("${app.ui.config.default.message.reference.name}")
   private String defaultMessageReferenceName;
 
   private final String PREVIOUS_CYCLE = "PREVIOUS";
@@ -502,8 +502,8 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ConfigurationDto presentConfiguration(Configuration configuration,
-      Integer dataRetentionDays) {
-    return MAPPER.toDto(configuration, dataRetentionDays);
+      Integer dataRetentionDays, String timeZone) {
+    return MAPPER.toDto(configuration, dataRetentionDays, timeZone);
   }
 
   @Override

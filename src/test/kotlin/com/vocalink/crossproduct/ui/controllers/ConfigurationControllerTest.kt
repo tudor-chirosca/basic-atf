@@ -47,7 +47,8 @@ class ConfigurationControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 on configuration request`() {
         val configurationDto = ConfigurationDto(
-            "P27-SEK", "SEK", 30, 2
+            "P27-SEK", "SEK", 30, 2,
+                "CET"
         )
 
         `when`(configurationFacade.getConfiguration(any(), any()))

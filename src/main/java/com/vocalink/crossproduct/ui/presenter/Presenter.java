@@ -165,7 +165,8 @@ public interface Presenter {
 
   ValidationApprovalDto presentApprovalValidation(ValidationApproval response);
 
-  ConfigurationDto presentConfiguration(Configuration configuration, Integer dataRetentionDays);
+  ConfigurationDto presentConfiguration(Configuration configuration, Integer dataRetentionDays,
+      String timeZone);
 
   List<UserDetailsDto> presentUserDetails(List<AuditDetails> details);
 }
