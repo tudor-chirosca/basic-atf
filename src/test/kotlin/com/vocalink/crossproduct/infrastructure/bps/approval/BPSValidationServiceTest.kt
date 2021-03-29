@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @BPSTestConfiguration
@@ -14,7 +15,7 @@ class BPSValidationServiceTest @Autowired constructor(var validationService: BPS
 
     @Test
     fun `should return false and current time in response`() {
-        val currentDate = ZonedDateTime.now().withHour(18)
+        val currentDate = ZonedDateTime.now(ZoneId.of("UTC")).withHour(16).withMinute(1)
 
         val result = validationService.getApprovalValidation(currentDate)
 
@@ -24,7 +25,7 @@ class BPSValidationServiceTest @Autowired constructor(var validationService: BPS
 
     @Test
     fun `should return true and current time in response`() {
-        val currentDate = ZonedDateTime.now().withHour(13)
+        val currentDate = ZonedDateTime.now(ZoneId.of("UTC")).withHour(20).withMinute(1)
 
         val result = validationService.getApprovalValidation(currentDate)
 

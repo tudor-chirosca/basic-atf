@@ -18,7 +18,7 @@ open class BPSTestConfig {
         props.ioDetailsThreshold = 2
         props.currencies = hashMapOf(Pair("P27-SEK", "SEK"))
         props.baseUrls = hashMapOf(Pair("MOCK", "http://localhost:54001"))
-        props.eodPeriod = hashMapOf(Pair("start", "16"), Pair("end", "20"))
+        props.eodPeriod = hashMapOf(Pair("start", "16:00"), Pair("end", "20:00"))
 
         props.paths = hashMapOf<String, Detail>(
                 Pair("participants-path", Detail("MOCK", "/participants/P27-SEK/readAll")),

@@ -124,5 +124,5 @@ bps-config:
   retryable: 404, 429
 
   eod-period:
-    start: 18
-    end: 19
+    start: "18:00"
+    end: "19:00"

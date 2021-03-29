@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.ui.controllers.api.ValidationApi;
 import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import com.vocalink.crossproduct.ui.facade.api.ValidationFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -23,7 +24,7 @@ public class ValidationController implements ValidationApi {
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context) {
     final ValidationApprovalDto approvalValidationDto = validationFacade
-        .getApprovalValidation(context, clientType, ZonedDateTime.now());
+        .getApprovalValidation(context, clientType, ZonedDateTime.now(ZoneId.of("UTC")));
     return ResponseEntity.ok(approvalValidationDto);
   }
 }
