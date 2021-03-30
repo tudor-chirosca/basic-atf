@@ -859,6 +859,38 @@ class DTOMapperTest {
     }
 
     @Test
+    fun `should map to ApprovalDetailsDto and sort reference participants by participant type`() {
+        val approval = Approval("9900000", ApprovalRequestType.STATUS_CHANGE,
+                listOf("funded1", "funding", "funded2", "funded3"),
+                null, null, null, null, null,
+                null, null, null, null, null, null)
+
+        val participants = listOf(
+                Participant.builder()
+                        .id("funded1")
+                        .participantType(FUNDED)
+                        .build(),
+                Participant.builder()
+                        .id("funded2")
+                        .participantType(FUNDED)
+                        .build(),
+                Participant.builder()
+                        .id("funding")
+                        .participantType(FUNDING)
+                        .build(),
+                Participant.builder()
+                        .id("funded3")
+                        .participantType(FUNDED)
+                        .build())
+
+        val approvalDto = MAPPER.toDto(approval, participants)
+
+        assertThat(approvalDto.participants[0].participantIdentifier).isEqualTo("funding")
+        assertThat(approvalDto.participants[0].participantType).isEqualTo(FUNDING.toString())
+    }
+
+
+    @Test
     fun `should map all fields of Participant to ManagedParticipantDto`() {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",

@@ -1,7 +1,9 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import static com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -422,6 +424,8 @@ public interface DTOMapper {
     return participants.stream()
         .filter(p -> participantIds.contains(p.getId()))
         .map(this::toReferenceDto)
+        .sorted(comparing((ParticipantReferenceDto p) -> !p.getParticipantType()
+            .contains(FUNDING.getDescription())))
         .collect(toList());
   }
 
