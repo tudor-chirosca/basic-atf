@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.exceptions.wrapper;
 
 import com.vocalink.crossproduct.domain.error.GatewayError;
+import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import com.vocalink.crossproduct.infrastructure.exception.ErrorConstants;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
@@ -33,6 +34,22 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
     );
     return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
+  }
+
+  @Override
+  public ResponseEntity<ErrorDescriptionResponse> wrapException(ClientRequestException exception) {
+    GatewayErrorDescription error = new GatewayErrorDescription();
+    error.getErrors().addError(
+        GatewayError.builder()
+            .reasonCode(ErrorConstants.ERROR_REASON_INVALID_INPUT)
+            .description(exception.getMessage())
+            .recoverable(false)
+            .build());
+
+    return ResponseEntity
+        .status(exception.getStatusCode())
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(error);
   }

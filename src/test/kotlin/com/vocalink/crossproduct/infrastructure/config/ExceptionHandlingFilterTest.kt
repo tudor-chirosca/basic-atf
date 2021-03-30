@@ -27,6 +27,6 @@ class ExceptionHandlingFilterTest @Autowired constructor(var mockMvc: MockMvc) {
     fun `verify global exception handler invoked`() {
         mockMvc.perform(MockMvcRequestBuilders.get("/settlement"))
 
-        verify(handler, atLeastOnce()).handleException(any(), any())
+        verify(handler, atLeastOnce()).handleClientRequestException(any(), any())
     }
 }

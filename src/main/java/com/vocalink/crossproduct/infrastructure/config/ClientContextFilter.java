@@ -1,5 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.config;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.FilterChain;
@@ -26,7 +29,8 @@ public class ClientContextFilter extends AppFilter {
       String contextHeader = request.getHeader("context");
 
       if (!contexts.contains(contextHeader)) {
-        throw new IllegalArgumentException("Missing or invalid request header 'context': " + contextHeader);
+        throw new ClientRequestException(BAD_REQUEST,
+            "Missing or invalid request header 'context': " + contextHeader);
       }
     }
 

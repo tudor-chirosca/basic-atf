@@ -31,6 +31,7 @@
     <ehcache.version>3.7.1</ehcache.version>
     <maven-assembly.version>3.3.0</maven-assembly.version>
     <ojdbc8.version>19.3.0.0</ojdbc8.version>
+    <guava.version>29.0-jre</guava.version>
   </properties>
 
   <dependencies>
@@ -92,6 +93,12 @@
       <groupId>org.ehcache</groupId>
       <artifactId>ehcache</artifactId>
       <version>${ehcache.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
     </dependency>
 
     <!--    Validation-->

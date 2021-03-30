@@ -1,5 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.config;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -23,7 +26,8 @@ public class ClientTypeFilter extends AppFilter {
       String clientType = request.getHeader("client-type");
 
       if (EnumUtils.getEnum(ClientType.class, clientType) == null) {
-        throw new IllegalArgumentException("Missing or invalid request header 'client-type': " + clientType);
+        throw new ClientRequestException(BAD_REQUEST,
+            "Missing or invalid request header 'client-type': " + clientType);
       }
     }
 

@@ -188,7 +188,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
                 .thenReturn(participants)
         mockMvc.perform(get("/reference/participants"))
-                .andExpect(status().is5xxServerError)
+                .andExpect(status().is4xxClientError)
     }
 
     @Test
@@ -228,7 +228,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         `when`(referencesServiceFacade.getMessageDirectionReferences(CONTEXT, ClientType.UI))
                 .thenReturn(messages)
         mockMvc.perform(get("/reference/messages"))
-                .andExpect(status().is5xxServerError)
+                .andExpect(status().is4xxClientError)
     }
 
     @Test

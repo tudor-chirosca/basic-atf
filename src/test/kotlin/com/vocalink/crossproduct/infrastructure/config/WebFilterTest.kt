@@ -39,7 +39,7 @@ class WebFilterTest @Autowired constructor(var mockMvc: MockMvc) {
     fun `context filter should throw exception if missing header`() {
         mockMvc.perform(get("/settlement")
                 .header("client-type", "UI"))
-                .andExpect(status().is5xxServerError)
+                .andExpect(status().is4xxClientError)
                 .andExpect(jsonPath("$.Errors.Error[0].Description")
                         .value("Missing or invalid request header 'context': null"))
     }
@@ -48,7 +48,7 @@ class WebFilterTest @Autowired constructor(var mockMvc: MockMvc) {
     fun `client-type filter should throw exception if missing header`() {
         mockMvc.perform(get("/settlement")
                 .header("context", "BPS"))
-                .andExpect(status().is5xxServerError)
+                .andExpect(status().is4xxClientError)
                 .andExpect(jsonPath("$.Errors.Error[0].Description")
                         .value("Missing or invalid request header 'client-type': null"))
     }
