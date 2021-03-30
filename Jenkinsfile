@@ -51,7 +51,7 @@ pipeline {
                 }
                 stage("Unit Tests") {
                     steps {
-                        runMaven(goal: "-B test")
+                        runMaven(goal: "-B test -D spring.profiles.active=test")
                     }
                 }
                 stage("Run sonar for unit") {
