@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.jpa.activities;
 
+import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,9 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class UserActivityJpa {
+public class UserActivityJpa implements Serializable {
+
+  private static final String serialVersionUID = "67db453b-7909-486d-b8cd-217d74e7d8b0";
 
   @Id
   @Type(type="uuid-char")

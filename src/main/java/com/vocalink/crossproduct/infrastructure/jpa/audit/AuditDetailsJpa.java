@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -26,7 +27,9 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AuditDetailsJpa {
+public class AuditDetailsJpa implements Serializable {
+
+  private static final String serialVersionUID = "275a3d8b-5a8a-4bac-9097-e7f9d495374f";
 
   @Id
   @Type(type="uuid-char")
