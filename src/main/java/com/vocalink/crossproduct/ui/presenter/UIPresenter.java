@@ -534,4 +534,9 @@ public class UIPresenter implements Presenter {
 
     return new Page<>(dtoDetails.size(), dtoDetails);
   }
+
+  @Override
+  public List<String> presentEvents(List<String> events) {
+    return events;
+  }
 }

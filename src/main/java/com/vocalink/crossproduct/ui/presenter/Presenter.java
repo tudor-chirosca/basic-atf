@@ -176,4 +176,6 @@ public interface Presenter {
 
   Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
       List<UserActivity> activities);
+
+  List<String> presentEvents(List<String> events);
 }

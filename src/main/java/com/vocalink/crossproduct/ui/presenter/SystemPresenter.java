@@ -214,7 +214,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public ApprovalDetailsDto presentApprovalDetails(Approval approval, List<Participant> participants) {
+  public ApprovalDetailsDto presentApprovalDetails(Approval approval,
+      List<Participant> participants) {
     throw new RuntimeException("System API not implemented yet");
   }
 
@@ -294,6 +295,11 @@ public class SystemPresenter implements Presenter {
   @Override
   public Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
       List<UserActivity> activities) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public List<String> presentEvents(List<String> events) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

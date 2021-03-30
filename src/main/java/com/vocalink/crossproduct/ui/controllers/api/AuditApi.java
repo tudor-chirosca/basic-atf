@@ -20,13 +20,19 @@ public interface AuditApi {
       @ApiResponse(code = 200, message = "User details fetched successfully", response = UserDetailsDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<List<UserDetailsDto>> getUser(ClientType clientType, String context,
+  ResponseEntity<List<UserDetailsDto>> getUsers(ClientType clientType, String context,
       String participantId);
 
+  @ApiOperation("Fetch audit events")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Audit events fetched successfully", response = String.class),
+      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+  })
+  ResponseEntity<List<String>> getEvents(ClientType clientType, String context);
 
   @ApiOperation("Fetch audit log")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Audit log fetched successfully", response = UserDetailsDto.class),
+      @ApiResponse(code = 200, message = "Audit log fetched successfully", response = AuditDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<Page<AuditDto>> getAuditLog(ClientType clientType, String context,

@@ -23,7 +23,7 @@ public class AuditController implements AuditApi {
   private final AuditFacade auditFacade;
 
   @GetMapping(value = "/reference/audit/users", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<UserDetailsDto>> getUser(
+  public ResponseEntity<List<UserDetailsDto>> getUsers(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
       final String participantId) {
@@ -31,6 +31,16 @@ public class AuditController implements AuditApi {
     List<UserDetailsDto> users = auditFacade.getUserDetails(context, clientType, participantId);
 
     return ResponseEntity.ok(users);
+  }
+
+  @GetMapping(value = "/reference/audit/events", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<String>> getEvents(
+      @RequestHeader("client-type") final ClientType clientType,
+      @RequestHeader final String context) {
+
+    List<String> events = auditFacade.getEvents(context, clientType);
+
+    return ResponseEntity.ok(events);
   }
 
   @GetMapping(value = "/audits", produces = MediaType.APPLICATION_JSON_VALUE)

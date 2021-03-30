@@ -7,4 +7,6 @@ import java.util.UUID;
 public interface UserActivityRepository extends CrossproductRepository {
 
   List<UserActivity> getActivitiesByIds(List<UUID> id);
+
+  List<String> getEvents();
 }

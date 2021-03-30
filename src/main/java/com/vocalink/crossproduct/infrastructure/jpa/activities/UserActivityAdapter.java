@@ -24,6 +24,7 @@ public class UserActivityAdapter implements UserActivityRepository {
 
   @PersistenceContext
   private final EntityManager entityManager;
+  private final UserActivityRepositoryJpa repositoryJpa;
 
   @Override
   public List<UserActivity> getActivitiesByIds(List<UUID> ids) {
@@ -39,6 +40,11 @@ public class UserActivityAdapter implements UserActivityRepository {
         .stream()
         .map(MAPPER::toEntity)
         .collect(toList());
+  }
+
+  @Override
+  public List<String> getEvents() {
+    return repositoryJpa.findAllEvents();
   }
 
   @Override

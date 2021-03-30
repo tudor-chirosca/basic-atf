@@ -56,4 +56,13 @@ public class AuditFacadeImpl implements AuditFacade {
     return presenterFactory.getPresenter(clientType)
         .presentAuditDetails(details, activities);
   }
+
+  @Override
+  public List<String> getEvents(String product, ClientType clientType) {
+   List<String> events = repositoryFactory.getUserActivityRepository(product)
+       .getEvents();
+
+   return presenterFactory.getPresenter(clientType)
+       .presentEvents(events);
+  }
 }

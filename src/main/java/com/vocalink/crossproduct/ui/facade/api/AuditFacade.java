@@ -12,4 +12,6 @@ public interface AuditFacade {
   List<UserDetailsDto> getUserDetails(String context, ClientType clientType, String participantId);
 
   Page<AuditDto> getAuditLogs(String context, ClientType clientType, AuditRequestParams parameters);
+
+  List<String> getEvents(String context, ClientType clientType);
 }
