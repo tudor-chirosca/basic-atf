@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.configuration.Configuration
 import com.vocalink.crossproduct.domain.configuration.ConfigurationService
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT
+import com.vocalink.crossproduct.ui.dto.DtoProperties.TIME_ZONE
 import com.vocalink.crossproduct.ui.dto.configuration.ConfigurationDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -46,7 +47,7 @@ class ConfigurationFacadeImplTest {
         val schemeCurrency = "SEK"
         val dataRetentionDays = parseInt(getDefault(DAYS_LIMIT))
         val ioDetailsThreshold = 2
-        val timeZone = "CET"
+        val timeZone = getDefault(TIME_ZONE)
 
         val configuration = Configuration(scheme, schemeCurrency, ioDetailsThreshold)
         val configurationDto = ConfigurationDto(scheme, schemeCurrency, dataRetentionDays,
@@ -65,5 +66,6 @@ class ConfigurationFacadeImplTest {
         assertThat(result.dataRetentionDays).isEqualTo(parseInt(getDefault(DAYS_LIMIT)))
         assertThat(result.scheme).isEqualTo(scheme)
         assertThat(result.schemeCurrency).isEqualTo(schemeCurrency)
+        assertThat(result.timeZone).isEqualTo(timeZone)
     }
 }
