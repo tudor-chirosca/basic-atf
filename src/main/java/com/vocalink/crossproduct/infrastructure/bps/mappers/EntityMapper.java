@@ -23,7 +23,10 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
+import com.vocalink.crossproduct.domain.audit.AuditRequest;
+import com.vocalink.crossproduct.domain.audit.Event;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -114,10 +117,12 @@ import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDe
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsJpa;
+import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
+import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
@@ -484,4 +489,13 @@ public interface EntityMapper {
   AuditDetails toEntity(AuditDetailsJpa details);
 
   UserActivity toEntity(UserActivityJpa activityJpa);
+
+  AuditRequest toEntity(AuditRequestParams parameters);
+
+  Event toEntity(OccurringEvent occurringEvent);
+
+  @Mappings({
+      @Mapping(target = "userId", source = "username")
+  })
+  UserDetails toEntity(AuditDetails auditDetails);
 }

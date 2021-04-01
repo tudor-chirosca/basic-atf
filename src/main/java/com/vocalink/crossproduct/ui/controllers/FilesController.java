@@ -36,7 +36,7 @@ public class FilesController implements FilesApi {
   public ResponseEntity<PageDto<FileDto>> getFiles(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final FileEnquirySearchRequest request) {
+      final FileEnquirySearchRequest request, HttpServletRequest servletRequest) {
 
     final PageDto<FileDto> fileDto = filesFacade.getPaginated(context, clientType, request);
 

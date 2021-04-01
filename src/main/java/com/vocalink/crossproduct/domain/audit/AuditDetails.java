@@ -28,7 +28,6 @@ public class AuditDetails {
   private final String requestOrResponseEnum;
   private final String requestUrl;
   private final String contents;
-  private final String userId;
   private final String firstName;
   private final String lastName;
   private final String participantId;

@@ -15,10 +15,12 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"NAK"})
+@ToString
 public class FileEnquirySearchRequest {
 
   @Setter

@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,8 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -32,15 +29,12 @@ public class AuditDetailsJpa implements Serializable {
   private static final String serialVersionUID = "275a3d8b-5a8a-4bac-9097-e7f9d495374f";
 
   @Id
-  @Type(type="uuid-char")
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
   @ManyToOne
   @JoinColumn(name = "activity_id", foreignKey = @ForeignKey(name = "AI_FK"), nullable = false, updatable = false)
   private UserActivityJpa activityId;
-  @Column(name = "timestamp", updatable = false, insertable = false)
+  @Column(name = "timestamp", updatable = false)
   private ZonedDateTime timestamp;
   @Column(name = "customer")
   private String customer;
@@ -70,8 +64,6 @@ public class AuditDetailsJpa implements Serializable {
   private String requestUrl;
   @Column(name = "contents", nullable = false)
   private String contents;
-  @Column(name = "user_id", nullable = false)
-  private String userId;
   @Column(name = "first_name", nullable = false)
   private String firstName;
   @Column(name = "last_name", nullable = false)

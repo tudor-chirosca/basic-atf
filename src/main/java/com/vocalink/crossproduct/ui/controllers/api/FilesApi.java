@@ -24,7 +24,7 @@ public interface FilesApi {
   ResponseEntity<PageDto<FileDto>> getFiles(
       final ClientType clientType,
       final String context,
-      @Valid final FileEnquirySearchRequest request
+      @Valid final FileEnquirySearchRequest request, HttpServletRequest servletRequest
   );
 
   @ApiOperation("Fetch File Details")

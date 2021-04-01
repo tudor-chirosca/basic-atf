@@ -17,7 +17,6 @@ create table user_audit_details
     request_or_response_enum   varchar(10)                         not null,
     request_url                varchar(100)                         not null,
     contents                   varchar(1000)                       not null,
-    user_id                    varchar(10)                         not null,
     first_name                 varchar(15)                         not null,
     last_name                  varchar(20)                         not null,
     participant_id             varchar(20)                         not null
@@ -39,7 +38,6 @@ comment on column user_audit_details.approval_request_id is 'A linking id into t
 comment on column user_audit_details.request_or_response_enum is 'String flagging the nature of the audit data piece.';
 comment on column user_audit_details.request_url is 'In case of a request_or_response_enum = request, a destination url is expected';
 comment on column user_audit_details.contents is 'Json content of a request or a response data piece - specific for each user activity''s api requests and responses';
-comment on column user_audit_details.user_id is 'User identifier.';
 comment on column user_audit_details.first_name is 'Users first name.';
 comment on column user_audit_details.last_name is 'Users last name.';
 comment on column user_audit_details.participant_id is 'Participant identifier.';

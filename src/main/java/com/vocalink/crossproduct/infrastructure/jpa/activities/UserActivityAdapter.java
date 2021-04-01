@@ -43,8 +43,8 @@ public class UserActivityAdapter implements UserActivityRepository {
   }
 
   @Override
-  public List<String> getEvents() {
-    return repositoryJpa.findAllEvents();
+  public List<String> getEventTypes() {
+    return repositoryJpa.findAllEventTypes();
   }
 
   @Override

@@ -38,7 +38,7 @@ public class AuditController implements AuditApi {
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context) {
 
-    List<String> events = auditFacade.getEvents(context, clientType);
+    List<String> events = auditFacade.getEventTypes(context, clientType);
 
     return ResponseEntity.ok(events);
   }

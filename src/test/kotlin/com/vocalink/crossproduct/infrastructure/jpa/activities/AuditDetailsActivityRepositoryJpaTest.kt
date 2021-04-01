@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.*
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -12,6 +13,7 @@ open class AuditDetailsActivityRepositoryJpaTest @Autowired constructor(var user
 
     companion object {
         val details = UserActivityJpa.builder()
+                .id(UUID.randomUUID())
                 .name("name")
                 .description("description")
                 .build()
@@ -24,6 +26,6 @@ open class AuditDetailsActivityRepositoryJpaTest @Autowired constructor(var user
         val all = userActivityRepository.findAll()
 
         assertThat(all).isNotNull
-        assertThat(all).contains(details)
+        assertThat(all[0].id).isEqualTo(details.id)
     }
 }

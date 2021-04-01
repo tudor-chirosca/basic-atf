@@ -8,5 +8,5 @@ public interface UserActivityRepository extends CrossproductRepository {
 
   List<UserActivity> getActivitiesByIds(List<UUID> id);
 
-  List<String> getEvents();
+  List<String> getEventTypes();
 }

@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.facade.api;
 
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
@@ -13,5 +14,7 @@ public interface AuditFacade {
 
   Page<AuditDto> getAuditLogs(String context, ClientType clientType, AuditRequestParams parameters);
 
-  List<String> getEvents(String context, ClientType clientType);
+  List<String> getEventTypes(String context, ClientType clientType);
+
+  void handleEvent(OccurringEvent event);
 }
