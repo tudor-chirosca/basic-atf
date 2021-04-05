@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ParticipantIOData {
 
-  private final String participantId;
+  private final String schemeParticipantIdentifier;
   private final IOData files;
   private final IOData batches;
   private final IOData transactions;

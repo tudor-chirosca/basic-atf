@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -82,13 +83,16 @@ class UIPresenterTest {
     fun `should get participant IO data DTO`() {
         val date = LocalDate.now()
         val participants = MockParticipants().participants
-        val ioData = MockIOData().getParticipantsIOData()
+        val filesRejected = "1.98%"
+        val batchesRejected = "2.09%"
+        val transactionsRejected = "1.90%"
+        val ioData = IODashboard(filesRejected, batchesRejected, transactionsRejected, MockIOData().getParticipantsIOData())
 
         val result = uiPresenter.presentInputOutput(participants, ioData, date)
 
-        assertEquals("0.67", result.batchesRejected)
-        assertEquals("0.67", result.filesRejected)
-        assertEquals("0.67", result.transactionsRejected)
+        assertEquals(batchesRejected, result.batchesRejected)
+        assertEquals(filesRejected, result.filesRejected)
+        assertEquals(transactionsRejected, result.transactionsRejected)
 
         assertEquals(3, result.rows.size)
 

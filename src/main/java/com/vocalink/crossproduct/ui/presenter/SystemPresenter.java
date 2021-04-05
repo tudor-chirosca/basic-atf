@@ -15,8 +15,8 @@ import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -104,7 +104,7 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public IODashboardDto presentInputOutput(List<Participant> participants,
-      List<ParticipantIOData> ioData, LocalDate date) {
+      IODashboard ioDashboard, LocalDate date) {
     throw new RuntimeException("System API not implemented yet");
   }
 

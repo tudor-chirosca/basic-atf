@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.facade;
 
 import com.vocalink.crossproduct.RepositoryFactory;
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -29,10 +29,10 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
     log.info("Fetching IO Dashboard from: {}", product);
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
-    List<ParticipantIOData> ioData = repositoryFactory.getParticipantsIODataRepository(product)
-        .findByTimestamp(date);
 
-    return presenterFactory.getPresenter(clientType).presentInputOutput(participants, ioData, date);
+    IODashboard ioDashboard = repositoryFactory.getParticipantsIODataRepository(product).findAll();
+
+    return presenterFactory.getPresenter(clientType).presentInputOutput(participants, ioDashboard, date);
   }
 
   @Override

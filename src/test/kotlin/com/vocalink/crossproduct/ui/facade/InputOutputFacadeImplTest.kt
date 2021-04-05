@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes
+import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.io.IOData
 import com.vocalink.crossproduct.domain.io.IODataDetails
 import com.vocalink.crossproduct.domain.io.IODetails
@@ -62,18 +63,18 @@ class InputOutputFacadeImplTest {
         val participant = Participant.builder().id("id").name("Name").build()
 
         val participantIOData = ParticipantIOData.builder()
-                .participantId("ESSESESS")
+                .schemeParticipantIdentifier("ESSESESS")
                 .batches(IOData.builder()
                         .submitted(1)
-                        .rejected(1.00)
+                        .rejected("1.00")
                         .build())
                 .files(IOData.builder()
                         .submitted(1)
-                        .rejected(1.00)
+                        .rejected("1.00")
                         .build())
                 .transactions(IOData.builder()
                         .submitted(1)
-                        .rejected(1.00)
+                        .rejected("1.00")
                         .build())
                 .build()
 
@@ -107,10 +108,13 @@ class InputOutputFacadeImplTest {
                 .dateFrom(LocalDate.now())
                 .build()
 
+        val ioDashboard = IODashboard("2.00", "2.00",
+                "2.00", listOf(participantIOData))
+
         `when`(participantRepository.findAll())
                 .thenReturn(listOf(participant))
-        `when`(participantIODataRepository.findByTimestamp(LocalDate.now()))
-                .thenReturn(listOf(participantIOData))
+        `when`(participantIODataRepository.findAll())
+                .thenReturn(ioDashboard)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
         `when`(uiPresenter.presentInputOutput(any(), any(), any()))

@@ -37,7 +37,7 @@ bps-config:
       path: /enquiries/file/{schemeCode}/readAll
       base: MOCK
     io-participants-path:
-      path: /io
+      path: /schemeIO/{schemeCode}/readAll
       base: MOCK
     io-details-path:
       path: /schemeIO/participant/{schemeCode}/read

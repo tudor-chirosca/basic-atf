@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.infrastructure.bps.io
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.time.LocalDate
 import kotlin.test.assertEquals
 
 @BPSTestConfiguration
@@ -26,22 +24,30 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
             "schemeParticipantIdentifier" : "NDEASESSXXX"
             }
         """
-        const val VALID_IO_RESPONSE: String = """ 
+        const val VALID_IO_RESPONSE: String = """
         {
-            "participantId": "NDEASESSXXX",
-            "files": {
-                "submitted": 506,
-                "rejected": 0.53
-            },
-            "batches": {
-                "submitted": 1702,
-                "rejected": 3.65
-            },
-            "transactions": {
-                "submitted": 63451,
-                "rejected": 3.49
-            }
-        } 
+            "fileRejected": "1.98%",
+            "batchesRejected": "2.09%",
+            "transactionsRejected": "1.90%",
+            "summary": [
+                {
+                    "schemeParticipantIdentifier": "NDEASESSXXX",
+                    "files": {
+                        "submitted": 506,
+                        "rejected": "0.53%",
+                        "output": 100
+                    },
+                    "batches": {
+                        "submitted": 1702,
+                        "rejected": "3.65%"
+                    },
+                    "transactions": {
+                        "submitted": 63451,
+                        "rejected": "3.49%"
+                    }
+                }
+            ]
+        }
         """
 
         const val VALID_IO_DETAILS_RESPONSE: String = """
@@ -357,20 +363,24 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
     @Test
     fun `should pass io data with success`() {
         mockServer.stubFor(
-                get(urlEqualTo("/io"))
+                post(urlEqualTo("/schemeIO/P27-SEK/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_IO_RESPONSE)))
 
-        val result = client.findByTimestamp(LocalDate.now())
+        val result = client.findAll()
 
-        assertEquals("NDEASESSXXX", result[0].participantId)
-        assertEquals(3.65, result[0].batches.rejected)
-        assertEquals(1702, result[0].batches.submitted)
-        assertEquals(0.53, result[0].files.rejected)
-        assertEquals(506, result[0].files.submitted)
-        assertEquals(3.49, result[0].transactions.rejected)
-        assertEquals(63451, result[0].transactions.submitted)
+        assertEquals("1.98%", result.fileRejected)
+        assertEquals("2.09%", result.batchesRejected)
+        assertEquals("1.90%", result.transactionsRejected)
+        assertEquals("NDEASESSXXX", result.summary[0].schemeParticipantIdentifier)
+        assertEquals(506, result.summary[0].files.submitted)
+        assertEquals("0.53%", result.summary[0].files.rejected)
+        assertEquals(100, result.summary[0].files.output)
+        assertEquals(1702, result.summary[0].batches.submitted)
+        assertEquals("3.65%", result.summary[0].batches.rejected)
+        assertEquals(63451, result.summary[0].transactions.submitted)
+        assertEquals("3.49%", result.summary[0].transactions.rejected)
     }
 }

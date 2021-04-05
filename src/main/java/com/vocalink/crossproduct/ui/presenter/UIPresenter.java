@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -61,9 +62,7 @@ import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
-import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
-import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
@@ -84,11 +83,7 @@ import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -190,54 +185,8 @@ public class UIPresenter implements Presenter {
 
   @Override
   public IODashboardDto presentInputOutput(List<Participant> participants,
-      List<ParticipantIOData> ioData, LocalDate date) {
-
-    Map<String, Participant> participantsById = participants.stream().collect(
-        Collectors.toMap(Participant::getId, Function.identity()));
-
-    double totalFilesRejected = 0.0;
-    double totalBatchesRejected = 0.0;
-    double totalTransactionsRejected = 0.0;
-
-    List<ParticipantIODataDto> participantIODataDtos = new ArrayList<>();
-    for (ParticipantIOData participantIOData : ioData) {
-      totalBatchesRejected += participantIOData.getBatches().getRejected();
-      totalFilesRejected += participantIOData.getFiles().getRejected();
-      totalTransactionsRejected += participantIOData.getTransactions().getRejected();
-
-      participantIODataDtos.add(
-          ParticipantIODataDto.builder()
-              .participant(MAPPER.toDto(participantsById.get(participantIOData.getParticipantId())))
-              .batches(IODataDto.builder()
-                  .rejected(participantIOData.getBatches().getRejected())
-                  .submitted(participantIOData.getBatches().getSubmitted())
-                  .build()
-              )
-              .transactions(IODataDto.builder()
-                  .rejected(participantIOData.getTransactions().getRejected())
-                  .submitted(participantIOData.getTransactions().getSubmitted())
-                  .build()
-              )
-              .files(IODataDto.builder()
-                  .rejected(participantIOData.getFiles().getRejected())
-                  .submitted(participantIOData.getFiles().getSubmitted())
-                  .build()
-              )
-              .build());
-    }
-
-    totalBatchesRejected = totalBatchesRejected / (double) participants.size();
-    totalTransactionsRejected = totalTransactionsRejected / (double) participants.size();
-    totalFilesRejected = totalFilesRejected / (double) participants.size();
-
-    return IODashboardDto
-        .builder()
-        .dateFrom(date)
-        .filesRejected(String.format("%.2f", totalFilesRejected))
-        .batchesRejected(String.format("%.2f", totalBatchesRejected))
-        .transactionsRejected(String.format("%.2f", totalTransactionsRejected))
-        .rows(participantIODataDtos)
-        .build();
+      IODashboard ioDashboard, LocalDate date) {
+    return MAPPER.toDto(ioDashboard, participants, date);
   }
 
   @Override

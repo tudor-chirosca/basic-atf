@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.files.File
+import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -47,8 +48,9 @@ class SystemPresenterTests {
 
     @Test
     fun `should throw RuntimeException on present input output for System`() {
+        val ioDashboard = IODashboard(null, null, null, emptyList())
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentInputOutput(emptyList(), emptyList(), LocalDate.now())
+            systemPresenter.presentInputOutput(emptyList(), ioDashboard, LocalDate.now())
         }
     }
 

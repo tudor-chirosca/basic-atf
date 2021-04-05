@@ -313,17 +313,18 @@ class EntityMapperTest {
 
     @Test
     fun `should map all fields on ParticipantIOData`() {
-        val ioData = BPSIOData(20, 20.00)
+        val ioData = BPSIOData(20, "20.00", 100)
         val bps = BPSParticipantIOData("id", ioData, ioData, ioData)
 
         val entity = MAPPER.toEntity(bps)
-        assertThat(entity.participantId).isEqualTo(bps.participantId)
+
+        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
         assertThat(entity.files.rejected).isEqualTo(bps.files.rejected)
         assertThat(entity.files.submitted).isEqualTo(bps.files.submitted)
         assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
-        assertThat(entity.batches.rejected).isEqualTo(bps.batches.rejected)
+        assertThat(entity.batches.submitted).isEqualTo(bps.batches.submitted)
         assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
-        assertThat(entity.transactions.rejected).isEqualTo(bps.transactions.rejected)
+        assertThat(entity.transactions.submitted).isEqualTo(bps.transactions.submitted)
     }
 
     @Test

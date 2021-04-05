@@ -24,7 +24,8 @@ public class InputOutputController implements InputOutputApi {
 
   @GetMapping(value = "/io", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<IODashboardDto> getSettlement(
-      @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
+      @RequestHeader("client-type") ClientType clientType,
+      @RequestHeader String context,
       @RequestParam(required = false) String timestamp) {
 
     LocalDate dateFrom = getDate(timestamp);

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ParticipantIODataRepository extends CrossproductRepository {
 
-  List<ParticipantIOData> findByTimestamp(LocalDate dateFrom);
-
   IODetails findByParticipantId(String participantId);
+
+  IODashboard findAll();
 }

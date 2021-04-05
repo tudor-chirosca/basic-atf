@@ -34,6 +34,7 @@ import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes;
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IOData;
 import com.vocalink.crossproduct.domain.io.IODataAmountDetails;
 import com.vocalink.crossproduct.domain.io.IODataDetails;
@@ -88,6 +89,7 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODashboard;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOSummary;
@@ -215,6 +217,8 @@ public interface EntityMapper {
             )))
         .collect(toList());
   }
+
+  IODashboard toEntity(BPSIODashboard ioDashboard);
 
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
 

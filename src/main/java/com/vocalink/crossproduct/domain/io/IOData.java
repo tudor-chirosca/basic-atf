@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IOData {
 
-  private final int submitted;
-  private final double rejected;
+  private final Integer submitted;
+  private final String rejected;
+  private final Integer output;
 }

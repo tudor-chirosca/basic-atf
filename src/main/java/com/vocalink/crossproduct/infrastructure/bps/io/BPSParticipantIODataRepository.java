@@ -6,16 +6,14 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.I
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import com.vocalink.crossproduct.ui.dto.io.IORequest;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,16 +30,14 @@ public class BPSParticipantIODataRepository implements ParticipantIODataReposito
   private final WebClient webClient;
 
   @Override
-  public List<ParticipantIOData> findByTimestamp(LocalDate localDate) {
-    return webClient.get()
+  public IODashboard findAll() {
+    return webClient.post()
         .uri(resolve(IO_PARTICIPANTS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
-        .bodyToFlux(BPSParticipantIOData.class)
+        .bodyToMono(BPSIODashboard.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
-        .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)
-        .collectList()
         .block();
   }
 

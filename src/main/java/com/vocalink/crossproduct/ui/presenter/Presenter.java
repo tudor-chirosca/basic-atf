@@ -15,8 +15,8 @@ import com.vocalink.crossproduct.domain.configuration.Configuration;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
+import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -92,7 +92,7 @@ public interface Presenter {
 
   ClientType getClientType();
 
-  IODashboardDto presentInputOutput(List<Participant> participants, List<ParticipantIOData> ioData,
+  IODashboardDto presentInputOutput(List<Participant> participants, IODashboard ioDashboard,
       LocalDate date);
 
   IODetailsDto presentIoDetails(Participant participant, IODetails ioDetails,

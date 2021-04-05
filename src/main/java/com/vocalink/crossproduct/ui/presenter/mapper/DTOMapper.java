@@ -23,7 +23,10 @@ import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
+import com.vocalink.crossproduct.domain.io.IODashboard;
+import com.vocalink.crossproduct.domain.io.IOData;
 import com.vocalink.crossproduct.domain.io.IODetails;
+import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -37,6 +40,7 @@ import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
+import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
@@ -56,7 +60,9 @@ import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
+import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
@@ -83,6 +89,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -113,8 +120,6 @@ public interface DTOMapper {
 
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);
-
-  ParticipantDto toDto(Participant participant);
 
   @Mappings({
       @Mapping(target = "participantIdentifier", source = "id"),
@@ -418,6 +423,37 @@ public interface DTOMapper {
   })
   ApprovalDetailsDto toDto(Approval approval, @Context List<Participant> participants);
 
+  @Mappings({
+      @Mapping(target = "filesRejected", source = "ioDashboard.fileRejected"),
+      @Mapping(target = "dateFrom", source = "date"),
+      @Mapping(target = "rows", source = "ioDashboard.summary")
+  })
+  IODashboardDto toDto(IODashboard ioDashboard, @Context List<Participant> participants, LocalDate date);
+
+  @Mappings({
+      @Mapping(target = "participant", source = "participantIOData.schemeParticipantIdentifier", qualifiedByName = "getParticipantById")
+  })
+  ParticipantIODataDto toDto(ParticipantIOData participantIOData, @Context List<Participant> participants);
+
+  ParticipantDto toDto(Participant participant);
+
+  @Mappings({
+      @Mapping(target = "rejected", source = "rejected", qualifiedByName = "getRejectedFromString")
+  })
+  IODataDto toDto(IOData ioData);
+
+  @Named("getParticipantById")
+  default ParticipantDto getParticipantById(String schemeParticipantIdentifier, @Context List<Participant> participants) {
+    return participants.stream()
+        .filter(p -> p.getId().equals(schemeParticipantIdentifier))
+        .map(this::toDto)
+        .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant in list"));
+  }
+
+  @Named("getRejectedFromString")
+  default Double getRejectedFromString(String rejected) {
+    return Double.valueOf(rejected.replaceAll("%", ""));
+  }
 
   @Named("getApprovalReferenceParticipants")
   default List<ParticipantReferenceDto> getApprovalReferenceParticipants(List<String> participantIds, @Context List<Participant> participants) {

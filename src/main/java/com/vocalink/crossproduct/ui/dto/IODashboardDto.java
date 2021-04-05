@@ -3,11 +3,13 @@ package com.vocalink.crossproduct.ui.dto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
+@AllArgsConstructor
 public class IODashboardDto {
 
   private LocalDate dateFrom;
@@ -15,5 +17,4 @@ public class IODashboardDto {
   private String batchesRejected;
   private String transactionsRejected;
   private List<ParticipantIODataDto> rows;
-
 }
