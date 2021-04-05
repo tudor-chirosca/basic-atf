@@ -2,6 +2,10 @@
 
 pipeline {
     agent any
+    
+    tools {
+        jdk 'JAVA_8U202'    
+    }
 
     environment {
         RELEASE_BRANCH = "master"
@@ -14,47 +18,58 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Set vars') {
             steps {
                 script {
                     setVars()
                 }
             }
         }
-
-        stage("Clean workspace and Prepare params") {
+        
+        stage("Build, Test, Package ->") {
             when { expression { skipCondition != 'true' } }
-            steps {
-                script {
-                    if (BRANCH == RELEASE_BRANCH) {
-                        setGithubStatus("pending")
+            stages {
+                
+                // Clean jenkins workspace and checkout
+                stage("Clean") {
+                    steps {
+                        script {
+                            if (BRANCH == RELEASE_BRANCH) {
+                                setGithubStatus("pending")
+                            }
+                            cleanWorkspace()
+                            checkout scm
+                        }
                     }
                 }
-                cleanWorkspace()
-                checkout scm
-            }
-        }
-        stage("Build and publish artifact") {
-            when { expression { skipCondition != 'true' } }
-            agent {
-                dockerfile {
-                    filename 'Dockerfile-ci'
-                    args "-v /jenkins-agent:/jenkins-agent -v $HOME/.m2:/home/jenkins-agent/.m2:z"
-                    additionalBuildArgs '--build-arg USER_ID=1001 --build-arg GROUP_ID=1001'
-                }
-            }
-            stages {
+                
                 stage("Compile") {
                     steps {
                         runMaven(goal: "-B -U clean compile")
                     }
                 }
+                
                 stage("Unit Tests") {
                     steps {
-                        runMaven(goal: "-B test -D spring.profiles.active=test")
+                        runMaven(goal: "-B test -Dspring.profiles.active=test")
                     }
                 }
-                stage("Run sonar for unit") {
+                
+                // commenting out as no integration tests as of now
+                // stage("Integration tests") {
+                //     steps {
+                //         runMaven(goal: "-B integration-test -U")
+                //     }
+                // }
+                
+                stage("Test DB migrations") {
+                    when { not { branch "${RELEASE_BRANCH}" }}
+                    steps {
+                        runDBMigrations(goal: 'PR')
+                    }
+                }
+                
+                stage("Run Sonar") {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         withSonarQubeEnv('cp-sonar') {
@@ -63,46 +78,51 @@ pipeline {
                     }
 
                 }
+                
                 stage("Package") {
                     steps {
-                        withSonarQubeEnv('cp-sonar') {
-                            runMaven(goal: "-B package -Dmaven.test.skip=true")
-                        }
+                        runMaven(goal: "-B package -Dmaven.test.skip=true")
                     }
 
                 }
 
-                // commenting out as no integration tests as of now
-                // stage("Integration tests") {
-                //     steps {
-                //         runMaven(goal: "-B integration-test -U")
-                //     }
-                // }
-
-                stage("Prepare release") {
-                    when { branch "${RELEASE_BRANCH}" }
-                    stages {
-                        stage('Create release') {
-                            steps {
-                                script {
-                                    sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
-                                    createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
-                                }
-                            }
-                        }
-                        stage("Publish artifact") {
-                            when { expression { currentGitCommitHash != gitCommitPr } }
-                            steps {
-                                println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                                publishArtifact(goal: "clean package -U")
-                            }
-                        }
-                    }//stages
-                }//stage
             }//stages
         }//stage
-        stage('Build and deploy docker image') {
-            agent any
+
+       stage("Release ->") {
+            when { 
+                allOf {
+                    expression { skipCondition != 'true' }
+                    branch "${RELEASE_BRANCH}"
+                }
+            }
+            agent {
+                dockerfile {
+                    filename 'Dockerfile-ci'
+                    args "-v /jenkins-agent:/jenkins-agent -v $HOME/.m2:/home/jenkins-agent/.m2:z"
+                    additionalBuildArgs '--build-arg USER_ID=1001 --build-arg GROUP_ID=1001'
+                }
+            }
+            stages {
+                stage('Create release') {
+                    steps {
+                        script {
+                            sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
+                            createRelease(releasePlugin: 'semantic-release', releaseArgs: "--skip-maven-deploy")
+                        }
+                    }
+                }
+                stage("Publish artifact") {
+                    when { expression { currentGitCommitHash != gitCommitPr } }
+                    steps {
+                        println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
+                        publishArtifact(goal: "clean package -U")
+                    }
+                }
+            }//stages
+        }//stage
+
+        stage('Publish docker and deploy ->') {
             when {
                 anyOf {
                     // Always build docker container for branches
@@ -112,7 +132,7 @@ pipeline {
                 }
             }
             stages {
-                stage("Publish docker") {
+                stage("Publish docker image") {
                     steps {
                         script {
                             if (BRANCH == RELEASE_BRANCH) {
@@ -122,7 +142,15 @@ pipeline {
                         }
                     }
                 }
-                stage("Deploy preprod") {
+                stage("Migrate PREPROD DB") {
+                    when { branch "${RELEASE_BRANCH}" }
+                    steps {
+                        runDBMigrations(goal: 'RELEASE')
+                    }
+                }       
+                
+                
+                stage("Deploy to PREPROD") {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         script {
