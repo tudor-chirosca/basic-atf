@@ -7,7 +7,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>src/main/resources/db</directory>
+      <directory>database</directory>
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

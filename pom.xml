@@ -29,7 +29,6 @@
     <jacoco.version>0.8.5</jacoco.version>
     <javax.cache.version>1.1.1</javax.cache.version>
     <ehcache.version>3.7.1</ehcache.version>
-    <flyway.version>6.5.7</flyway.version>
     <maven-assembly.version>3.3.0</maven-assembly.version>
     <ojdbc8.version>19.3.0.0</ojdbc8.version>
   </properties>
@@ -154,11 +153,6 @@
       <version>${jacoco.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-      <version>${flyway.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>test</scope>
@@ -254,25 +248,6 @@
         <version>${maven-assembly.version}</version>
         <executions>
           <execution>
-            <id>non-migration-project</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/main/assembly/non-migration-project.xml</descriptor>
-              </descriptors>
-              <archive>
-                <manifest>
-                  <mainClass>com.vocalink.crossproduct.InternationalSuiteServiceApplication</mainClass>
-                </manifest>
-              </archive>
-              <appendAssemblyId>false</appendAssemblyId>
-              <tarLongFileMode>posix</tarLongFileMode>
-            </configuration>
-          </execution>
-          <execution>
             <id>database-migrations</id>
             <phase>package</phase>
             <goals>
@@ -280,10 +255,10 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>src/main/assembly/database-migrations.xml</descriptor>
+                <descriptor>assembly/database-migrations.xml</descriptor>
               </descriptors>
               <appendAssemblyId>false</appendAssemblyId>
-              <finalName>iss-migration-files-${project.version}</finalName>
+              <finalName>${project.artifactId}-db-${project.version}</finalName>
               <tarLongFileMode>posix</tarLongFileMode>
             </configuration>
           </execution>
