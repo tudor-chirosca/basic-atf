@@ -424,7 +424,9 @@ public interface DTOMapper {
   ApprovalDetailsDto toDto(Approval approval, @Context List<Participant> participants);
 
   @Mappings({
-      @Mapping(target = "filesRejected", source = "ioDashboard.fileRejected"),
+      @Mapping(target = "filesRejected", source = "ioDashboard.fileRejected", qualifiedByName = "removePercent"),
+      @Mapping(target = "batchesRejected", source = "ioDashboard.batchesRejected", qualifiedByName = "removePercent"),
+      @Mapping(target = "transactionsRejected", source = "ioDashboard.transactionsRejected", qualifiedByName = "removePercent"),
       @Mapping(target = "dateFrom", source = "date"),
       @Mapping(target = "rows", source = "ioDashboard.summary")
   })
@@ -453,6 +455,12 @@ public interface DTOMapper {
   @Named("getRejectedFromString")
   default Double getRejectedFromString(String rejected) {
     return Double.valueOf(rejected.replaceAll("%", ""));
+  }
+
+//  TODO: check if percent symbol is needed in response
+  @Named("removePercent")
+  default String removePercent(String totalRejected) {
+    return totalRejected.replaceAll("%", "");
   }
 
   @Named("getApprovalReferenceParticipants")

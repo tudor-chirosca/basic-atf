@@ -90,9 +90,9 @@ class UIPresenterTest {
 
         val result = uiPresenter.presentInputOutput(participants, ioData, date)
 
-        assertEquals(batchesRejected, result.batchesRejected)
-        assertEquals(filesRejected, result.filesRejected)
-        assertEquals(transactionsRejected, result.transactionsRejected)
+        assertEquals("2.09", result.batchesRejected)
+        assertEquals("1.98", result.filesRejected)
+        assertEquals("1.90", result.transactionsRejected)
 
         assertEquals(3, result.rows.size)
 
