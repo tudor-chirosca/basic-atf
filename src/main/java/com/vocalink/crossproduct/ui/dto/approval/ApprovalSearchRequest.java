@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @ValidSort(sort = "sort", sortingKeys =
-    {"participantName", "requestType", "jobId", "createdAt", "requestedBy", "status"})
+    {"participants", "requestType", "jobId", "createdAt", "requestedBy", "status"})
 public class ApprovalSearchRequest {
 
   @Setter

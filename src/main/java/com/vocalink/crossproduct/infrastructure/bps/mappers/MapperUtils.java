@@ -21,7 +21,7 @@ abstract class MapperUtils {
   }};
 
   private static final Map<String, String> approvalSearchRequestSortParams = new HashMap<String, String>() {{
-    put("participantName", "participantName");
+    put("participants", "participantName");
     put("requestType", "requestType");
     put("jobId", "approvalId");
     put("createdAt", "date");

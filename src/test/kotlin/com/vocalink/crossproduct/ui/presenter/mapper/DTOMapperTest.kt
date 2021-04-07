@@ -868,25 +868,42 @@ class DTOMapperTest {
         val participants = listOf(
                 Participant.builder()
                         .id("funded1")
+                        .name("aaa")
                         .participantType(FUNDED)
                         .build(),
                 Participant.builder()
                         .id("funded2")
+                        .name("bbb")
                         .participantType(FUNDED)
                         .build(),
                 Participant.builder()
                         .id("funding")
+                        .name("ccc")
                         .participantType(FUNDING)
                         .build(),
                 Participant.builder()
                         .id("funded3")
+                        .name("ddd")
                         .participantType(FUNDED)
                         .build())
 
         val approvalDto = MAPPER.toDto(approval, participants)
 
+        assertThat(approvalDto.participants[0].name).isEqualTo("ccc")
         assertThat(approvalDto.participants[0].participantIdentifier).isEqualTo("funding")
         assertThat(approvalDto.participants[0].participantType).isEqualTo(FUNDING.toString())
+
+        assertThat(approvalDto.participants[1].name).isEqualTo("aaa")
+        assertThat(approvalDto.participants[1].participantIdentifier).isEqualTo("funded1")
+        assertThat(approvalDto.participants[1].participantType).isEqualTo(FUNDED.toString())
+
+        assertThat(approvalDto.participants[2].name).isEqualTo("bbb")
+        assertThat(approvalDto.participants[2].participantIdentifier).isEqualTo("funded2")
+        assertThat(approvalDto.participants[2].participantType).isEqualTo(FUNDED.toString())
+
+        assertThat(approvalDto.participants[3].name).isEqualTo("ddd")
+        assertThat(approvalDto.participants[3].participantIdentifier).isEqualTo("funded3")
+        assertThat(approvalDto.participants[3].participantType).isEqualTo(FUNDED.toString())
     }
 
 

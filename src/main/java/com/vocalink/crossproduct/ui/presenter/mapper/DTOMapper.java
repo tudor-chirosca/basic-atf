@@ -469,7 +469,9 @@ public interface DTOMapper {
         .filter(p -> participantIds.contains(p.getId()))
         .map(this::toReferenceDto)
         .sorted(comparing((ParticipantReferenceDto p) -> !p.getParticipantType()
-            .contains(FUNDING.getDescription())))
+            .contains(FUNDING.getDescription()))
+            .thenComparing(ParticipantReferenceDto::getName))
+        .skip(0)
         .collect(toList());
   }
 

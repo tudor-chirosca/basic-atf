@@ -272,7 +272,7 @@ class BPSMapperTest {
                 0, 20,null, null,
                 null, null, null, null, null,
                 listOf(
-                        "-participantName", "+participantName",
+                        "-participants", "+participants",
                         "-requestType", "requestType",
                         "-jobId", "+jobId",
                         "-createdAt", "createdAt",
