@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.notNull
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.atMost
@@ -174,12 +175,14 @@ class ParticipantFacadeImplTest {
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null, null)
+                null, null, null, null)
         val account = Account(null, null, null)
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,
                 null, null, null,
-                null, null, null, null)
+                null, null, null, null,
+                null, null
+        )
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)
@@ -214,13 +217,13 @@ class ParticipantFacadeImplTest {
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null, null)
+                null, null, null, null)
         val account = Account(null, null, null)
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,
                 null, null, null,
                 null, null, null,
-                null)
+                null, null, null)
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)

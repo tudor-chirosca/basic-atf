@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.participant;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 
@@ -22,6 +23,8 @@ public class BPSParticipantConfiguration {
   private final String postSettlementAckGenerationLevel;
   private final BigDecimal debitCapLimit;
   private final List<Double> debitCapLimitThresholds;
+  private final ZonedDateTime updatedAt;
+  private final BPSApprovingUser updatedBy;
 
   @JsonCreator
   public BPSParticipantConfiguration(
@@ -37,7 +40,9 @@ public class BPSParticipantConfiguration {
       @JsonProperty(value = "postSettlementAckType") String postSettlementAckType,
       @JsonProperty(value = "postSettlementAckGenerationLevel") String postSettlementAckGenerationLevel,
       @JsonProperty(value = "debitCapLimit") BigDecimal debitCapLimit,
-      @JsonProperty(value = "debitCapLimitThresholds") List<Double> debitCapLimitThresholds) {
+      @JsonProperty(value = "debitCapLimitThresholds") List<Double> debitCapLimitThresholds,
+      @JsonProperty(value = "updatedAt") ZonedDateTime updatedAt,
+      @JsonProperty(value = "updatedBy") BPSApprovingUser updatedBy) {
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
     this.txnVolume = txnVolume;
     this.outputFileTimeLimit = outputFileTimeLimit;
@@ -51,5 +56,7 @@ public class BPSParticipantConfiguration {
     this.postSettlementAckGenerationLevel = postSettlementAckGenerationLevel;
     this.debitCapLimit = debitCapLimit;
     this.debitCapLimitThresholds = debitCapLimitThresholds;
+    this.updatedAt = updatedAt;
+    this.updatedBy = updatedBy;
   }
 }

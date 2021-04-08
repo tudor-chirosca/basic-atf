@@ -11,6 +11,9 @@ import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantRepository
 import java.math.BigDecimal
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -165,7 +168,14 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "debitCapLimit": 59099,
             "debitCapLimitThresholds": [
                 0.1
-            ]
+            ],
+            "updatedAt": "2021-03-29T16:00:00Z",
+            "updatedBy": {
+                "schemeParticipantIdentifier": "P27",
+                "firstName": "John",
+                "userId": "E109341",
+                "lastName": "Douglas"
+            }
         }
         """
     }
@@ -315,5 +325,10 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.postSettlementAckGenerationLevel).isEqualTo("BATCH")
         assertThat(result.debitCapLimit).isEqualTo(BigDecimal.valueOf(59099))
         assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.1))
+        assertThat(result.updatedBy.schemeParticipantIdentifier).isEqualTo("P27")
+        assertThat(result.updatedBy.lastName).isEqualTo("Douglas")
+        assertThat(result.updatedBy.firstName).isEqualTo("John")
+        assertThat(result.updatedBy.userId).isEqualTo("E109341")
+        assertThat(result.updatedAt).isEqualTo(ZonedDateTime.of(2021, Month.MARCH.value, 29, 16, 0, 0, 0, ZoneId.of("UTC")))
     }
 }

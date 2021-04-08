@@ -21,6 +21,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.cycle.DayCycle
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
+import com.vocalink.crossproduct.domain.participant.ApprovingUser
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
@@ -989,6 +990,9 @@ class DTOMapperTest {
                 "00002121", "Nordnet Bank", "475347837892",
                 emptyList(), 1, null
         )
+        val approvingUser = ApprovingUser(
+                "FORXSES1", "John", "E23423", "Doe"
+        )
         participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant(
                 "participantId",
@@ -1019,11 +1023,11 @@ class DTOMapperTest {
                 "postSettlementAckType",
                 "postSettlementAckGenerationLevel",
                 BigDecimal.ONE,
-                listOf(0.12, 0.25)
+                listOf(0.12, 0.25),
+                ZonedDateTime.now(),
+                approvingUser
         )
-        val account = Account(
-                "partyCode", 234, "iban"
-        )
+        val account = Account("partyCode", 234, "iban")
 
         val result = MAPPER.toDto(participant, configuration, fundingParticipant, account)
 
@@ -1060,6 +1064,11 @@ class DTOMapperTest {
         assertThat(result.debitCapLimit).isEqualTo(configuration.debitCapLimit)
         assertThat(result.debitCapLimitThresholds).isEqualTo(configuration.debitCapLimitThresholds)
         assertThat(result.settlementAccountNo).isEqualTo(account.accountNo.toString())
+
+        assertThat(result.updatedAt).isEqualTo(configuration.updatedAt)
+        assertThat(result.updatedBy.id).isEqualTo(approvingUser.userId)
+        assertThat(result.updatedBy.name).isEqualTo(approvingUser.firstName + " " + approvingUser.lastName)
+        assertThat(result.updatedBy.participantName).isEqualTo(approvingUser.schemeParticipantIdentifier)
     }
 
     @Test

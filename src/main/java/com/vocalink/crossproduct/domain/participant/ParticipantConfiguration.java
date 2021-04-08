@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.domain.participant;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,6 @@ public class ParticipantConfiguration {
   private final String postSettlementAckGenerationLevel;
   private final BigDecimal debitCapLimit;
   private final List<Double> debitCapLimitThresholds;
+  private final ZonedDateTime updatedAt;
+  private final ApprovingUser updatedBy;
 }

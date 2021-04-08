@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSApprovingUser
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
@@ -472,6 +473,9 @@ class EntityMapperTest {
 
     @Test
     fun `should map ParticipantConfiguration fields`() {
+        val bpsApprovingUser = BPSApprovingUser(
+                "FORXSES1", "John", "E23423", "Doe"
+        )
         val entity = BPSParticipantConfiguration(
                 "schemeParticipantIdentifier",
                 10,
@@ -485,7 +489,9 @@ class EntityMapperTest {
                 "postSettlementAckType",
                 "postSettlementAckGenerationLevel",
                 BigDecimal.ONE,
-                listOf(0.12, 0.25)
+                listOf(0.12, 0.25),
+                ZonedDateTime.now(),
+                bpsApprovingUser
         )
         val result = MAPPER.toEntity(entity)
         assertThat(result.schemeParticipantIdentifier).isEqualTo(entity.schemeParticipantIdentifier)
@@ -501,6 +507,11 @@ class EntityMapperTest {
         assertThat(result.postSettlementAckGenerationLevel).isEqualTo(entity.postSettlementAckGenerationLevel)
         assertThat(result.debitCapLimit).isEqualTo(entity.debitCapLimit)
         assertThat(result.debitCapLimitThresholds).isEqualTo(entity.debitCapLimitThresholds)
+        assertThat(result.updatedAt).isEqualTo(entity.updatedAt)
+        assertThat(result.updatedBy.firstName).isEqualTo(entity.updatedBy.firstName)
+        assertThat(result.updatedBy.lastName).isEqualTo(entity.updatedBy.lastName)
+        assertThat(result.updatedBy.userId).isEqualTo(entity.updatedBy.userId)
+        assertThat(result.updatedBy.schemeParticipantIdentifier).isEqualTo(entity.updatedBy.schemeParticipantIdentifier)
     }
 
     @Test

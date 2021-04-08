@@ -27,6 +27,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IOData;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
+import com.vocalink.crossproduct.domain.participant.ApprovingUser;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -63,6 +64,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
@@ -242,7 +244,6 @@ public interface DTOMapper {
 
   @Mapping(target = "id", source = "batchId")
   BatchDto toDto(Batch batch);
-
 
   @Mappings({
       @Mapping(target = "status", source = "batch.status"),
@@ -500,7 +501,7 @@ public interface DTOMapper {
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
       @Mapping(target = "debitCapLimitThresholds", source = "configuration.debitCapLimitThresholds"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
-      @Mapping(target = "settlementAccountNo", source = "account.accountNo")
+      @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
       ParticipantConfiguration configuration, Participant fundingParticipant, Account account);
@@ -510,10 +511,17 @@ public interface DTOMapper {
       @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
-      @Mapping(target = "settlementAccountNo", source = "account.accountNo")
+      @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
       ParticipantConfiguration configuration, Account account);
+
+  @Mappings({
+      @Mapping(target = "id", source = "userId"),
+      @Mapping(target = "participantName", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "name", expression = "java(approvingUser.getFirstName() + \" \" + approvingUser.getLastName())")
+  })
+  ApprovalUserDto toDto(ApprovingUser approvingUser);
 
   AlertDto toDto(Alert alert);
 

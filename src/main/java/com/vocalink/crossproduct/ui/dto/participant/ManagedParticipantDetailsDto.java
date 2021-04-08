@@ -43,6 +43,10 @@ public class ManagedParticipantDetailsDto {
   private final List<Double> debitCapLimitThresholds;
   @JsonInclude(Include.NON_EMPTY)
   private final String settlementAccountNo;
+  @JsonInclude(Include.NON_EMPTY)
+  private final ZonedDateTime updatedAt;
+  @JsonInclude(Include.NON_EMPTY)
+  private final ApprovalUserDto updatedBy;
 
   public String getParticipantType() {
     return participantType.getDescription();
