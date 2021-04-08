@@ -28,6 +28,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -68,6 +69,7 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
@@ -536,5 +538,14 @@ public class UIPresenter implements Presenter {
     return userDetails.stream()
         .map(MAPPER::toDto)
         .collect(toList());
+  }
+
+  @Override
+  public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> uiPermissions,
+      UserActivity userActivity) {
+    final List<String> permissions = uiPermissions.stream()
+        .map(UIPermission::getKey)
+        .collect(toList());
+    return MAPPER.toDto(participant, permissions, userActivity);
   }
 }

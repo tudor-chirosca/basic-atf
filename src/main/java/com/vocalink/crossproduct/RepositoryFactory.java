@@ -14,6 +14,7 @@ import com.vocalink.crossproduct.domain.exception.RepositoryNotAvailableExceptio
 import com.vocalink.crossproduct.domain.files.FileRepository;
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
+import com.vocalink.crossproduct.domain.permission.UIPermissionRepository;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository;
 import com.vocalink.crossproduct.domain.position.PositionRepository;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RepositoryFactory {
+
+  private final UIPermissionRepository uiPermissionRepository;
 
   private final List<ParticipantRepository> participantRepositories;
   private final List<CycleRepository> cycleRepositories;
@@ -252,5 +255,9 @@ public class RepositoryFactory {
           "User activity repository not available for product " + product);
     }
     return userActivityRepositoriesByProduct.get(product);
+  }
+
+  public UIPermissionRepository getUIPermissionRepository() {
+    return uiPermissionRepository;
   }
 }

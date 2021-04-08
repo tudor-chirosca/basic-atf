@@ -35,4 +35,10 @@ open class UserActivityAdapterTest @Autowired constructor(var entityManager: Ent
         assertThat(uuid).isEqualTo(activitiesByIds[0].id)
     }
 
+    @Test
+    fun `should find activity by id`() {
+        val activitiesById = adapter.getActivitiesById(uuid)
+
+        assertThat(uuid).isEqualTo(activitiesById.id)
+    }
 }

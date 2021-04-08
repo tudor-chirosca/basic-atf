@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
@@ -21,6 +20,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
@@ -52,6 +52,7 @@ import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
@@ -315,6 +316,12 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails) {
+    throw new RuntimeException("System API not implemented yet");
+  }
+
+  @Override
+  public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> permissions,
+      UserActivity userActivity) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

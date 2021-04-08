@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
+import com.vocalink.crossproduct.domain.audit.UserActivity
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.configuration.Configuration
@@ -23,7 +24,8 @@ import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
@@ -44,17 +46,18 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -170,7 +173,7 @@ class DTOMapperTest {
         val participant = Participant.builder()
                 .id("participantId")
                 .bic("bic")
-                .status(ParticipantStatus.ACTIVE)
+                .status(ACTIVE)
                 .name("name")
                 .suspendedTime(null)
                 .fundingBic("fundingBic")
@@ -332,7 +335,7 @@ class DTOMapperTest {
                 "participantId",
                 "name",
                 null,
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -348,7 +351,7 @@ class DTOMapperTest {
                 "counterpartyId",
                 "counterpartyName",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -364,7 +367,7 @@ class DTOMapperTest {
                 "settlementCounterpartyId",
                 "settlementCounterpartyName",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -429,7 +432,7 @@ class DTOMapperTest {
                 "participantId",
                 "name",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDING,
                 null,
@@ -445,7 +448,7 @@ class DTOMapperTest {
                 "fundingBic",
                 "name",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -461,7 +464,7 @@ class DTOMapperTest {
                 "counterpartyId",
                 "counterpartyName",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -477,7 +480,7 @@ class DTOMapperTest {
                 "settlementCounterpartyId",
                 "settlementCounterpartyName",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -697,7 +700,7 @@ class DTOMapperTest {
                 "participantId",
                 "name",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDED,
                 null,
@@ -906,12 +909,12 @@ class DTOMapperTest {
     fun `should map all fields of Participant to ManagedParticipantDto`() {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ParticipantStatus.ACTIVE, null, FUNDING, null,
+                null, ACTIVE, null, FUNDING, null,
                 "00002121", "Nordnet Bank", "475347837892",
                 listOf(
                         Participant(
                                 "FORXSES1", "FORXSES1", "Forex Bank", null,
-                                ParticipantStatus.ACTIVE, null, FUNDING, null,
+                                ACTIVE, null, FUNDING, null,
                                 "00002121", "Nordnet Bank", "475347837892",
                                 null, 0, null
                         )
@@ -980,7 +983,7 @@ class DTOMapperTest {
     fun `should map to ManagedParticipantDetailsDto fields`() {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ParticipantStatus.ACTIVE, null, FUNDED, null,
+                null, ACTIVE, null, FUNDED, null,
                 "00002121", "Nordnet Bank", "475347837892",
                 emptyList(), 1, null
         )
@@ -994,7 +997,7 @@ class DTOMapperTest {
                 "participantId",
                 "name",
                 "fundingBic",
-                ParticipantStatus.ACTIVE,
+                ACTIVE,
                 null,
                 FUNDING,
                 null,
@@ -1136,5 +1139,44 @@ class DTOMapperTest {
         assertThat(dto.startTime).isEqualTo(entity.startTime)
         assertThat(dto.cutOffTime).isEqualTo(entity.cutOffTime)
         assertThat(dto.settlementStartTime).isEqualTo(entity.settlementStartTime)
+    }
+
+    @Test
+    fun `should map UserPermissionDto from participant user and permissions list`() {
+        val userId = "cd4d219d-3daf-40f2-becc-6f08e6edc477"
+        val userName = "John Doe"
+        val userDescription = "Simple User"
+        val participantId = "HANDSESS"
+        val fundingBic = "NDEASESSXXX"
+        val participantName = "Svenska Handelsbanken"
+        val dateTime = ZonedDateTime.now()
+        val permission = "read.alerts-dashboard"
+        val participant = Participant.builder()
+                .id(participantId)
+                .bic(participantId)
+                .name(participantName)
+                .fundingBic(fundingBic)
+                .status(SUSPENDED)
+                .suspendedTime(dateTime)
+                .participantType(FUNDED)
+                .build()
+        val userActivity = UserActivity.builder()
+                .id(UUID.fromString(userId))
+                .name(userName)
+                .build()
+
+        val entity = MAPPER.toDto(participant, listOf(permission), userActivity)
+
+        assertThat(entity).isNotNull
+        assertThat(entity.permissions.size).isEqualTo(1)
+        assertThat(entity.permissions[0]).isEqualTo(permission)
+        assertThat(entity.participation.id).isEqualTo(participantId)
+        assertThat(entity.participation.bic).isEqualTo(participantId)
+        assertThat(entity.participation.name).isEqualTo(participantName)
+        assertThat(entity.participation.fundingBic).isEqualTo(fundingBic)
+        assertThat(entity.participation.status).isEqualTo(SUSPENDED)
+        assertThat(entity.participation.suspendedTime).isEqualTo(dateTime)
+        assertThat(entity.user.userId).isEqualTo(UUID.fromString(userId))
+        assertThat(entity.user.name).isEqualTo(userName)
     }
 }
