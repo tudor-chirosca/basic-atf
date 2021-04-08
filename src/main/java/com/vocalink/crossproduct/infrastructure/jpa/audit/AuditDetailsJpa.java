@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -29,6 +30,7 @@ public class AuditDetailsJpa implements Serializable {
   private static final String serialVersionUID = "275a3d8b-5a8a-4bac-9097-e7f9d495374f";
 
   @Id
+  @Type(type="uuid-char")
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
   @ManyToOne
