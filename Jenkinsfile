@@ -5,6 +5,7 @@ pipeline {
     
     tools {
         jdk 'JAVA_8U202'    
+        nodejs 'NODEJS_12_21'
     }
 
     environment {
@@ -16,7 +17,7 @@ pipeline {
     options {
         disableConcurrentBuilds()
     }
-
+    
     stages {
         stage('Set vars') {
             steps {
@@ -26,10 +27,9 @@ pipeline {
             }
         }
         
-        stage("Build, Test, Package ->") {
+        stage("Build, Test, Sonar, Release & Publish ->") {
             when { expression { skipCondition != 'true' } }
             stages {
-                
                 // Clean jenkins workspace and checkout
                 stage("Clean") {
                     steps {
@@ -76,35 +76,9 @@ pipeline {
                             runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
                         }
                     }
-
                 }
-                
-                stage("Package") {
-                    steps {
-                        runMaven(goal: "-B package -Dmaven.test.skip=true")
-                    }
-
-                }
-
-            }//stages
-        }//stage
-
-       stage("Release ->") {
-            when { 
-                allOf {
-                    expression { skipCondition != 'true' }
-                    branch "${RELEASE_BRANCH}"
-                }
-            }
-            agent {
-                dockerfile {
-                    filename 'Dockerfile-ci'
-                    args "-v /jenkins-agent:/jenkins-agent -v $HOME/.m2:/home/jenkins-agent/.m2:z"
-                    additionalBuildArgs '--build-arg USER_ID=1001 --build-arg GROUP_ID=1001'
-                }
-            }
-            stages {
                 stage('Create release') {
+                    when { branch "${RELEASE_BRANCH}" }
                     steps {
                         script {
                             sh "npm i @semantic-release/git @semantic-release/changelog @conveyal/maven-semantic-release @semantic-release/commit-analyzer"
@@ -112,11 +86,23 @@ pipeline {
                         }
                     }
                 }
+
+                stage("Package") {
+                    steps {
+                        runMaven(goal: "-B package -Dmaven.test.skip=true")
+                    }
+                }
+
                 stage("Publish artifact") {
-                    when { expression { currentGitCommitHash != gitCommitPr } }
+                    when {
+                        allOf {
+                            expression { currentGitCommitHash != gitCommitPr } 
+                            branch "${RELEASE_BRANCH}"
+                        }
+                    }
                     steps {
                         println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                        publishArtifact(goal: "clean package -U")
+                        publishArtifact()
                     }
                 }
             }//stages
