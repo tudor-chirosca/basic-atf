@@ -16,5 +16,7 @@ public class Event {
   private final String userId;
   private final String participantId;
   private final String content;
+  private final String correlationId;
   private final String eventType;
+  private final String operationType;
 }

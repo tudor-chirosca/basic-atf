@@ -33,7 +33,7 @@ open class AuditDetailsAdapterTest {
                 .id(id)
                 .build()
 
-        val event = Event("product", "client", "any", "any", "any", "any", "any")
+        val event = Event("product", "client", "any", "any", "any", "any", "any", "any", "any")
         val userDetails = UserDetails.builder()
                 .userId("any")
                 .build()
