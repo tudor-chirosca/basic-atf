@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.domain.participant;
 
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -24,5 +25,5 @@ public class ParticipantConfiguration {
   private final BigDecimal debitCapLimit;
   private final List<Double> debitCapLimitThresholds;
   private final ZonedDateTime updatedAt;
-  private final ApprovingUser updatedBy;
+  private final UserDetails updatedBy;
 }

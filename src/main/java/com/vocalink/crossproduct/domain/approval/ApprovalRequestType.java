@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ApprovalRequestType {
 
-  STATUS_CHANGE,
+  PARTICIPANT_SUSPEND,
+  PARTICIPANT_UNSUSPEND,
   CONFIG_CHANGE,
   BATCH_CANCELLATION
 }

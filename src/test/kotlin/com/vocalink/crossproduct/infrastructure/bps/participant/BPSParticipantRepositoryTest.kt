@@ -9,7 +9,6 @@ import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCri
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantRepository
 import java.math.BigDecimal
 import java.time.Month
 import java.time.ZoneId
@@ -325,7 +324,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(result.postSettlementAckGenerationLevel).isEqualTo("BATCH")
         assertThat(result.debitCapLimit).isEqualTo(BigDecimal.valueOf(59099))
         assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.1))
-        assertThat(result.updatedBy.schemeParticipantIdentifier).isEqualTo("P27")
+        assertThat(result.updatedBy.participantId).isEqualTo("P27")
         assertThat(result.updatedBy.lastName).isEqualTo("Douglas")
         assertThat(result.updatedBy.firstName).isEqualTo("John")
         assertThat(result.updatedBy.userId).isEqualTo("E109341")

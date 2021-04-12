@@ -15,7 +15,7 @@ public class BPSApprovalSearchRequest {
   private final ZonedDateTime toDate;
   private final List<String> schemeParticipantIdentifiers;
   private final List<BPSApprovalRequestType> requestTypes;
-  private final String requestedBy;
+  private final List<String> requestedBy;
   private final List<BPSApprovalStatus> statuses;
   private final List<BPSSortingQuery> sortingOrder;
 }

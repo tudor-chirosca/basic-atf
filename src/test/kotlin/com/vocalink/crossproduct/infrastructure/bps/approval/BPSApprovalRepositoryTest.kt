@@ -8,21 +8,22 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.BATCH_CANCELLATION
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.REJECTED
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSApprovalRepository::class)
@@ -51,7 +52,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                 "toDate": "2020-02-20T12:10:00Z",
                 "schemeParticipantIdentifiers": ["P27"],
                 "requestTypes": ["BATCHCANCELLATION"],
-                "requestedBy": "12a514",
+                "requestedBy": ["12a514"],
                 "statuses": ["WAITING-FORAPPROVAL"],
                 "sortingOrder": [
                     {
@@ -60,6 +61,26 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                     }]
             }"""
 
+        const val VALID_APPROVAL_REQUEST_BY_RESPONSE: String = """
+               [
+                   {
+                        "schemeParticipantIdentifier": "P27",
+                        "firstName": "John",
+                        "userId": "E109341",
+                        "lastName": "Douglas"
+                   }
+               ]
+            """
+
+        const val VALID_APPROVAL_REQUEST_TYPE_RESPONSE: String = """
+                [
+                    "BATCHCANCELLATION",
+                    "PARTICIPANTCONF",
+                    "PARTICIPANT_SUSPEND",
+                    "PARTICIPANT_UNSUSPEND"
+                ]
+            """
+
         const val VALID_APPROVAL_DETAILS_RESPONSE: String = """
             {
                 "approvalId": "10000004",
@@ -67,16 +88,18 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                 "participantIds": ["ELLFSESP"],
                 "date": "2021-02-03T14:55:00Z",
                 "requestedBy": {
-                    "name": "John Doe",
-                    "id": "12a514",
-                    "participantName": "P27-SEK"
+                       "schemeParticipantIdentifier": "P27-SEK",
+                       "firstName": "John",
+                       "userId": "12a514",
+                       "lastName": "Doe"
                 },
                 "status": "REJECTED",
                 "requestComment": "This is the reason...",
                 "rejectedBy": {
-                      "name": "John Doe",
-                      "id": "12a514",
-                      "participantName": "P27-SEK"
+                       "schemeParticipantIdentifier": "P27-SEK",
+                       "firstName": "John",
+                       "userId": "12a514",
+                       "lastName": "Doe"
                     },
                 "originalData": {
                     "data": "some original data"
@@ -99,9 +122,10 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                         "participantIds": ["P27"],
                         "date": "2021-02-03T14:55:00Z",
                         "requestedBy": {
-                            "name": "John Doe",
-                            "id": "12a514",
-                            "participantName": "P27-SEK"
+                            "schemeParticipantIdentifier": "P27-SEK",
+                            "firstName": "John",
+                            "userId": "12a514",
+                            "lastName": "Doe"
                         },
                         "status": "WAITING-FORAPPROVAL",
                         "requestComment": "This is the reason...",
@@ -135,7 +159,8 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
         assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
         assertThat(result.date).isEqualTo(date)
-        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedBy.firstName).isEqualTo("John")
+        assertThat(result.requestedBy.lastName).isEqualTo("Doe")
         assertThat(result.status).isEqualTo(REJECTED)
         assertThat(result.requestComment).isEqualTo("This is the reason...")
         assertThat(result.requestedChange["status"]).isEqualTo("suspended")
@@ -164,7 +189,8 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(item.approvalId).isEqualTo("10000000")
         assertThat(item.requestType).isEqualTo(BATCH_CANCELLATION)
         assertThat(item.participantIds[0]).isEqualTo("P27")
-        assertThat(item.requestedBy.name).isEqualTo("John Doe")
+        assertThat(item.requestedBy.firstName).isEqualTo("John")
+        assertThat(item.requestedBy.lastName).isEqualTo("Doe")
         assertThat(item.status).isEqualTo(PENDING)
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
@@ -186,7 +212,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
         val result = approvalRepository.findPaginated(ApprovalSearchCriteria(0, 1, "10000000",
                 fromDate, toDate, listOf("P27"), listOf(BATCH_CANCELLATION),
-                "12a514", listOf(PENDING), listOf("status")))
+                listOf("12a514"), listOf(PENDING), listOf("status")))
 
 
         assertThat(result).isNotNull
@@ -197,7 +223,8 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(item.approvalId).isEqualTo("10000000")
         assertThat(item.requestType).isEqualTo(BATCH_CANCELLATION)
         assertThat(item.participantIds[0]).isEqualTo("P27")
-        assertThat(item.requestedBy.name).isEqualTo("John Doe")
+        assertThat(item.requestedBy.firstName).isEqualTo("John")
+        assertThat(item.requestedBy.lastName).isEqualTo("Doe")
         assertThat(item.status).isEqualTo(PENDING)
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
@@ -225,9 +252,46 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
         assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
         assertThat(result.date).isEqualTo(date)
-        assertThat(result.requestedBy.name).isEqualTo("John Doe")
+        assertThat(result.requestedBy.firstName).isEqualTo("John")
+        assertThat(result.requestedBy.lastName).isEqualTo("Doe")
         assertThat(result.status).isEqualTo(REJECTED)
         assertThat(result.requestComment).isEqualTo("This is the reason...")
         assertThat(result.requestedChange["status"]).isEqualTo("suspended")
+    }
+
+    @Test
+    fun `should return approval request type list`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/reference/approvals/requestTypes/P27-SEK/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_APPROVAL_REQUEST_TYPE_RESPONSE)))
+
+        val result = approvalRepository.findApprovalRequestTypes()
+
+        assertThat(result.size).isEqualTo(4)
+        assertThat(result[0]).isEqualTo(ApprovalRequestType.BATCH_CANCELLATION)
+        assertThat(result[1]).isEqualTo(ApprovalRequestType.CONFIG_CHANGE)
+        assertThat(result[2]).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
+        assertThat(result[3]).isEqualTo(ApprovalRequestType.PARTICIPANT_UNSUSPEND)
+    }
+
+    @Test
+    fun `should return request by users reference list`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/reference/approvals/requestedBy/P27-SEK/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_APPROVAL_REQUEST_BY_RESPONSE)))
+
+        val result = approvalRepository.findRequestedDetails()
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantId).isEqualTo("P27")
+        assertThat(result[0].firstName).isEqualTo("John")
+        assertThat(result[0].lastName).isEqualTo("Douglas")
+        assertThat(result[0].userId).isEqualTo("E109341")
     }
 }

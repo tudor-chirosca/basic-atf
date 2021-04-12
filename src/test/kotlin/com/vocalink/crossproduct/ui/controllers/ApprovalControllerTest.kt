@@ -4,15 +4,19 @@ import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
-import com.vocalink.crossproduct.domain.approval.ApprovalUser
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
+import java.nio.charset.Charset
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -27,10 +31,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.nio.charset.Charset
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 @WebMvcTest(ApprovalApi::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -72,7 +72,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         }"""
 
         const val VALID_STATUS_CHANGE_WITH_NOTES_REQUEST_BODY = """ {
-           "requestType" : "STATUS_CHANGE",
+           "requestType" : "PARTICIPANT_SUSPEND",
            "requestedChange" : {
                 "status": "some_new_status"
               },
@@ -80,7 +80,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         }"""
 
         const val VALID_STATUS_CHANGE_REQUEST_BODY = """ {
-           "requestType" : "STATUS_CHANGE",
+           "requestType" : "PARTICIPANT_SUSPEND",
            "requestedChange" : {
                 "status": "some_new_status"
               },
@@ -151,7 +151,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                    },
                    "createdAt": "2021-02-08T14:55:00Z",
                    "jobId": "10000004",
-                   "requestType": "STATUS_CHANGE",
+                   "requestType": "PARTICIPANT_SUSPEND",
                    "participants": [{
                         "participantIdentifier": "ESSESESS",
                         "name": "SEB Bank",
@@ -171,11 +171,28 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             ]
         }
         """
+        const val VALID_APPROVAL_REQUEST_BY_RESPONSE: String = """
+        [
+            {
+                 "name": "John Doe",
+                 "id": "12a514",
+                 "participantName": "P27"
+            }
+        ]
+        """
+        const val VALID_APPROVAL_REQUEST_TYPE_RESPONSE: String = """
+        [
+            "BATCH_CANCELLATION",
+            "CONFIG_CHANGE",
+            "PARTICIPANT_SUSPEND",
+            "PARTICIPANT_UNSUSPEND"
+        ]
+        """
     }
 
     @Test
     fun `should return 200 with path variable and return valid response`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
@@ -208,7 +225,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 on valid batch cancellation body for create Approval`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
@@ -242,7 +259,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 on valid status change body for create Approval`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
@@ -276,7 +293,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 on valid status change with notes body for create Approval`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27 Scheme")
         val jobId = "10000004"
         val createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 28, 14, 55), ZoneId.of("UTC"))
         val requestedChange = mapOf("status" to "suspended")
@@ -362,7 +379,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified in request`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27-SEK")
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27-SEK")
         val jobId = "10000004"
         val createdAt = ZonedDateTime.parse("2021-02-08T14:55:00Z")
         val requestedChange = mapOf("status" to "REJECTED")
@@ -373,7 +390,7 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             ApprovalStatus.PENDING,
             approvalUser, approvalUser,
             createdAt, jobId,
-            ApprovalRequestType.STATUS_CHANGE,
+            ApprovalRequestType.PARTICIPANT_SUSPEND,
             listOf(participantReferenceDto),
             "This is the reason that I have requested this change to be made.",
             approvalUser, "Please check ticket number 342 and resubmit the change.",
@@ -474,4 +491,40 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     }
 
+    @Test
+    fun `should return 200 on Approval request By references`() {
+        val approvalUser = ApprovalUserDto("John Doe", "12a514", "P27")
+        `when`(approvalFacade.findRequestedDetails(any(), any()))
+                .thenReturn(listOf(approvalUser))
+
+        mockMvc.perform(
+                get("/reference/approvals/request-by")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+        )
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_APPROVAL_REQUEST_BY_RESPONSE))
+    }
+
+    @Test
+    fun `should return 200 on Approval request types references`() {
+        val requestTypes = listOf(
+                ApprovalRequestType.BATCH_CANCELLATION,
+                ApprovalRequestType.CONFIG_CHANGE,
+                ApprovalRequestType.PARTICIPANT_SUSPEND,
+                ApprovalRequestType.PARTICIPANT_UNSUSPEND
+        )
+        `when`(approvalFacade.findApprovalRequestTypes(any(), any()))
+                .thenReturn(requestTypes)
+
+        mockMvc.perform(
+                get("/reference/approvals/request-types")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+        )
+                .andExpect(status().isOk)
+                .andExpect(content().json(VALID_APPROVAL_REQUEST_TYPE_RESPONSE))
+    }
 }

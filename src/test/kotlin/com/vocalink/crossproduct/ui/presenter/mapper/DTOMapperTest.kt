@@ -13,7 +13,7 @@ import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
-import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.configuration.Configuration
 import com.vocalink.crossproduct.domain.cycle.Cycle
@@ -21,7 +21,6 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.cycle.DayCycle
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
-import com.vocalink.crossproduct.domain.participant.ApprovingUser
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
@@ -45,9 +44,6 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -56,6 +52,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -815,7 +814,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map ApprovalDetails to ApprovalDetailsDto`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = UserDetails("12a514", "John", "Doe", "P27")
         val approvalId = "10000020"
         val date = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
         val requestedChange = mapOf("status" to "suspended")
@@ -829,7 +828,7 @@ class DTOMapperTest {
 
         val approvalDetails = Approval(
                 approvalId,
-                ApprovalRequestType.STATUS_CHANGE,
+                ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf(participant.id),
                 date, approvalUser,
                 ApprovalStatus.APPROVED,
@@ -846,22 +845,22 @@ class DTOMapperTest {
         val result = MAPPER.toDto(approvalDetails, listOf(participant))
 
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
-        assertThat(result.requestedBy.name).isEqualTo(approvalUser.name)
-        assertThat(result.requestedBy.id).isEqualTo(approvalUser.id)
+        assertThat(result.requestedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
+        assertThat(result.requestedBy.id).isEqualTo(approvalUser.userId)
         assertThat(result.createdAt).isEqualTo(date)
         assertThat(result.jobId).isEqualTo(approvalId)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.participants[0].participantIdentifier).isEqualTo(participant.id)
         assertThat(result.participants[0].name).isEqualTo(participant.name)
         assertThat(result.participants[0].participantType.toString()).isEqualTo(participant.participantType.toString())
         assertThat(result.participants[0].schemeCode).isEqualTo(participant.schemeCode)
-        assertThat(result.rejectedBy.name).isEqualTo(approvalUser.name)
+        assertThat(result.rejectedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 
     @Test
     fun `should map to ApprovalDetailsDto and sort reference participants by participant type`() {
-        val approval = Approval("9900000", ApprovalRequestType.STATUS_CHANGE,
+        val approval = Approval("9900000", ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf("funded1", "funding", "funded2", "funded3"),
                 null, null, null, null, null,
                 null, null, null, null, null, null)
@@ -906,7 +905,6 @@ class DTOMapperTest {
         assertThat(approvalDto.participants[3].participantIdentifier).isEqualTo("funded3")
         assertThat(approvalDto.participants[3].participantType).isEqualTo(FUNDED.toString())
     }
-
 
     @Test
     fun `should map all fields of Participant to ManagedParticipantDto`() {
@@ -990,9 +988,10 @@ class DTOMapperTest {
                 "00002121", "Nordnet Bank", "475347837892",
                 emptyList(), 1, null
         )
-        val approvingUser = ApprovingUser(
-                "FORXSES1", "John", "E23423", "Doe"
+        val approvalUser = UserDetails(
+                "E23423", "John", "Doe", "FORXSES1"
         )
+
         participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant(
                 "participantId",
@@ -1025,7 +1024,7 @@ class DTOMapperTest {
                 BigDecimal.ONE,
                 listOf(0.12, 0.25),
                 ZonedDateTime.now(),
-                approvingUser
+                approvalUser
         )
         val account = Account("partyCode", 234, "iban")
 
@@ -1066,9 +1065,9 @@ class DTOMapperTest {
         assertThat(result.settlementAccountNo).isEqualTo(account.accountNo.toString())
 
         assertThat(result.updatedAt).isEqualTo(configuration.updatedAt)
-        assertThat(result.updatedBy.id).isEqualTo(approvingUser.userId)
-        assertThat(result.updatedBy.name).isEqualTo(approvingUser.firstName + " " + approvingUser.lastName)
-        assertThat(result.updatedBy.participantName).isEqualTo(approvingUser.schemeParticipantIdentifier)
+        assertThat(result.updatedBy.id).isEqualTo(approvalUser.userId)
+        assertThat(result.updatedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
+        assertThat(result.updatedBy.participantName).isEqualTo(approvalUser.participantId)
     }
 
     @Test

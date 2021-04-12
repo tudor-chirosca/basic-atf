@@ -16,7 +16,7 @@ public class ApprovalSearchCriteria {
   private final ZonedDateTime toDate;
   private final List<String> participantIds;
   private final List<ApprovalRequestType> requestTypes;
-  private final String requestedBy;
+  private final List<String> requestedBy;
   private final List<ApprovalStatus> statuses;
   private final List<String> sort;
 }

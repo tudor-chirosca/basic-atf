@@ -9,7 +9,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalRepository
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalService
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
-import com.vocalink.crossproduct.domain.approval.ApprovalUser
+import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
@@ -18,10 +18,15 @@ import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import kotlin.test.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,10 +35,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import kotlin.test.assertNotNull
 
 class ApprovalFacadeImplTest {
 
@@ -66,7 +67,8 @@ class ApprovalFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get approval details`() {
-        val approvalUser = ApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = UserDetails("12a514", "John", "Doe", "P27")
+        val approvalUserDto = ApprovalUserDto("John Doe", "12a514", "P27-SEK")
         val approvalId = "10000020"
         val date = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC+1"))
         val requestedChange = mapOf("status" to "Suspended")
@@ -81,7 +83,7 @@ class ApprovalFacadeImplTest {
 
         val approvalDetails = Approval(
                 approvalId,
-                ApprovalRequestType.STATUS_CHANGE,
+                ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf("ESSESESS"),
                 date, approvalUser,
                 ApprovalStatus.APPROVED,
@@ -96,12 +98,12 @@ class ApprovalFacadeImplTest {
 
         val approvalDetailsDto = ApprovalDetailsDto(
                 ApprovalStatus.APPROVED,
-                approvalUser, approvalUser,
+                approvalUserDto, approvalUserDto,
                 date, approvalId,
                 ApprovalRequestType.BATCH_CANCELLATION,
                 listOf(participantReferenceDto),
                 "This is the reason that I...",
-                approvalUser, "Notes",
+                approvalUserDto, "Notes",
                 originalData, requestedChange)
 
         `when`(approvalRepository.findByJobId(approvalId))
@@ -162,7 +164,7 @@ class ApprovalFacadeImplTest {
             null, null, null, null, null, null,
             null, null, null, null, null)
 
-        val request = ApprovalChangeRequest("STATUS_CHANGE", mapOf("status" to "suspended"),"notes")
+        val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"),"notes")
 
         `when`(approvalRepository.requestApproval(any()))
             .thenReturn(approval)

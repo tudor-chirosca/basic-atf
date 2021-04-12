@@ -20,7 +20,6 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationResponse
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
-import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalUser
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
@@ -32,16 +31,16 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSApprovingUser
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule
-import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
@@ -423,7 +422,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map BPSApprovalDetails to ApprovalDetails`() {
-        val approvalUser = BPSApprovalUser("John Doe", "12a514", "P27 Scheme")
+        val approvalUser = BPSUserDetails("P27", "John", " 12a514", "Doe")
         val date = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
         val approvalId = "10000006"
         val requestedChange = mapOf("status" to "Suspended")
@@ -432,7 +431,7 @@ class EntityMapperTest {
 
         val bpsApprovalDetails = BPSApproval(
                 approvalId,
-                BPSApprovalRequestType.STATUS_CHANGE,
+                BPSApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf(participantId),
                 date, approvalUser,
                 BPSApprovalStatus.APPROVED,
@@ -445,13 +444,16 @@ class EntityMapperTest {
         )
         val result = MAPPER.toEntity(bpsApprovalDetails)
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
-        assertThat(result.requestedBy.name).isEqualTo(approvalUser.name)
-        assertThat(result.requestedBy.id).isEqualTo(approvalUser.id)
+        assertThat(result.requestedBy.lastName).isEqualTo(approvalUser.lastName)
+        assertThat(result.requestedBy.firstName).isEqualTo(approvalUser.firstName)
+        assertThat(result.requestedBy.userId).isEqualTo(approvalUser.userId)
         assertThat(result.date).isEqualTo(date)
         assertThat(result.approvalId).isEqualTo(approvalId)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.participantIds[0]).isEqualTo(participantId)
-        assertThat(result.rejectedBy.name).isEqualTo(approvalUser.name)
+        assertThat(result.rejectedBy.lastName).isEqualTo(approvalUser.lastName)
+        assertThat(result.rejectedBy.firstName).isEqualTo(approvalUser.firstName)
+        assertThat(result.rejectedBy.userId).isEqualTo(approvalUser.userId)
         assertThat(result.requestedChange).isEqualTo(requestedChange)
     }
 
@@ -473,7 +475,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map ParticipantConfiguration fields`() {
-        val bpsApprovingUser = BPSApprovingUser(
+        val bpsApprovingUser = BPSUserDetails(
                 "FORXSES1", "John", "E23423", "Doe"
         )
         val entity = BPSParticipantConfiguration(
@@ -511,7 +513,7 @@ class EntityMapperTest {
         assertThat(result.updatedBy.firstName).isEqualTo(entity.updatedBy.firstName)
         assertThat(result.updatedBy.lastName).isEqualTo(entity.updatedBy.lastName)
         assertThat(result.updatedBy.userId).isEqualTo(entity.updatedBy.userId)
-        assertThat(result.updatedBy.schemeParticipantIdentifier).isEqualTo(entity.updatedBy.schemeParticipantIdentifier)
+        assertThat(result.updatedBy.participantId).isEqualTo(entity.updatedBy.schemeParticipantIdentifier)
     }
 
     @Test
@@ -709,10 +711,10 @@ class EntityMapperTest {
     @Test
     fun `should map to ApprovalChangeCriteria fields`() {
         val request = ApprovalChangeRequest(
-                "STATUS_CHANGE", mapOf("status" to "suspended"), "notes"
+                "PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes"
         )
         val result = MAPPER.toEntity(request)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.requestedChange).isEqualTo(request.requestedChange)
         assertThat(result.notes).isEqualTo(request.notes)
     }

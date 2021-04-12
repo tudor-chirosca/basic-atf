@@ -15,8 +15,10 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -25,7 +27,6 @@ import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
-import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -63,6 +64,7 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
@@ -487,5 +489,12 @@ public class UIPresenter implements Presenter {
   @Override
   public List<String> presentEvents(List<String> events) {
     return events;
+  }
+
+  @Override
+  public List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails) {
+    return userDetails.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
   }
 }

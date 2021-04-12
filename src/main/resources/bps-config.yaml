@@ -120,6 +120,12 @@ bps-config:
     download-report-path:
       path: /reports/downloadFile/{schemeCode}
       base: MOCK
+    approval-request-by-path:
+      path: /reference/approvals/requestedBy/{schemeCode}/readAll
+      base: MOCK
+    approval-request-type-path:
+      path: /reference/approvals/requestTypes/{schemeCode}/readAll
+      base: MOCK
 
   retryable: 404, 429
 

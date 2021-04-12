@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.configuration.Configuration;
@@ -27,7 +28,6 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IOData;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.domain.participant.ApprovingUser;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
@@ -392,8 +392,8 @@ public interface DTOMapper {
       @Mapping(target = "previousCycle", source = "previousCycle"),
       @Mapping(target = "currentPosition", source = "currentPosition"),
       @Mapping(target = "previousPosition", source = "previousPosition"),
-      @Mapping(target = "previousPositionTotals", source = "currentPosition"),
-      @Mapping(target = "currentPositionTotals", source = "previousPosition")
+      @Mapping(target = "previousPositionTotals", source = "previousPosition"),
+      @Mapping(target = "currentPositionTotals", source = "currentPosition")
   })
   ParticipantDashboardSettlementDetailsDto toDto(Cycle currentCycle, Cycle previousCycle,
       ParticipantPosition currentPosition, ParticipantPosition previousPosition,
@@ -405,8 +405,8 @@ public interface DTOMapper {
       @Mapping(target = "previousCycle", source = "previousCycle"),
       @Mapping(target = "currentPosition", source = "currentPosition"),
       @Mapping(target = "previousPosition", source = "previousPosition"),
-      @Mapping(target = "previousPositionTotals", source = "currentPosition"),
-      @Mapping(target = "currentPositionTotals", source = "previousPosition"),
+      @Mapping(target = "previousPositionTotals", source = "previousPosition"),
+      @Mapping(target = "currentPositionTotals", source = "currentPosition"),
       @Mapping(target = "settlementBank", source = "fundingParticipant"),
       @Mapping(target = "intraDayPositionGross", source = "intradayPositionGross")
   })
@@ -518,10 +518,10 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "id", source = "userId"),
-      @Mapping(target = "participantName", source = "schemeParticipantIdentifier"),
-      @Mapping(target = "name", expression = "java(approvingUser.getFirstName() + \" \" + approvingUser.getLastName())")
+      @Mapping(target = "participantName", source = "participantId"),
+      @Mapping(target = "name", expression = "java(userDetails.getFirstName() + \" \" + userDetails.getLastName())")
   })
-  ApprovalUserDto toDto(ApprovingUser approvingUser);
+  ApprovalUserDto toDto(UserDetails userDetails);
 
   AlertDto toDto(Alert alert);
 

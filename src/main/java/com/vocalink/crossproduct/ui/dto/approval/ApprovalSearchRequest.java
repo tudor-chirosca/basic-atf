@@ -29,7 +29,7 @@ public class ApprovalSearchRequest {
   private ZonedDateTime toDate;
   private List<String> participantIds;
   private List<String> requestTypes;
-  private String requestedBy;
+  private List<String> requestedBy;
   @Setter
   private List<String> statuses;
   @Setter
@@ -55,7 +55,7 @@ public class ApprovalSearchRequest {
     this.requestTypes = requestTypes;
   }
 
-  public void setRequested_by(String requestedBy) {
+  public void setRequested_by(List<String> requestedBy) {
     this.requestedBy = requestedBy;
   }
 }

@@ -44,7 +44,6 @@ import com.vocalink.crossproduct.domain.io.IODataDetails;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.IOTransactionsMessageTypes;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
-import com.vocalink.crossproduct.domain.participant.ApprovingUser;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
@@ -98,9 +97,9 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSApprovingUser;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType;
@@ -390,7 +389,10 @@ public interface EntityMapper {
 
   ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);
 
-  ApprovingUser toEntity(BPSApprovingUser approvalUser);
+  @Mappings({
+      @Mapping(target = "participantId", source = "schemeParticipantIdentifier")
+  })
+  UserDetails toEntity(BPSUserDetails approvalUser);
 
   RoutingRecord toEntity(BPSRoutingRecord routingRecord);
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class BPSApprovingUser {
+public class BPSUserDetails {
 
   private final String schemeParticipantIdentifier;
   private final String firstName;
@@ -13,7 +13,7 @@ public class BPSApprovingUser {
   private final String lastName;
 
   @JsonCreator
-  public BPSApprovingUser(
+  public BPSUserDetails(
       @JsonProperty(value = "schemeParticipantIdentifier") String schemeParticipantIdentifier,
       @JsonProperty(value = "firstName") String firstName,
       @JsonProperty(value = "userId") String userId,

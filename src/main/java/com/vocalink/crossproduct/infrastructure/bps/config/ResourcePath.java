@@ -38,5 +38,7 @@ public interface ResourcePath {
   String ROUTING_RECORD_PATH = "routing-record-path";
   String REPORTS_PATH = "reports-path";
   String DOWNLOAD_REPORT_PATH = "download-report-path";
+  String APPROVAL_REQUEST_BY_PATH = "approval-request-by-path";
+  String APPROVAL_REQUEST_TYPE_PATH = "approval-request-type-path";
 
 }

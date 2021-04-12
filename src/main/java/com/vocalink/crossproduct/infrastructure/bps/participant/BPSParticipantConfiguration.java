@@ -24,7 +24,7 @@ public class BPSParticipantConfiguration {
   private final BigDecimal debitCapLimit;
   private final List<Double> debitCapLimitThresholds;
   private final ZonedDateTime updatedAt;
-  private final BPSApprovingUser updatedBy;
+  private final BPSUserDetails updatedBy;
 
   @JsonCreator
   public BPSParticipantConfiguration(
@@ -42,7 +42,7 @@ public class BPSParticipantConfiguration {
       @JsonProperty(value = "debitCapLimit") BigDecimal debitCapLimit,
       @JsonProperty(value = "debitCapLimitThresholds") List<Double> debitCapLimitThresholds,
       @JsonProperty(value = "updatedAt") ZonedDateTime updatedAt,
-      @JsonProperty(value = "updatedBy") BPSApprovingUser updatedBy) {
+      @JsonProperty(value = "updatedBy") BPSUserDetails updatedBy) {
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
     this.txnVolume = txnVolume;
     this.outputFileTimeLimit = outputFileTimeLimit;

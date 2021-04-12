@@ -9,7 +9,9 @@ import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -17,6 +19,7 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -56,7 +59,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
     final Page<Approval> approvals = repositoryFactory.getApprovalRepository(product)
         .findPaginated(request);
 
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findAll();
 
     return presenterFactory.getPresenter(clientType).presentApproval(approvals, participants);
@@ -89,5 +92,18 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
         .submitApprovalConfirmation(request);
 
     return presenterFactory.getPresenter(clientType).presentApprovalResponse(response);
+  }
+
+  @Override
+  public List<ApprovalUserDto> findRequestedDetails(String product, ClientType clientType) {
+    final List<UserDetails> userDetails = repositoryFactory.getApprovalRepository(product)
+        .findRequestedDetails();
+    return presenterFactory.getPresenter(clientType).presentRequestedDetails(userDetails);
+  }
+
+  @Override
+  public List<ApprovalRequestType> findApprovalRequestTypes(String product, ClientType clientType) {
+    return repositoryFactory.getApprovalRepository(product)
+        .findApprovalRequestTypes();
   }
 }

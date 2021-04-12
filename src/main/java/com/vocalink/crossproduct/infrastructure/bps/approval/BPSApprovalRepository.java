@@ -4,6 +4,8 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.r
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVALS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_CREATE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_DETAILS_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_REQUEST_BY_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_REQUEST_TYPE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
@@ -12,13 +14,17 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -83,6 +89,32 @@ public class BPSApprovalRepository implements ApprovalRepository {
         .bodyToMono(BPSApproval.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .map(MAPPER::toEntity)
+        .block();
+  }
+
+  @Override
+  public List<UserDetails> findRequestedDetails() {
+    return webClient.post()
+        .uri(resolve(APPROVAL_REQUEST_BY_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .retrieve()
+        .bodyToFlux(BPSUserDetails.class)
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .map(MAPPER::toEntity)
+        .collectList()
+        .block();
+  }
+
+  @Override
+  public List<ApprovalRequestType> findApprovalRequestTypes() {
+    return webClient.post()
+        .uri(resolve(APPROVAL_REQUEST_TYPE_PATH, bpsProperties))
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .retrieve()
+        .bodyToFlux(BPSApprovalRequestType.class)
+        .map(a -> MAPPER.convertApprovalRequestType(a.name()))
+        .retryWhen(retryWebClientConfig.fixedRetry())
+        .collectList()
         .block();
   }
 

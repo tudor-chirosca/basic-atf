@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -7,8 +8,10 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -53,7 +56,7 @@ public class ApprovalController implements ApprovalApi {
       @RequestHeader final String context,
       final ApprovalSearchRequest request) {
 
-    PageDto<ApprovalDetailsDto> approvalDetailsDto = approvalFacade
+    final PageDto<ApprovalDetailsDto> approvalDetailsDto = approvalFacade
         .getApprovals(context, clientType, request);
 
     return ResponseEntity.ok().body(approvalDetailsDto);
@@ -69,5 +72,27 @@ public class ApprovalController implements ApprovalApi {
         .requestApproval(context, clientType, request);
 
     return ResponseEntity.ok().body(approvalDetailsDto);
+  }
+
+  @GetMapping(value = "/reference/approvals/request-by", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<ApprovalUserDto>> findRequestedDetails(
+      @RequestHeader("client-type") final ClientType clientType,
+      @RequestHeader final String context) {
+
+    final List<ApprovalUserDto> approvalUsersDto = approvalFacade
+        .findRequestedDetails(context, clientType);
+
+    return ResponseEntity.ok().body(approvalUsersDto);
+  }
+
+  @GetMapping(value = "/reference/approvals/request-types", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<ApprovalRequestType>> findApprovalRequestTypes(
+      @RequestHeader("client-type") final ClientType clientType,
+      @RequestHeader final String context) {
+
+    final List<ApprovalRequestType> approvalRequestTypes = approvalFacade
+        .findApprovalRequestTypes(context, clientType);
+
+    return ResponseEntity.ok().body(approvalRequestTypes);
   }
 }

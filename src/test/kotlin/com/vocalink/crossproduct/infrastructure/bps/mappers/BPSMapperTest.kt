@@ -4,7 +4,7 @@ import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.STATUS_CHANGE
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_SUSPEND
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
@@ -258,10 +258,10 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalChangeRequest fields`() {
         val criteria = ApprovalChangeCriteria(
-                STATUS_CHANGE, mapOf("status" to "suspended"), "notes"
+                PARTICIPANT_SUSPEND, mapOf("status" to "suspended"), "notes"
         )
         val result = BPSMAPPER.toBps(criteria)
-        assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.STATUS_CHANGE)
+        assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.requestedChange).isEqualTo(criteria.requestedChange)
         assertThat(result.notes).isEqualTo(criteria.notes)
     }
@@ -319,8 +319,8 @@ class BPSMapperTest {
 
         val criteria = ApprovalSearchCriteria(
                 0, 20,"10000000", fromDate,
-                toDate, listOf("NDEASESSXXX"), listOf(STATUS_CHANGE),
-                "23451sdf", listOf(PENDING), listOf("+status")
+                toDate, listOf("NDEASESSXXX"), listOf(PARTICIPANT_SUSPEND),
+                listOf("23451sdf"), listOf(PENDING), listOf("+status")
         )
         val result = BPSMAPPER.toBps(criteria)
 
@@ -328,8 +328,8 @@ class BPSMapperTest {
         assertThat(result.fromDate).isEqualTo(fromDate)
         assertThat(result.toDate).isEqualTo(toDate)
         assertThat(result.schemeParticipantIdentifiers).isEqualTo(listOf("NDEASESSXXX"))
-        assertThat(result.requestTypes).isEqualTo(listOf(BPSApprovalRequestType.STATUS_CHANGE))
-        assertThat(result.requestedBy).isEqualTo("23451sdf")
+        assertThat(result.requestTypes).isEqualTo(listOf(BPSApprovalRequestType.PARTICIPANT_SUSPEND))
+        assertThat(result.requestedBy).isEqualTo(listOf("23451sdf"))
         assertThat(result.statuses).isEqualTo(listOf(BPSApprovalStatus.PENDING))
         assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("status")
         assertThat(result.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.ASC)
