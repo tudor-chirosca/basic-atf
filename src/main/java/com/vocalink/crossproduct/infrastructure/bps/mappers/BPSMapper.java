@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.re
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementDetailsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
 import static java.util.Objects.nonNull;
@@ -22,7 +23,7 @@ import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
-import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
@@ -40,7 +41,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedPartic
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequest;
-import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSInstructionEnquiryRequest;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementDetailsRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
@@ -166,7 +167,15 @@ public interface BPSMapper {
 
   BPSAlertSearchRequest toBps(AlertSearchCriteria criteria);
 
-  BPSInstructionEnquiryRequest toBps(InstructionEnquirySearchCriteria criteria);
+  @Mappings({
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapSettlementDetailsSortParams")
+  })
+  BPSSettlementDetailsRequest toBps(SettlementDetailsSearchCriteria criteria);
+
+  @Named("mapSettlementDetailsSortParams")
+  default List<BPSSortingQuery> mapSettlementDetailsSortParams(List<String> sortParams) {
+    return map(sortParams, getSettlementDetailsSearchRequestSortParams());
+  }
 
   @Mappings({
       @Mapping(target = "participant", source = "participants", qualifiedByName = "getFirstParticipant"),

@@ -38,6 +38,7 @@ import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
@@ -280,15 +281,15 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlementDetails,
       List<Participant> participants, Participant participant) {
-    return MAPPER.toDto(settlement, participants, participant);
+    return MAPPER.toDto(settlementDetails, participants, participant);
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlementDetails,
       List<Participant> participants, Participant participant, Participant settlementBank) {
-    return MAPPER.toDto(settlement, participants, participant, settlementBank);
+    return MAPPER.toDto(settlementDetails, participants, participant, settlementBank);
   }
 
   @Override

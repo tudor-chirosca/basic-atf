@@ -22,8 +22,7 @@ public interface ResourcePath {
   String SINGLE_FILE_PATH = "single-file-path";
   String DOWNLOAD_FILE_PATH = "download-file-path";
   String SINGLE_BATCH_PATH = "single-batch-path";
-  String SINGLE_SETTLEMENT_PATH = "single-settlement-path";
-  String INSTRUCTION_ENQUIRIES_PATH = "instruction-enquiries-path";
+  String SETTLEMENT_DETAILS_PATH = "settlement-details-path";
   String SETTLEMENT_ENQUIRIES_PATH = "settlement-enquiries-path";
   String SETTLEMENT_SCHEDULE_ENQUIRIES_PATH = "settlement-schedule-path";
   String TRANSACTION_ENQUIRIES_PATH = "transaction-enquiries-path";

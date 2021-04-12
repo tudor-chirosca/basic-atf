@@ -33,9 +33,9 @@ import com.vocalink.crossproduct.domain.position.Payment
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
-import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction
-import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement
+import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
@@ -311,15 +311,13 @@ class DTOMapperTest {
 
     @Test
     fun `should map ParticipantSettlementDto fields with no funding Bic`() {
-        val instruction = ParticipantInstruction(
-                "cycleId", "participantId", "reference", "ACCEPTED",
-                "counterpartyId", "settlementCounterpartyId",
-                BigDecimal.TEN, BigDecimal.TEN
-        )
-        val settlement = ParticipantSettlement(
-                "cycleId", ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
-                SettlementStatus.PARTIAL, "participantId", Page(1, listOf(instruction))
-        )
+        val dateTime = ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC"))
+
+        val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
+                dateTime, SettlementStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
+                Amount(10.toBigDecimal(), "SEK"))
+
         val cycle = Cycle(
                 "cycleId",
                 ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
@@ -378,12 +376,12 @@ class DTOMapperTest {
                 null
         )
 
-        val result = MAPPER.toDto(settlement, listOf(participant, counterparty, settlementCounterparty), participant)
+        val result = MAPPER.toDto(Page(1, listOf(settlementDetails)), listOf(participant, counterparty, settlementCounterparty), participant)
 
         assertThat(result).isNotNull
-        assertThat(result.cycleId).isEqualTo(settlement.cycleId)
+        assertThat(result.cycleId).isEqualTo(settlementDetails.cycleId)
         assertThat(result.settlementTime).isEqualTo(cycle.settlementTime)
-        assertThat(result.status).isEqualTo(settlement.status)
+        assertThat(result.status).isEqualTo(settlementDetails.status)
         assertThat(result.participant.participantIdentifier).isEqualTo(participant.bic)
         assertThat(result.participant.name).isEqualTo(participant.name)
         assertThat(result.participant.connectingParticipantId).isEqualTo(participant.fundingBic)
@@ -410,15 +408,13 @@ class DTOMapperTest {
 
     @Test
     fun `should map ParticipantSettlementDto fields with funding Bic`() {
-        val instruction = ParticipantInstruction(
-                "cycleId", "participantId", "reference", "ACCEPTED",
-                "counterpartyId", "settlementCounterpartyId",
-                BigDecimal.TEN, BigDecimal.TEN
-        )
-        val settlement = ParticipantSettlement(
-                "cycleId", ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
-                SettlementStatus.PARTIAL, "participantId", Page(1, listOf(instruction))
-        )
+        val dateTime = ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC"))
+
+        val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
+                dateTime, SettlementStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
+                Amount(10.toBigDecimal(), "SEK"))
+
         val cycle = Cycle(
                 "cycleId",
                 ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC")),
@@ -493,14 +489,14 @@ class DTOMapperTest {
                 null
         )
 
-        val result = MAPPER.toDto(settlement,
+        val result = MAPPER.toDto(Page(1, listOf(settlementDetails)),
                 listOf(settlementBank, counterparty, settlementCounterparty, fundedParticipant),
                 fundedParticipant, settlementBank)
 
         assertThat(result).isNotNull
-        assertThat(result.cycleId).isEqualTo(settlement.cycleId)
+        assertThat(result.cycleId).isEqualTo(settlementDetails.cycleId)
         assertThat(result.settlementTime).isEqualTo(cycle.settlementTime)
-        assertThat(result.status).isEqualTo(settlement.status)
+        assertThat(result.status).isEqualTo(settlementDetails.status)
         assertThat(result.participant.participantIdentifier).isEqualTo(fundedParticipant.bic)
         assertThat(result.participant.name).isEqualTo(fundedParticipant.name)
         assertThat(result.participant.connectingParticipantId).isEqualTo(fundedParticipant.fundingBic)

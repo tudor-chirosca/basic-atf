@@ -28,6 +28,7 @@ import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
@@ -130,10 +131,10 @@ public interface Presenter {
 
   BatchDetailsDto presentBatchDetails(Batch batch, File file);
 
-  ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant);
 
-  ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant, Participant settlementBank);
 
   PageDto<ParticipantSettlementCycleDto> presentSettlements(Page<ParticipantSettlement> settlements,

@@ -72,8 +72,8 @@ bps-config:
     single-batch-path:
       path: /enquiries/batches/{schemeCode}/read
       base: MOCK
-    single-settlement-path:
-      path: /enquiry/settlements/read
+    settlement-details-path:
+      path: /enquiries/settlement/enquiry/{schemeCode}/read
       base: MOCK
     instruction-enquiries-path:
       path: /enquiry/instructions

@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain.settlement;
 
-import com.vocalink.crossproduct.domain.Page;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +14,4 @@ public class ParticipantSettlement {
   private final ZonedDateTime settlementStartDate;
   private final SettlementStatus status;
   private final String schemeParticipantIdentifier;
-  private final Page<ParticipantInstruction> instructions;
 }

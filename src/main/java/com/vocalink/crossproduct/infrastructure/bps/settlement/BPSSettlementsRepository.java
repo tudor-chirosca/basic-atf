@@ -1,28 +1,26 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.INSTRUCTION_ENQUIRIES_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_DETAILS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_ENQUIRIES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_SCHEDULE_ENQUIRIES_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SINGLE_SETTLEMENT_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
-import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -46,40 +44,21 @@ public class BPSSettlementsRepository implements SettlementsRepository {
   private final WebClient webClient;
 
   @Override
-  public ParticipantSettlement findBy(InstructionEnquirySearchCriteria criteria) {
-    final BPSInstructionEnquiryRequest request = BPSMAPPER.toBps(criteria);
-    final BPSParticipantSettlement settlement = findSettlement(request.getCycleId(),
-        request.getParticipantId());
-    final BPSPage<BPSParticipantInstruction> instructions = findInstructions(request);
-    return MAPPER.toEntity(settlement, instructions);
-  }
-
-  private BPSParticipantSettlement findSettlement(String cycleId, String participantId) {
-    final BPSSingleSettlementRequest request = new BPSSingleSettlementRequest(cycleId,
-        participantId);
-
+  public Page<SettlementDetails> findDetails(SettlementDetailsSearchCriteria criteria) {
+    final BPSSettlementDetailsRequest bpsRequest = BPSMAPPER.toBps(criteria);
+    final URI uri = UriComponentsBuilder.fromUri(resolve(SETTLEMENT_DETAILS_PATH, bpsProperties))
+        .queryParam(OFFSET, criteria.getOffset())
+        .queryParam(PAGE_SIZE, criteria.getLimit())
+        .build().toUri();
     return webClient.post()
-        .uri(resolve(SINGLE_SETTLEMENT_PATH, bpsProperties))
+        .uri(uri)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(request), BPSSingleSettlementRequest.class))
+        .body(fromPublisher(Mono.just(bpsRequest), BPSSettlementDetailsRequest.class))
         .retrieve()
-        .bodyToMono(BPSParticipantSettlement.class)
+        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSSettlementDetails>> () {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .block();
-  }
-
-  private BPSPage<BPSParticipantInstruction> findInstructions(
-      BPSInstructionEnquiryRequest request) {
-    return webClient.post()
-        .uri(resolve(INSTRUCTION_ENQUIRIES_PATH, bpsProperties))
-        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(request), BPSInstructionEnquiryRequest.class))
-        .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipantInstruction>>() {
-        })
-        .retryWhen(retryWebClientConfig.fixedRetry())
-        .doOnError(ExceptionUtils::raiseException)
+        .map(x -> MAPPER.toEntity(x, SettlementDetails.class))
         .block();
   }
 

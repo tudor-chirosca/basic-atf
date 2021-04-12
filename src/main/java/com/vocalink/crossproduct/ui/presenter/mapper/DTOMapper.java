@@ -35,10 +35,9 @@ import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
-import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
-import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
@@ -269,31 +268,39 @@ public interface DTOMapper {
       ParticipantSettlement settlement);
 
   @Mappings({
+      @Mapping(target = "cycleId", expression = "java(settlementDetailsPage.getItems().get(0).getCycleId())"),
+      @Mapping(target = "settlementTime", expression = "java(settlementDetailsPage.getItems().get(0).getSettlementCycleDate())"),
+      @Mapping(target = "status", expression = "java(settlementDetailsPage.getItems().get(0).getStatus())"),
       @Mapping(target = "participant", source = "participant"),
-      @Mapping(target = "status", source = "settlement.status"),
-      @Mapping(target = "settlementTime", source = "settlement.settlementStartDate")
+      @Mapping(target = "instructions", source = "settlementDetailsPage")
   })
-  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement,
+  ParticipantSettlementDetailsDto toDto(Page<SettlementDetails> settlementDetailsPage,
       @Context List<Participant> participants, Participant participant);
 
   @Mappings({
+      @Mapping(target = "reference", source = "settlementDetails.settlementInstructionReference", qualifiedByName = "fromIntegerToString"),
+      @Mapping(target = "status", source = "settlementDetails.statusDetail"),
+      @Mapping(target = "counterparty", source = "settlementDetails.counterParty", qualifiedByName = "findParticipant"),
+      @Mapping(target = "settlementCounterparty", source = "settlementDetails.counterPartySettlement", qualifiedByName = "findParticipant"),
+      @Mapping(target = "totalDebit", source = "settlementDetails.totalAmountDebited.amount"),
+      @Mapping(target = "totalCredit", source = "settlementDetails.totalAmountCredited.amount")
+  })
+  ParticipantInstructionDto toDto(SettlementDetails settlementDetails, @Context List<Participant> participants);
+
+  @Mappings({
+      @Mapping(target = "cycleId", expression = "java(settlementDetailsPage.getItems().get(0).getCycleId())"),
+      @Mapping(target = "settlementTime", expression = "java(settlementDetailsPage.getItems().get(0).getSettlementCycleDate())"),
+      @Mapping(target = "status", expression = "java(settlementDetailsPage.getItems().get(0).getStatus())"),
       @Mapping(target = "participant", source = "participant"),
       @Mapping(target = "settlementBank", source = "settlementBank"),
-      @Mapping(target = "status", source = "settlement.status"),
-      @Mapping(target = "settlementTime", source = "settlement.settlementStartDate")
+      @Mapping(target = "instructions", source = "settlementDetailsPage")
   })
-  ParticipantSettlementDetailsDto toDto(ParticipantSettlement settlement,
+  ParticipantSettlementDetailsDto toDto(Page<SettlementDetails> settlementDetailsPage,
       @Context List<Participant> participants, Participant participant, Participant settlementBank);
 
-  @Mapping(target = "counterparty", source = "counterpartyId", qualifiedByName = "findParticipant")
-  @Mapping(target = "settlementCounterparty", source = "settlementCounterpartyId", qualifiedByName = "findParticipant")
-  @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
-  ParticipantInstructionDto toDto(ParticipantInstruction participantInstruction,
-      @Context List<Participant> participants);
-
-  @Named("toStatus")
-  default InstructionStatus convertStatusType(String status) {
-    return InstructionStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
+  @Named("fromIntegerToString")
+  default String fromIntegerToString(Integer reference) {
+    return String.valueOf(reference);
   }
 
   @Named("findParticipant")

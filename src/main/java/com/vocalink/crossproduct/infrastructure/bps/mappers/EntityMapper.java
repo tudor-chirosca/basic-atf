@@ -60,12 +60,12 @@ import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
-import com.vocalink.crossproduct.domain.settlement.InstructionEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus;
-import com.vocalink.crossproduct.domain.settlement.ParticipantInstruction;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
 import com.vocalink.crossproduct.domain.settlement.ScheduleDayDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
@@ -108,10 +108,10 @@ import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeRefer
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference.BPSReasonCodeValidation;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
-import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantInstruction;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementDetails;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
@@ -230,6 +230,12 @@ public interface EntityMapper {
 
   MessageDirectionReference toEntity(BPSMessageDirectionReference messageDirectionReference);
 
+  @Mappings({
+      @Mapping(target = "status", source = "status", qualifiedByName = "toStatus"),
+      @Mapping(target = "statusDetail", source = "statusDetail", qualifiedByName = "toInstructionStatus")
+  })
+  SettlementDetails toEntity(BPSSettlementDetails settlementDetails);
+
   @Mappings(
       @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
   )
@@ -240,28 +246,11 @@ public interface EntityMapper {
     return SettlementStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
   }
 
-  @Mappings({
-      @Mapping(target = "instructions.totalResults", source = "instructions.totalResults"),
-      @Mapping(target = "instructions", source = "instructions"),
-      @Mapping(target = "instructions.items", source = "instructions.items", qualifiedByName = "doInstructions"),
-      @Mapping(target = "status", source = "settlement.status", qualifiedByName = "toStatus")
-  })
-  ParticipantSettlement toEntity(BPSParticipantSettlement settlement,
-      BPSPage<BPSParticipantInstruction> instructions);
-
-  @Named("doInstructions")
-  default List<ParticipantInstruction> doInstructions(List<BPSParticipantInstruction> instructions) {
-    return instructions.stream().map(this::toEntity).collect(toList());
-  }
-
   default List<ParticipantPosition> toEntity(BPSSettlementPositionWrapper positionsWrapper) {
     return positionsWrapper.getMlSettlementPositions().stream().map(this::toEntity).collect(toList());
   }
 
   ParticipantPosition toEntity(BPSSettlementPosition position);
-
-  @Mapping(source = "status", target = "status", qualifiedByName = "toInstructionStatus")
-  ParticipantInstruction toEntity(BPSParticipantInstruction instruction);
 
   @Named("toInstructionStatus")
   default InstructionStatus convertInstructionStatusType(String status) {
@@ -278,7 +267,7 @@ public interface EntityMapper {
       @Mapping(source = "cycleId", target = "cycleId"),
       @Mapping(source = "participantId", target = "participantId")
   })
-  InstructionEnquirySearchCriteria toEntity(ParticipantSettlementRequest request, String cycleId,
+  SettlementDetailsSearchCriteria toEntity(ParticipantSettlementRequest request, String cycleId,
       String participantId);
 
   SettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);

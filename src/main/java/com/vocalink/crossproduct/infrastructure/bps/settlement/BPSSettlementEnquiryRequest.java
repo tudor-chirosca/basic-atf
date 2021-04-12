@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.settlement;
 
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

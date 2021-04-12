@@ -1,18 +1,19 @@
 package com.vocalink.crossproduct.domain.settlement;
 
-public enum  InstructionStatus {
+import lombok.Getter;
 
-  REJECTED("rejected"),
-  ACCEPTED("accepted"),
-  NO_RESPONSE("no-response");
+@Getter
+public enum InstructionStatus {
+
+  CREATED("Created"),
+  REJECTED("Rejected"),
+  SENT("Sent"),
+  SETTLED("Settled"),
+  SUBMITTED("Submitted");
 
   private final String description;
 
   InstructionStatus(String description) {
     this.description = description;
-  }
-
-  public String getDescription() {
-    return this.description;
   }
 }

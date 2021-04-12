@@ -28,6 +28,7 @@ import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
@@ -183,13 +184,13 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant) {
     throw new RuntimeException("System API not implemented yet");
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(ParticipantSettlement settlement,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant, Participant settlementBank) {
     throw new RuntimeException("System API not implemented yet");
   }

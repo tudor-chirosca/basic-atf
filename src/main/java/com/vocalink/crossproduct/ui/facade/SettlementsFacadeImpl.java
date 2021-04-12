@@ -10,9 +10,12 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
+import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.settlement.SettlementsRepository;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
@@ -44,28 +47,36 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", cycleId,
         participantId, product);
 
-    final Participant participant = repositoryFactory.getParticipantRepository(product)
-        .findById(participantId);
-
-    final ParticipantSettlement participantSettlement = repositoryFactory
-        .getSettlementsRepository(product)
-        .findBy(MAPPER.toEntity(request, cycleId, participantId));
+    final SettlementDetailsSearchCriteria criteria = MAPPER
+        .toEntity(request, cycleId, participantId);
 
     final List<Participant> participants = repositoryFactory
         .getParticipantRepository(product)
         .findAll();
 
+    final Participant participant = participants.stream()
+        .filter(p -> p.getId().equals(participantId))
+        .findFirst()
+        .orElseThrow(() -> new EntityNotFoundException(
+            "No such participant with id: " + participantId));
+
+    final Page<SettlementDetails> settlementDetails = repositoryFactory
+        .getSettlementsRepository(product)
+        .findDetails(criteria);
+
     if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
-      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
-          .findById(participant.getFundingBic());
+      Participant fundingParticipant = participants.stream()
+          .filter(p -> p.getId().equals(participant.getFundingBic()))
+          .findFirst()
+          .orElseThrow(() -> new EntityNotFoundException(
+              "No such fundingParticipant with id: " + participant.getFundingBic()));
 
       return presenterFactory.getPresenter(clientType)
-          .presentSettlementDetails(participantSettlement, participants, participant,
-              fundingParticipant);
+          .presentSettlementDetails(settlementDetails, participants, participant, fundingParticipant);
     }
 
     return presenterFactory.getPresenter(clientType)
-        .presentSettlementDetails(participantSettlement, participants, participant);
+        .presentSettlementDetails(settlementDetails, participants, participant);
   }
 
   @Override
