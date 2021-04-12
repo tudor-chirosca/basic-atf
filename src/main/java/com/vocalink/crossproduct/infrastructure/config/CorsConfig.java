@@ -17,7 +17,16 @@ public class CorsConfig {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedHeaders("client-type", "context", "access-control-allow-headers", "content-type")
+            .allowedHeaders(
+              "client-type",
+              "context",
+              "access-control-allow-headers",
+              "content-type",
+              "X-COMPANY-ID",
+              "X-PARTICIPANT-ID",
+              "X-ROLES",
+              "X-USER-ID"
+            )
             .allowedOrigins(corsHosts);
       }
     };
