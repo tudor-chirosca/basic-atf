@@ -49,14 +49,12 @@ abstract class MapperUtils {
 
   private static final Map<String, String> nameType = new HashMap<String, String>() {{
     put("Pacs.008", "Credit Transfer");
-    put("Pacs.004", "Payment Return OR Positive Response to Recall of payment");
-    put("Pacs.002", "Payment Reversal");
-    put("Camt.056", "Cancellation Request / Recall of Credit Transfer");
+    put("Pacs.004", "Payment Return or Positive Response to Recall of Payment");
+    put("Camt.056", "Cancellation / Recall of Credit Transfer");
     put("Camt.029 v3", "Negative Response to Request for Recall");
     put("Camt.029 v8", "Resolution of Investigation");
     put("Camt.087", "Claim for Value Date Correction");
     put("Camt.027", "Claim Non-Receipt");
-    put("Admi.004", "Admin Output");
   }};
 
   private static final Map<String, String> settlementSearchRequestSortParams = new HashMap<String, String>() {{
