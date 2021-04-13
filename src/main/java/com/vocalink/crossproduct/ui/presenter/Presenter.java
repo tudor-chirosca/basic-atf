@@ -41,6 +41,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
@@ -182,6 +183,8 @@ public interface Presenter {
       List<UserActivity> activities);
 
   List<String> presentEvents(List<String> events);
+
+  AuditDetailsDto presentAuditDetails(AuditDetails details, Participant participant);
 
   List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails);
 

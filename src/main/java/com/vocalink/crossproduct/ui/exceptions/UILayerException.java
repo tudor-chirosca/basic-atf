@@ -1,7 +1,14 @@
 package com.vocalink.crossproduct.ui.exceptions;
 
 public class UILayerException extends RuntimeException {
+
   private final String location;
+
+
+  public UILayerException(String message) {
+    super(message);
+    this.location = null;
+  }
 
   public UILayerException(Throwable cause, String location) {
     super(cause);

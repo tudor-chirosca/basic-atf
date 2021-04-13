@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
@@ -43,6 +42,9 @@ import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
+import com.vocalink.crossproduct.ui.aspects.ContentUtils;
+import com.vocalink.crossproduct.ui.aspects.EventType;
+import com.vocalink.crossproduct.ui.aspects.OperationType;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -52,6 +54,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertReferenceDataDto;
 import com.vocalink.crossproduct.ui.dto.alert.AlertStatsDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserActivityDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
@@ -83,11 +86,14 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
+import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -100,6 +106,8 @@ public class UIPresenter implements Presenter {
 
   @Value("${app.ui.config.default.message.reference.name}")
   private String defaultMessageReferenceName;
+
+  private final ContentUtils contentUtils;
 
   private final String PREVIOUS_CYCLE = "PREVIOUS";
   private final String CURRENT_CYCLE = "CURRENT";
@@ -281,13 +289,15 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlementDetails,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(
+      Page<SettlementDetails> settlementDetails,
       List<Participant> participants, Participant participant) {
     return MAPPER.toDto(settlementDetails, participants, participant);
   }
 
   @Override
-  public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlementDetails,
+  public ParticipantSettlementDetailsDto presentSettlementDetails(
+      Page<SettlementDetails> settlementDetails,
       List<Participant> participants, Participant participant, Participant settlementBank) {
     return MAPPER.toDto(settlementDetails, participants, participant, settlementBank);
   }
@@ -490,6 +500,35 @@ public class UIPresenter implements Presenter {
   @Override
   public List<String> presentEvents(List<String> events) {
     return events;
+  }
+
+  @Override
+  public AuditDetailsDto presentAuditDetails(AuditDetails details, Participant participant) {
+    final EventType eventType = getEventByDescription(details.getUserActivityString());
+
+    final OperationType operationType = EnumUtils
+        .getEnum(OperationType.class, details.getRequestOrResponseEnum());
+
+    final Object content = contentUtils
+        .toObject(details.getContents(), eventType, operationType);
+
+    return AuditDetailsDto.builder()
+        .id(details.getServiceId())
+        .operationType(operationType.name())
+        .eventType(eventType.getActivity())
+        .timestamp(details.getTimestamp())
+        .interactionDetails(content)
+        .entityId(participant.getId())
+        .submitter(participant.getOrganizationId())
+        .submitterOrganisation(participant.getName())
+        .build();
+  }
+
+  private EventType getEventByDescription(String activity) {
+    return Stream.of(EventType.values())
+        .filter(v -> v.getActivity().equalsIgnoreCase(activity))
+        .findFirst()
+        .orElseThrow(() -> new UILayerException("Event type not found for activity: " + activity));
   }
 
   @Override

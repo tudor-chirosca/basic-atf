@@ -20,7 +20,6 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -31,6 +30,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import java.time.ZonedDateTime
 
 open class SettlementDashboardFacadeImplTest {
 
@@ -362,7 +362,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(participantRepository.findAll())
             .thenReturn(participants)
         `when`(presenterFactory.getPresenter(UI))
-            .thenReturn(UIPresenter())
+            .thenReturn(UIPresenter(null))
 
         val result = settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
 

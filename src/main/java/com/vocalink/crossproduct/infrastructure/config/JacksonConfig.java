@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonConfig {
 
   @Bean
-  public ObjectMapper config() {
+  public ObjectMapper objectMapper() {
     final ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

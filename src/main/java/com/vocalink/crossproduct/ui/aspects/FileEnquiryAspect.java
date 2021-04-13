@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.aspects;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_DETAILS_ENQUIRY;
 import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_SEARCH_ENQUIRY;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.REQUEST;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
@@ -15,7 +16,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -33,6 +33,7 @@ public class FileEnquiryAspect {
   private String mdcKey;
 
   private final AuditFacade auditFacade;
+  private final ContentUtils contentUtils;
 
   @Pointcut("execution(public * com.vocalink.crossproduct.ui.controllers.FilesController.*(..))")
   public void fileEnquiryOperation() {
@@ -42,25 +43,26 @@ public class FileEnquiryAspect {
   Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
     final ClientType client = (ClientType) joinPoint.getArgs()[0];
     final String product = (String) joinPoint.getArgs()[1];
-    final String content = joinPoint.getArgs()[2].toString();
+    final Object content = joinPoint.getArgs()[2];
     final HttpServletRequest request = (HttpServletRequest) joinPoint.getArgs()[3];
 
-    OccurringEvent event = create(product, client, request, content, FILE_SEARCH_ENQUIRY, REQUEST);
+    EventType eventType = resolveEventType(content);
+    String json = contentUtils.toJsonString(content);
+
+    OccurringEvent event = create(product, client, request, json, eventType, REQUEST);
 
     auditFacade.handleEvent(event);
 
     try {
       Object obj = joinPoint.proceed();
 
-      event = create(product, client, request, resolveContent((ResponseEntity<?>) obj),
-          FILE_SEARCH_ENQUIRY, RESPONSE);
+      event = create(product, client, request, RESPONSE_SUCCESS, eventType, RESPONSE);
 
       auditFacade.handleEvent(event);
 
       return obj;
     } catch (Throwable throwable) {
-      event = create(product, client, request, RESPONSE_FAILURE, FILE_SEARCH_ENQUIRY,
-          RESPONSE);
+      event = create(product, client, request, RESPONSE_FAILURE, eventType, RESPONSE);
 
       auditFacade.handleEvent(event);
 
@@ -89,10 +91,7 @@ public class FileEnquiryAspect {
         .build();
   }
 
-  private String resolveContent(ResponseEntity<?> response) {
-    if (response != null && response.getBody() != null) {
-      return RESPONSE_SUCCESS;
-    }
-    return RESPONSE_FAILURE;
+  private EventType resolveEventType(Object content) {
+    return content instanceof String ? FILE_DETAILS_ENQUIRY : FILE_SEARCH_ENQUIRY;
   }
 }

@@ -10,8 +10,10 @@ import com.vocalink.crossproduct.domain.audit.AuditRequest;
 import com.vocalink.crossproduct.domain.audit.Event;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
+import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
+import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
@@ -40,7 +42,7 @@ public class AuditFacadeImpl implements AuditFacade {
 
     final List<AuditDetails> auditDetails = repositoryFactory
         .getAuditDetailsRepository(product)
-        .getAuditDetailsById(participantId);
+        .getAuditDetailsByParticipantId(participantId);
 
     return presenterFactory.getPresenter(clientType)
         .presentUserDetails(auditDetails);
@@ -82,7 +84,7 @@ public class AuditFacadeImpl implements AuditFacade {
 
     final UserDetails userDetails = repositoryFactory
         .getAuditDetailsRepository(occurringEvent.getProduct())
-        .getAuditDetailsById(occurringEvent.getParticipantId())
+        .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
         .stream()
         .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
         .map(MAPPER::toEntity)
@@ -92,5 +94,17 @@ public class AuditFacadeImpl implements AuditFacade {
 
     repositoryFactory.getAuditDetailsRepository(event.getProduct())
         .logOperation(event, userDetails);
+  }
+
+  @Override
+  public AuditDetailsDto getAuditDetails(String product, ClientType clientType, String serviceId) {
+    final AuditDetails details = repositoryFactory.getAuditDetailsRepository(product)
+        .getAuditDetailsById(serviceId);
+
+    final Participant participant = repositoryFactory.getParticipantRepository(product)
+        .findById(details.getParticipantId());
+
+    return presenterFactory.getPresenter(clientType)
+        .presentAuditDetails(details, participant);
   }
 }

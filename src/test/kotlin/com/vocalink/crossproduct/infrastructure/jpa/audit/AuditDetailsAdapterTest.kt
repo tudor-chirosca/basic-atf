@@ -45,7 +45,7 @@ open class AuditDetailsAdapterTest {
     fun `should find details by participant id`() {
         `when`(repositoryJpa.findAllByParticipantId(PARTICIPANT_ID)).thenReturn(listOf(detailsJpa))
 
-        val auditDetails = adapter.getAuditDetailsById(PARTICIPANT_ID)
+        val auditDetails = adapter.getAuditDetailsByParticipantId(PARTICIPANT_ID)
 
         assertThat(auditDetails).isInstanceOf(List::class.java)
         assertThat(auditDetails).isNotEmpty
@@ -70,5 +70,27 @@ open class AuditDetailsAdapterTest {
         adapter.logOperation(event, userDetails)
 
         verify(repositoryJpa, atLeastOnce()).save(any())
+    }
+
+    @Test
+    fun `should get audit details by service id`() {
+        val id = 1L
+        val detailsJpa = AuditDetailsJpa.builder().serviceId(id).build()
+
+        `when`(repositoryJpa.findByServiceId(id)).thenReturn(Optional.of(detailsJpa))
+
+        val auditDetails = adapter.getAuditDetailsById(id.toString())
+
+        assertThat(id).isEqualTo(auditDetails.serviceId)
+    }
+
+    @Test
+    fun `should throw exception if no entity found by id`() {
+        val id = 1L
+
+        `when`(repositoryJpa.findByServiceId(any())).thenReturn(Optional.empty())
+
+        assertThatExceptionOfType(EntityNotFoundException::class.java)
+                .isThrownBy { adapter.getAuditDetailsById(id.toString()) }
     }
 }

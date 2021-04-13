@@ -44,7 +44,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(any())).thenReturn(null)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter())
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -69,7 +69,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter())
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -96,7 +96,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter())
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -119,7 +119,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter())
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
 
         val created = facadeImpl.create(PRODUCT, CLIENT_TYPE, "msg", listOf(participantId))
 

@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
@@ -41,18 +42,25 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   public static final String NAME_USER_ACTIVITY = "name";
   public static final String QUERY_BY_NAME = "select activity from UserActivityJpa as activity where activity.name = :eventName";
   public static final String EVENT_NAME_USER_ACTIVITY = "eventName";
-  public static final String NOT_AVAILABLE = "n/a";
 
   @PersistenceContext
   private final EntityManager entityManager;
   private final AuditDetailsRepositoryJpa auditDetailsRepository;
 
   @Override
-  public List<AuditDetails> getAuditDetailsById(String participantId) {
+  public List<AuditDetails> getAuditDetailsByParticipantId(String participantId) {
     return auditDetailsRepository.findAllByParticipantId(participantId)
         .stream()
         .map(MAPPER::toEntity)
         .collect(toList());
+  }
+
+  @Override
+  public AuditDetails getAuditDetailsById(String id) {
+    final AuditDetailsJpa detailsJpa = auditDetailsRepository.findByServiceId(parseLong(id))
+        .orElseThrow(() -> new EntityNotFoundException("No audit details found by id: " + id));
+
+    return MAPPER.toEntity(detailsJpa);
   }
 
   @Override
