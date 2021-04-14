@@ -74,7 +74,7 @@ public class FileEnquiryAspect {
     final String userId = request.getHeader(X_USER_ID_HEADER);
     final String participantId = request.getHeader(X_PARTICIPANT_ID_HEADER);
     final String correlationId = MDC.get(mdcKey);
-    final String requestUrl = request.getRequestURI();
+    final String requestUrl = request.getRequestURL().toString();
 
     return OccurringEvent.builder()
         .product(product)

@@ -15,7 +15,7 @@ create table user_audit_details
     service_id                 number generated always as identity not null,
     approval_request_id        varchar(5),
     request_or_response_enum   varchar(10)                         not null,
-    request_url                varchar(100)                        not null,
+    request_url                varchar(200)                        not null,
     contents                   varchar(1000)                       not null,
     first_name                 varchar(15)                         not null,
     last_name                  varchar(20)                         not null,
