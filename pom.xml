@@ -262,7 +262,7 @@
                 <descriptor>assembly/database-migrations.xml</descriptor>
               </descriptors>
               <appendAssemblyId>false</appendAssemblyId>
-              <finalName>${project.artifactId}-db-${project.version}</finalName>
+              <finalName>${project.artifactId}-${project.version}-db</finalName>
               <tarLongFileMode>posix</tarLongFileMode>
             </configuration>
           </execution>

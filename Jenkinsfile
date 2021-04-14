@@ -61,7 +61,7 @@ pipeline {
                 //         runMaven(goal: "-B integration-test -U")
                 //     }
                 // }
-                
+               
                 stage("Test DB migrations") {
                     when { not { branch "${RELEASE_BRANCH}" }}
                     steps {
