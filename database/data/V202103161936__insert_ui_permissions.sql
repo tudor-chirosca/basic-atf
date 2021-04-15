@@ -66,3 +66,27 @@ INSERT INTO UI_PERMISSION(id, key)
 VALUES ('f12b445b-8bfc-4bcd-9652-568ff544d528', 'update.participant-config_debit-cap');
 INSERT INTO UI_PERMISSION(id, key)
 VALUES ('f45ac3d3-ad0d-4acc-a311-6b858c0949da', 'update.participant-config_debit-cap-threshold');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('6062d016-83af-4e42-92ae-a6157541ac94', 'read.send-broadcast-message');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('60ce0747-0622-4155-aa59-0a843809ec5e', 'read.execute-audit-log');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('78c0db53-6922-44b7-8b1e-d9a82ef63dbc', 'read.download-report-PRE_SETTLEMENT_ADVICE');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('a26638bd-f08a-49d2-b42f-85bf77e32c47', 'read.download-report-PRE_SETTLEMENT_FUNDED_PARTICIPANT_ADVICE');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('6b946147-8dbc-4438-a9dd-e9cd520825c1', 'read.download-report-PRE_SETTLEMENT_ADVICE_SCHEME_OPERATOR');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('103caf12-6c93-477c-8b73-8b1f2c410234', 'read.download-report-CYCLE_SETTLEMENT_REPORT');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('4c319e48-33b4-4de6-9bfe-9bad62b74014', 'read.download-report-DAILY_RECONCILIATION_REPORT');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('595999d2-6223-4713-ac27-bb4191d0d884', 'read.download-report-DAILY_RECONCILIATION_REPORT_MESSAGE');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('0de76af9-637e-4e9e-832e-c76e5cfa7eba', 'read.download-report-DAILY_SUMMARY_REPORT_SCHEME_OPERATOR_P');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('984e4418-7fc4-47a2-9626-1bc378e933b4', 'read.download-report-DAILY_SUMMARY_REPORT_SCHEME_OPERATOR_M');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('2eb61451-be13-401a-a077-79cff68d40a5', 'read.download-report-ROUTING_TABLE_REPORT');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('600e9a80-1591-483e-8818-11369134ea2c', 'read.suspend-unsupend-multiple-participants');
