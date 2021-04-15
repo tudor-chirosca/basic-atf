@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_DETAILS;
+import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_ENQUIRY;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -7,6 +9,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.valueOf;
 
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.FilesApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -32,6 +36,7 @@ public class FilesController implements FilesApi {
   public static final String ACCEPT_HEADER = "Accept";
   private final FilesFacade filesFacade;
 
+  @Auditable(type = FILE_ENQUIRY, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/files", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<FileDto>> getFiles(
       final @RequestHeader("client-type") ClientType clientType,
@@ -43,6 +48,7 @@ public class FilesController implements FilesApi {
     return ResponseEntity.ok().body(fileDto);
   }
 
+  @Auditable(type = FILE_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/files/{id}",
       produces = {APPLICATION_JSON_VALUE, APPLICATION_OCTET_STREAM_VALUE})
   public ResponseEntity<?> getFile(

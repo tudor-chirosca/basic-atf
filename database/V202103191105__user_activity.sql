@@ -1,8 +1,7 @@
 create table user_activity
 (
     id          varchar(36) not null,
-    name        varchar(30) not null,
-    description varchar(50) not null
+    name        varchar(30) not null
 );
 
 alter table user_activity

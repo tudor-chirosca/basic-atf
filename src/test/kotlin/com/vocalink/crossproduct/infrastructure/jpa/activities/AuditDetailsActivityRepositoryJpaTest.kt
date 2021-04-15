@@ -12,10 +12,9 @@ import java.util.*
 open class AuditDetailsActivityRepositoryJpaTest @Autowired constructor(var userActivityRepository: UserActivityRepositoryJpa) {
 
     companion object {
-        val details = UserActivityJpa.builder()
+        private val details = UserActivityJpa.builder()
                 .id(UUID.randomUUID())
                 .name("name")
-                .description("description")
                 .build()
     }
 

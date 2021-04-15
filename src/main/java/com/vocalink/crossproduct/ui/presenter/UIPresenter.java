@@ -515,7 +515,7 @@ public class UIPresenter implements Presenter {
     return AuditDetailsDto.builder()
         .id(details.getServiceId())
         .operationType(operationType.name())
-        .eventType(eventType.getActivity())
+        .eventType(eventType.name())
         .timestamp(details.getTimestamp())
         .interactionDetails(content)
         .entityId(participant.getId())
@@ -526,7 +526,7 @@ public class UIPresenter implements Presenter {
 
   private EventType getEventByDescription(String activity) {
     return Stream.of(EventType.values())
-        .filter(v -> v.getActivity().equalsIgnoreCase(activity))
+        .filter(v -> v.name().equalsIgnoreCase(activity))
         .findFirst()
         .orElseThrow(() -> new UILayerException("Event type not found for activity: " + activity));
   }

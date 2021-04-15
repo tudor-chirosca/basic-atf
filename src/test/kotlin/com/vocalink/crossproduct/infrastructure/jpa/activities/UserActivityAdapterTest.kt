@@ -24,7 +24,7 @@ open class UserActivityAdapterTest @Autowired constructor(var entityManager: Ent
 
     @BeforeEach
     fun init() {
-        entityManager.persist(UserActivityJpa.builder().id(uuid).name("name").description("description").build())
+        entityManager.persist(UserActivityJpa.builder().id(uuid).name("name").build())
     }
 
     @Test

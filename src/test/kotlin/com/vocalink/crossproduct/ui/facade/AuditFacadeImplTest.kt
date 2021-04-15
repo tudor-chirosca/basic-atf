@@ -83,7 +83,7 @@ class AuditFacadeImplTest {
                 .product(PRODUCT)
                 .userId(USERNAME)
                 .participantId(PARTICIPANT_ID)
-                .eventType(EventType.FILE_SEARCH_ENQUIRY).build()
+                .eventType(EventType.FILE_ENQUIRY).build()
 
         auditFacadeImpl.handleEvent(occurringEvent)
 
@@ -93,7 +93,7 @@ class AuditFacadeImplTest {
     @Test
     fun `should get audit details`() {
         val auditDetails = AuditDetails.builder()
-                .userActivityString("File Enquiry Search")
+                .userActivityString("FILE_ENQUIRY")
                 .requestOrResponseEnum("REQUEST")
                 .serviceId(SERVICE_ID)
                 .participantId(PARTICIPANT_ID)

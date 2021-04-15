@@ -21,7 +21,6 @@ open class AuditDetailsJpaRepositoryJpaTest @Autowired constructor(var auditDeta
 
         private val activity = UserActivityJpa.builder()
                 .id(UUID.randomUUID())
-                .description("desc")
                 .name("name")
                 .build()
 

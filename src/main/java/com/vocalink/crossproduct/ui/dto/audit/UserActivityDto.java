@@ -10,5 +10,4 @@ public class UserActivityDto {
 
   private final UUID id;
   private final String name;
-  private final String description;
 }

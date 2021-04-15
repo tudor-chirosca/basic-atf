@@ -1,12 +1,12 @@
 package com.vocalink.crossproduct.ui.aspects;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class OccurringEvent {
 
   private final String product;
@@ -19,7 +19,15 @@ public class OccurringEvent {
   private final EventType eventType;
   private final OperationType operationType;
 
-  public String getEventType() {
-    return eventType.getActivity();
+  public OccurringEvent(OccurringEvent event, String content, OperationType operationType) {
+    this.product = event.getProduct();
+    this.client = event.getClient();
+    this.userId = event.getUserId();
+    this.participantId = event.getParticipantId();
+    this.requestUrl = event.getRequestUrl();
+    this.correlationId = event.getCorrelationId();
+    this.eventType = event.getEventType();
+    this.content = content;
+    this.operationType = operationType;
   }
 }

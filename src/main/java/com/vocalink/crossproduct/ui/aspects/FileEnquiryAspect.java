@@ -1,19 +1,19 @@
 package com.vocalink.crossproduct.ui.aspects;
 
-import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_DETAILS_ENQUIRY;
-import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_SEARCH_ENQUIRY;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.REQUEST;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
+import static com.vocalink.crossproduct.ui.aspects.Positions.POSITION_NOT_SET;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,63 +35,76 @@ public class FileEnquiryAspect {
   private final AuditFacade auditFacade;
   private final ContentUtils contentUtils;
 
-  @Pointcut("execution(public * com.vocalink.crossproduct.ui.controllers.FilesController.*(..))")
-  public void fileEnquiryOperation() {
-  }
+  @Around(value = "@annotation(auditable)")
+  Object log(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
+    final String client = getClientType(joinPoint, auditable);
+    final String product = getProduct(joinPoint, auditable);
+    final Optional<HttpServletRequest> request = getHttpRequest(joinPoint, auditable);
+    final String jsonString = getContent(joinPoint, auditable);
 
-  @Around(value = "fileEnquiryOperation()")
-  Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-    final ClientType client = (ClientType) joinPoint.getArgs()[0];
-    final String product = (String) joinPoint.getArgs()[1];
-    final Object content = joinPoint.getArgs()[2];
-    final HttpServletRequest request = (HttpServletRequest) joinPoint.getArgs()[3];
+    final EventType eventType = auditable.type();
 
-    EventType eventType = resolveEventType(content);
-    String json = contentUtils.toJsonString(content);
+    final String userId = request.map(r -> r.getHeader(X_USER_ID_HEADER))
+        .orElse(EMPTY);
+    final String participantId = request.map(r -> r.getHeader(X_PARTICIPANT_ID_HEADER))
+        .orElse(EMPTY);
+    final String requestUrl = request.map(r -> r.getRequestURL().toString())
+        .orElse(EMPTY);
+    final String correlationId = MDC.get(mdcKey);
 
-    OccurringEvent event = create(product, client, request, json, eventType, REQUEST);
+    OccurringEvent event = OccurringEvent.builder()
+        .product(product)
+        .client(client)
+        .userId(userId)
+        .participantId(participantId)
+        .requestUrl(requestUrl)
+        .correlationId(correlationId)
+        .content(jsonString)
+        .eventType(eventType)
+        .operationType(REQUEST)
+        .build();
 
     auditFacade.handleEvent(event);
 
     try {
       Object obj = joinPoint.proceed();
 
-      event = create(product, client, request, RESPONSE_SUCCESS, eventType, RESPONSE);
-
-      auditFacade.handleEvent(event);
+      auditFacade.handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
 
       return obj;
     } catch (Throwable throwable) {
-      event = create(product, client, request, RESPONSE_FAILURE, eventType, RESPONSE);
-
-      auditFacade.handleEvent(event);
+      auditFacade.handleEvent(new OccurringEvent(event, RESPONSE_FAILURE, RESPONSE));
 
       throw throwable;
     }
   }
 
-  private OccurringEvent create(String product, ClientType client, HttpServletRequest request,
-      String content, EventType eventType, OperationType operationType) {
-
-    final String userId = request.getHeader(X_USER_ID_HEADER);
-    final String participantId = request.getHeader(X_PARTICIPANT_ID_HEADER);
-    final String correlationId = MDC.get(mdcKey);
-    final String requestUrl = request.getRequestURL().toString();
-
-    return OccurringEvent.builder()
-        .product(product)
-        .client(client.name())
-        .content(content)
-        .eventType(eventType)
-        .operationType(operationType)
-        .userId(userId)
-        .participantId(participantId)
-        .requestUrl(requestUrl)
-        .correlationId(correlationId)
-        .build();
+  private String getContent(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    if (auditable.params().content() != POSITION_NOT_SET) {
+      return contentUtils.toJsonString(joinPoint.getArgs()[auditable.params().content()]);
+    }
+    return EMPTY;
   }
 
-  private EventType resolveEventType(Object content) {
-    return content instanceof String ? FILE_DETAILS_ENQUIRY : FILE_SEARCH_ENQUIRY;
+  private Optional<HttpServletRequest> getHttpRequest(ProceedingJoinPoint joinPoint,
+      Auditable auditable) {
+    if (auditable.params().request() != POSITION_NOT_SET) {
+      return Optional.of((HttpServletRequest) joinPoint.getArgs()[auditable.params().request()]);
+    }
+    return Optional.empty();
+  }
+
+  private String getProduct(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    if (auditable.params().context() != POSITION_NOT_SET) {
+      return (String) joinPoint.getArgs()[auditable.params().context()];
+    }
+    return EMPTY;
+  }
+
+  private String getClientType(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    if (auditable.params().clientType() != POSITION_NOT_SET) {
+      return ((ClientType) joinPoint.getArgs()[auditable.params().clientType()]).name();
+    }
+    return EMPTY;
   }
 }
