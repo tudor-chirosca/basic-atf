@@ -44,15 +44,6 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         const val INVALID_BODY_REQUEST = """{}"""
 
-        const val INVALID_DATE_AND_CYCLE_IDS_BODY_REQUEST = """{
-            "messageDirection" : "sending",
-            "dateFrom": "2020-10-23T01:59:59Z",
-            "dateTo": "2020-10-23T23:59:59Z",
-            "cycleIds": [
-              "20190212004"
-            ]
-        }"""
-
         const val INVALID_DATE_FROM_EARLIER_THAN_DATE_LIMIT_BODY_REQUEST = """{
             "messageDirection" : "sending",
             "dateFrom": "2020-10-23T23:59:59Z"
@@ -62,7 +53,12 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "messageDirection" : "sending",
             "limit": "0"
         }"""
-
+        const val INVALID_SORT_BODY_REQUEST = """{
+            "offset" : 0,
+            "limit" : 20,
+            "messageDirection" : "sending",
+            "sort" : ["-wrong_param"]
+        }"""
         const val INVALID_WILDCARD_IN_MIDDLE_BODY_REQUEST = """{
             "messageDirection" : "sending",
             "id": "BANK*YY"
@@ -318,6 +314,17 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_LIMIT_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
+    }
+
+    @Test
+    fun `should fail with 400 on wrong sorting param`() {
+        mockMvc.perform(post("/enquiry/transactions/searches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_SORT_BODY_REQUEST))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Wrong sorting parameter")))
     }
 
     @Test

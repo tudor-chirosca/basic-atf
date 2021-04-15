@@ -548,6 +548,13 @@ class EntityMapperTest {
     }
 
     @Test
+    fun `should set default date sort to FileEnquirySearchRequest if sort is missing`() {
+        val request = FileEnquirySearchRequest()
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
+    }
+
+    @Test
     fun `should map BatchEnquirySearchCriteria fields`() {
         val request = BatchEnquirySearchRequest()
         request.sort = listOf("sort")
@@ -574,6 +581,13 @@ class EntityMapperTest {
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
+    }
+
+    @Test
+    fun `should set default date sort to BatchEnquirySearchCriteria if sort is missing`() {
+        val request = BatchEnquirySearchRequest()
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
     }
 
     @Test
@@ -634,6 +648,18 @@ class EntityMapperTest {
         assertThat(criteria.valueDate).isEqualTo(request.valueDate)
         assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
         assertThat(criteria.txnTo).isEqualTo(request.txnTo)
+    }
+
+    @Test
+    fun `should set default date sort to TransactionEnquirySearchRequest if sort is missing`() {
+        val request = TransactionEnquirySearchRequest(
+                0, 0, null, null, null, null,
+                null, null, null, null,
+                null, null, null, null, null,
+                null, null, null, null
+        )
+        val entity = MAPPER.toEntity(request)
+        assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
     }
 
     @Test

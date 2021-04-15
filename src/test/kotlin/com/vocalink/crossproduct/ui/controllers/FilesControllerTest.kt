@@ -9,6 +9,12 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
+import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ofPattern
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,12 +30,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.io.ByteArrayInputStream
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
 
 @WebMvcTest(FilesController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -252,6 +252,19 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+    }
+
+    @Test
+    fun `should fail with 400 on wrong sorting param`() {
+        mockMvc.perform(get("/enquiry/files")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("limit", "20")
+                .param("offset", "0")
+                .param("sort", "-wrong_param"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Wrong sorting parameter")))
     }
 
     @Test

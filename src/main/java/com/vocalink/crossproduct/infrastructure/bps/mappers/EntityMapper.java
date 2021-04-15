@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.mappers;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
@@ -257,8 +258,14 @@ public interface EntityMapper {
     return InstructionStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
   }
 
+  @Mappings({
+      @Mapping(source = "sort", target = "sort", qualifiedByName = "setDefaultDateSort")
+  })
   BatchEnquirySearchCriteria toEntity(BatchEnquirySearchRequest request);
 
+  @Mappings({
+      @Mapping(source = "sort", target = "sort", qualifiedByName = "setDefaultDateSort")
+  })
   FileEnquirySearchCriteria toEntity(FileEnquirySearchRequest request);
 
   AlertSearchCriteria toEntity(AlertSearchRequest request);
@@ -283,6 +290,9 @@ public interface EntityMapper {
   })
   SettlementCycleSchedule toEntity(BPSSettlementCycleSchedule cycleSchedule);
 
+  @Mappings({
+      @Mapping(source = "sort", target = "sort", qualifiedByName = "setDefaultDateSort")
+  })
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 
   @Mappings({
@@ -493,4 +503,12 @@ public interface EntityMapper {
       @Mapping(target = "userId", source = "username")
   })
   UserDetails toEntity(AuditDetails auditDetails);
+
+  @Named("setDefaultDateSort")
+  default List<String> setDefaultDateSort(List<String> sort) {
+    if (sort == null || sort.isEmpty()) {
+      return singletonList("-createdAt");
+    }
+    return sort;
+  }
 }

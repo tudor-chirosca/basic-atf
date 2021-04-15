@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
+import com.vocalink.crossproduct.ui.validations.ValidSort;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,8 @@ import lombok.ToString;
 @Getter
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"NAK"})
+@ValidSort(sort = "sort", sortingKeys =
+    {"name", "createdAt", "senderBic", "messageType", "nrOfBatches", "status"})
 @ToString
 public class FileEnquirySearchRequest {
 
