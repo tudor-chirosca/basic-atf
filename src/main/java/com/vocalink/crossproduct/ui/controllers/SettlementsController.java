@@ -2,7 +2,18 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import static java.util.Objects.isNull;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vocalink.crossproduct.infrastructure.exception.InvalidRequestParameterException;
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.SettlementsApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
@@ -13,13 +24,11 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+
+import static com.vocalink.crossproduct.ui.aspects.EventType.SETTL_DETAILS;
+import static com.vocalink.crossproduct.ui.aspects.EventType.SETTL_ENQUIRY;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,32 +36,36 @@ public class SettlementsController implements SettlementsApi {
 
   private final SettlementsFacade settlementsFacade;
 
+  @Auditable(type = SETTL_DETAILS, params = @Positions(clientType = 0, context = 1, content = 4, request = 5))
   @GetMapping(value = "/enquiry/settlements/{cycleId}/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ParticipantSettlementDetailsDto> getSettlementCycleDetails(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final @PathVariable String cycleId,
       final @PathVariable String participantId,
-      final ParticipantSettlementRequest request) {
+      final ParticipantSettlementRequest settlementRequest,
+      final HttpServletRequest request) {
 
     ParticipantSettlementDetailsDto settlementDetails = settlementsFacade
-        .getSettlementDetails(context, clientType, request, cycleId, participantId);
+        .getSettlementDetails(context, clientType, settlementRequest, cycleId, participantId);
 
     return ResponseEntity.ok().body(settlementDetails);
   }
 
+  @Auditable(type = SETTL_ENQUIRY, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/settlements", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<ParticipantSettlementCycleDto>> getSettlements(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final SettlementEnquiryRequest request) {
+      final SettlementEnquiryRequest enquiryRequest,
+      final HttpServletRequest request) {
 
-    if (isNull(request.getParticipants()) || request.getParticipants().isEmpty()) {
+    if (isNull(enquiryRequest.getParticipants()) || enquiryRequest.getParticipants().isEmpty()) {
       throw new InvalidRequestParameterException("participants is missing in request params");
     }
 
     PageDto<ParticipantSettlementCycleDto> settlements =
-        settlementsFacade.getSettlements(context, clientType, request);
+        settlementsFacade.getSettlements(context, clientType, enquiryRequest);
 
     return ResponseEntity.ok().body(settlements);
   }

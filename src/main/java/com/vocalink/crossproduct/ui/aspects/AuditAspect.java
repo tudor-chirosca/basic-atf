@@ -9,6 +9,8 @@ import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,9 +22,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
+@Getter
 @Component
 @RequiredArgsConstructor
-public class FileEnquiryAspect {
+public class AuditAspect {
 
   public static final String RESPONSE_SUCCESS = "OK";
   public static final String RESPONSE_FAILURE = "NOK";
@@ -50,7 +53,7 @@ public class FileEnquiryAspect {
         .orElse(EMPTY);
     final String requestUrl = request.map(r -> r.getRequestURL().toString())
         .orElse(EMPTY);
-    final String correlationId = MDC.get(mdcKey);
+    final String correlationId = MDC.get(getMdcKey());
 
     OccurringEvent event = OccurringEvent.builder()
         .product(product)
@@ -64,29 +67,29 @@ public class FileEnquiryAspect {
         .operationType(REQUEST)
         .build();
 
-    auditFacade.handleEvent(event);
+    getAuditFacade().handleEvent(event);
 
     try {
       Object obj = joinPoint.proceed();
 
-      auditFacade.handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
+      getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
 
       return obj;
     } catch (Throwable throwable) {
-      auditFacade.handleEvent(new OccurringEvent(event, RESPONSE_FAILURE, RESPONSE));
+      getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_FAILURE, RESPONSE));
 
       throw throwable;
     }
   }
 
-  private String getContent(ProceedingJoinPoint joinPoint, Auditable auditable) {
+  protected String getContent(ProceedingJoinPoint joinPoint, Auditable auditable) {
     if (auditable.params().content() != POSITION_NOT_SET) {
-      return contentUtils.toJsonString(joinPoint.getArgs()[auditable.params().content()]);
+      return getContentUtils().toJsonString(joinPoint.getArgs()[auditable.params().content()]);
     }
     return EMPTY;
   }
 
-  private Optional<HttpServletRequest> getHttpRequest(ProceedingJoinPoint joinPoint,
+  protected Optional<HttpServletRequest> getHttpRequest(ProceedingJoinPoint joinPoint,
       Auditable auditable) {
     if (auditable.params().request() != POSITION_NOT_SET) {
       return Optional.of((HttpServletRequest) joinPoint.getArgs()[auditable.params().request()]);
@@ -94,14 +97,14 @@ public class FileEnquiryAspect {
     return Optional.empty();
   }
 
-  private String getProduct(ProceedingJoinPoint joinPoint, Auditable auditable) {
+  protected String getProduct(ProceedingJoinPoint joinPoint, Auditable auditable) {
     if (auditable.params().context() != POSITION_NOT_SET) {
       return (String) joinPoint.getArgs()[auditable.params().context()];
     }
     return EMPTY;
   }
 
-  private String getClientType(ProceedingJoinPoint joinPoint, Auditable auditable) {
+  protected String getClientType(ProceedingJoinPoint joinPoint, Auditable auditable) {
     if (auditable.params().clientType() != POSITION_NOT_SET) {
       return ((ClientType) joinPoint.getArgs()[auditable.params().clientType()]).name();
     }

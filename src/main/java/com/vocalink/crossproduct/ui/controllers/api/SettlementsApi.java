@@ -1,5 +1,11 @@
 package com.vocalink.crossproduct.ui.controllers.api;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.settlement.LatestSettlementCyclesDto;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementCycleDto;
@@ -8,12 +14,10 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import javax.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 
 @Validated
 public interface SettlementsApi {
@@ -29,15 +33,16 @@ public interface SettlementsApi {
       final String context,
       final String cycleId,
       final String participantId,
-      final ParticipantSettlementRequest request);
+      final ParticipantSettlementRequest settlementRequest,
+      final HttpServletRequest request);
 
   @ApiOperation("Searchable list fo settlement cycles in which a given participant has instructions")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Settlements fetched successfully", response = PageDto.class),
-      @ApiResponse(code = 400, message = "Some of the request params are invalid")
+          @ApiResponse(code = 200, message = "Settlements fetched successfully", response = PageDto.class),
+          @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<ParticipantSettlementCycleDto>> getSettlements(
-      ClientType clientType, String context, @Valid final SettlementEnquiryRequest request);
+          ClientType clientType, String context, @Valid final SettlementEnquiryRequest enquiryRequest, HttpServletRequest request);
 
   @ApiOperation("Fetch latest settlement cycles")
   @ApiResponses({
