@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.ui.aspects;
 
+import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,10 +12,10 @@ public enum EventType {
 
   FILE_ENQUIRY(FileEnquirySearchRequest.class),
   FILE_DETAILS(String.class),
-  BATCH_ENQUIRY(Object.class),
-  BATCH_DETAILS(Object.class),
-  TRANSACTION_ENQUIRY(Object.class),
-  TRANSACTION_DETAILS(Object.class),
+  BATCH_ENQUIRY(BatchEnquirySearchRequest.class),
+  BATCH_DETAILS(String.class),
+  TRANSACTION_ENQUIRY(TransactionEnquirySearchRequest.class),
+  TRANSACTION_DETAILS(String.class),
   SETTL_ENQUIRY(Object.class),
   SETTL_DETAILS(Object.class),
   AUDIT_LOG_ENQUIRY(Object.class),

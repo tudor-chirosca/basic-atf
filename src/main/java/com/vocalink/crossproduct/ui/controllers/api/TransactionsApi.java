@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,9 +22,10 @@ public interface TransactionsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<TransactionDto>> getTransactions(
-      final ClientType clientType,
-      final String context,
-      @Valid final TransactionEnquirySearchRequest request
+      ClientType clientType,
+      String context,
+      @Valid TransactionEnquirySearchRequest searchRequest,
+      HttpServletRequest request
   );
 
   @ApiOperation("Fetch Transaction Details")
@@ -32,8 +34,9 @@ public interface TransactionsApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<TransactionDetailsDto> getTransactionDetails(
-      final ClientType clientType,
-      final String context,
-      final String transactionId);
+      ClientType clientType,
+      String context,
+      String transactionId,
+      HttpServletRequest request);
 
 }

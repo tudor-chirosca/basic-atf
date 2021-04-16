@@ -1,5 +1,10 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.BATCH_DETAILS;
+import static com.vocalink.crossproduct.ui.aspects.EventType.BATCH_ENQUIRY;
+
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.BatchesApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
@@ -7,6 +12,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +27,29 @@ public class BatchesController implements BatchesApi {
 
   private final BatchesFacade batchesFacade;
 
+  @Auditable(type = BATCH_ENQUIRY, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/batches", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<BatchDto>> getBatches(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final BatchEnquirySearchRequest request) {
+      final BatchEnquirySearchRequest searchRequest,
+      final HttpServletRequest request) {
 
-    final PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, request);
+    final PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, searchRequest);
 
     return ResponseEntity.ok().body(batchesDto);
   }
 
+  @Auditable(type = BATCH_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/batches/{batchId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<BatchDetailsDto> getBatchDetails(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final @PathVariable String batchId) {
+      final @PathVariable String batchId,
+      final HttpServletRequest request) {
 
-    final BatchDetailsDto batchDetailsDto = batchesFacade.getDetailsById(context, clientType, batchId);
+    final BatchDetailsDto batchDetailsDto = batchesFacade
+        .getDetailsById(context, clientType, batchId);
 
     return ResponseEntity.ok().body(batchDetailsDto);
   }
