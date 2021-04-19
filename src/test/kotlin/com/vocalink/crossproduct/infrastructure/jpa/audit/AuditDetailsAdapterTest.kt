@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.Event
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -88,24 +89,33 @@ open class AuditDetailsAdapterTest {
     }
 
     @Test
-    fun `should get audit details by service id`() {
-        val id = 1L
-        val detailsJpa = AuditDetailsJpa.builder().serviceId(id).build()
+    fun `should get audit details by id`() {
+        val id = UUID.randomUUID()
+        val serviceId = 1L
+        val detailsJpa = AuditDetailsJpa.builder().id(id).serviceId(serviceId).build()
 
-        `when`(repositoryJpa.findByServiceId(id)).thenReturn(Optional.of(detailsJpa))
+        `when`(repositoryJpa.findById(id)).thenReturn(Optional.of(detailsJpa))
 
         val auditDetails = adapter.getAuditDetailsById(id.toString())
 
-        assertThat(id).isEqualTo(auditDetails.serviceId)
+        assertThat(id).isEqualTo(auditDetails.id)
     }
 
     @Test
     fun `should throw exception if no entity found by id`() {
-        val id = 1L
+        val id = UUID.randomUUID().toString()
 
-        `when`(repositoryJpa.findByServiceId(any())).thenReturn(Optional.empty())
+        `when`(repositoryJpa.findById(any())).thenReturn(Optional.empty())
 
         assertThatExceptionOfType(EntityNotFoundException::class.java)
+                .isThrownBy { adapter.getAuditDetailsById(id) }
+    }
+
+    @Test
+    fun `should throw exception if input id is invalid UUID`() {
+        val id = 1L
+
+        assertThatExceptionOfType(InfrastructureException::class.java)
                 .isThrownBy { adapter.getAuditDetailsById(id.toString()) }
     }
 }

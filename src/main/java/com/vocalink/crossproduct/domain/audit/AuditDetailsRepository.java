@@ -9,7 +9,7 @@ public interface AuditDetailsRepository extends CrossproductRepository {
 
   AuditDetails getAuditDetailsById(String id);
 
-  List<AuditDetails> getAuditDetailsByParameters(AuditRequest parameters);
+  List<AuditDetails> getAuditDetailsByParameters(AuditSearchRequest parameters);
 
   void logOperation(Event event, UserDetails userDetails);
 

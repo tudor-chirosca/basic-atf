@@ -1,7 +1,13 @@
 package com.vocalink.crossproduct.infrastructure.exception;
 
 public class InfrastructureException extends RuntimeException {
+
   private final String location;
+
+  public InfrastructureException(String message) {
+    super(message);
+    this.location = null;
+  }
 
   public InfrastructureException(Throwable cause, String location) {
     super(cause);

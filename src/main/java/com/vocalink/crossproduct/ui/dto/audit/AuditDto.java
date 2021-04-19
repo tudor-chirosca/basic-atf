@@ -19,10 +19,14 @@ public class AuditDto {
   private final UUID id;
   @JsonIgnore
   private final UUID activityId;
-  private final Long service;
+  private String serviceId;
   private final ZonedDateTime createdAt;
   @Setter
   private String eventType;
-  private final String data;
+  private final String responseContent;
   private final UserDto user;
+
+  public void prefixServiceId(String prefix) {
+    this.serviceId = prefix + serviceId;
+  }
 }

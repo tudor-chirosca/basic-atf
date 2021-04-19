@@ -1,21 +1,19 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
-import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository;
-import com.vocalink.crossproduct.domain.audit.AuditRequest;
+import com.vocalink.crossproduct.domain.audit.AuditSearchRequest;
 import com.vocalink.crossproduct.domain.audit.Event;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,11 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -35,13 +30,9 @@ import org.springframework.stereotype.Component;
 public class AuditDetailsAdapter implements AuditDetailsRepository {
 
   public static final String ZONE_ID_UTC = "UTC";
-  public static final String PARTICIPANT_ID_AUDIT_DETAILS = "participantId";
-  public static final String TIMESTAMP_AUDIT_DETAILS = "timestamp";
-  public static final String ACTIVITY_ID_AUDIT_DETAILS = "activityId";
-  public static final String USERNAME_AUDIT_DETAILS = "username";
-  public static final String NAME_USER_ACTIVITY = "name";
   public static final String QUERY_BY_NAME = "select activity from UserActivityJpa as activity where activity.name = :eventName";
   public static final String EVENT_NAME_USER_ACTIVITY = "eventName";
+  public static final String OPERATION_TYPE_REQUEST = "REQUEST";
 
   @PersistenceContext
   private final EntityManager entityManager;
@@ -57,53 +48,31 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
 
   @Override
   public AuditDetails getAuditDetailsById(String id) {
-    final AuditDetailsJpa detailsJpa = auditDetailsRepository.findByServiceId(parseLong(id))
-        .orElseThrow(() -> new EntityNotFoundException("No audit details found by id: " + id));
+    try {
+      final UUID uuid = UUID.fromString(id);
+      final AuditDetailsJpa detailsJpa = auditDetailsRepository.findById(uuid)
+          .orElseThrow(() -> new EntityNotFoundException("No audit details found by id: " + id));
 
-    return MAPPER.toEntity(detailsJpa);
+      return MAPPER.toEntity(detailsJpa);
+    } catch (IllegalArgumentException e) {
+      throw new InfrastructureException("Invalid audit id: " + id, e, null);
+    }
   }
 
   @Override
-  public List<AuditDetails> getAuditDetailsByParameters(AuditRequest parameters) {
-    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-    CriteriaQuery<AuditDetailsJpa> query = cb.createQuery(AuditDetailsJpa.class);
-    Root<AuditDetailsJpa> details = query.from(AuditDetailsJpa.class);
-
-    List<Predicate> predicates = new ArrayList<>();
-
-    if (parameters.getParticipant() != null) {
-      predicates
-          .add(cb.equal(details.get(PARTICIPANT_ID_AUDIT_DETAILS), parameters.getParticipant()));
-    }
-
-    if (parameters.getUser() != null) {
-      predicates.add(cb.equal(details.get(USERNAME_AUDIT_DETAILS), parameters.getUser()));
-    }
-
-    if (parameters.getDateFrom() != null) {
-      final ZonedDateTime fromTime = ZonedDateTime
-          .of(parameters.getDateFrom(), LocalTime.MIN, ZoneId.of(ZONE_ID_UTC));
-      predicates.add(cb.greaterThan(details.get(TIMESTAMP_AUDIT_DETAILS), fromTime));
-    }
-
-    if (parameters.getDateTo() != null) {
-      final ZonedDateTime toTime = ZonedDateTime
-          .of(parameters.getDateTo(), LocalTime.MAX, ZoneId.of(ZONE_ID_UTC));
-      predicates.add(cb.greaterThan(details.get(TIMESTAMP_AUDIT_DETAILS), toTime));
-    }
-
-    if (parameters.getEvent() != null) {
-      predicates.add(cb.equal(details.get(ACTIVITY_ID_AUDIT_DETAILS).get(NAME_USER_ACTIVITY),
-          parameters.getEvent()));
-    }
-
-    query.select(details)
-        .where(cb.or(predicates.toArray(new Predicate[predicates.size()])));
-
-    return entityManager.createQuery(query)
-        .getResultList()
+  public List<AuditDetails> getAuditDetailsByParameters(AuditSearchRequest params) {
+    final Sort sortBy = AuditDetailsJpa.getSortBy(params.getSort());
+    return auditDetailsRepository
+        .getAllByParameters(
+            params.getDateFrom(),
+            params.getDateTo(),
+            params.getParticipant(),
+            params.getUser(),
+            params.getEvents(),
+            new OffsetBasedPageRequest(params.getLimit(), params.getOffset(), sortBy))
         .stream()
         .map(MAPPER::toEntity)
+        .filter(e -> OPERATION_TYPE_REQUEST.equals(e.getRequestOrResponseEnum()))
         .collect(toList());
   }
 

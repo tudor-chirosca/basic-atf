@@ -69,11 +69,11 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
-import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
@@ -106,8 +106,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UIPresenter implements Presenter {
 
+  public static final String HYPHEN_DELIMITER = "-";
+
   @Value("${app.ui.config.default.message.reference.name}")
   private String defaultMessageReferenceName;
+
+  @Value("${app.audit.service-id.prefix}")
+  private String serviceIdPrefix;
 
   private final ContentUtils contentUtils;
 
@@ -494,6 +499,7 @@ public class UIPresenter implements Presenter {
                 .map(UserActivityDto::getName)
                 .findFirst()
                 .orElse(null)))
+        .peek(d -> d.prefixServiceId(serviceIdPrefix + HYPHEN_DELIMITER))
         .collect(toList());
 
     return new Page<>(dtoDetails.size(), dtoDetails);
@@ -515,7 +521,7 @@ public class UIPresenter implements Presenter {
         .toObject(details.getContents(), eventType, operationType);
 
     return AuditDetailsDto.builder()
-        .id(details.getServiceId())
+        .id(details.getServiceId().toString())
         .operationType(operationType.name())
         .eventType(eventType.name())
         .timestamp(details.getTimestamp())

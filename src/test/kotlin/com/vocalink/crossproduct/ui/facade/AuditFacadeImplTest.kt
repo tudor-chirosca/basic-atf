@@ -113,7 +113,7 @@ class AuditFacadeImplTest {
 
         val auditDetailsDto = auditFacadeImpl.getAuditDetails(PRODUCT, CLIENT_TYPE, SERVICE_ID.toString())
 
-        assertThat(SERVICE_ID).isEqualTo(auditDetailsDto.id)
+        assertThat(SERVICE_ID.toString()).isEqualTo(auditDetailsDto.id)
         assertThat(PARTICIPANT_ID).isEqualTo(auditDetailsDto.entityId)
     }
 }

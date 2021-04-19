@@ -19,5 +19,5 @@ public interface AuditFacade {
 
   void handleEvent(OccurringEvent event);
 
-  AuditDetailsDto getAuditDetails(String context, ClientType clientType, String serviceId);
+  AuditDetailsDto getAuditDetails(String context, ClientType clientType, String id);
 }

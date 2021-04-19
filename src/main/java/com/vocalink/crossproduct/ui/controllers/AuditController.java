@@ -58,13 +58,13 @@ public class AuditController implements AuditApi {
     return ResponseEntity.ok(auditDetailsDto);
   }
 
-  @GetMapping(value = "/audits/{serviceId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/audits/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AuditDetailsDto> getAuditDetails(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
       @RequestHeader final String context,
-      @PathVariable final String serviceId) {
+      @PathVariable final String id) {
 
-    AuditDetailsDto detailsDto = auditFacade.getAuditDetails(context, clientType, serviceId);
+    AuditDetailsDto detailsDto = auditFacade.getAuditDetails(context, clientType, id);
 
     return ResponseEntity.ok(detailsDto);
   }

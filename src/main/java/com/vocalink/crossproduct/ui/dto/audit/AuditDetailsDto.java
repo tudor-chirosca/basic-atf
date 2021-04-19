@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuditDetailsDto {
 
-  private final Long id;
+  private final String id;
   private final String eventType;
   private final String operationType;
   private final ZonedDateTime timestamp;

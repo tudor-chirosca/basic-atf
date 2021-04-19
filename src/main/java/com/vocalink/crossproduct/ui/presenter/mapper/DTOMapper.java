@@ -63,11 +63,11 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
-import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
+import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionTotalDto;
 import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
@@ -579,11 +579,8 @@ public interface DTOMapper {
   ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays, String timeZone);
 
   @Mappings({
-      @Mapping(target = "id", source = "id"),
-      @Mapping(target = "service", source = "serviceId"),
       @Mapping(target = "createdAt", source = "timestamp"),
-      @Mapping(target = "eventType", ignore = true),
-      @Mapping(target = "data", ignore = true),
+      @Mapping(target = "eventType", source = "userActivityString"),
       @Mapping(target = "user.name", source = "username"),
       @Mapping(target = "user.id", source = "participantId"),
       @Mapping(target = "user.participantName",

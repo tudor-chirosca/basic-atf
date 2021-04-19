@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
-import com.vocalink.crossproduct.domain.audit.AuditRequest;
+import com.vocalink.crossproduct.domain.audit.AuditSearchRequest;
 import com.vocalink.crossproduct.domain.audit.Event;
 import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
@@ -53,10 +53,10 @@ public class AuditFacadeImpl implements AuditFacade {
       AuditRequestParams parameters) {
     log.info("Fetching audit logs by {}", parameters);
 
-    final AuditRequest auditRequest = MAPPER.toEntity(parameters);
+    final AuditSearchRequest auditSearchRequest = MAPPER.toEntity(parameters);
 
     List<AuditDetails> details = repositoryFactory.getAuditDetailsRepository(product)
-        .getAuditDetailsByParameters(auditRequest);
+        .getAuditDetailsByParameters(auditSearchRequest);
 
     final List<UUID> activityIds = details.stream().map(AuditDetails::getActivityId)
         .collect(toList());
@@ -97,9 +97,9 @@ public class AuditFacadeImpl implements AuditFacade {
   }
 
   @Override
-  public AuditDetailsDto getAuditDetails(String product, ClientType clientType, String serviceId) {
+  public AuditDetailsDto getAuditDetails(String product, ClientType clientType, String id) {
     final AuditDetails details = repositoryFactory.getAuditDetailsRepository(product)
-        .getAuditDetailsById(serviceId);
+        .getAuditDetailsById(id);
 
     final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(details.getParticipantId());

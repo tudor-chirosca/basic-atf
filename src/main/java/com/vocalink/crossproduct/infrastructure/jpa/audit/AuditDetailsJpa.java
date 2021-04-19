@@ -4,6 +4,9 @@ import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.springframework.data.domain.Sort;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -28,9 +33,22 @@ import org.hibernate.annotations.Type;
 public class AuditDetailsJpa implements Serializable {
 
   private static final String serialVersionUID = "275a3d8b-5a8a-4bac-9097-e7f9d495374f";
+  private static final String DEFAULT_SORT_PARAMETER = "timestamp";
+  private static final String ASCENDING_SIGN = "+";
+  private static final String DESCENDING_SING = "-";
+
+  @Getter(AccessLevel.PRIVATE)
+  private final static Map<String, String> SORT_BINDINGS = new HashMap<>();
+
+  static {
+    SORT_BINDINGS.put("createdAt", "timestamp");
+    SORT_BINDINGS.put("service", "serviceId");
+    SORT_BINDINGS.put("eventType", "userActivityString");
+    SORT_BINDINGS.put("user", "username");
+  }
 
   @Id
-  @Type(type="uuid-char")
+  @Type(type = "uuid-char")
   @Column(name = "id", updatable = false, nullable = false)
   private UUID id;
   @ManyToOne
@@ -76,5 +94,24 @@ public class AuditDetailsJpa implements Serializable {
   @PrePersist
   public void prePersist() {
     this.timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+  }
+
+  public static Sort getSortBy(List<String> sort) {
+    if (sort == null || sort.isEmpty()) {
+      return Sort.by(DEFAULT_SORT_PARAMETER).descending();
+    }
+
+    final String sortType = sort.stream().findFirst().orElse(DEFAULT_SORT_PARAMETER);
+
+    if (!sortType.startsWith(ASCENDING_SIGN) && !sortType.startsWith(DESCENDING_SING)) {
+      return Sort.by(SORT_BINDINGS.get(sortType)).ascending();
+    }
+
+    final String sign = sortType.substring(0, 1);
+    final String sortParam = sortType.replace(sign, "");
+
+    final String param = SORT_BINDINGS.get(sortParam);
+
+    return Sort.by(param).descending();
   }
 }

@@ -31,4 +31,5 @@ public class AuditDetails {
   private final String firstName;
   private final String lastName;
   private final String participantId;
+  private final String responseContent;
 }
