@@ -46,9 +46,9 @@ public interface ApprovalApi {
   ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(final ClientType clientType, final String context,
       @Valid final ApprovalSearchRequest request);
 
-  @ApiOperation("Request Approval")
+  @ApiOperation("Create Approval request")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Request approval successfully", response = ApprovalConfirmationResponse.class),
+      @ApiResponse(code = 200, message = "Create approval Request successfully", response = ApprovalConfirmationResponse.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<ApprovalDetailsDto> requestApproval(
@@ -71,5 +71,4 @@ public interface ApprovalApi {
   })
   ResponseEntity<List<ApprovalRequestType>> findApprovalRequestTypes(
       final ClientType clientType, final String context);
-
 }

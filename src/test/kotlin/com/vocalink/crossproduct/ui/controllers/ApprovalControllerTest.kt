@@ -87,6 +87,33 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
            "notes" : "notes"
         }"""
 
+        const val INVALID_CREATE_APPROVAL_REQUEST_BODY_BIGGER_THAN_99_BILLIONS = """ {
+           "requestType" : "BATCH_CANCELLATION",
+           "requestedChange" : {
+                "debitCapLimit": 99000000001,
+                "name": "some_new_name"
+              },
+           "notes" : "notes"
+        }"""
+
+        const val INVALID_CREATE_APPROVAL_REQUEST_BODY_0_VALUE = """ {
+           "requestType" : "BATCH_CANCELLATION",
+           "requestedChange" : {
+                "debitCapLimit": 0,
+                "name": "some_new_name"
+              },
+           "notes" : "notes"
+        }"""
+
+        const val INVALID_CREATE_APPROVAL_REQUEST_BODY_DECIMAL_VALUE = """ {
+           "requestType" : "BATCH_CANCELLATION",
+           "requestedChange" : {
+                "debitCapLimit": 100.99,
+                "name": "some_new_name"
+              },
+           "notes" : "notes"
+        }"""
+
         const val INVALID_CREATE_APPROVAL_REQUEST_BODY = """ {
            "requestType" : "BATCH_CANCELLATION",
            "requestedChange" : {
@@ -375,6 +402,45 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("sort", "-wrong_param"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Wrong sorting parameter")))
+    }
+
+    @Test
+    fun `should fail with 400 on debitCapLimit bigger than 99 billions`() {
+        mockMvc.perform(
+                post("/approvals")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_CREATE_APPROVAL_REQUEST_BODY_BIGGER_THAN_99_BILLIONS)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Please enter a value between 1 and 99 billion")))
+    }
+
+    @Test
+    fun `should fail with 400 on debitCapLimit 0 value`() {
+        mockMvc.perform(
+                post("/approvals")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_CREATE_APPROVAL_REQUEST_BODY_0_VALUE)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Please enter a value between 1 and 99 billion")))
+    }
+
+    @Test
+    fun `should fail with 400 on debitCapLimit decimal value`() {
+        mockMvc.perform(
+                post("/approvals")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_CREATE_APPROVAL_REQUEST_BODY_DECIMAL_VALUE)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Inserted number should not be Decimal")))
     }
 
     @Test
