@@ -15,11 +15,12 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
-import java.util.List;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -35,19 +37,22 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class BPSParticipantRepository implements ParticipantRepository {
 
+  private static final String OFFSET = "offset";
+  private static final String PAGE_SIZE = "pageSize";
+
   private final BPSProperties bpsProperties;
   private final BPSRetryWebClientConfig retryWebClientConfig;
   private final WebClient webClient;
 
   @Override
-  public List<Participant> findByConnectingPartyAndType(String connectingParty, String participantType) {
+  public Page<Participant> findByConnectingPartyAndType(String connectingParty, String participantType) {
     final BPSParticipantsSearchRequest bpsRequest = BPSMAPPER.toBps(connectingParty, participantType);
     return findParticipantsWith(bpsRequest);
   }
 
   @Override
   @Cacheable(value = "participantCache", key = "#root.method.name")
-  public List<Participant> findAll() {
+  public Page<Participant> findAll() {
     return findParticipantsWith(new BPSParticipantsSearchRequest());
   }
 
@@ -75,7 +80,7 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSManagedParticipantsSearchRequest.class))
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSParticipant>>() {})
+        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSManagedParticipant>>() {})
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(p -> MAPPER.toEntity(p, Participant.class))
@@ -97,17 +102,21 @@ public class BPSParticipantRepository implements ParticipantRepository {
         .block();
   }
 
-  private List<Participant> findParticipantsWith(final BPSParticipantsSearchRequest request) {
+  private Page<Participant> findParticipantsWith(final BPSParticipantsSearchRequest request) {
+    final URI uri = UriComponentsBuilder.fromUri(resolve(PARTICIPANTS_PATH, bpsProperties))
+        .queryParam(OFFSET, 0)
+        .queryParam(PAGE_SIZE, Integer.MAX_VALUE)
+        .build().toUri();
     return webClient.post()
-        .uri(resolve(PARTICIPANTS_PATH, bpsProperties))
+        .uri(uri)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSParticipantsSearchRequest.class))
         .retrieve()
-        .bodyToFlux(BPSParticipant.class)
+        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSParticipant>>() {
+        })
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .map(MAPPER::toEntity)
-        .collectList()
+        .map(f -> MAPPER.toEntity(f, Participant.class))
         .block();
   }
 

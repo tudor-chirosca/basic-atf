@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes
 import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.io.IOData
@@ -112,7 +113,7 @@ class InputOutputFacadeImplTest {
                 "2.00", listOf(participantIOData))
 
         `when`(participantRepository.findAll())
-                .thenReturn(listOf(participant))
+                .thenReturn(Page(1, listOf(participant)))
         `when`(participantIODataRepository.findAll())
                 .thenReturn(ioDashboard)
         `when`(presenterFactory.getPresenter(ClientType.UI))

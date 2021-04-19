@@ -44,7 +44,8 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
     final Approval approval = repositoryFactory.getApprovalRepository(product).findByJobId(id);
 
-    final List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+        .findAll().getItems();
 
     return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval, participants);
   }
@@ -60,7 +61,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
         .findPaginated(request);
 
     final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
-        .findAll();
+        .findAll().getItems();
 
     return presenterFactory.getPresenter(clientType).presentApproval(approvals, participants);
   }
@@ -76,7 +77,8 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
     final Approval approval = repositoryFactory.getApprovalRepository(product)
         .requestApproval(request);
 
-    final List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+        .findAll().getItems();
 
     return presenterFactory.getPresenter(clientType).presentApprovalDetails(approval, participants);
   }

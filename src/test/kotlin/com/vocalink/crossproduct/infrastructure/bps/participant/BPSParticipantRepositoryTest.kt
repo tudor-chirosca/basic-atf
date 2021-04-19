@@ -2,9 +2,11 @@ package com.vocalink.crossproduct.infrastructure.bps.participant
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -49,7 +51,9 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         """
 
         const val VALID_PARTICIPANTS_RESPONSE: String = """
-        [{
+        {
+            "data":
+            [{
             "schemeCode": "P27-SEK",
             "schemeParticipantIdentifier": "NDEASESSXXX",
             "countryCode": "SWE",
@@ -61,7 +65,8 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "effectiveTillDate": null,
             "participantName": "Nordea",
             "rcvngParticipantConnectionId": "NA",
-            "participantConnectionId": "NA"
+            "participantConnectionId": "NA",
+            "partyExternalIdentifier": "99999999"
         },
         {
             "schemeCode": "P27-SEK",
@@ -75,8 +80,15 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "effectiveTillDate": "2019-12-22T14:09:05Z",
             "participantName": "Svenska Handelsbanken",
             "rcvngParticipantConnectionId": "NDEASESSXXX",
-            "participantConnectionId": "NDEASESSXXX"
-        }]
+            "participantConnectionId": "NDEASESSXXX",
+            "partyExternalIdentifier": "77777777"
+        }],
+        "summary": {
+            "offset": 0,
+            "pageSize": 999,
+            "totalCount": 23
+        }
+    } 
         """
 
         const val VALID_PARTICIPANTS_BY_ID_RESPONSE: String = """
@@ -92,7 +104,8 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "effectiveTillDate": null,
             "participantName": "Nordea",
             "rcvngParticipantConnectionId": "NA",
-            "participantConnectionId": "NA"
+            "participantConnectionId": "NA",
+            "partyExternalIdentifier": "77777777"
         }
         """
 
@@ -128,7 +141,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
                     "participantName": "Avanza Bank",
                     "rcvngParticipantConnectionId": "NA",
                     "participantConnectionId": "NA",
-                    "organizationId": "894819924"
+                    "partyExternalIdentifier": "894819924"
                 },
                 {
                     "schemeCode": "P27-SEK",
@@ -143,7 +156,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
                     "participantName": "Nordea",
                     "rcvngParticipantConnectionId": "NA",
                     "participantConnectionId": "NA",
-                    "organizationId": "77777777",
+                    "partyExternalIdentifier": "77777777",
                     "tpspName": "Forex Bank",
                     "tpspId": "940404004"
                 }
@@ -186,54 +199,64 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
 
     @Test
     fun `should return 200 and all participants with success`() {
+        val maxInteger = Integer.MAX_VALUE
         mockServer.stubFor(
-                post(urlEqualTo("/participants/P27-SEK/readAll"))
+                post(urlPathEqualTo("/participants/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_ALL_PARTICIPANTS_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("$maxInteger"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_PARTICIPANTS_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_ALL_PARTICIPANTS_REQUEST)))
+                        )
 
         val result = participantRepository.findAll()
 
-        assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].bic).isEqualTo("NDEASESSXXX")
-        assertThat(result[0].id).isEqualTo("NDEASESSXXX")
-        assertThat(result[0].name).isEqualTo("Nordea")
-        assertThat(result[0].status).isEqualTo(ParticipantStatus.ACTIVE)
-        assertThat(result[0].suspendedTime).isNull()
+        assertThat(result.items.size).isEqualTo(2)
+        val items = result.items
+        assertThat(items[0].bic).isEqualTo("NDEASESSXXX")
+        assertThat(items[0].id).isEqualTo("NDEASESSXXX")
+        assertThat(items[0].name).isEqualTo("Nordea")
+        assertThat(items[0].status).isEqualTo(ParticipantStatus.ACTIVE)
+        assertThat(items[0].suspendedTime).isNull()
 
-        assertThat(result[1].bic).isEqualTo("HANDSESS")
-        assertThat(result[1].id).isEqualTo("HANDSESS")
-        assertThat(result[1].name).isEqualTo("Svenska Handelsbanken")
-        assertThat(result[1].status).isEqualTo(ParticipantStatus.SUSPENDED)
-        assertThat(result[1].suspendedTime).isNotNull()
+        assertThat(items[1].bic).isEqualTo("HANDSESS")
+        assertThat(items[1].id).isEqualTo("HANDSESS")
+        assertThat(items[1].name).isEqualTo("Svenska Handelsbanken")
+        assertThat(items[1].status).isEqualTo(ParticipantStatus.SUSPENDED)
+        assertThat(items[1].suspendedTime).isNotNull()
     }
 
     @Test
     fun `should return 200 and all participants with given connectionParty and participantType with success`() {
+        val maxInteger = Integer.MAX_VALUE
         mockServer.stubFor(
-                post(urlEqualTo("/participants/P27-SEK/readAll"))
+                post(urlPathEqualTo("/participants/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_PARTICIPANTS_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("$maxInteger"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_PARTICIPANTS_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_PARTICIPANTS_REQUEST)))
+                       )
 
         val result = participantRepository.findByConnectingPartyAndType("NDEASESSXXX", "FUNDING")
+        val items = result.items
 
-        assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].bic).isEqualTo("NDEASESSXXX")
-        assertThat(result[0].id).isEqualTo("NDEASESSXXX")
-        assertThat(result[0].name).isEqualTo("Nordea")
-        assertThat(result[0].status).isEqualTo(ParticipantStatus.ACTIVE)
-        assertThat(result[0].suspendedTime).isNull()
+        assertThat(items.size).isEqualTo(2)
+        assertThat(items[0].bic).isEqualTo("NDEASESSXXX")
+        assertThat(items[0].id).isEqualTo("NDEASESSXXX")
+        assertThat(items[0].name).isEqualTo("Nordea")
+        assertThat(items[0].status).isEqualTo(ParticipantStatus.ACTIVE)
+        assertThat(items[0].suspendedTime).isNull()
 
-        assertThat(result[1].bic).isEqualTo("HANDSESS")
-        assertThat(result[1].id).isEqualTo("HANDSESS")
-        assertThat(result[1].name).isEqualTo("Svenska Handelsbanken")
-        assertThat(result[1].status).isEqualTo(ParticipantStatus.SUSPENDED)
-        assertThat(result[1].suspendedTime).isNotNull()
+        assertThat(items[1].bic).isEqualTo("HANDSESS")
+        assertThat(items[1].id).isEqualTo("HANDSESS")
+        assertThat(items[1].name).isEqualTo("Svenska Handelsbanken")
+        assertThat(items[1].status).isEqualTo(ParticipantStatus.SUSPENDED)
+        assertThat(items[1].suspendedTime).isNotNull()
     }
 
     @Test

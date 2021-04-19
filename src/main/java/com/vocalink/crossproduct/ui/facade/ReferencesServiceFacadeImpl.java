@@ -38,7 +38,8 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
     final List<Participant> participants = repositoryFactory
         .getParticipantRepository(product)
-        .findAll();
+        .findAll()
+        .getItems();
 
     return presenterFactory.getPresenter(clientType)
         .presentParticipantReferences(participants);

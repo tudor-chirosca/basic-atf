@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class Participant implements Serializable{
+public class Participant implements Serializable {
 
   private final String id;
   private final String bic;

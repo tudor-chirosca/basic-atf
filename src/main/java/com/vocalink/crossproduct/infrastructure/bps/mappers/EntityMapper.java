@@ -98,6 +98,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
@@ -349,10 +350,23 @@ public interface EntityMapper {
       @Mapping(target = "name", source = "participantName"),
       @Mapping(target = "fundingBic", source = "connectingParty"),
       @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
+      @Mapping(target = "organizationId", source = "partyExternalIdentifier"),
       @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
       @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
   })
   Participant toEntity(BPSParticipant bpsParticipant);
+
+  @Mappings({
+      @Mapping(target = "id", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "bic", source = "schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "participantName"),
+      @Mapping(target = "fundingBic", source = "connectingParty"),
+      @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
+      @Mapping(target = "organizationId", source = "partyExternalIdentifier"),
+      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
+  })
+  Participant toEntity(BPSManagedParticipant bpsParticipant);
 
   @Named("convertParticipantType")
   default ParticipantType convertParticipantType(String participantType) {

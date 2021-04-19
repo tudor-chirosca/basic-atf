@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -87,7 +88,7 @@ open class SettlementDashboardFacadeImplTest {
                 .findById(participantId))
                 .thenReturn(MockParticipants().getParticipant(false))
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(MockParticipants().participants)
+                .thenReturn(Page(2, MockParticipants().participants))
         `when`(intraDayPositionGrossRepository
                 .findById(fundedParticipantId))
                 .thenReturn(listOf(intraDay))
@@ -104,7 +105,7 @@ open class SettlementDashboardFacadeImplTest {
     @Test
     fun `should throw error on cycles less than 2`() {
         `when`(participantRepository.findAll())
-                .thenReturn(MockParticipants().participants)
+                .thenReturn(Page(2, MockParticipants().participants))
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
         assertThrows(NonConsistentDataException::class.java) {
@@ -122,7 +123,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findLatest(2))
                 .thenReturn(emptyList())
         `when`(participantRepository.findAll())
-                .thenReturn(MockParticipants().participants)
+                .thenReturn(Page(2, MockParticipants().participants))
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
         assertThrows(EntityNotFoundException::class.java) {
@@ -360,7 +361,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(cycleRepository.findAll())
             .thenReturn(cycles)
         `when`(participantRepository.findAll())
-            .thenReturn(participants)
+            .thenReturn(Page(3, participants))
         `when`(presenterFactory.getPresenter(UI))
             .thenReturn(UIPresenter(null))
 

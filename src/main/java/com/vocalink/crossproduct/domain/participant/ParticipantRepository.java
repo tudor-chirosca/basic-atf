@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ParticipantRepository extends CrossproductRepository {
 
-  List<Participant> findAll();
+  Page<Participant> findAll();
 
-  List<Participant> findByConnectingPartyAndType(String connectingParty, String participantType);
+  Page<Participant> findByConnectingPartyAndType(String connectingParty, String participantType);
 
   Participant findById(String participantId);
 

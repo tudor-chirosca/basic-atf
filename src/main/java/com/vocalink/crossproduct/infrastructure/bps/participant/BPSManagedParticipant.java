@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import lombok.Getter;
 
 @Getter
-public class BPSParticipant {
+public class BPSManagedParticipant {
 
   private final String schemeCode;
   private final String schemeParticipantIdentifier;
@@ -21,9 +21,11 @@ public class BPSParticipant {
   private final String rcvngParticipantConnectionId;
   private final String participantConnectionId;
   private final String partyExternalIdentifier;
+  private final String tpspName;
+  private final String tpspId;
 
   @JsonCreator
-  public BPSParticipant(
+  public BPSManagedParticipant(
       @JsonProperty(value = "schemeCode", required = true) String schemeCode,
       @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier,
       @JsonProperty(value = "countryCode") String countryCode,
@@ -36,7 +38,9 @@ public class BPSParticipant {
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
       @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId,
-      @JsonProperty(value = "partyExternalIdentifier") String partyExternalIdentifier) {
+      @JsonProperty(value = "partyExternalIdentifier") String partyExternalIdentifier,
+      @JsonProperty(value = "tpspName") String tpspName,
+      @JsonProperty(value = "tpspId") String tpspId) {
     this.schemeCode = schemeCode;
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
     this.countryCode = countryCode;
@@ -50,5 +54,7 @@ public class BPSParticipant {
     this.rcvngParticipantConnectionId = rcvngParticipantConnectionId;
     this.participantConnectionId = participantConnectionId;
     this.partyExternalIdentifier = partyExternalIdentifier;
+    this.tpspName = tpspName;
+    this.tpspId = tpspId;
   }
 }

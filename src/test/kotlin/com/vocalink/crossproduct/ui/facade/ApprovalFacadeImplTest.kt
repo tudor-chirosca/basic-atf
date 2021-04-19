@@ -110,7 +110,7 @@ class ApprovalFacadeImplTest {
                 .thenReturn(approvalDetails)
 
         `when`(participantRepository.findAll())
-                .thenReturn(participants)
+                .thenReturn(Page(1, participants))
 
         `when`(uiPresenter.presentApprovalDetails(any(), any()))
                 .thenReturn(approvalDetailsDto)
@@ -139,7 +139,7 @@ class ApprovalFacadeImplTest {
             .thenReturn(page)
 
         `when`(participantRepository.findAll())
-                .thenReturn(emptyList())
+                .thenReturn(Page(0, emptyList()))
 
         `when`(uiPresenter.presentApproval(any(), any()))
             .thenReturn(pageDto)
@@ -170,7 +170,7 @@ class ApprovalFacadeImplTest {
             .thenReturn(approval)
 
         `when`(participantRepository.findAll())
-                .thenReturn(emptyList())
+                .thenReturn(Page(0, emptyList()))
 
         `when`(uiPresenter.presentApprovalDetails(any(), any()))
             .thenReturn(approvalDetailsDto)

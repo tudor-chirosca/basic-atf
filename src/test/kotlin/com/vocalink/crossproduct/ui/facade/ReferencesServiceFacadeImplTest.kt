@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.cycle.DayCycle
@@ -99,7 +100,7 @@ class ReferencesServiceFacadeImplTest {
                         .build()
         )
         `when`(participantRepository.findAll())
-                .thenReturn(participants)
+                .thenReturn(Page(3, participants))
 
         referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI)
 

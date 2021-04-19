@@ -28,7 +28,8 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
       LocalDate date) {
     log.info("Fetching IO Dashboard from: {}", product);
 
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll();
+    List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll()
+        .getItems();
 
     IODashboard ioDashboard = repositoryFactory.getParticipantsIODataRepository(product).findAll();
 

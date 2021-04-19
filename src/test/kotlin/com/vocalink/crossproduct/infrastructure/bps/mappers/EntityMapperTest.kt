@@ -138,9 +138,7 @@ class EntityMapperTest {
                 "participantName",
                 "rcvngParticipantConnectionId",
                 "participantConnectionId",
-                "organizationId",
-                "tpspName",
-                "tpspId"
+                "organizationId"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.bic).isEqualTo(bps.schemeParticipantIdentifier)
@@ -263,9 +261,7 @@ class EntityMapperTest {
                 "participantName",
                 "rcvngParticipantConnectionId",
                 "participantConnectionId",
-                "organizationId",
-                "tpspName",
-                "tpspId"
+                "organizationId"
         )
         val bps = BPSAlert(
                 23423, "high", ZonedDateTime.now(), "type", listOf(bpsParticipant)

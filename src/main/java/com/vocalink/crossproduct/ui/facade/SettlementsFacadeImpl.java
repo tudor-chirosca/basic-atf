@@ -52,7 +52,8 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
     final List<Participant> participants = repositoryFactory
         .getParticipantRepository(product)
-        .findAll();
+        .findAll()
+        .getItems();
 
     final Participant participant = participants.stream()
         .filter(p -> p.getId().equals(participantId))

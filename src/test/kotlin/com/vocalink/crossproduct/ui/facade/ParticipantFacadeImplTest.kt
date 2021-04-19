@@ -72,10 +72,10 @@ class ParticipantFacadeImplTest {
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(listOf(Participant(null, null, null,
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null)))
+                        null, null))))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -111,10 +111,10 @@ class ParticipantFacadeImplTest {
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(listOf(Participant(null, null, null,
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null)))
+                        null, null))))
 
         `when`(routingRecordRepository.findAllByBic(any()))
                 .thenReturn(listOf(routingRecord))
@@ -148,10 +148,10 @@ class ParticipantFacadeImplTest {
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(listOf(Participant(null, null, null,
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null)))
+                        null, null))))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -224,6 +224,12 @@ class ParticipantFacadeImplTest {
                 null, null, null,
                 null, null, null,
                 null, null, null)
+
+        `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
+                        null, null, null, null, null,
+                        null, null, null, null,
+                        null, null))))
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)
