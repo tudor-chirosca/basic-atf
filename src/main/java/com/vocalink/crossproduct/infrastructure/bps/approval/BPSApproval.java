@@ -18,8 +18,10 @@ public class BPSApproval {
   private final BPSUserDetails requestedBy;
   private final BPSApprovalStatus status;
   private final BPSUserDetails approvedBy;
+  private final ZonedDateTime approvedAt;
   private final String requestComment;
   private final BPSUserDetails rejectedBy;
+  private final ZonedDateTime rejectedAt;
   private final Map<String, Object> originalData;
   private final Map<String, Object> requestedChange;
   private final String oldData;
@@ -35,8 +37,10 @@ public class BPSApproval {
       @JsonProperty(value = "requestedBy", required = true) BPSUserDetails requestedBy,
       @JsonProperty(value = "status") BPSApprovalStatus status,
       @JsonProperty(value = "approvedBy") BPSUserDetails approvedBy,
+      @JsonProperty(value = "approvedAt") ZonedDateTime approvedAt,
       @JsonProperty(value = "requestComment", required = true) String requestComment,
       @JsonProperty(value = "rejectedBy") BPSUserDetails rejectedBy,
+      @JsonProperty(value = "rejectedAt") ZonedDateTime rejectedAt,
       @JsonProperty(value = "originalData", required = true) Map<String, Object> originalData,
       @JsonProperty(value = "requestedChange", required = true) Map<String, Object> requestedChange,
       @JsonProperty(value = "oldData", required = true) String oldData,
@@ -50,8 +54,10 @@ public class BPSApproval {
     this.requestedBy = requestedBy;
     this.status = status;
     this.approvedBy = approvedBy;
+    this.approvedAt = approvedAt;
     this.requestComment = requestComment;
     this.rejectedBy = rejectedBy;
+    this.rejectedAt = rejectedAt;
     this.originalData = originalData;
     this.requestedChange = requestedChange;
     this.oldData = oldData;

@@ -432,9 +432,13 @@ class EntityMapperTest {
                 date, approvalUser,
                 BPSApprovalStatus.APPROVED,
                 approvalUser,
+                date,
                 "This is the reason that I...",
-                approvalUser, originalData,
-                requestedChange, "hashed data",
+                approvalUser,
+                date,
+                originalData,
+                requestedChange,
+                "hashed data",
                 "hashed data",
                 "Notes"
         )
@@ -444,6 +448,8 @@ class EntityMapperTest {
         assertThat(result.requestedBy.firstName).isEqualTo(approvalUser.firstName)
         assertThat(result.requestedBy.userId).isEqualTo(approvalUser.userId)
         assertThat(result.date).isEqualTo(date)
+        assertThat(result.approvedAt).isEqualTo(date)
+        assertThat(result.rejectedAt).isEqualTo(date)
         assertThat(result.approvalId).isEqualTo(approvalId)
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.participantIds[0]).isEqualTo(participantId)

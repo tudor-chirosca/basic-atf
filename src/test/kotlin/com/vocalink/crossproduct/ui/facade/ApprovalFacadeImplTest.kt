@@ -85,11 +85,12 @@ class ApprovalFacadeImplTest {
                 approvalId,
                 ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf("ESSESESS"),
-                date, approvalUser,
+                date, approvalUser, date,
                 ApprovalStatus.APPROVED,
                 approvalUser,
                 "This is the reason that I...",
                 approvalUser,
+                date,
                 originalData,
                 requestedChange,
                 "hashed data",
@@ -98,12 +99,12 @@ class ApprovalFacadeImplTest {
 
         val approvalDetailsDto = ApprovalDetailsDto(
                 ApprovalStatus.APPROVED,
-                approvalUserDto, approvalUserDto,
+                approvalUserDto, approvalUserDto, date,
                 date, approvalId,
                 ApprovalRequestType.BATCH_CANCELLATION,
                 listOf(participantReferenceDto),
                 "This is the reason that I...",
-                approvalUserDto, "Notes",
+                approvalUserDto, date, "Notes",
                 originalData, requestedChange)
 
         `when`(approvalRepository.findByJobId(approvalId))
@@ -129,10 +130,10 @@ class ApprovalFacadeImplTest {
         val page = Page<Approval>(1, listOf(Approval(null, null,
             null, null, null, null, null,
             null, null, null, null, null,
-            null, null)))
+            null, null, null, null)))
         val pageDto = PageDto<ApprovalDetailsDto>(1, listOf(ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null)))
+            null, null, null, null, null, null, null)))
         val request = ApprovalSearchRequest()
 
         `when`(approvalRepository.findPaginated(any()))
@@ -158,11 +159,11 @@ class ApprovalFacadeImplTest {
         val approval = Approval(null, null,
             null, null, null, null, null,
             null, null, null, null, null,
-            null, null)
+            null, null, null, null)
 
         val approvalDetailsDto = ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null)
+            null, null, null, null, null, null, null)
 
         val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"),"notes")
 

@@ -20,6 +20,8 @@ public class ApprovalDetailsDto {
   private final ApprovalUserDto requestedBy;
   @JsonInclude(Include.NON_EMPTY)
   private final ApprovalUserDto approvedBy;
+  @JsonInclude(Include.NON_EMPTY)
+  private final ZonedDateTime approvedAt;
   private final ZonedDateTime createdAt;
   private final String jobId;
   private final ApprovalRequestType requestType;
@@ -27,6 +29,8 @@ public class ApprovalDetailsDto {
   private final String requestComment;
   @JsonInclude(Include.NON_EMPTY)
   private final ApprovalUserDto rejectedBy;
+  @JsonInclude(Include.NON_EMPTY)
+  private final ZonedDateTime rejectedAt;
   @JsonInclude(Include.NON_EMPTY)
   private final String notes;
   private final Map<String, Object> originalData;

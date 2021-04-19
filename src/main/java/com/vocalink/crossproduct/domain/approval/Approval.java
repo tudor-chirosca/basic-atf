@@ -16,10 +16,12 @@ public class Approval {
   private final List<String> participantIds;
   private final ZonedDateTime date;
   private final UserDetails requestedBy;
+  private final ZonedDateTime approvedAt;
   private final ApprovalStatus status;
   private final UserDetails approvedBy;
   private final String requestComment;
   private final UserDetails rejectedBy;
+  private final ZonedDateTime rejectedAt;
   private final Map<String, Object> originalData;
   private final Map<String, Object> requestedChange;
   private final String oldData;

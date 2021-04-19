@@ -829,11 +829,14 @@ class DTOMapperTest {
                 approvalId,
                 ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf(participant.id),
-                date, approvalUser,
+                date,
+                approvalUser,
+                date,
                 ApprovalStatus.APPROVED,
                 approvalUser,
                 "This is the reason that I...",
                 approvalUser,
+                date,
                 originalData,
                 requestedChange,
                 "hashed data",
@@ -847,6 +850,8 @@ class DTOMapperTest {
         assertThat(result.requestedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
         assertThat(result.requestedBy.id).isEqualTo(approvalUser.userId)
         assertThat(result.createdAt).isEqualTo(date)
+        assertThat(result.approvedAt).isEqualTo(date)
+        assertThat(result.rejectedAt).isEqualTo(date)
         assertThat(result.jobId).isEqualTo(approvalId)
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
         assertThat(result.participants[0].participantIdentifier).isEqualTo(participant.id)
@@ -862,7 +867,8 @@ class DTOMapperTest {
         val approval = Approval("9900000", ApprovalRequestType.PARTICIPANT_SUSPEND,
                 listOf("funded1", "funding", "funded2", "funded3"),
                 null, null, null, null, null,
-                null, null, null, null, null, null)
+                null, null, null, null, null,
+                null, null, null)
 
         val participants = listOf(
                 Participant.builder()

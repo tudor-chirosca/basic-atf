@@ -228,12 +228,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
-            approvalUser, approvalUser,
+            approvalUser, approvalUser, createdAt,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
             listOf(participantReferenceDto),
             "This is the reason that I...",
-            approvalUser, "Notes",
+            approvalUser, createdAt, "Notes",
             originalData, requestedChange
         )
 
@@ -261,12 +261,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
-            approvalUser, approvalUser,
+            approvalUser, approvalUser, createdAt,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
             listOf(participantReferenceDto),
             "This is the reason that I...",
-            approvalUser, "Notes",
+            approvalUser, createdAt, "Notes",
             originalData, requestedChange
         )
 
@@ -295,12 +295,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
-            approvalUser, approvalUser,
+            approvalUser, approvalUser, createdAt,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
             listOf(participantReferenceDto),
             "This is the reason that I...",
-            approvalUser, "Notes",
+            approvalUser, createdAt, "Notes",
             originalData, requestedChange
         )
 
@@ -329,12 +329,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.APPROVED,
-            approvalUser, approvalUser,
+            approvalUser, approvalUser, createdAt,
             createdAt, jobId,
             ApprovalRequestType.BATCH_CANCELLATION,
             listOf(participantReferenceDto),
             "This is the reason that I...",
-            approvalUser, "Notes",
+            approvalUser, createdAt, "Notes",
             originalData, requestedChange
         )
 
@@ -454,12 +454,12 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val approvalDetailsDto = ApprovalDetailsDto(
             ApprovalStatus.PENDING,
-            approvalUser, approvalUser,
+            approvalUser, approvalUser, createdAt,
             createdAt, jobId,
             ApprovalRequestType.PARTICIPANT_SUSPEND,
             listOf(participantReferenceDto),
             "This is the reason that I have requested this change to be made.",
-            approvalUser, "Please check ticket number 342 and resubmit the change.",
+            approvalUser, createdAt, "Please check ticket number 342 and resubmit the change.",
             originalData, requestedChange
         )
 
