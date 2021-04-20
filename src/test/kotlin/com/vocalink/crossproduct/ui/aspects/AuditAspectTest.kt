@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects
 
 import com.vocalink.crossproduct.infrastructure.config.JacksonConfig
+import com.vocalink.crossproduct.ui.aspects.AuditAspect.EMPTY_CONTENT
 import com.vocalink.crossproduct.ui.aspects.EventType.SETTL_DETAILS
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType.SYSTEM
@@ -78,7 +79,7 @@ class AuditAspectTest {
 
         val content = auditAspect.getContent(joinPoint, auditable)
 
-        assertThat(content).isEqualTo(EMPTY)
+        assertThat(content).isEqualTo(EMPTY_CONTENT)
     }
 
     @Test

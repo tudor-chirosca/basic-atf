@@ -1,17 +1,21 @@
 package com.vocalink.crossproduct.ui.controllers.api;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import javax.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @Validated
 public interface BroadcastsApi {
@@ -23,7 +27,7 @@ public interface BroadcastsApi {
   })
   ResponseEntity<PageDto<BroadcastDto>> getPaginatedBroadcasts(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      @Valid final BroadcastsSearchParameters searchParameters);
+      @Valid final BroadcastsSearchParameters searchParameters, final HttpServletRequest request);
 
   @ApiOperation("Create new broadcast")
   @ApiResponses({
@@ -32,5 +36,5 @@ public interface BroadcastsApi {
   })
   ResponseEntity<BroadcastDto> sendBroadcast(
       @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
-      BroadcastRequest request);
+      BroadcastRequest broadcastRequest, HttpServletRequest request);
 }
