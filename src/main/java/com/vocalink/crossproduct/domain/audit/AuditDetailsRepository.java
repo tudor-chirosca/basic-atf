@@ -12,4 +12,6 @@ public interface AuditDetailsRepository extends CrossproductRepository {
   List<AuditDetails> getAuditDetailsByParameters(AuditRequest parameters);
 
   void logOperation(Event event, UserDetails userDetails);
+
+  AuditDetails getAuditDetailsByUserName(String name);
 }

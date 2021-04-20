@@ -64,7 +64,6 @@ import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
-import com.vocalink.crossproduct.ui.dto.permission.UserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
@@ -537,14 +536,10 @@ public interface DTOMapper {
   @Mappings({
       @Mapping(target = "permissions", source = "permissions"),
       @Mapping(target = "participation", source = "participant"),
-      @Mapping(target = "user", source = "userActivity")
+      @Mapping(target = "user.userId", source = "auditDetails.username"),
+      @Mapping(target = "user.name", expression = "java(auditDetails.getFirstName() + \" \" + auditDetails.getLastName())")
   })
-  CurrentUserInfoDto toDto(Participant participant, List<String> permissions, UserActivity userActivity);
-
-  @Mappings({
-      @Mapping(target = "userId", source = "id")
-  })
-  UserInfoDto toUserInfoDto(UserActivity userActivity);
+  CurrentUserInfoDto toDto(Participant participant, List<String> permissions, AuditDetails auditDetails);
 
   //TODO: check ManagedParticipant != Participant?
   ManagedParticipantDto toManagedDto(Participant participants);

@@ -190,5 +190,5 @@ public interface Presenter {
   List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails);
 
   CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> permissions,
-      UserActivity userActivity);
+      AuditDetails auditDetails);
 }

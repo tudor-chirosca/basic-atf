@@ -321,7 +321,7 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> permissions,
-      UserActivity userActivity) {
+      AuditDetails auditDetails) {
     throw new RuntimeException("System API not implemented yet");
   }
 }

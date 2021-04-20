@@ -542,10 +542,10 @@ public class UIPresenter implements Presenter {
 
   @Override
   public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> uiPermissions,
-      UserActivity userActivity) {
+      AuditDetails auditDetails) {
     final List<String> permissions = uiPermissions.stream()
         .map(UIPermission::getKey)
         .collect(toList());
-    return MAPPER.toDto(participant, permissions, userActivity);
+    return MAPPER.toDto(participant, permissions, auditDetails);
   }
 }

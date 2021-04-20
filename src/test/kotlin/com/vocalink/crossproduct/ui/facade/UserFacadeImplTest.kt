@@ -2,8 +2,8 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
-import com.vocalink.crossproduct.domain.audit.UserActivity
-import com.vocalink.crossproduct.domain.audit.UserActivityRepository
+import com.vocalink.crossproduct.domain.audit.AuditDetails
+import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.util.*
 
 class UserFacadeImplTest {
 
@@ -32,7 +31,7 @@ class UserFacadeImplTest {
     private val repositoryFactory = mock(RepositoryFactory::class.java)
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val uiPermissionRepository = mock(UIPermissionRepository::class.java)!!
-    private val userActivityRepository = mock(UserActivityRepository::class.java)!!
+    private val auditDetailsRepository = mock(AuditDetailsRepository::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
 
     private val userPermissionFacadeImpl = UserFacadeImpl(
@@ -46,17 +45,17 @@ class UserFacadeImplTest {
                 .thenReturn(participantRepository)
         `when`(repositoryFactory.uiPermissionRepository)
                 .thenReturn(uiPermissionRepository)
-        `when`(repositoryFactory.getUserActivityRepository(anyString()))
-                .thenReturn(userActivityRepository)
+        `when`(repositoryFactory.getAuditDetailsRepository(anyString()))
+                .thenReturn(auditDetailsRepository)
         `when`(presenterFactory.getPresenter(UI))
                 .thenReturn(uiPresenter)
     }
 
     @Test
     fun `should invoke presenter and repository and get user permissions`() {
-        val userId = "cd4d219d-3daf-40f2-becc-6f08e6edc477"
-        val userName = "John Doe"
-        val userDescription = "Simple User"
+        val userId = "12a511"
+        val userFirstName = "Peter"
+        val userLastName = "Brooks"
         val participantId = "HANDSESS"
         val role = "MANAGEMENT"
         val permissionId = "6c93e343-9644-4b49-bb99-f6c768f043aa"
@@ -72,11 +71,15 @@ class UserFacadeImplTest {
                 .participantType(FUNDED)
                 .build()
 
-        val userInfoDto = UserInfoDto(UUID.fromString(userId), userName)
+        val userInfoDto = UserInfoDto(userId, "$userFirstName $userLastName")
 
         val uiPermission = UIPermission(permissionId, permissionValue)
 
-        val userActivity = UserActivity(UUID.fromString(userId), userName)
+        val auditDetails = AuditDetails.builder()
+                .username(userId)
+                .firstName(userFirstName)
+                .lastName(userLastName)
+                .build()
 
         val userPermissionDto = CurrentUserInfoDto(listOf(permissionValue), participantDto, userInfoDto)
 
@@ -85,17 +88,17 @@ class UserFacadeImplTest {
         `when`(uiPermissionRepository.findByRolesAndParticipantType(listOf(Function.valueOf(role)), FUNDED))
                 .thenReturn(listOf(uiPermission))
 
-        `when`(userActivityRepository.getActivitiesById(UUID.fromString(userId)))
-                .thenReturn(userActivity)
+        `when`(auditDetailsRepository.getAuditDetailsByUserName(userId))
+                .thenReturn(auditDetails)
 
-        `when`(uiPresenter.presentCurrentUserInfo(participant, listOf(uiPermission), userActivity))
+        `when`(uiPresenter.presentCurrentUserInfo(participant, listOf(uiPermission), auditDetails))
                 .thenReturn(userPermissionDto)
 
         val result = userPermissionFacadeImpl.getCurrentUserInfo(CONTEXT, UI, userId, participantId, role)
 
         verify(participantRepository).findById(any())
         verify(uiPermissionRepository).findByRolesAndParticipantType(any(), any())
-        verify(userActivityRepository).getActivitiesById(any())
+        verify(auditDetailsRepository).getAuditDetailsByUserName(any())
         verify(uiPresenter).presentCurrentUserInfo(any(), any(), any())
 
         assertThat(result).isNotNull

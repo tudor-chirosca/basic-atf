@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.ui.dto.permission;
 
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserInfoDto {
 
-  private final UUID userId;
+  private final String userId;
   private final String name;
 }

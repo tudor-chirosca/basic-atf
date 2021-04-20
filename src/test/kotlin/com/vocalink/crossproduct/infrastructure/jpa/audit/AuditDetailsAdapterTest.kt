@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
+import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.Event
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
@@ -27,6 +28,8 @@ open class AuditDetailsAdapterTest {
     companion object {
         private var PARTICIPANT_ID = "anyId"
 
+        private var USER_NAME = "anyUserName"
+
         private var id = UUID.randomUUID()
 
         private var detailsJpa = AuditDetailsJpa.builder()
@@ -51,6 +54,18 @@ open class AuditDetailsAdapterTest {
         assertThat(auditDetails).isNotEmpty
 
         assertThat(id).isEqualTo(auditDetails[0].id)
+    }
+
+    @Test
+    fun `should find details by user name`() {
+        `when`(repositoryJpa.findByUsername(USER_NAME)).thenReturn(Optional.of(detailsJpa))
+
+        val auditDetails = adapter.getAuditDetailsByUserName(USER_NAME)
+
+        assertThat(auditDetails).isInstanceOf(AuditDetails::class.java)
+        assertThat(auditDetails).isNotNull
+
+        assertThat(id).isEqualTo(auditDetails.id)
     }
 
     @Test

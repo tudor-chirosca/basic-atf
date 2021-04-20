@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 
 
 @WebMvcTest(UserController::class)
@@ -59,7 +58,7 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
               "participantType": "FUNDED"
             },
             "user": {
-              "userId": "cd4d219d-3daf-40f2-becc-6f08e6edc477",
+              "userId": "12a511",
               "name": "John Doe"
             }
             }
@@ -68,7 +67,7 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 with valid headers and return user details and permissions`() {
-        val userId = "cd4d219d-3daf-40f2-becc-6f08e6edc477"
+        val userId = "12a511"
         val userName = "John Doe"
         val participantId = "HANDSESS"
         val fundingBic = "NDEASESSXXX"
@@ -87,7 +86,7 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         `when`(userFacade.getCurrentUserInfo(any(), any(), any(), any(), any()))
                 .thenReturn(CurrentUserInfoDto(listOf(permission), participant,
-                        UserInfoDto(UUID.fromString(userId), userName)))
+                        UserInfoDto(userId, userName)))
 
         mockMvc.perform(get("/me")
                 .contentType(UTF8_CONTENT_TYPE)

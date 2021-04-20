@@ -133,6 +133,13 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
     auditDetailsRepository.save(detailsJpa);
   }
 
+  @Override
+  public AuditDetails getAuditDetailsByUserName(String name) {
+    return MAPPER.toEntity(auditDetailsRepository.findByUsername(name)
+        .orElseThrow(() -> new EntityNotFoundException(
+            "No audit details found by user name: " + name)));
+  }
+
   private Optional<UserActivityJpa> findActivityByName(String eventName) {
     final TypedQuery<UserActivityJpa> query = entityManager
         .createQuery(QUERY_BY_NAME, UserActivityJpa.class);

@@ -13,7 +13,7 @@ import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
-import com.vocalink.crossproduct.domain.audit.UserActivity
+import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.configuration.Configuration
@@ -1149,9 +1149,9 @@ class DTOMapperTest {
 
     @Test
     fun `should map UserPermissionDto from participant user and permissions list`() {
-        val userId = "cd4d219d-3daf-40f2-becc-6f08e6edc477"
-        val userName = "John Doe"
-        val userDescription = "Simple User"
+        val userId = "12a511"
+        val userFirstName = "Peter"
+        val userLastName = "Brooks"
         val participantId = "HANDSESS"
         val fundingBic = "NDEASESSXXX"
         val participantName = "Svenska Handelsbanken"
@@ -1166,12 +1166,13 @@ class DTOMapperTest {
                 .suspendedTime(dateTime)
                 .participantType(FUNDED)
                 .build()
-        val userActivity = UserActivity.builder()
-                .id(UUID.fromString(userId))
-                .name(userName)
+        val auditDetails = AuditDetails.builder()
+                .username(userId)
+                .firstName(userFirstName)
+                .lastName(userLastName)
                 .build()
 
-        val entity = MAPPER.toDto(participant, listOf(permission), userActivity)
+        val entity = MAPPER.toDto(participant, listOf(permission), auditDetails)
 
         assertThat(entity).isNotNull
         assertThat(entity.permissions.size).isEqualTo(1)
@@ -1182,7 +1183,7 @@ class DTOMapperTest {
         assertThat(entity.participation.fundingBic).isEqualTo(fundingBic)
         assertThat(entity.participation.status).isEqualTo(SUSPENDED)
         assertThat(entity.participation.suspendedTime).isEqualTo(dateTime)
-        assertThat(entity.user.userId).isEqualTo(UUID.fromString(userId))
-        assertThat(entity.user.name).isEqualTo(userName)
+        assertThat(entity.user.userId).isEqualTo(userId)
+        assertThat(entity.user.name).isEqualTo("$userFirstName $userLastName")
     }
 }

@@ -43,19 +43,6 @@ public class UserActivityAdapter implements UserActivityRepository {
   }
 
   @Override
-  public UserActivity getActivitiesById(UUID id) {
-    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-    CriteriaQuery<UserActivityJpa> query = cb.createQuery(UserActivityJpa.class);
-    Root<UserActivityJpa> activities = query.from(UserActivityJpa.class);
-
-    query.select(activities)
-        .where(activities.get(ACTIVITY_ID).in(id));
-
-    return MAPPER.toEntity(entityManager.createQuery(query)
-        .getSingleResult());
-  }
-
-  @Override
   public List<String> getEventTypes() {
     return repositoryJpa.findAllEventTypes();
   }

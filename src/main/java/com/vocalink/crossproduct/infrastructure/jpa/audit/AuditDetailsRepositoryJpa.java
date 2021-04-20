@@ -10,4 +10,6 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
   List<AuditDetailsJpa> findAllByParticipantId(String id);
 
   Optional<AuditDetailsJpa> findByServiceId(Long id);
+
+  Optional<AuditDetailsJpa> findByUsername(String name);
 }
