@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycleStatus
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
@@ -31,9 +32,9 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
-import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
@@ -67,7 +68,7 @@ class EntityMapperTest {
     fun `should map Cycle fields`() {
         val bps = BPSCycle(
                 "cycleId",
-                "COMPLETED",
+                BPSCycleStatus.PARTIALLY_COMPLETE,
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 true,
@@ -79,7 +80,74 @@ class EntityMapperTest {
         assertThat(entity.isNextDayCycle).isEqualTo(bps.isNextDayCycle)
         assertThat(entity.settlementConfirmationTime).isEqualTo(bps.settlementConfirmationTime)
         assertThat(entity.settlementTime).isEqualTo(bps.settlementTime)
+        assertThat(entity.status).isEqualTo(CycleStatus.PARTIALLY_COMPLETE)
+    }
+
+    @Test
+    fun `should map Cycle fields with total positions`() {
+        val amount10 = BPSAmount(BigDecimal.TEN, "SEK")
+        val amount1 = BPSAmount(BigDecimal.ONE, "SEK")
+        val amount100 = BPSAmount(BigDecimal.valueOf(100), "SEK")
+        val amount0 = BPSAmount(BigDecimal.ZERO, "SEK")
+        val netAmount = BPSAmount(BigDecimal.valueOf(50), "SEK")
+
+        val paymentReceived = BPSPayment (234, amount10)
+        val paymentSent = BPSPayment(234, amount1)
+        val returnReceived = BPSPayment(234, amount100)
+        val returnSent = BPSPayment(234, amount0)
+
+        val bpsCycle = BPSCycle(
+                "cycleId",
+                BPSCycleStatus.COMPLETED,
+                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                true,
+                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+        )
+        val bpsPositionMatchingCycleId = BPSSettlementPosition(
+                LocalDate.now(),
+                "participantId",
+                "cycleId",
+                "SEK",
+                paymentSent, paymentReceived, returnSent, returnReceived, netAmount
+        )
+
+        val bpsPositionNotMatching= BPSSettlementPosition(
+                LocalDate.now(),
+                "participantId",
+                "not_matching",
+                "SEK",
+                paymentSent, paymentReceived, returnSent, returnReceived, netAmount
+        )
+
+        val entity = MAPPER.toEntity(bpsCycle, listOf(bpsPositionMatchingCycleId, bpsPositionNotMatching))
+
+        assertThat(entity.id).isEqualTo(bpsCycle.cycleId)
+        assertThat(entity.cutOffTime).isEqualTo(bpsCycle.fileSubmissionCutOffTime)
+        assertThat(entity.isNextDayCycle).isEqualTo(bpsCycle.isNextDayCycle)
+        assertThat(entity.settlementConfirmationTime).isEqualTo(bpsCycle.settlementConfirmationTime)
+        assertThat(entity.settlementTime).isEqualTo(bpsCycle.settlementTime)
         assertThat(entity.status).isEqualTo(CycleStatus.COMPLETED)
+        assertThat(entity.totalPositions.size).isEqualTo(1)
+
+        assertThat(entity.totalPositions[0].participantId).isEqualTo(bpsPositionMatchingCycleId.participantId)
+        assertThat(entity.totalPositions[0].settlementDate).isEqualTo(bpsPositionMatchingCycleId.settlementDate)
+        assertThat(entity.totalPositions[0].cycleId).isEqualTo(bpsPositionMatchingCycleId.cycleId)
+        assertThat(entity.totalPositions[0].currency).isEqualTo(bpsPositionMatchingCycleId.currency)
+        assertThat(entity.totalPositions[0].paymentSent.count).isEqualTo(bpsPositionMatchingCycleId.paymentSent.count)
+        assertThat(entity.totalPositions[0].paymentSent.amount.currency).isEqualTo(bpsPositionMatchingCycleId.paymentSent.amount.currency)
+        assertThat(entity.totalPositions[0].paymentSent.amount.amount).isEqualTo(bpsPositionMatchingCycleId.paymentSent.amount.amount)
+        assertThat(entity.totalPositions[0].paymentReceived.count).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.count)
+        assertThat(entity.totalPositions[0].paymentReceived.amount.currency).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.amount.currency)
+        assertThat(entity.totalPositions[0].paymentReceived.amount.amount).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.amount.amount)
+        assertThat(entity.totalPositions[0].returnSent.count).isEqualTo(bpsPositionMatchingCycleId.returnSent.count)
+        assertThat(entity.totalPositions[0].returnSent.amount.currency).isEqualTo(bpsPositionMatchingCycleId.returnSent.amount.currency)
+        assertThat(entity.totalPositions[0].returnSent.amount.amount).isEqualTo(bpsPositionMatchingCycleId.returnSent.amount.amount)
+        assertThat(entity.totalPositions[0].returnReceived.count).isEqualTo(bpsPositionMatchingCycleId.returnReceived.count)
+        assertThat(entity.totalPositions[0].returnReceived.amount.currency).isEqualTo(bpsPositionMatchingCycleId.returnReceived.amount.currency)
+        assertThat(entity.totalPositions[0].returnReceived.amount.amount).isEqualTo(bpsPositionMatchingCycleId.returnReceived.amount.amount)
+        assertThat(entity.totalPositions[0].netPositionAmount.amount).isEqualTo(bpsPositionMatchingCycleId.netPositionAmount.amount)
+        assertThat(entity.totalPositions[0].netPositionAmount.currency).isEqualTo(bpsPositionMatchingCycleId.netPositionAmount.currency)
     }
 
     @Test
@@ -155,7 +223,7 @@ class EntityMapperTest {
     fun `should map Batch fields`() {
         val bpsCycle = BPSCycle(
                 "cycleId",
-                "COMPLETED",
+                BPSCycleStatus.COMPLETED,
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 true,

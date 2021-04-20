@@ -33,6 +33,7 @@ import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
+import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
@@ -69,7 +70,6 @@ import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
-import com.vocalink.crossproduct.domain.settlement.SettlementStatus;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -89,6 +89,7 @@ import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchPart;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycle;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycleStatus;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
@@ -141,6 +142,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -181,9 +183,27 @@ public interface EntityMapper {
 
   @Mappings({
       @Mapping(target = "id", source = "cycleId"),
+      @Mapping(target = "status", source = "status", qualifiedByName = "toCycleStatus"),
       @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime")
   })
   Cycle toEntity(BPSCycle cycle);
+
+  @Mappings({
+      @Mapping(target = "id", source = "cycleId"),
+      @Mapping(target = "cutOffTime", source = "fileSubmissionCutOffTime"),
+      @Mapping(target = "status", source = "status", qualifiedByName = "toCycleStatus"),
+      @Mapping(target = "totalPositions", source = "cycleId", qualifiedByName = "setTotalPositions")
+  })
+  Cycle toEntity(BPSCycle cycle, @Context List<BPSSettlementPosition> positions);
+
+  @Named("setTotalPositions")
+  default List<ParticipantPosition> setTotalPositions(String cycleId,
+      @Context List<BPSSettlementPosition> positions) {
+    return positions.stream()
+        .filter(pos -> pos.getCycleId().equals(cycleId))
+        .map(this::toEntity)
+        .collect(toList());
+  }
 
   DayCycle toEntity(BPSDayCycle cycle);
 
@@ -235,19 +255,19 @@ public interface EntityMapper {
   MessageDirectionReference toEntity(BPSMessageDirectionReference messageDirectionReference);
 
   @Mappings({
-      @Mapping(target = "status", source = "status", qualifiedByName = "toStatus"),
+      @Mapping(target = "status", source = "status", qualifiedByName = "toCycleStatus"),
       @Mapping(target = "statusDetail", source = "statusDetail", qualifiedByName = "toInstructionStatus")
   })
   SettlementDetails toEntity(BPSSettlementDetails settlementDetails);
 
   @Mappings(
-      @Mapping(target = "status", source = "status", qualifiedByName = "toStatus")
+      @Mapping(target = "status", source = "status", qualifiedByName = "toCycleStatus")
   )
   ParticipantSettlement toEntity(BPSParticipantSettlement settlement);
 
-  @Named("toStatus")
-  default SettlementStatus convertStatusType(String status) {
-    return SettlementStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
+  @Named("toCycleStatus")
+  default CycleStatus toCycleStatus(BPSCycleStatus bpsCycleStatus) {
+    return CycleStatus.valueOf(bpsCycleStatus.name());
   }
 
   default List<ParticipantPosition> toEntity(BPSSettlementPositionWrapper positionsWrapper) {

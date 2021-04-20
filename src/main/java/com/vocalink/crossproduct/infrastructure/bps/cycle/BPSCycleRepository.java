@@ -10,7 +10,6 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.CycleRepository;
-import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
@@ -48,7 +47,9 @@ public class BPSCycleRepository implements CycleRepository {
         .filter(p -> cycleIds.contains(p.getCycleId()))
         .collect(toList());
 
-    return collectCycles(bpsCycles, positions);
+    return bpsCycles.stream()
+        .map(c -> MAPPER.toEntity(c, positions))
+        .collect(toList());
   }
 
   @Override
@@ -58,25 +59,6 @@ public class BPSCycleRepository implements CycleRepository {
     return getCycles(request).getCycles().stream()
         .filter(c -> cycleIds.contains(c.getCycleId()))
         .map(MAPPER::toEntity)
-        .collect(toList());
-  }
-
-  private List<Cycle> collectCycles(List<BPSCycle> bpsCycles,
-      List<BPSSettlementPosition> positions) {
-    return bpsCycles.stream()
-        .map(bpsCycle ->
-            Cycle.builder()
-                .id(bpsCycle.getCycleId())
-                .settlementTime(bpsCycle.getSettlementTime())
-                .cutOffTime(bpsCycle.getFileSubmissionCutOffTime())
-                .settlementConfirmationTime(bpsCycle.getSettlementConfirmationTime())
-                .status(CycleStatus.valueOf(bpsCycle.getStatus()))
-                .isNextDayCycle(bpsCycle.getIsNextDayCycle())
-                .totalPositions(positions.stream()
-                    .filter(pos -> pos.getCycleId().equals(bpsCycle.getCycleId()))
-                    .map(MAPPER::toEntity)
-                    .collect(toList()))
-                .build())
         .collect(toList());
   }
 

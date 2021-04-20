@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
-import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -18,6 +17,12 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto
 import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade
+import java.math.BigDecimal
+import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -32,12 +37,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
-import java.math.BigDecimal
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @WebMvcTest(SettlementsController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -56,7 +55,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val VALID_DETAILS_RESPONSE = """{
             "cycleId": "20201209001",
             "settlementTime": "2020-12-09T15:58:19Z",
-            "status": "PARTIAL",
+            "status": "PARTIALLY_COMPLETE",
             "participant": {
                 "participantIdentifier": "HANDSESS",
                 "name": "Svenska Handelsbanken",
@@ -137,7 +136,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         val details = ParticipantSettlementDetailsDto.builder()
                 .cycleId(cycleId)
                 .settlementTime(ZonedDateTime.of(2020,12,9,15,58,19, 0, ZoneId.of("UTC")))
-                .status(SettlementStatus.PARTIAL)
+                .status(CycleStatus.PARTIALLY_COMPLETE)
                 .participant(participant)
                 .instructions(PageDto(1, listOf(instruction)))
                 .build()

@@ -7,11 +7,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria
 import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
-import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.math.BigDecimal
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -19,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.math.BigDecimal
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSSettlementsRepository::class)
@@ -44,7 +44,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                 "settlementBank": "NA",
                 "cycleId": "20210322001",
                 "settlementCycleDate": "2021-03-22T14:00:00Z",
-                "status": "partial",
+                "status": "PARTIALLYCOMPLETE",
                 "settlementInstructionReference": 2342847,
                 "statusDetail": "Rejected",
                 "counterParty": "SWEDSESS",
@@ -83,12 +83,12 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                 {
                     "cycleId": "20201209001",
                     "settlementStartDate": "2020-12-09T14:58:19Z",
-                    "status": "partial",
+                    "status": "PARTIALLYCOMPLETE",
                     "schemeParticipantIdentifier": "HANDSESS"
                 },
                 {   "cycleId": "20201209002",
                     "settlementStartDate": "2020-12-09T14:58:19Z",
-                    "status": "no-response",
+                    "status": "NO_RESPONSE",
                     "schemeParticipantIdentifier": "HANDSESS"
                 }    
             ],
@@ -148,7 +148,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
 
         assertThat(result).isNotNull
         assertThat(result.items[0].cycleId).isEqualTo("20210322001")
-        assertThat(result.items[0].status).isEqualTo(SettlementStatus.PARTIAL)
+        assertThat(result.items[0].status).isEqualTo(CycleStatus.PARTIALLY_COMPLETE)
         assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("SWEDSES1")
         assertThat(result.items[0].settlementInstructionReference).isEqualTo(2342847)
         assertThat(result.items[0].statusDetail).isEqualTo(InstructionStatus.REJECTED)

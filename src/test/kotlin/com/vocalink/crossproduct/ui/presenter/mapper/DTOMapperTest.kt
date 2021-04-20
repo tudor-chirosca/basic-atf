@@ -38,7 +38,6 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule
 import com.vocalink.crossproduct.domain.settlement.SettlementDetails
-import com.vocalink.crossproduct.domain.settlement.SettlementStatus
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -46,9 +45,6 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -58,6 +54,9 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -317,7 +316,7 @@ class DTOMapperTest {
         val dateTime = ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC"))
 
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                dateTime, SettlementStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                dateTime, CycleStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
                 "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
                 Amount(10.toBigDecimal(), "SEK"))
 
@@ -414,7 +413,7 @@ class DTOMapperTest {
         val dateTime = ZonedDateTime.of(2020, 10, 10, 10, 10, 10, 0, ZoneId.of("UTC"))
 
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                dateTime, SettlementStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                dateTime, CycleStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
                 "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
                 Amount(10.toBigDecimal(), "SEK"))
 

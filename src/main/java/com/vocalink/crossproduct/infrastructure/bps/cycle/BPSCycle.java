@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class BPSCycle {
   private final String cycleId;
-  private final String status;
+  private final BPSCycleStatus status;
   private final ZonedDateTime settlementTime;
   private final ZonedDateTime fileSubmissionCutOffTime;
   private final Boolean isNextDayCycle;
@@ -19,7 +19,7 @@ public class BPSCycle {
   @JsonCreator
   public BPSCycle(
       @JsonProperty(value = "cycleId", required = true) String cycleId,
-      @JsonProperty(value = "status", required = true) String status,
+      @JsonProperty(value = "status", required = true) BPSCycleStatus status,
       @JsonProperty(value = "settlementTime", required = true) ZonedDateTime settlementTime,
       @JsonProperty(value = "fileSubmissionCutOffTime", required = true) ZonedDateTime fileSubmissionCutOffTime,
       @JsonProperty(value = "isNextDayCycle",required = true) Boolean isNextDayCycle,

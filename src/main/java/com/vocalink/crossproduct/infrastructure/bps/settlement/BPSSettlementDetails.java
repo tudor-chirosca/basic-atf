@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.settlement;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
+import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSCycleStatus;
 import java.time.ZonedDateTime;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class BPSSettlementDetails {
   private final String settlementBank;
   private final String cycleId;
   private final ZonedDateTime settlementCycleDate;
-  private final String status;
+  private final BPSCycleStatus status;
   private final Integer settlementInstructionReference;
   private final String statusDetail;
   private final String counterParty;
@@ -27,7 +28,7 @@ public class BPSSettlementDetails {
       @JsonProperty(value = "settlementBank") String settlementBank,
       @JsonProperty(value = "cycleId") String cycleId,
       @JsonProperty(value = "settlementCycleDate") ZonedDateTime settlementCycleDate,
-      @JsonProperty(value = "status") String status,
+      @JsonProperty(value = "status") BPSCycleStatus status,
       @JsonProperty(value = "settlementInstructionReference") Integer settlementInstructionReference,
       @JsonProperty(value = "statusDetail") String statusDetail,
       @JsonProperty(value = "counterParty") String counterParty,

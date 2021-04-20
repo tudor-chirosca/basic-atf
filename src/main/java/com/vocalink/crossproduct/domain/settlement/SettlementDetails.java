@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.domain.settlement;
 
 import com.vocalink.crossproduct.domain.Amount;
+import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ public class SettlementDetails {
   private final String settlementBank;
   private final String cycleId;
   private final ZonedDateTime settlementCycleDate;
-  private final SettlementStatus status;
+  private final CycleStatus status;
   private final Integer settlementInstructionReference;
   private final InstructionStatus statusDetail;
   private final String counterParty;
