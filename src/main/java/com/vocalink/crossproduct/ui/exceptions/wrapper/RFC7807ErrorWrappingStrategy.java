@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -131,6 +132,21 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
 
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
+  }
+
+  @Override
+  public ResponseEntity<ErrorDescriptionResponse> wrapException(
+      DecodingException exception) {
+    RFCErrorDescription error = RFCErrorDescription.builder()
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+        .detail(ErrorConstants.ERROR_REASON_INTEGRATION_ERROR)
+        .build();
+
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(error);
   }

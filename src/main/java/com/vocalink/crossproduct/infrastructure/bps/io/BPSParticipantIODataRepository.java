@@ -9,6 +9,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIODataRepository;
+import com.vocalink.crossproduct.ui.dto.EmptyBody;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
@@ -34,6 +35,7 @@ public class BPSParticipantIODataRepository implements ParticipantIODataReposito
     return webClient.post()
         .uri(resolve(IO_PARTICIPANTS_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(EmptyBody.builder().build()), EmptyBody.class))
         .retrieve()
         .bodyToMono(BPSIODashboard.class)
         .retryWhen(retryWebClientConfig.fixedRetry())

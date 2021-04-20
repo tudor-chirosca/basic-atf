@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.infrastructure.exception.InfrastructureExceptio
 import com.vocalink.crossproduct.ui.exceptions.ErrorDescriptionResponse;
 import com.vocalink.crossproduct.ui.exceptions.GatewayErrorDescription;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -110,6 +111,24 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
     );
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(error);
+  }
+
+  @Override
+  public ResponseEntity<ErrorDescriptionResponse> wrapException(
+      DecodingException exception) {
+    GatewayErrorDescription error = new GatewayErrorDescription();
+    error.getErrors().addError(
+        GatewayError.builder()
+            .source(ErrorConstants.ERROR_SOURCE_BPS)
+            .reasonCode(ErrorConstants.ERROR_REASON_INTERNAL_ERROR)
+            .description(ErrorConstants.ERROR_REASON_INTEGRATION_ERROR)
+            .recoverable(false)
+            .build()
+    );
+    return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(error);
   }

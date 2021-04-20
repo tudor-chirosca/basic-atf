@@ -141,6 +141,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.mapstruct.Context;
@@ -220,6 +221,9 @@ public interface EntityMapper {
 
   @Named("mapBatches")
   default List<IOBatchesMessageTypes> mapBatches(List<BPSIOSummary> batches) {
+    if (batches == null) {
+      return Collections.emptyList();
+    }
     return batches.stream().map(e ->
         new IOBatchesMessageTypes(
             getNameByType(e.getMessageType()),
@@ -234,6 +238,9 @@ public interface EntityMapper {
 
   @Named("mapTransactions")
   default List<IOTransactionsMessageTypes> mapTransactions(List<BPSIOSummary> transactions) {
+    if (transactions == null) {
+      return Collections.emptyList();
+    }
     return transactions.stream().map(e ->
         new IOTransactionsMessageTypes(
             getNameByType(e.getMessageType()),

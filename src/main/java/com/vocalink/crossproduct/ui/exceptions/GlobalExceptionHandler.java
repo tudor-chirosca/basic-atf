@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.ui.exceptions.wrapper.ErrorWrappingStrategy;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDescriptionResponse> handleException(
       final HttpServletRequest request,
       final Exception exception) {
+
+
+    if (exception.getCause() instanceof DecodingException) {
+      DecodingException decoding = (DecodingException) exception.getCause();
+      return handleDecodingException(request, decoding);
+    }
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
     return errorWrapper.wrapException(exception);
@@ -52,6 +59,16 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDescriptionResponse> handleBindException(
       final HttpServletRequest request,
       final MethodArgumentNotValidException exception) {
+
+    log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
+
+    return errorWrapper.wrapException(exception);
+  }
+
+  @ExceptionHandler({DecodingException.class})
+  public ResponseEntity<ErrorDescriptionResponse> handleDecodingException(
+      final HttpServletRequest request,
+      final DecodingException exception) {
 
     log.error("ERROR on Request: {} {}", request.getRequestURL(), exception.getMessage());
 
