@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
 import java.nio.charset.Charset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -122,7 +123,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 Pair("offset", listOf("0")),
                 Pair("limit", listOf("10")),
                 Pair("date_from", listOf(
-                    ZonedDateTime.now()
+                    ZonedDateTime.now(ZoneId.of("UTC"))
                         .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
                         .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
         )

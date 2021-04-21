@@ -264,7 +264,7 @@ class EntityMapperTest {
                 "organizationId"
         )
         val bps = BPSAlert(
-                23423, "high", ZonedDateTime.now(), "type", listOf(bpsParticipant)
+                23423, "high", ZonedDateTime.now(ZoneId.of("UTC")), "type", listOf(bpsParticipant)
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.alertId).isEqualTo(bps.alertId)
@@ -328,7 +328,7 @@ class EntityMapperTest {
         val amount = BPSAmount(BigDecimal.TEN, "SEK")
         val bps = BPSTransaction(
                 "instructionId",
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "originator",
                 "messageType",
                 amount,
@@ -356,11 +356,11 @@ class EntityMapperTest {
         val bps = BPSTransactionDetails(
                 "txnsInstructionId",
                 "messageType",
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "transactionStatus",
                 "reasonCode",
                 "settlementCycle",
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "fileName",
                 "batchId",
                 amount,
@@ -464,8 +464,8 @@ class EntityMapperTest {
         val entity = BPSRoutingRecord(
                 "schemeId",
                 "reachableBic",
-                ZonedDateTime.now(),
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "currency"
         )
         val result = MAPPER.toEntity(entity)
@@ -494,7 +494,7 @@ class EntityMapperTest {
                 "postSettlementAckGenerationLevel",
                 BigDecimal.ONE,
                 listOf(0.12, 0.25),
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 bpsApprovingUser
         )
         val result = MAPPER.toEntity(entity)
@@ -773,8 +773,8 @@ class EntityMapperTest {
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.COMPLETED,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         )
         val result = MAPPER.toEntity(bps)
         assertThat(result.cycleCode).isEqualTo(bps.cycleCode)
@@ -813,7 +813,7 @@ class EntityMapperTest {
                 listOf(bpsCycle)
         )
         val bps = BPSSettlementSchedule(
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 listOf(scheduleDayDetails)
         )
         val result = MAPPER.toEntity(bps)

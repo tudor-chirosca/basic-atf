@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.time.ZoneId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ class ValidationFacadeImplTest {
 
     @Test
     fun `should invoke validation service and presenter with current date`() {
-        val currentDate = ZonedDateTime.now()
+        val currentDate = ZonedDateTime.now(ZoneId.of("UTC"))
         val validationApproval = ValidationApproval(true, currentDate)
         val validationApprovalDto = ValidationApprovalDto(true, currentDate)
 

@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.dto.report
 
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
+import java.time.ZoneId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,7 +26,7 @@ class ReportsSearchRequestValidation {
 
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
-        val older = ZonedDateTime.now().minusDays(
+        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString()
         request.setDate_from(older)
 
@@ -37,7 +38,7 @@ class ReportsSearchRequestValidation {
 
     @Test
     fun `should pass on less then DAYS_LIMIT`() {
-        val older = ZonedDateTime.now().minusDays(
+        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())-1).toString()
         request.setDate_from(older)
 

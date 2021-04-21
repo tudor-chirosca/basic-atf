@@ -21,6 +21,7 @@ import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.time.ZoneId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -138,7 +139,7 @@ open class SettlementDashboardFacadeImplTest {
                 .bic("HANDSESS")
                 .fundingBic("NDEASESSXXX")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(ZonedDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
                 .participantType(ParticipantType.FUNDED)
                 .build()
@@ -171,7 +172,7 @@ open class SettlementDashboardFacadeImplTest {
                 .bic("HANDSESS")
                 .fundingBic("NDEASESSXXX")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(ZonedDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
                 .participantType(ParticipantType.FUNDED)
                 .build()
@@ -210,7 +211,7 @@ open class SettlementDashboardFacadeImplTest {
                 .bic("HANDSESS")
                 .fundingBic("NDEASESSXXX")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(ZonedDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
                 .participantType(ParticipantType.DIRECT)
                 .build()

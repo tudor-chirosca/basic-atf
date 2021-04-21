@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class MockParticipants {
@@ -24,7 +25,7 @@ class MockParticipants {
                 .id("HANDSESS")
                 .bic("HANDSESS")
                 .name("Svenska Handelsbanken")
-                .suspendedTime(ZonedDateTime.now().plusDays(15))
+                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                 .status(ParticipantStatus.SUSPENDED)
                 .participantType(ParticipantType.DIRECT)
                 .build()
@@ -45,7 +46,7 @@ class MockParticipants {
                     .bic("HANDSESS")
                     .fundingBic("NDEASESSXXX")
                     .name("Svenska Handelsbanken")
-                    .suspendedTime(ZonedDateTime.now().plusDays(15))
+                    .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                     .status(ParticipantStatus.SUSPENDED)
                     .participantType(ParticipantType.DIRECT)
                     .build()

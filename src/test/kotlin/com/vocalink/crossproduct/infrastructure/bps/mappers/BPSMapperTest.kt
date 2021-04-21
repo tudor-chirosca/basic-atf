@@ -126,7 +126,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSAlertSearchRequest fields`() {
         val criteria = AlertSearchCriteria(
-                0, 20, listOf("priority"), ZonedDateTime.now(), null,
+                0, 20, listOf("priority"), ZonedDateTime.now(ZoneId.of("UTC")), null,
                 listOf("types"), listOf("entities"), "alertId", listOf("sort")
         )
         val request = BPSMAPPER.toBps(criteria)

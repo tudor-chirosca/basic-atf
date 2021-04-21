@@ -20,6 +20,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
@@ -83,7 +84,7 @@ class ReferencesServiceFacadeImplTest {
                         .bic("HANDSESS")
                         .fundingBic("NDEASESSXXX")
                         .name("Svenska Handelsbanken")
-                        .suspendedTime(ZonedDateTime.now().plusDays(15))
+                        .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                         .status(ParticipantStatus.SUSPENDED)
                         .participantType(ParticipantType.DIRECT)
                         .schemeCode("P27-SEK")
@@ -134,15 +135,15 @@ class ReferencesServiceFacadeImplTest {
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.OPEN,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         ), DayCycle(
                 "cycleCode",
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.COMPLETED,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         ))
         val captor = argumentCaptor<List<DayCycle>>()
         `when`(cycleRepository.findByDate(date))
@@ -167,15 +168,15 @@ class ReferencesServiceFacadeImplTest {
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.OPEN,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         ), DayCycle(
                 "cycleCode",
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.COMPLETED,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         ))
         `when`(cycleRepository.findByDate(date))
                 .thenReturn(cycles)

@@ -9,6 +9,7 @@ import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -24,7 +25,7 @@ public class AlertSearchRequest implements Serializable {
   private List<String> priorities;
   @ValidFromDate
   @Setter(AccessLevel.PRIVATE)
-  private ZonedDateTime dateFrom = ZonedDateTime.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
+  private ZonedDateTime dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(parseLong(getDefault(DAYS_LIMIT)));
   @Setter(AccessLevel.PRIVATE)
   private ZonedDateTime dateTo;
   private List<String> types;

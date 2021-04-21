@@ -533,8 +533,8 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should fail with 200 with all parameters specified in request`() {
-        val fromDate = ZonedDateTime.now().toString()
-        val toDate = ZonedDateTime.now().minusDays(5).toString()
+        val fromDate = ZonedDateTime.now(ZoneId.of("UTC")).toString()
+        val toDate = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5).toString()
 
         `when`(approvalFacade.getApprovals(any(), any(), any()))
                 .thenReturn(PageDto(0, null))

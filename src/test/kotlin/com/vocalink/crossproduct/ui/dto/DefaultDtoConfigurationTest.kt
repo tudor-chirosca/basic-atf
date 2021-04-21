@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
+import java.time.ZoneId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
@@ -17,7 +18,7 @@ class DefaultDtoConfigurationTest {
         val alertSearchParams = AlertSearchRequest()
 
         val default30Days =
-            ZonedDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+            ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
         assertThat(alertSearchParams.limit).isEqualTo(20)
         assertThat(alertSearchParams.offset).isEqualTo(0)
         assertThat(alertSearchParams.dateFrom.toLocalDate()).isEqualTo(default30Days.toLocalDate())
@@ -43,7 +44,7 @@ class DefaultDtoConfigurationTest {
     fun `should load default properties for reports request`() {
         val reportsSearchRequest = ReportsSearchRequest()
 
-        val default30Days = ZonedDateTime.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+        val default30Days = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
         assertThat(reportsSearchRequest.limit).isEqualTo(20)
         assertThat(reportsSearchRequest.offset).isEqualTo(0)
         assertThat(reportsSearchRequest.dateFrom.toLocalDate()).isEqualTo(default30Days.toLocalDate())

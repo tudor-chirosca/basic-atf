@@ -138,7 +138,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map Alerts fields`() {
-        val dateRaised = ZonedDateTime.now()
+        val dateRaised = ZonedDateTime.now(ZoneId.of("UTC"))
         val alert = Alert.builder()
                 .alertId(3141)
                 .priority(AlertPriorityType.HIGH)
@@ -929,8 +929,8 @@ class DTOMapperTest {
         val participants = Page<Participant>(1, listOf(participant))
         val routingRecords = RoutingRecord(
                 "reachableBic",
-                ZonedDateTime.now(),
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "currency"
         )
         participant.reachableBics = listOf(routingRecords)
@@ -974,8 +974,8 @@ class DTOMapperTest {
     fun `should map RoutingRecordDto fields`() {
         val entity = RoutingRecord(
                 "reachableBic",
-                ZonedDateTime.now(),
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 "currency"
         )
         val result = MAPPER.toDto(entity)
@@ -1028,7 +1028,7 @@ class DTOMapperTest {
                 "postSettlementAckGenerationLevel",
                 BigDecimal.ONE,
                 listOf(0.12, 0.25),
-                ZonedDateTime.now(),
+                ZonedDateTime.now(ZoneId.of("UTC")),
                 approvalUser
         )
         val account = Account("partyCode", 234, "iban")
@@ -1108,8 +1108,8 @@ class DTOMapperTest {
                 "sessionCode",
                 "sessionInstanceId",
                 CycleStatus.COMPLETED,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC"))
         )
         val result = MAPPER.toDto(entity)
         assertThat(result.id).isEqualTo(entity.sessionInstanceId)
@@ -1155,7 +1155,7 @@ class DTOMapperTest {
         val participantId = "HANDSESS"
         val fundingBic = "NDEASESSXXX"
         val participantName = "Svenska Handelsbanken"
-        val dateTime = ZonedDateTime.now()
+        val dateTime = ZonedDateTime.now(ZoneId.of("UTC"))
         val permission = "read.alerts-dashboard"
         val participant = Participant.builder()
                 .id(participantId)

@@ -9,6 +9,7 @@ import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidSort;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class ApprovalSearchRequest {
   private int limit = parseInt(getDefault(LIMIT));
   private String jobId;
   @ValidFromDate
-  private ZonedDateTime fromDate = ZonedDateTime.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
+  private ZonedDateTime fromDate = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(parseLong(getDefault(DAYS_LIMIT)));
   private ZonedDateTime toDate;
   private List<String> participantIds;
   private List<String> requestTypes;

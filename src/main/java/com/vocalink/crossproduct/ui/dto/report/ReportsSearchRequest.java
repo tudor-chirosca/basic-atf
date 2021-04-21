@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -26,7 +27,7 @@ public class ReportsSearchRequest {
   private String id;
   @ValidFromDate
   @Setter(AccessLevel.PRIVATE)
-  private ZonedDateTime dateFrom = ZonedDateTime.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
+  private ZonedDateTime dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(parseLong(getDefault(DAYS_LIMIT)));
   @Setter(AccessLevel.PRIVATE)
   private ZonedDateTime dateTo;
 
