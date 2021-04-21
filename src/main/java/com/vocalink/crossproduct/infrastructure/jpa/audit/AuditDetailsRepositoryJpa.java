@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,15 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
 
   List<AuditDetailsJpa> findAllByParticipantId(String id);
 
-  Optional<AuditDetailsJpa> findByUsername(String name);
+  @Query("SELECT "
+      + "distinct "
+      + "a.username AS username, "
+      + "a.firstName AS firstName, "
+      + "a.lastName AS lastName, "
+      + "a.participantId AS participantId "
+      + "FROM AuditDetailsJpa AS a "
+      + "WHERE a.username = :name ")
+  UserDetailsView findByUsername(String name);
 
   @Query("SELECT"
       + "    a.id AS id,"

@@ -104,9 +104,11 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
 
   @Override
   public AuditDetails getAuditDetailsByUsername(String name) {
-    return MAPPER.toEntity(auditDetailsRepository.findByUsername(name)
-        .orElseThrow(() -> new EntityNotFoundException(
-            "No audit details found by user name: " + name)));
+    final AuditDetails auditDetails = MAPPER.toEntity(auditDetailsRepository.findByUsername(name));
+    if (auditDetails == null) {
+      throw new EntityNotFoundException("No auditDetails with user name: " + name);
+    }
+    return auditDetails;
   }
 
   @Override

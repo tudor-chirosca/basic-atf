@@ -4,6 +4,8 @@ import com.vocalink.crossproduct.ui.controllers.api.UserApi;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.facade.api.UserFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -30,10 +32,10 @@ public class UserController implements UserApi {
       final HttpServletRequest request) {
     final String userId = request.getHeader(X_USER_ID_HEADER);
     final String participantId = request.getHeader(X_PARTICIPANT_ID_HEADER);
-    final String role = request.getHeader(X_ROLES_HEADER);
+    final List<String> roles = Arrays.asList(request.getHeader(X_ROLES_HEADER).split("\\s*,\\s*"));
 
     CurrentUserInfoDto currentUserInfoDto = userFacade
-        .getCurrentUserInfo(context, clientType, userId, participantId, role);
+        .getCurrentUserInfo(context, clientType, userId, participantId, roles);
 
     return ResponseEntity.ok(currentUserInfoDto);
   }

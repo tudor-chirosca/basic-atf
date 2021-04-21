@@ -94,7 +94,7 @@ class UserFacadeImplTest {
         `when`(uiPresenter.presentCurrentUserInfo(participant, listOf(uiPermission), auditDetails))
                 .thenReturn(userPermissionDto)
 
-        val result = userPermissionFacadeImpl.getCurrentUserInfo(CONTEXT, UI, userId, participantId, role)
+        val result = userPermissionFacadeImpl.getCurrentUserInfo(CONTEXT, UI, userId, participantId, listOf(role))
 
         verify(participantRepository).findById(any())
         verify(uiPermissionRepository).findByRolesAndParticipantType(any(), any())

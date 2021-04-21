@@ -12,8 +12,6 @@ public class Role {
   private final Function function;
 
   public enum Function {
-    SCHEME_READ_ONLY,
-    SCHEME_MANAGEMENT,
     MANAGEMENT,
     CLEARING,
     SETTLEMENT,

@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.facade;
 
-import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
@@ -24,13 +24,13 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   public CurrentUserInfoDto getCurrentUserInfo(String product, ClientType clientType,
-      String userId, String participantId, String role) {
+      String userId, String participantId, List<String> roles) {
 
     final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);
 
     final List<UIPermission> uiPermissions = repositoryFactory.getUIPermissionRepository()
-        .findByRolesAndParticipantType(singletonList(Function.valueOf(role)),
+        .findByRolesAndParticipantType(roles.stream().map(Function::valueOf).collect(toList()),
             participant.getParticipantType());
 
     final AuditDetails auditDetails = repositoryFactory.getAuditDetailsRepository(product)
