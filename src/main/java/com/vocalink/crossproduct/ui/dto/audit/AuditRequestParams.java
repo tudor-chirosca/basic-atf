@@ -3,6 +3,9 @@ package com.vocalink.crossproduct.ui.dto.audit;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,9 +22,9 @@ public class AuditRequestParams {
   private int limit;
   @ValidFromDate
   @Setter(AccessLevel.PRIVATE)
-  private LocalDate dateFrom;
+  private ZonedDateTime dateFrom;
   @Setter(AccessLevel.PRIVATE)
-  private LocalDate dateTo;
+  private ZonedDateTime dateTo;
   private String participant;
   private String user;
   @Setter(AccessLevel.PRIVATE)
@@ -29,11 +32,11 @@ public class AuditRequestParams {
   private List<String> sort;
 
   public void setDate_from(String dateFrom) {
-    this.dateFrom = LocalDate.parse(dateFrom);
+    this.dateFrom = ZonedDateTime.of(LocalDate.parse(dateFrom), LocalTime.MIN, ZoneId.of("UTC"));
   }
 
   public void setDate_to(String dateTo) {
-    this.dateTo = LocalDate.parse(dateTo);
+    this.dateTo = ZonedDateTime.of(LocalDate.parse(dateTo), LocalTime.MAX, ZoneId.of("UTC"));
   }
 
   public void setEvent_types(List<String> events) {
