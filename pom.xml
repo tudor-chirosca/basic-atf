@@ -32,6 +32,7 @@
     <maven-assembly.version>3.3.0</maven-assembly.version>
     <ojdbc8.version>19.3.0.0</ojdbc8.version>
     <guava.version>29.0-jre</guava.version>
+    <togglz.version>2.6.1.Final</togglz.version>
   </properties>
 
   <dependencies>
@@ -120,6 +121,26 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator.version}</version>
+    </dependency>
+
+    <!-- Feature toggling-->
+
+    <dependency>
+      <groupId>org.togglz</groupId>
+      <artifactId>togglz-spring-boot-starter</artifactId>
+      <version>${togglz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.togglz</groupId>
+      <artifactId>togglz-testing</artifactId>
+      <version>${togglz.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.togglz</groupId>
+      <artifactId>togglz-junit5</artifactId>
+      <version>${togglz.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <!--    Testing-->

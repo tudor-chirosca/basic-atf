@@ -9,8 +9,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.valueOf;
 
+import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import com.vocalink.crossproduct.ui.aspects.Auditable;
 import com.vocalink.crossproduct.ui.aspects.Positions;
+import com.vocalink.crossproduct.ui.config.ControllerFeatures;
 import com.vocalink.crossproduct.ui.controllers.api.FilesApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
@@ -57,6 +59,12 @@ public class FilesController implements FilesApi {
       final @PathVariable String id, HttpServletRequest request) {
 
     final MediaType mediaType = valueOf(request.getHeader(ACCEPT_HEADER));
+
+    if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM) &&
+        !ControllerFeatures.FILE_DOWNLOAD.isActive()) {
+      throw new ClientRequestException(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+          "MediaType not supported: " + mediaType);
+    }
 
     if (mediaType.isCompatibleWith(APPLICATION_JSON)) {
       return ResponseEntity.ok(filesFacade.getDetailsById(context, clientType, id));

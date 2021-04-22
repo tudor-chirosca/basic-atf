@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.config.ControllerFeatures
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -30,6 +31,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.togglz.junit5.AllDisabled
+import org.togglz.junit5.AllEnabled
 
 @WebMvcTest(FilesController::class)
 @ContextConfiguration(classes=[TestConfig::class])
@@ -296,7 +299,22 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should return 200 on download file by Id`() {
+    @AllDisabled(ControllerFeatures::class)
+    fun `should return 415 on download file by Id when file download is disabled`() {
+        val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
+        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
+        `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
+        mockMvc.perform(get("/enquiry/files/$id")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isUnsupportedMediaType)
+    }
+
+    @Test
+    @AllEnabled(ControllerFeatures::class)
+    fun `should return 415 on download file by Id when file download is enabled`() {
         val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
         val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
         `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
