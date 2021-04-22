@@ -51,6 +51,7 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
@@ -374,7 +375,8 @@ public interface EntityMapper {
       @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
       @Mapping(target = "organizationId", source = "partyExternalIdentifier"),
       @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
-      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus"),
+      @Mapping(target = "suspensionLevel", source = "suspensionLevel", qualifiedByName = "toSuspensionLevelType"),
   })
   Participant toEntity(BPSParticipant bpsParticipant);
 
@@ -386,7 +388,8 @@ public interface EntityMapper {
       @Mapping(target = "suspendedTime", source = "effectiveTillDate"),
       @Mapping(target = "organizationId", source = "partyExternalIdentifier"),
       @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
-      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus")
+      @Mapping(target = "status", source = "status", qualifiedByName = "convertParticipantStatus"),
+      @Mapping(target = "suspensionLevel", source = "suspensionLevel", qualifiedByName = "toSuspensionLevelType")
   })
   Participant toEntity(BPSManagedParticipant bpsParticipant);
 
@@ -398,6 +401,14 @@ public interface EntityMapper {
   @Named("convertParticipantStatus")
   default ParticipantStatus convertParticipantStatus(String participantStatus) {
     return ParticipantStatus.valueOf(participantStatus);
+  }
+
+  @Named("toSuspensionLevelType")
+  default SuspensionLevel toSuspensionLevelType(String suspensionLevel) {
+    if (suspensionLevel == null) {
+      return null;
+    }
+    return SuspensionLevel.valueOf(suspensionLevel.replaceAll("[+-]", "_"));
   }
 
   BroadcastsSearchCriteria toEntity(BroadcastsSearchParameters parameters);

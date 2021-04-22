@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -24,7 +25,9 @@ public class ManagedParticipantDetailsDto {
   private final ZonedDateTime suspendedTime;
   private final ParticipantType participantType;
   private final String organizationId;
-  private final Boolean hasActiveSuspensionRequests = Boolean.FALSE;
+  private final Boolean hasActiveSuspensionRequests;
+  @JsonInclude(Include.NON_EMPTY)
+  private final SuspensionLevel suspensionLevel;
   @JsonInclude(Include.NON_EMPTY)
   private final String tpspName;
   @JsonInclude(Include.NON_EMPTY)

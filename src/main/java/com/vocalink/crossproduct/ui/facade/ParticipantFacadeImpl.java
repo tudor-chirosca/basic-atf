@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -9,6 +11,10 @@ import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.account.Account;
+import com.vocalink.crossproduct.domain.approval.Approval;
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
@@ -61,6 +67,17 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
       String bic) {
     log.info("Fetching managed participant details for: {}, from: {}", bic, product);
 
+    final ApprovalSearchCriteria criteria = ApprovalSearchCriteria.builder()
+        .limit(1)
+        .statuses(singletonList(ApprovalStatus.PENDING))
+        .requestTypes(asList(ApprovalRequestType.PARTICIPANT_SUSPEND,
+            ApprovalRequestType.PARTICIPANT_UNSUSPEND))
+        .participantIds(singletonList(bic))
+        .build();
+
+    final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
+        .findPaginated(criteria).getItems();
+
     final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(bic);
     setFundedParticipants(participant, product);
@@ -77,11 +94,12 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
           .findById(participant.getFundingBic());
 
       return presenterFactory.getPresenter(clientType)
-          .presentManagedParticipantDetails(participant, configuration, fundingParticipant, account);
+          .presentManagedParticipantDetails(participant, configuration, fundingParticipant,
+              account, approvals);
     }
 
     return presenterFactory.getPresenter(clientType)
-        .presentManagedParticipantDetails(participant, configuration, account);
+        .presentManagedParticipantDetails(participant, configuration, account, approvals);
   }
 
   private void setFundedParticipants(Participant participant, String product) {

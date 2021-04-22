@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.math.BigDecimal
 import java.time.Month
@@ -81,6 +82,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
             "participantName": "Svenska Handelsbanken",
             "rcvngParticipantConnectionId": "NDEASESSXXX",
             "participantConnectionId": "NDEASESSXXX",
+            "suspensionLevel": "SELF",
             "partyExternalIdentifier": "77777777"
         }],
         "summary": {
@@ -224,6 +226,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         assertThat(items[1].bic).isEqualTo("HANDSESS")
         assertThat(items[1].id).isEqualTo("HANDSESS")
         assertThat(items[1].name).isEqualTo("Svenska Handelsbanken")
+        assertThat(items[1].suspensionLevel).isEqualTo(SuspensionLevel.SELF)
         assertThat(items[1].status).isEqualTo(ParticipantStatus.SUSPENDED)
         assertThat(items[1].suspendedTime).isNotNull()
     }

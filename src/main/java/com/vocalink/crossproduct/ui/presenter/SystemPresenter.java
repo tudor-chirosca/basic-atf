@@ -256,13 +256,14 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account) {
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
+      List<Approval> approvals) {
     throw new RuntimeException("System API not implemented yet");
   }
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account) {
+      ParticipantConfiguration configuration, Account account, List<Approval> approvals) {
     throw new RuntimeException("System API not implemented yet");
   }
 

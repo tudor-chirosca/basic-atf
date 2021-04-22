@@ -443,14 +443,15 @@ public class UIPresenter implements Presenter {
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account) {
-    return MAPPER.toDto(participant, configuration, fundingParticipant, account);
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
+      List<Approval> approvals) {
+    return MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals);
   }
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account) {
-    return MAPPER.toDto(participant, configuration, account);
+      ParticipantConfiguration configuration, Account account, List<Approval> approvals) {
+    return MAPPER.toDto(participant, configuration, account, approvals);
   }
 
   @Override

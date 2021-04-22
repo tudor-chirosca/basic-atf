@@ -499,20 +499,23 @@ public interface DTOMapper {
       @Mapping(target = "status", source = "participant.status"),
       @Mapping(target = "suspendedTime", source = "participant.suspendedTime"),
       @Mapping(target = "participantType", source = "participant.participantType"),
+      @Mapping(target = "suspensionLevel", source = "participant.suspensionLevel"),
       @Mapping(target = "organizationId", source = "participant.organizationId"),
       @Mapping(target = "tpspName", source = "participant.tpspName"),
       @Mapping(target = "tpspId", source = "participant.tpspId"),
-      @Mapping(target = "fundingParticipant", source = "fundingParticipant"),
       @Mapping(target = "fundedParticipants", source = "participant.fundedParticipants"),
+      @Mapping(target = "fundingParticipant", source = "fundingParticipant"),
       @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
       @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
       @Mapping(target = "debitCapLimitThresholds", source = "configuration.debitCapLimitThresholds"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
       @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
+      @Mapping(target = "hasActiveSuspensionRequests", source = "approvals", qualifiedByName = "setHasActiveSuspensionRequests")
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account);
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
+      List<Approval> approvals);
 
   @Mappings({
       @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
@@ -520,9 +523,15 @@ public interface DTOMapper {
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
       @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
+      @Mapping(target = "hasActiveSuspensionRequests", source = "approvals", qualifiedByName = "setHasActiveSuspensionRequests")
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
-      ParticipantConfiguration configuration, Account account);
+      ParticipantConfiguration configuration, Account account, List<Approval> approvals);
+
+  @Named("setHasActiveSuspensionRequests")
+  default Boolean setHasActiveSuspensionRequests(List<Approval> approvals) {
+    return !approvals.isEmpty();
+  }
 
   @Mappings({
       @Mapping(target = "id", source = "userId"),

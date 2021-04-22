@@ -162,10 +162,11 @@ public interface Presenter {
   PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords);
 
   ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account);
+      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
+      List<Approval> approvals);
 
   ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account);
+      ParticipantConfiguration configuration, Account account, List<Approval> approvals);
 
   PageDto<ReportDto> presentReports(Page<Report> reports);
 

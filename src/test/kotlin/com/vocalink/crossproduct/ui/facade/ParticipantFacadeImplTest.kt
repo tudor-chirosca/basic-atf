@@ -5,6 +5,8 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
+import com.vocalink.crossproduct.domain.approval.Approval
+import com.vocalink.crossproduct.domain.approval.ApprovalRepository
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
@@ -22,8 +24,8 @@ import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.ArgumentMatchers.notNull
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.atMost
@@ -34,6 +36,7 @@ class ParticipantFacadeImplTest {
 
     private val participantRepository = mock(ParticipantRepository::class.java)
     private val accountRepository = mock(AccountRepository::class.java)
+    private val approvalRepository = mock(ApprovalRepository::class.java)
     private val routingRecordRepository = mock(RoutingRepository::class.java)
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
@@ -52,6 +55,8 @@ class ParticipantFacadeImplTest {
                 .thenReturn(accountRepository)
         `when`(repositoryFactory.getRoutingRepository(anyString()))
                 .thenReturn(routingRecordRepository)
+        `when`(repositoryFactory.getApprovalRepository(anyString()))
+                .thenReturn(approvalRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
     }
@@ -61,7 +66,7 @@ class ParticipantFacadeImplTest {
         val page = Page<Participant>(1, listOf(Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDING, null,
                 null, null, null, null, null,
-                null)))
+                null, null)))
         val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, 0, null)))
@@ -75,7 +80,7 @@ class ParticipantFacadeImplTest {
                 .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null))))
+                        null, null, null))))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -96,7 +101,7 @@ class ParticipantFacadeImplTest {
         val page = Page<Participant>(1, listOf(Participant(null, bic, null,
                 null, null, null, ParticipantType.FUNDING, null,
                 null, null, null, null, null,
-                null)))
+                null, null)))
         val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, 0, null)))
@@ -114,7 +119,7 @@ class ParticipantFacadeImplTest {
                 .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null))))
+                        null, null, null))))
 
         `when`(routingRecordRepository.findAllByBic(any()))
                 .thenReturn(listOf(routingRecord))
@@ -138,7 +143,7 @@ class ParticipantFacadeImplTest {
         val page = Page<Participant>(1, listOf(Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDED, null,
                 null, null, null, null, null,
-                null)))
+                null, null)))
         val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, 0, null)))
@@ -151,7 +156,7 @@ class ParticipantFacadeImplTest {
                 .thenReturn(Page(1, listOf(Participant(null, null, null,
                         null, null, null, null, null,
                         null, null, null, null,
-                        null, null))))
+                        null, null, null))))
 
         `when`(uiPresenter.presentManagedParticipants(any()))
                 .thenReturn(pageDto)
@@ -170,19 +175,79 @@ class ParticipantFacadeImplTest {
         val participant = Participant(null, null, null,
                 null, null, null, ParticipantType.FUNDED, null,
                 null, null, null, null, null,
-                null)
+                null, null)
         val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null, null, null, null)
+                null, null, null, null,
+                null, null)
         val account = Account(null, null, null)
         val configuration = ParticipantConfiguration(null, null,
                 null, null, null, null,
                 null, null, null,
+                null, null, null,
+                null, null, null)
+
+        `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
+                        null, null, null, null, null,
+                        null, null, null, null,
+                        null, null, null))))
+
+        `when`(approvalRepository.findPaginated(any()))
+                .thenReturn(Page(0, emptyList()))
+
+        `when`(participantRepository.findById(any()))
+                .thenReturn(participant)
+
+        `when`(accountRepository.findByPartyCode(any()))
+                .thenReturn(account)
+
+        `when`(participantRepository.findConfigurationById(any()))
+                .thenReturn(configuration)
+
+        `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any(), any(), any()))
+                .thenReturn(managedDetailsDto)
+
+        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
+
+        verify(participantRepository, atLeast(2)).findById(any())
+        verify(accountRepository).findByPartyCode(any())
+        verify(presenterFactory).getPresenter(any())
+        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any(), any(), any())
+        verify(participantRepository).findConfigurationById(any())
+
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `should invoke repository getParticipantById once on FUNDING participants`() {
+        val participant = Participant(null, null, null,
+                null, null, null, ParticipantType.FUNDING, null,
+                null, null, null, null, null,
+                null, null)
+        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
                 null, null, null, null,
-                null, null
-        )
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null)
+        val account = Account(null, null, null)
+        val configuration = ParticipantConfiguration(null, null,
+                null, null, null, null,
+                null, null, null,
+                null, null, null,
+                null, null, null)
+
+        `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
+                .thenReturn(Page(1, listOf(Participant(null, null, null,
+                        null, null, null, null, null,
+                        null, null, null, null,
+                        null, null, null))))
+
+        `when`(approvalRepository.findPaginated(any()))
+                .thenReturn(Page(0, emptyList()))
 
         `when`(participantRepository.findById(any()))
                 .thenReturn(participant)
@@ -198,57 +263,10 @@ class ParticipantFacadeImplTest {
 
         val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
 
-        verify(participantRepository, atLeast(2)).findById(any())
-        verify(accountRepository).findByPartyCode(any())
-        verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any(), any())
-        verify(participantRepository).findConfigurationById(any())
-
-        assertNotNull(result)
-    }
-
-    @Test
-    fun `should invoke repository getParticipantById once on FUNDED participants`() {
-        val participant = Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null,
-                null)
-        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null)
-        val account = Account(null, null, null)
-        val configuration = ParticipantConfiguration(null, null,
-                null, null, null, null,
-                null, null, null,
-                null, null, null,
-                null, null, null)
-
-        `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
-                        null, null, null, null,
-                        null, null))))
-
-        `when`(participantRepository.findById(any()))
-                .thenReturn(participant)
-
-        `when`(accountRepository.findByPartyCode(any()))
-                .thenReturn(account)
-
-        `when`(participantRepository.findConfigurationById(any()))
-                .thenReturn(configuration)
-
-        `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any()))
-                .thenReturn(managedDetailsDto)
-
-        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
-
         verify(participantRepository, atMost(1)).findById(any())
         verify(accountRepository).findByPartyCode(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any())
+        verify(uiPresenter).presentManagedParticipantDetails(any(), any(), any(), any())
         verify(participantRepository).findConfigurationById(any())
 
         assertNotNull(result)

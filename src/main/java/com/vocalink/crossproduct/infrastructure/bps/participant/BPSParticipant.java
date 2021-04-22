@@ -20,6 +20,7 @@ public class BPSParticipant {
   private final String participantName;
   private final String rcvngParticipantConnectionId;
   private final String participantConnectionId;
+  private final String suspensionLevel;
   private final String partyExternalIdentifier;
 
   @JsonCreator
@@ -36,6 +37,7 @@ public class BPSParticipant {
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
       @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId,
+      @JsonProperty(value = "suspensionLevel") String suspensionLevel,
       @JsonProperty(value = "partyExternalIdentifier") String partyExternalIdentifier) {
     this.schemeCode = schemeCode;
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
@@ -49,6 +51,7 @@ public class BPSParticipant {
     this.participantName = participantName;
     this.rcvngParticipantConnectionId = rcvngParticipantConnectionId;
     this.participantConnectionId = participantConnectionId;
+    this.suspensionLevel = suspensionLevel;
     this.partyExternalIdentifier = partyExternalIdentifier;
   }
 }

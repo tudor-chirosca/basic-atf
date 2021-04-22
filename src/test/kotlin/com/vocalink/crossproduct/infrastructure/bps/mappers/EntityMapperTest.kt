@@ -9,6 +9,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
@@ -206,6 +207,7 @@ class EntityMapperTest {
                 "participantName",
                 "rcvngParticipantConnectionId",
                 "participantConnectionId",
+                "SCHEME",
                 "organizationId"
         )
         val entity = MAPPER.toEntity(bps)
@@ -216,6 +218,7 @@ class EntityMapperTest {
         assertThat(entity.participantType).isEqualTo(ParticipantType.FUNDED)
         assertThat(entity.suspendedTime).isEqualTo(bps.effectiveTillDate)
         assertThat(entity.fundingBic).isEqualTo(bps.connectingParty)
+        assertThat(entity.suspensionLevel).isEqualTo(SuspensionLevel.SCHEME)
         assertThat(entity.schemeCode).isEqualTo(bps.schemeCode)
     }
 
@@ -329,6 +332,7 @@ class EntityMapperTest {
                 "participantName",
                 "rcvngParticipantConnectionId",
                 "participantConnectionId",
+                "SELF",
                 "organizationId"
         )
         val bps = BPSAlert(
@@ -344,6 +348,7 @@ class EntityMapperTest {
         assertThat(entity.entities[0].participantType).isEqualTo(ParticipantType.DIRECT)
         assertThat(entity.entities[0].fundingBic).isEqualTo(bps.entities[0].connectingParty)
         assertThat(entity.entities[0].schemeCode).isEqualTo(bps.entities[0].schemeCode)
+        assertThat(entity.entities[0].suspensionLevel).isEqualTo(SuspensionLevel.SELF)
     }
 
     @Test
@@ -745,6 +750,7 @@ class EntityMapperTest {
                 ParticipantType.FUNDED,
                 null,
                 "organizationId",
+                null,
                 null,
                 null,
                 null,

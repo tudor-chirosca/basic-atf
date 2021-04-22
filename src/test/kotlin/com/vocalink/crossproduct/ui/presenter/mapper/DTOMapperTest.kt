@@ -29,6 +29,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
@@ -51,7 +52,6 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import org.assertj.core.api.Assertions.assertThat
@@ -343,6 +343,7 @@ class DTOMapperTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val counterparty = Participant(
@@ -359,6 +360,7 @@ class DTOMapperTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val settlementCounterparty = Participant(
@@ -371,6 +373,7 @@ class DTOMapperTest {
                 FUNDED,
                 null,
                 "organizationId",
+                null,
                 null,
                 null,
                 null,
@@ -440,6 +443,7 @@ class DTOMapperTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val fundedParticipant = Participant(
@@ -452,6 +456,7 @@ class DTOMapperTest {
                 FUNDED,
                 null,
                 "organizationId",
+                null,
                 null,
                 null,
                 null,
@@ -472,6 +477,7 @@ class DTOMapperTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val settlementCounterparty = Participant(
@@ -484,6 +490,7 @@ class DTOMapperTest {
                 FUNDED,
                 null,
                 "organizationId",
+                null,
                 null,
                 null,
                 null,
@@ -708,6 +715,7 @@ class DTOMapperTest {
                 null,
                 null,
                 null,
+                null,
                 null
         )
         val result = MAPPER.toDto(
@@ -915,12 +923,12 @@ class DTOMapperTest {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
                 null, ACTIVE, null, FUNDING, null,
-                "00002121", "Nordnet Bank", "475347837892",
+                "00002121", SuspensionLevel.SCHEME, "Nordnet Bank", "475347837892",
                 listOf(
                         Participant(
                                 "FORXSES1", "FORXSES1", "Forex Bank", null,
                                 ACTIVE, null, FUNDING, null,
-                                "00002121", "Nordnet Bank", "475347837892",
+                                "00002121", null, "Nordnet Bank", "475347837892",
                                 null, 0, null
                         )
                 ), 1, null
@@ -989,12 +997,17 @@ class DTOMapperTest {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
                 null, ACTIVE, null, FUNDED, null,
-                "00002121", "Nordnet Bank", "475347837892",
-                emptyList(), 1, null
+                "00002121", null, "Nordnet Bank", "475347837892",
+                emptyList(), 1,  null
         )
         val approvalUser = UserDetails(
                 "E23423", "John", "Doe", "FORXSES1"
         )
+        val approvals = listOf(Approval("approvalId", ApprovalRequestType.PARTICIPANT_SUSPEND,
+                listOf("FORXSES1"), ZonedDateTime.now(ZoneId.of("UTC")), approvalUser,
+                null, ApprovalStatus.PENDING, null, "comment",
+                null, null, null, null, null,
+                null, "notes"))
 
         participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant(
@@ -1007,6 +1020,7 @@ class DTOMapperTest {
                 FUNDING,
                 null,
                 "organizationId",
+                null,
                 null,
                 null,
                 null,
@@ -1032,7 +1046,7 @@ class DTOMapperTest {
         )
         val account = Account("partyCode", 234, "iban")
 
-        val result = MAPPER.toDto(participant, configuration, fundingParticipant, account)
+        val result = MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals)
 
         assertThat(result.bic).isEqualTo(participant.bic)
         assertThat(result.name).isEqualTo(participant.name)
@@ -1041,6 +1055,7 @@ class DTOMapperTest {
         assertThat(result.suspendedTime).isEqualTo(participant.suspendedTime)
         assertThat(result.participantType).isEqualTo(participant.participantType.description)
         assertThat(result.organizationId).isEqualTo(participant.organizationId)
+        assertThat(result.hasActiveSuspensionRequests).isEqualTo(true)
         assertThat(result.tpspName).isEqualTo(participant.tpspName)
         assertThat(result.tpspId).isEqualTo(participant.tpspId)
 

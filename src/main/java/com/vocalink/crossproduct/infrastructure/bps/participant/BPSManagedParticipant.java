@@ -20,6 +20,7 @@ public class BPSManagedParticipant {
   private final String participantName;
   private final String rcvngParticipantConnectionId;
   private final String participantConnectionId;
+  private final String suspensionLevel;
   private final String partyExternalIdentifier;
   private final String tpspName;
   private final String tpspId;
@@ -38,6 +39,7 @@ public class BPSManagedParticipant {
       @JsonProperty(value = "participantName", required = true) String participantName,
       @JsonProperty(value = "rcvngParticipantConnectionId", required = true) String rcvngParticipantConnectionId,
       @JsonProperty(value = "participantConnectionId", required = true) String participantConnectionId,
+      @JsonProperty(value = "suspensionLevel") String suspensionLevel,
       @JsonProperty(value = "partyExternalIdentifier") String partyExternalIdentifier,
       @JsonProperty(value = "tpspName") String tpspName,
       @JsonProperty(value = "tpspId") String tpspId) {
@@ -53,6 +55,7 @@ public class BPSManagedParticipant {
     this.participantName = participantName;
     this.rcvngParticipantConnectionId = rcvngParticipantConnectionId;
     this.participantConnectionId = participantConnectionId;
+    this.suspensionLevel = suspensionLevel;
     this.partyExternalIdentifier = partyExternalIdentifier;
     this.tpspName = tpspName;
     this.tpspId = tpspId;

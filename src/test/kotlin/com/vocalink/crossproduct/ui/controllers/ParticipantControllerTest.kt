@@ -66,8 +66,9 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     val items = ManagedParticipantDto("FORXSES1", null, "FORXSES1", "Forex Bank", ParticipantStatus.ACTIVE,
-            null, ParticipantType.FUNDED, "194869924", "Nordnet Bank", "475347837892",
-            null, 0, null)
+            null, ParticipantType.FUNDED, "194869924",
+            "Nordnet Bank", "475347837892", null, 0,
+            null)
 
     @Test
     fun `should return 200 if no criteria specified and return valid response`() {
