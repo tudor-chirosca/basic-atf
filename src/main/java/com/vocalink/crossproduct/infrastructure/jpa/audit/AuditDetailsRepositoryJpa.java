@@ -35,7 +35,7 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
       + "    AND (:dateTo IS NULL OR a.timestamp < :dateTo)"
       + "    AND (:participantId IS NULL OR a.participantId = :participantId)"
       + "    AND (:userId IS NULL OR a.username = :userId)"
-      + "    AND a.userActivityString in :events")
+      + "    AND (COALESCE(:events) IS NULL OR a.userActivityString IN :events)")
   List<AuditDetailsView> getAllByParameters(ZonedDateTime dateFrom, ZonedDateTime dateTo,
       String participantId, String userId, List<String> events, Pageable pageable);
 }
