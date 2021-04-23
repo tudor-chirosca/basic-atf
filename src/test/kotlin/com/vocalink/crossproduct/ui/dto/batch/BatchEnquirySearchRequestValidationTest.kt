@@ -60,18 +60,6 @@ class BatchEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should fail on same sending and receiving bic`() {
-        request.setMsg_direction("Sending")
-        request.setSend_bic("123")
-        request.setRecv_bic("123")
-
-        val result = ArrayList(validator.validate(request))
-
-        assertThat(result).isNotEmpty
-        assertThat(result[0].message).isEqualTo(DIFFERENT_BIC_ERROR)
-    }
-
-    @Test
     fun `should fail on earlier then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
         val older = LocalDate.now().minusDays((getDefault(DtoProperties.DAYS_LIMIT)

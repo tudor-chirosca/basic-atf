@@ -75,13 +75,23 @@ public interface BPSMapper {
   @Mappings({
       @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
       @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
-      @Mapping(target = "sendingParticipant", source = "sendingBic"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
-      @Mapping(target = "receivingParticipant", source = "receivingBic"),
       @Mapping(target = "identifier", source = "id"),
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapBatchSortParams")
   })
   BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
+
+  @AfterMapping
+  default void updateRequest(BatchEnquirySearchCriteria criteria, @MappingTarget BPSBatchEnquirySearchRequest request) {
+    if (criteria.getParticipantBic() == null || criteria.getParticipantBic().isEmpty()) {
+      return;
+    }
+    if (criteria.getMessageDirection().equalsIgnoreCase("sending")) {
+      request.setSendingParticipant(criteria.getParticipantBic());
+    } else {
+      request.setReceivingParticipant(criteria.getParticipantBic());
+    }
+  }
 
   @AfterMapping
   default void updateRequest(@MappingTarget BPSBatchEnquirySearchRequest request) {
@@ -100,12 +110,22 @@ public interface BPSMapper {
       @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
       @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
-      @Mapping(target = "sendingParticipant", source = "sendingBic"),
-      @Mapping(target = "receivingParticipant", source = "receivingBic"),
       @Mapping(target = "identifier", source = "id"),
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapFileSortParams")
   })
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
+
+  @AfterMapping
+  default void updateRequest(FileEnquirySearchCriteria criteria, @MappingTarget BPSFileEnquirySearchRequest request) {
+    if (criteria.getParticipantBic() == null || criteria.getParticipantBic().isEmpty()) {
+      return;
+    }
+    if (criteria.getMessageDirection().equalsIgnoreCase("sending")) {
+      request.setSendingParticipant(criteria.getParticipantBic());
+    } else {
+      request.setReceivingParticipant(criteria.getParticipantBic());
+    }
+  }
 
   @AfterMapping
   default void updateRequest(@MappingTarget BPSFileEnquirySearchRequest request) {

@@ -18,8 +18,7 @@ public class FileEnquirySearchCriteria {
   private final String cycleId;
   private final String messageDirection;
   private final String messageType;
-  private final String sendingBic;
-  private final String receivingBic;
+  private final String participantBic;
   private final String status;
   private final String reasonCode;
   private final String id;

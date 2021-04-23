@@ -164,19 +164,6 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should fail with 400 when send_bic and recv_bic are with same values`() {
-        mockMvc.perform(get("/enquiry/batches")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending")
-                .param("send_bic", "HANDSESS")
-                .param("recv_bic", "HANDSESS"))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("send_bic and recv_bic should not be the same")))
-    }
-
-    @Test
     fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
         val dateFrom = LocalDate.now().minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));

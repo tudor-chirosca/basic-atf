@@ -89,7 +89,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         val request = BatchEnquirySearchCriteria(
                 0, 20, LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 4),
                 null, "Sending", null,  null, null,
-                null, null, null, listOf())
+                null, null, listOf())
 
         val result = batchRepository.findPaginated(request)
 

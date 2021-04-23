@@ -41,8 +41,8 @@ class BPSMapperTest {
     fun `should map BPSBatchEnquirySearchRequest fields and null dates if cycle present`() {
         val request = BatchEnquirySearchCriteria(
                 0, 20, LocalDate.now(), LocalDate.now(),
-                "cycle1", "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
+                "cycle1", "sending", "msg_type",
+                "participant_bic", "status", "reasonCode",
                 null, listOf("id"))
 
         val entity = BPSMAPPER.toBps(request)
@@ -51,8 +51,8 @@ class BPSMapperTest {
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingParticipant).isEqualTo(request.receivingBic)
+        assertThat(entity.sendingParticipant).isEqualTo(request.participantBic)
+        assertThat(entity.receivingParticipant).isNull()
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -62,8 +62,8 @@ class BPSMapperTest {
     fun `should map BPSBatchEnquirySearchRequest fields with dates if cycle id missing`() {
         val request = BatchEnquirySearchCriteria(
                 0, 20, LocalDate.now(), LocalDate.now(),
-                null, "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
+                null, "receiving", "msg_type",
+                "participant_bic", "status", "reasonCode",
                 null, listOf("id"))
 
         val entity = BPSMAPPER.toBps(request)
@@ -72,8 +72,8 @@ class BPSMapperTest {
         assertThat(entity.createdToDate.toLocalDate()).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingParticipant).isEqualTo(request.receivingBic)
+        assertThat(entity.sendingParticipant).isNull()
+        assertThat(entity.receivingParticipant).isEqualTo(request.participantBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -83,8 +83,8 @@ class BPSMapperTest {
     fun `should map BPSFileEnquirySearchRequest fields having cycle id`() {
         val request = FileEnquirySearchCriteria(
                 0, 20, LocalDate.now(), LocalDate.now(),
-                "cycle1", "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
+                "cycle1", "sending", "msg_type",
+                "participant_bic",  "status", "reasonCode",
                 "id", listOf("nrOfBatches"))
 
         val entity = BPSMAPPER.toBps(request)
@@ -94,8 +94,8 @@ class BPSMapperTest {
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingParticipant).isEqualTo(request.receivingBic)
+        assertThat(entity.sendingParticipant).isEqualTo(request.participantBic)
+        assertThat(entity.receivingParticipant).isNull()
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -105,8 +105,8 @@ class BPSMapperTest {
     fun `should map BPSFileEnquirySearchRequest fields not having cycle id`() {
         val request = FileEnquirySearchCriteria(
                 0, 20, LocalDate.now(), LocalDate.now(),
-                null, "msg_direction", "msg_type",
-                "send_bic", "rcvng_bic", "status", "reasonCode",
+                null, "receiving", "msg_type",
+                "participant_bic", "status", "reasonCode",
                 "id", listOf("nrOfBatches"))
 
         val entity = BPSMAPPER.toBps(request)
@@ -116,8 +116,8 @@ class BPSMapperTest {
         assertThat(entity.createdToDate.toLocalDate()).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingParticipant).isEqualTo(request.receivingBic)
+        assertThat(entity.sendingParticipant).isNull()
+        assertThat(entity.receivingParticipant).isEqualTo(request.participantBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)

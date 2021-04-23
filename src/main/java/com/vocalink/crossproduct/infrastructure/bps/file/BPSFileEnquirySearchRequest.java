@@ -21,8 +21,10 @@ public class BPSFileEnquirySearchRequest {
   private final String sessionInstanceId;
   private final String messageDirection;
   private final String messageType;
-  private final String sendingParticipant;
-  private final String receivingParticipant;
+  @Setter
+  private String sendingParticipant;
+  @Setter
+  private String receivingParticipant;
   private final String status;
   private final String reasonCode;
   private final String identifier;

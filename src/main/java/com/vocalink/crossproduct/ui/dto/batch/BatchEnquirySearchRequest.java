@@ -5,7 +5,6 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
-import com.vocalink.crossproduct.ui.validations.NotEqual;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -18,7 +17,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 @ValidSort(sort = "sort", sortingKeys =
     {"id", "createdAt", "senderBic", "messageType", "nrOfTransactions", "status"})
@@ -38,8 +36,7 @@ public class BatchEnquirySearchRequest {
   @ValidDirection
   private String messageDirection;
   private String messageType;
-  private String sendingBic;
-  private String receivingBic;
+  private String participantBic;
   @Setter
   private String status;
   private String reasonCode;
@@ -67,12 +64,8 @@ public class BatchEnquirySearchRequest {
     this.messageType = messageType;
   }
 
-  public void setSend_bic(String sendingBic) {
-    this.sendingBic = sendingBic;
-  }
-
-  public void setRecv_bic(String receivingBic) {
-    this.receivingBic = receivingBic;
+  public void setParticipant_bic(String participantBic) {
+    this.participantBic = participantBic;
   }
 
   public void setReason_code(String reasonCode) {

@@ -598,10 +598,9 @@ class EntityMapperTest {
         request.status = "status"
         request.id = "id"
         request.setDate_to(LocalDate.now().toString())
-        request.setMsg_direction("msg_direction")
+        request.setMsg_direction("sending")
         request.setMsg_type("msg_type")
-        request.setSend_bic("send_bic")
-        request.setRecv_bic("rcvng_bic")
+        request.setParticipant_bic("participant_bic")
         request.setReason_code("reason_code")
         request.setCycle_ids(listOf("cycle1"))
 
@@ -615,8 +614,7 @@ class EntityMapperTest {
         assertThat(entity.cycleId).isEqualTo(request.cycleId)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.participantBic).isEqualTo(request.participantBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
@@ -638,8 +636,7 @@ class EntityMapperTest {
         request.setDate_to(LocalDate.now().toString())
         request.setMsg_direction("msg_direction")
         request.setMsg_type("msg_type")
-        request.setSend_bic("send_bic")
-        request.setRecv_bic("rcvng_bic")
+        request.setParticipant_bic("participant_bic")
         request.setReason_code("reason_code")
         request.setCycle_ids(listOf("cycle1, cycle2"))
 
@@ -651,8 +648,7 @@ class EntityMapperTest {
         assertThat(entity.dateTo).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(entity.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(entity.participantBic).isEqualTo(request.participantBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
