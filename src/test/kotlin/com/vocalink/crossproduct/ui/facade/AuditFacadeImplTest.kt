@@ -64,14 +64,14 @@ class AuditFacadeImplTest {
     fun `should get user details`() {
         `when`(repositoryFactory.getAuditDetailsRepository(PRODUCT))
                 .thenReturn(auditDetailsRepository)
-        `when`(auditDetailsRepository.getAuditDetailsByParticipantId(PARTICIPANT_ID))
+        `when`(auditDetailsRepository.getGetUserReferencesByParticipantId(PARTICIPANT_ID))
                 .thenReturn(AUDIT_DETAILS_LIST)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
 
         val userDetails = auditFacadeImpl.getUserDetails(PRODUCT, CLIENT_TYPE, PARTICIPANT_ID)
 
-        assertThat(USERNAME).isEqualTo(userDetails[0].userName)
+        assertThat(USERNAME).isEqualTo(userDetails[0].username)
     }
 
     @Test

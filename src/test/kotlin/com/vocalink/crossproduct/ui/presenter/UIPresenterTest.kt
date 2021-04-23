@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData
 import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
+import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.io.IODashboard
@@ -375,5 +376,19 @@ class UIPresenterTest {
         assertThat(result[1].isHasReason).isEqualTo(false)
         assertThat(result[1].status).isEqualTo(statuses[1])
         assertThat(result[1].reasonCodes).isEmpty()
+    }
+
+    @Test
+    fun `should present user details`() {
+        val auditDetails = listOf(AuditDetails.builder()
+                .username("username")
+                .firstName("firstName")
+                .lastName("lastName")
+                .build())
+        val userDetails = uiPresenter.presentUserDetails(auditDetails)
+
+        assertThat(userDetails[0].username).isEqualTo(auditDetails[0].username)
+        assertThat(userDetails[0].fullName).contains(auditDetails[0].firstName)
+        assertThat(userDetails[0].fullName).contains(auditDetails[0].lastName)
     }
 }

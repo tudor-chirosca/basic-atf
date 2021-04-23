@@ -42,7 +42,7 @@ public class AuditFacadeImpl implements AuditFacade {
 
     final List<AuditDetails> auditDetails = repositoryFactory
         .getAuditDetailsRepository(product)
-        .getAuditDetailsByParticipantId(participantId);
+        .getGetUserReferencesByParticipantId(participantId);
 
     return presenterFactory.getPresenter(clientType)
         .presentUserDetails(auditDetails);

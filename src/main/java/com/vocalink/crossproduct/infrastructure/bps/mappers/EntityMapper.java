@@ -121,6 +121,7 @@ import com.vocalink.crossproduct.infrastructure.exception.InfrastructureExceptio
 import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsView;
+import com.vocalink.crossproduct.infrastructure.jpa.audit.UserDetailsView;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -531,4 +532,6 @@ public interface EntityMapper {
       @Mapping(target = "responseContent", expression = "java(auditDetailsView.getResponseContent())")
   })
   AuditDetails toEntity(AuditDetailsView auditDetailsView);
+
+  AuditDetails toEntity(UserDetailsView userDetailsView);
 }

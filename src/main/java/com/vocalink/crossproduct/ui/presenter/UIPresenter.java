@@ -7,6 +7,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.account.Account;
@@ -481,7 +482,12 @@ public class UIPresenter implements Presenter {
 
   @Override
   public List<UserDetailsDto> presentUserDetails(List<AuditDetails> details) {
-    return details.stream().map(d -> new UserDetailsDto(d.getUsername())).collect(toList());
+    return details.stream()
+        .map(e -> UserDetailsDto.builder()
+            .username(e.getUsername())
+            .fullName(e.getFirstName() + SPACE + e.getLastName())
+            .build())
+        .collect(toList());
   }
 
   @Override
@@ -547,7 +553,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> uiPermissions,
+  public CurrentUserInfoDto presentCurrentUserInfo(Participant participant,
+      List<UIPermission> uiPermissions,
       AuditDetails auditDetails) {
     final List<String> permissions = uiPermissions.stream()
         .map(UIPermission::getKey)

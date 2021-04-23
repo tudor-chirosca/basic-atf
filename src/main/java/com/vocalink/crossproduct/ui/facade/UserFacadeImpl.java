@@ -34,7 +34,7 @@ public class UserFacadeImpl implements UserFacade {
             participant.getParticipantType());
 
     final AuditDetails auditDetails = repositoryFactory.getAuditDetailsRepository(product)
-        .getAuditDetailsByUserName(userId);
+        .getAuditDetailsByUsername(userId);
 
     return presenterFactory.getPresenter(clientType)
         .presentCurrentUserInfo(participant, uiPermissions, auditDetails);

@@ -103,10 +103,17 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   }
 
   @Override
-  public AuditDetails getAuditDetailsByUserName(String name) {
+  public AuditDetails getAuditDetailsByUsername(String name) {
     return MAPPER.toEntity(auditDetailsRepository.findByUsername(name)
         .orElseThrow(() -> new EntityNotFoundException(
             "No audit details found by user name: " + name)));
+  }
+
+  @Override
+  public List<AuditDetails> getGetUserReferencesByParticipantId(String id) {
+    return auditDetailsRepository.findUserDetailsByParticipantId(id).stream()
+        .map(MAPPER::toEntity)
+        .collect(toList());
   }
 
   private Optional<UserActivityJpa> findActivityByName(String eventName) {

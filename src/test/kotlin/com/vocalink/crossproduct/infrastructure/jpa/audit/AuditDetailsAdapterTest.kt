@@ -61,7 +61,7 @@ open class AuditDetailsAdapterTest {
     fun `should find details by user name`() {
         `when`(repositoryJpa.findByUsername(USER_NAME)).thenReturn(Optional.of(detailsJpa))
 
-        val auditDetails = adapter.getAuditDetailsByUserName(USER_NAME)
+        val auditDetails = adapter.getAuditDetailsByUsername(USER_NAME)
 
         assertThat(auditDetails).isInstanceOf(AuditDetails::class.java)
         assertThat(auditDetails).isNotNull
@@ -117,5 +117,14 @@ open class AuditDetailsAdapterTest {
 
         assertThatExceptionOfType(InfrastructureException::class.java)
                 .isThrownBy { adapter.getAuditDetailsById(id.toString()) }
+    }
+
+    @Test
+    fun `should get user references by participant id`() {
+        val id = "id"
+
+        adapter.getGetUserReferencesByParticipantId(id)
+
+        verify(repositoryJpa, atLeastOnce()).findUserDetailsByParticipantId(id)
     }
 }

@@ -38,4 +38,14 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
       + "    AND (COALESCE(:events) IS NULL OR a.userActivityString IN :events)")
   List<AuditDetailsView> getAllByParameters(ZonedDateTime dateFrom, ZonedDateTime dateTo,
       String participantId, String userId, List<String> events, Pageable pageable);
+
+  @Query("SELECT "
+      + "a.username AS username, "
+      + "a.firstName AS firstName, "
+      + "a.lastName AS lastName, "
+      + "a.participantId AS participantId "
+      + "FROM AuditDetailsJpa AS a "
+      + "WHERE a.participantId = :id "
+      + "GROUP BY a.username, a.firstName, a.lastName, a.participantId")
+  List<UserDetailsView> findUserDetailsByParticipantId(String id);
 }

@@ -11,8 +11,8 @@ import com.vocalink.crossproduct.domain.permission.UIPermission
 import com.vocalink.crossproduct.domain.permission.UIPermissionRepository
 import com.vocalink.crossproduct.domain.role.Role.Function
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
-import com.vocalink.crossproduct.ui.dto.permission.UserInfoDto
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto
+import com.vocalink.crossproduct.ui.dto.permission.UserInfoDto
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -88,7 +88,7 @@ class UserFacadeImplTest {
         `when`(uiPermissionRepository.findByRolesAndParticipantType(listOf(Function.valueOf(role)), FUNDED))
                 .thenReturn(listOf(uiPermission))
 
-        `when`(auditDetailsRepository.getAuditDetailsByUserName(userId))
+        `when`(auditDetailsRepository.getAuditDetailsByUsername(userId))
                 .thenReturn(auditDetails)
 
         `when`(uiPresenter.presentCurrentUserInfo(participant, listOf(uiPermission), auditDetails))
@@ -98,7 +98,7 @@ class UserFacadeImplTest {
 
         verify(participantRepository).findById(any())
         verify(uiPermissionRepository).findByRolesAndParticipantType(any(), any())
-        verify(auditDetailsRepository).getAuditDetailsByUserName(any())
+        verify(auditDetailsRepository).getAuditDetailsByUsername(any())
         verify(uiPresenter).presentCurrentUserInfo(any(), any(), any())
 
         assertThat(result).isNotNull

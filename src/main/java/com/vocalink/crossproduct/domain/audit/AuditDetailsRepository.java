@@ -13,5 +13,7 @@ public interface AuditDetailsRepository extends CrossproductRepository {
 
   void logOperation(Event event, UserDetails userDetails);
 
-  AuditDetails getAuditDetailsByUserName(String name);
+  AuditDetails getAuditDetailsByUsername(String name);
+
+  List<AuditDetails> getGetUserReferencesByParticipantId(String id);
 }
