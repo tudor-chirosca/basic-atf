@@ -48,7 +48,6 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
                   "status": "DEBULKED",
                   "reasonCode": "F001",
                   "settlementCycle": "20201113003",
-                  "settlementDate": "2020-11-13T10:00:28Z",
                   "schemeParticipantIdentifier": "AABASESSXXX"
                 }
             ],
@@ -71,7 +70,6 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
              "status": "Accepted",
              "reasonCode": "F001",
              "settlementCycle": "20201113003",
-             "settlementDate": "2020-11-13T10:00:28Z",
              "schemeParticipantIdentifier": "AABASESSXXX"
         }               
     """
@@ -119,7 +117,6 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         assertThat(result.items[0].status).isEqualTo("DEBULKED")
         assertThat(result.items[0].reasonCode).isEqualTo("F001")
         assertThat(result.items[0].settlementCycle).isEqualTo("20201113003")
-        assertThat(result.items[0].settlementDate).isEqualTo("2020-11-13T10:00:28Z")
         assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("AABASESSXXX")
     }
 

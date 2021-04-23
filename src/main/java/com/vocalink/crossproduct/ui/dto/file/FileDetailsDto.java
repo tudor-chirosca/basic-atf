@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.dto.file;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,6 @@ public class FileDetailsDto {
   private final String fileName;
   private final int nrOfBatches;
   private final long fileSize;
-  private final LocalDate settlementDate;
   private final String settlementCycleId;
   private final ZonedDateTime createdAt;
   private final String status;

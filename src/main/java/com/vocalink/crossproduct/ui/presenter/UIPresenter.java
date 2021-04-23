@@ -266,7 +266,6 @@ public class UIPresenter implements Presenter {
         .fileName(file.getFileName())
         .nrOfBatches(file.getNrOfBatches())
         .fileSize(file.getFileSize())
-        .settlementDate(file.getSettlementDate().toLocalDate())
         .settlementCycleId(file.getSettlementCycle())
         .createdAt(file.getCreatedDate())
         .status(file.getStatus())

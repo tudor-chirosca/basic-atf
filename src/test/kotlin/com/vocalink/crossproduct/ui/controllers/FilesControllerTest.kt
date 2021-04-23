@@ -66,7 +66,6 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
             "fileName": "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz",
             "nrOfBatches": 12,
             "fileSize": 3245234523,
-            "settlementDate": "2020-11-03",
             "settlementCycleId": "04",
             "createdAt": "2020-10-30T10:10:10Z",
             "status": "ACK",
@@ -278,7 +277,6 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .fileName(id)
                 .nrOfBatches(12)
                 .fileSize(3245234523)
-                .settlementDate(LocalDate.of(2020, 11, 3))
                 .settlementCycleId("04")
                 .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
                 .status("ACK")

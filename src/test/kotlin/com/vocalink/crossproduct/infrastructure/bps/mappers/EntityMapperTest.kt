@@ -274,7 +274,6 @@ class EntityMapperTest {
                 "status",
                 "reasonCode",
                 "cycleId",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "P27"
         )
 
@@ -290,7 +289,6 @@ class EntityMapperTest {
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.settlementCycle).isEqualTo(bps.settlementCycle)
-        assertThat(entity.settlementDate).isEqualTo(bps.settlementDate)
         assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
     }
 

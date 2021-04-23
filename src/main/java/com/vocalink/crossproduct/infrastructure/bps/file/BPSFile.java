@@ -18,7 +18,6 @@ public class BPSFile {
   private final String status;
   private final String reasonCode;
   private final String settlementCycle;
-  private final ZonedDateTime settlementDate;
   private final String schemeParticipantIdentifier;
 
   @JsonCreator
@@ -33,7 +32,6 @@ public class BPSFile {
       @JsonProperty(value = "status", required = true) String status,
       @JsonProperty(value = "reasonCode", required = true) String reasonCode,
       @JsonProperty(value = "settlementCycle", required = true) String settlementCycle,
-      @JsonProperty(value = "settlementDate", required = true) ZonedDateTime settlementDate,
       @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier) {
     this.instructionId = instructionId;
     this.fileName = fileName;
@@ -45,7 +43,6 @@ public class BPSFile {
     this.status = status;
     this.reasonCode = reasonCode;
     this.settlementCycle = settlementCycle;
-    this.settlementDate = settlementDate;
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
   }
 }
