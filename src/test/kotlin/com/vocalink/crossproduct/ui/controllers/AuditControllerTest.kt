@@ -35,7 +35,7 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     private companion object {
         const val VALID_AUDIT_EVENTS_RESPONSE = """["UI"]"""
-        const val VALID_USER_AUDIT_RESPONSE = """[{"userName":"John Doe"}]"""
+        const val VALID_USER_AUDIT_RESPONSE = """[{"username":"e000000","fullName":"John Doe"}]"""
         const val VALID_AUDIT_BY_SERVICE_ID_RESPONSE: String = """
         {
             "id":"20210111002",
@@ -111,7 +111,7 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get User audit details`() {
-        val result: List<UserDetailsDto> = listOf(UserDetailsDto("John Doe"))
+        val result: List<UserDetailsDto> = listOf(UserDetailsDto("e000000","John Doe"))
         `when`(auditFacade.getUserDetails(any(), any(), any())).thenReturn(result)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/reference/audit/users")
