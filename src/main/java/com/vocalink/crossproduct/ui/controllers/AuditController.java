@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 
-import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.ui.controllers.api.AuditApi;
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
@@ -48,12 +48,12 @@ public class AuditController implements AuditApi {
   }
 
   @GetMapping(value = "/audits", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<AuditDto>> getAuditLog(
+  public ResponseEntity<PageDto<AuditDto>> getAuditLog(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
       @RequestHeader final String context,
       final AuditRequestParams parameters) {
 
-    Page<AuditDto> auditDetailsDto = auditFacade.getAuditLogs(context, clientType, parameters);
+    PageDto<AuditDto> auditDetailsDto = auditFacade.getAuditLogs(context, clientType, parameters);
 
     return ResponseEntity.ok(auditDetailsDto);
   }

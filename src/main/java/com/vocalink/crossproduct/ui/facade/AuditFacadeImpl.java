@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
@@ -49,16 +50,16 @@ public class AuditFacadeImpl implements AuditFacade {
   }
 
   @Override
-  public Page<AuditDto> getAuditLogs(String product, ClientType clientType,
+  public PageDto<AuditDto> getAuditLogs(String product, ClientType clientType,
       AuditRequestParams parameters) {
     log.info("Fetching audit logs by {}", parameters);
 
     final AuditSearchRequest auditSearchRequest = MAPPER.toEntity(parameters);
 
-    List<AuditDetails> details = repositoryFactory.getAuditDetailsRepository(product)
+    Page<AuditDetails> details = repositoryFactory.getAuditDetailsRepository(product)
         .getAuditDetailsByParameters(auditSearchRequest);
 
-    final List<UUID> activityIds = details.stream().map(AuditDetails::getActivityId)
+    final List<UUID> activityIds = details.getItems().stream().map(AuditDetails::getActivityId)
         .collect(toList());
 
     final List<UserActivity> activities = repositoryFactory.getUserActivityRepository(product)

@@ -492,13 +492,13 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
+  public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details,
       List<UserActivity> activities) {
 
     final List<UserActivityDto> dtoActivities = activities.stream().map(MAPPER::toDto)
         .collect(toList());
 
-    final List<AuditDto> dtoDetails = details.stream()
+    final List<AuditDto> dtoDetails = details.getItems().stream()
         .map(MAPPER::toDto)
         .peek(d -> d.setEventType(
             dtoActivities.stream()
@@ -509,7 +509,7 @@ public class UIPresenter implements Presenter {
         .peek(d -> d.prefixServiceId(serviceIdPrefix + HYPHEN_DELIMITER))
         .collect(toList());
 
-    return new Page<>(dtoDetails.size(), dtoDetails);
+    return new PageDto<>(details.getTotalResults(), dtoDetails);
   }
 
   @Override

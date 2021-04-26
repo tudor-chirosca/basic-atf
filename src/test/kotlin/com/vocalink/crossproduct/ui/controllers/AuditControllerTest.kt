@@ -2,7 +2,7 @@ package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.Page
+import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams
@@ -52,13 +52,13 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val CLIENT_TYPE_HEADER = "client-type"
         const val PARTICIPANT_ID_PARAMETER = "participantId"
 
-        const val VALID_GET_AUDIT_RESPONSE = """{"totalResults":0,"items":null}"""
+        const val VALID_GET_AUDIT_RESPONSE = """{"totalResults":0,"items":[]}"""
         val clock = fixed(LocalDateTime.of(2021, 4, 21, 22, 48, 56).toInstant(UTC), UTC)!!
     }
 
     @Test
     fun `should get Audit logs`() {
-        val result: Page<AuditDto> = Page(0, null)
+        val result: PageDto<AuditDto> = PageDto(0, null)
         `when`(auditFacade.getAuditLogs(any(), any(), any(AuditRequestParams::class.java))).thenReturn(result)
 
         mockMvc.perform(MockMvcRequestBuilders.get("/audits")

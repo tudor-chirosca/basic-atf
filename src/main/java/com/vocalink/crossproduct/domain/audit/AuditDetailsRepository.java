@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.domain.audit;
 
 import com.vocalink.crossproduct.domain.CrossproductRepository;
+import com.vocalink.crossproduct.domain.Page;
 import java.util.List;
 
 public interface AuditDetailsRepository extends CrossproductRepository {
@@ -9,7 +10,7 @@ public interface AuditDetailsRepository extends CrossproductRepository {
 
   AuditDetails getAuditDetailsById(String id);
 
-  List<AuditDetails> getAuditDetailsByParameters(AuditSearchRequest parameters);
+  Page<AuditDetails> getAuditDetailsByParameters(AuditSearchRequest parameters);
 
   void logOperation(Event event, UserDetails userDetails);
 

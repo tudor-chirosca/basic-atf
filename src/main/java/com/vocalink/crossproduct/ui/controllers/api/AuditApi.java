@@ -1,6 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers.api;
 
-import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
@@ -36,7 +36,7 @@ public interface AuditApi {
       @ApiResponse(code = 200, message = "Audit log fetched successfully", response = AuditDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<Page<AuditDto>> getAuditLog(ClientType clientType, String context,
+  ResponseEntity<PageDto<AuditDto>> getAuditLog(ClientType clientType, String context,
       @Validated AuditRequestParams parameters);
 
   @ApiOperation("Fetch audit details")

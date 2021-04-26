@@ -52,10 +52,10 @@ import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
-import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
+import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
@@ -181,7 +181,7 @@ public interface Presenter {
 
   List<UserDetailsDto> presentUserDetails(List<AuditDetails> details);
 
-  Page<AuditDto> presentAuditDetails(List<AuditDetails> details,
+  PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details,
       List<UserActivity> activities);
 
   List<String> presentEvents(List<String> events);

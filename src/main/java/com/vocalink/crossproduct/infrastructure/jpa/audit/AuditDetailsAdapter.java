@@ -22,6 +22,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -60,20 +61,25 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   }
 
   @Override
-  public List<AuditDetails> getAuditDetailsByParameters(AuditSearchRequest params) {
+  public com.vocalink.crossproduct.domain.Page<AuditDetails> getAuditDetailsByParameters(
+      AuditSearchRequest params) {
     final Sort sortBy = AuditDetailsJpa.getSortBy(params.getSort());
-    return auditDetailsRepository
+    final Page<AuditDetailsView> allByParameters = auditDetailsRepository
         .getAllByParameters(
             params.getDateFrom(),
             params.getDateTo(),
             params.getParticipant(),
             params.getUser(),
             params.getEvents(),
-            new OffsetBasedPageRequest(params.getLimit(), params.getOffset(), sortBy))
+            new OffsetBasedPageRequest(params.getLimit(), params.getOffset(), sortBy));
+
+    final List<AuditDetails> auditDetails = allByParameters
         .stream()
         .map(MAPPER::toEntity)
-        .filter(e -> OPERATION_TYPE_REQUEST.equals(e.getRequestOrResponseEnum()))
         .collect(toList());
+
+    return new com.vocalink.crossproduct.domain.Page<>(
+        (int) allByParameters.getTotalElements(), auditDetails);
   }
 
   public void logOperation(Event event, UserDetails userDetails) {
