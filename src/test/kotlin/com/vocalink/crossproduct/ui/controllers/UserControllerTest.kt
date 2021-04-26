@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.Charset
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.anyString
 
 
 @WebMvcTest(UserController::class)
@@ -84,7 +86,7 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .participantType(ParticipantType.FUNDED)
                 .build()
 
-        `when`(userFacade.getCurrentUserInfo(any(), any(), any(), any(), any()))
+        `when`(userFacade.getCurrentUserInfo(anyString(), any(), anyString(), anyString(), anyList()))
                 .thenReturn(CurrentUserInfoDto(listOf(permission), participant,
                         UserInfoDto(userId, userName)))
 

@@ -57,7 +57,9 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findAll()
         .getItems()
-        .stream().filter(p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR)
+        .stream()
+        .filter(p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR)
+        .filter(p -> p.getParticipantType() != ParticipantType.TPSP)
         .filter(p -> p.getParticipantType() != ParticipantType.FUNDED)
         .collect(toList());
 
