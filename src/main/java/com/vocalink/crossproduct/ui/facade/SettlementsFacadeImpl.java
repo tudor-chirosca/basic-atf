@@ -43,12 +43,12 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
   @Override
   public ParticipantSettlementDetailsDto getSettlementDetails(String product, ClientType clientType,
-      ParticipantSettlementRequest request, String cycleId, String participantId) {
-    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", cycleId,
-        participantId, product);
+      ParticipantSettlementRequest request) {
+    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", request.getCycleId(),
+        request.getParticipantId(), product);
 
     final SettlementDetailsSearchCriteria criteria = MAPPER
-        .toEntity(request, cycleId, participantId);
+        .toEntity(request);
 
     final List<Participant> participants = repositoryFactory
         .getParticipantRepository(product)
@@ -56,10 +56,10 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
         .getItems();
 
     final Participant participant = participants.stream()
-        .filter(p -> p.getId().equals(participantId))
+        .filter(p -> p.getId().equals(request.getParticipantId()))
         .findFirst()
         .orElseThrow(() -> new EntityNotFoundException(
-            "No such participant with id: " + participantId));
+            "No such participant with id: " + request.getParticipantId()));
 
     final Page<SettlementDetails> settlementDetails = repositoryFactory
         .getSettlementsRepository(product)

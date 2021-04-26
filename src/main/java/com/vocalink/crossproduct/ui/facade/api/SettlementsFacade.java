@@ -12,7 +12,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 public interface SettlementsFacade {
 
   ParticipantSettlementDetailsDto getSettlementDetails(String context, ClientType clientType,
-      ParticipantSettlementRequest request, String cycleId, String participantId);
+      ParticipantSettlementRequest request);
 
   PageDto<ParticipantSettlementCycleDto> getSettlements(String context, ClientType clientType,
       SettlementEnquiryRequest request);

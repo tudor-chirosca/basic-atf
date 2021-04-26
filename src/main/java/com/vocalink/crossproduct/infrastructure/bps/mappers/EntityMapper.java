@@ -294,12 +294,7 @@ public interface EntityMapper {
 
   AlertSearchCriteria toEntity(AlertSearchRequest request);
 
-  @Mappings({
-      @Mapping(source = "cycleId", target = "cycleId"),
-      @Mapping(source = "participantId", target = "participantId")
-  })
-  SettlementDetailsSearchCriteria toEntity(ParticipantSettlementRequest request, String cycleId,
-      String participantId);
+  SettlementDetailsSearchCriteria toEntity(ParticipantSettlementRequest request);
 
   SettlementEnquirySearchCriteria toEntity(SettlementEnquiryRequest request);
 

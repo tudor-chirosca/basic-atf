@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,18 +35,16 @@ public class SettlementsController implements SettlementsApi {
 
   private final SettlementsFacade settlementsFacade;
 
-  @Auditable(type = SETTL_DETAILS, params = @Positions(clientType = 0, context = 1, content = 4, request = 5))
+  @Auditable(type = SETTL_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/settlements/{cycleId}/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ParticipantSettlementDetailsDto> getSettlementCycleDetails(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final @PathVariable String cycleId,
-      final @PathVariable String participantId,
       final ParticipantSettlementRequest settlementRequest,
       final HttpServletRequest request) {
 
-    ParticipantSettlementDetailsDto settlementDetails = settlementsFacade
-        .getSettlementDetails(context, clientType, settlementRequest, cycleId, participantId);
+    ParticipantSettlementDetailsDto settlementDetails = settlementsFacade.getSettlementDetails(context, clientType,
+            settlementRequest);
 
     return ResponseEntity.ok().body(settlementDetails);
   }

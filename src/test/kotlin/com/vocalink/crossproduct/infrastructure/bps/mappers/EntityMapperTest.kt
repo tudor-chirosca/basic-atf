@@ -52,6 +52,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
+import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -868,6 +869,24 @@ class EntityMapperTest {
         assertThat(result.startTime).isEqualTo(bps.startTime)
         assertThat(result.cutOffTime).isEqualTo(bps.endTime)
         assertThat(result.settlementStartTime).isEqualTo(bps.settlementTime)
+    }
+
+    @Test
+    fun `should map to SettlementDetailsSearchCriteria fields`() {
+        val request = ParticipantSettlementRequest()
+        request.limit = 20
+        request.offset = 0
+        request.sort = listOf("someValue1", "someValue2")
+        request.participantId = "NDEASESSXXX"
+        request.cycleId = "20210426002"
+
+        val result = MAPPER.toEntity(request)
+
+        assertThat(result.limit).isEqualTo(request.limit)
+        assertThat(result.offset).isEqualTo(request.offset)
+        assertThat(result.sort).isEqualTo(request.sort)
+        assertThat(result.participantId).isEqualTo(request.participantId)
+        assertThat(result.cycleId).isEqualTo(request.cycleId)
     }
 
     @Test

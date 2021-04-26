@@ -31,8 +31,6 @@ public interface SettlementsApi {
   ResponseEntity<ParticipantSettlementDetailsDto> getSettlementCycleDetails(
       final ClientType clientType,
       final String context,
-      final String cycleId,
-      final String participantId,
       final ParticipantSettlementRequest settlementRequest,
       final HttpServletRequest request);
 

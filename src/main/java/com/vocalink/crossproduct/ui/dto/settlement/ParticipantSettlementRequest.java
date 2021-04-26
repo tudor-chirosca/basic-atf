@@ -16,4 +16,7 @@ public class ParticipantSettlementRequest {
   private int offset = parseInt(getDefault(OFFSET));
   private int limit = parseInt(getDefault(LIMIT));
   private List<String> sort;
+  private String cycleId;
+  private String participantId;
+
 }
