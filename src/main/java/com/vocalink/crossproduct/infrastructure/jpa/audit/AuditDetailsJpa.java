@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -101,17 +103,20 @@ public class AuditDetailsJpa implements Serializable {
       return Sort.by(DEFAULT_SORT_PARAMETER).descending();
     }
 
-    final String sortType = sort.stream().findFirst().orElse(DEFAULT_SORT_PARAMETER);
+    final List<Order> orders = new ArrayList<>();
 
-    if (!sortType.startsWith(ASCENDING_SIGN) && !sortType.startsWith(DESCENDING_SING)) {
-      return Sort.by(SORT_BINDINGS.get(sortType)).ascending();
-    }
+    sort.forEach(e -> {
+      if (!e.startsWith(DESCENDING_SING) && !e.startsWith(ASCENDING_SIGN)) {
+        orders.add(Order.asc(SORT_BINDINGS.get(e)));
+        return;
+      }
 
-    final String sign = sortType.substring(0, 1);
-    final String sortParam = sortType.replace(sign, "");
+      final String sign = e.substring(0, 1);
+      final String orderType = SORT_BINDINGS.get(e.replace(sign, ""));
 
-    final String param = SORT_BINDINGS.get(sortParam);
+      orders.add(sign.equals(ASCENDING_SIGN) ? Order.asc(orderType) : Order.desc(orderType));
+    });
 
-    return Sort.by(param).descending();
+    return Sort.by(orders);
   }
 }

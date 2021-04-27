@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
+import com.vocalink.crossproduct.domain.audit.AuditSearchRequest
 import com.vocalink.crossproduct.domain.audit.Event
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
@@ -13,6 +14,8 @@ import org.mockito.Mockito.any
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.TypedQuery
@@ -121,5 +124,46 @@ open class AuditDetailsAdapterTest {
         adapter.getGetUserReferencesByParticipantId(id)
 
         verify(repositoryJpa, atLeastOnce()).findUserDetailsByParticipantId(id)
+    }
+
+    @Test
+    fun `should find anything with success with default sorting option`() {
+        val parameters = AuditSearchRequest.builder()
+                .offset(0)
+                .limit(10)
+                .build()
+
+        val factory = SpelAwareProxyProjectionFactory()
+        val projection = factory.createProjection(AuditDetailsView::class.java)
+        val pageImpl = PageImpl<AuditDetailsView>(listOf(projection))
+
+        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any()))
+                .thenReturn(pageImpl)
+
+        val details = adapter.getAuditDetailsByParameters(parameters)
+
+        assertThat(details.totalResults).isEqualTo(1)
+        assertThat(details.items.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `should find anything and use multiple sorting and ordering`() {
+        val parameters = AuditSearchRequest.builder()
+                .offset(0)
+                .limit(10)
+                .sort(listOf("+serviceId", "-createdAt", "user"))
+                .build()
+
+        val factory = SpelAwareProxyProjectionFactory()
+        val projection = factory.createProjection(AuditDetailsView::class.java)
+        val pageImpl = PageImpl<AuditDetailsView>(listOf(projection))
+
+        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any()))
+                .thenReturn(pageImpl)
+
+        val details = adapter.getAuditDetailsByParameters(parameters)
+
+        assertThat(details.totalResults).isEqualTo(1)
+        assertThat(details.items.size).isEqualTo(1)
     }
 }
