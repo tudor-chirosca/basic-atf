@@ -9,6 +9,7 @@
     <fileSet>
       <directory>database</directory>
       <outputDirectory>/</outputDirectory>
+      <filtered>true</filtered>
     </fileSet>
   </fileSets>
 </assembly>

@@ -11,6 +11,12 @@ END;
 
 /
 
+INSERT INTO t_schema_version (version, release_date, applied_by)
+VALUES ('${project.version}', SYSTIMESTAMP AT TIME ZONE 'UTC', SYS_CONTEXT ('USERENV', 'OS_USER'));
+
+GRANT CREATE SESSION TO ${schemaOwner};
+GRANT CREATE SESSION TO ${schemaUser};
+
 -- Synonyms on all owner tables
 BEGIN
     FOR t IN (SELECT OBJECT_NAME, OWNER

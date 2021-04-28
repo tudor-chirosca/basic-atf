@@ -40,6 +40,20 @@ They are versioned according to the following format: V<datetime>__<migration_na
 
 The resulting artifact will be generated in /target folder. Deploy it to an external application server.
 
+### Database Migration
+
+```
+docker run --rm --network host -v /${PWD}/database:/flyway/sql flyway/flyway -url=jdbc:oracle:thin:@127.0.0.1:1521/PDB112 -user='SYS as SYSDBA' -password=Password123 -schemas=CPUI_DB_OWNER -placeholders.schemaOwner=CPUI_DB_OWNER  -placeholders.schemaUser=CPUI_DB_USER -placeholders.project.version=local-version migrate
+```
+
+or
+
+```
+# migrate goal will run if no parameter specified
+
+./local-migrate.sh <flyway-goal>
+```
+
 ### Release
 
 The release of this project is managed by [semantic-release](https://github.com/semantic-release/semantic-release) library. The current version is tracked in the pom.xml file
