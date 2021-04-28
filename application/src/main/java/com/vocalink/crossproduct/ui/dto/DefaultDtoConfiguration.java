@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class DefaultDtoConfiguration {
 
-  public static final String APPLICATION_PROPERTIES = "application.properties";
+  public static final String APPLICATION_PROPERTIES = "src/main/resources/application.properties";
   private static final Properties properties = new Properties();
 
   static {

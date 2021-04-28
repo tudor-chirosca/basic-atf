@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.bps.config;
 
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail;
 import java.net.URI;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;

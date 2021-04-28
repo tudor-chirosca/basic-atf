@@ -7,7 +7,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>database</directory>
+      <directory>migrations</directory>
       <outputDirectory>/</outputDirectory>
       <filtered>true</filtered>
     </fileSet>

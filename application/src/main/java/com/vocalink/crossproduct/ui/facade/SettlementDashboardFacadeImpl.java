@@ -17,7 +17,6 @@ import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

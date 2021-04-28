@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.domain.participant;
 
 import com.vocalink.crossproduct.domain.CrossproductRepository;
 import com.vocalink.crossproduct.domain.Page;
-import java.util.List;
 
 public interface ParticipantRepository extends CrossproductRepository {
 
