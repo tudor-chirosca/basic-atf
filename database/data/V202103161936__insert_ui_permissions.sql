@@ -90,3 +90,5 @@ INSERT INTO UI_PERMISSION(id, key)
 VALUES ('2eb61451-be13-401a-a077-79cff68d40a5', 'read.download-report-ROUTING_TABLE_REPORT');
 INSERT INTO UI_PERMISSION(id, key)
 VALUES ('600e9a80-1591-483e-8818-11369134ea2c', 'read.suspend-unsupend-multiple-participants');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('6d7b9dca-33dc-4af1-a992-deeeca4ba13e', 'read.audit-log');

@@ -418,3 +418,13 @@ INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'SETTLEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.download-report-DAILY_RECONCILIATION_REPORT'), 'DIRECT_FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'SETTLEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.download-report-DAILY_RECONCILIATION_REPORT_MESSAGE'), 'DIRECT_FUNDING');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.audit-log'), 'SCHEME_OPERATOR');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.audit-log'), 'DIRECT');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.audit-log'), 'FUNDING');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.audit-log'), 'FUNDED');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.audit-log'), 'DIRECT_FUNDING');
