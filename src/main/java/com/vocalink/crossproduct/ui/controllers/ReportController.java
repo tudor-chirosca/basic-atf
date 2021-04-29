@@ -1,16 +1,21 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.DOWNLOAD_REPORT;
+import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_REPORTS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.ReportApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -29,10 +34,13 @@ public class ReportController implements ReportApi {
 
   private final ReportFacade reportFacade;
 
+  @Auditable(type = VIEW_REPORTS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<ReportDto>> getPaginatedReports(
-      @RequestHeader("client-type") final ClientType clientType, @RequestHeader final String context,
-      final ReportsSearchRequest searchParameters) {
+      @RequestHeader("client-type") final ClientType clientType,
+      @RequestHeader final String context,
+      final ReportsSearchRequest searchParameters,
+      final HttpServletRequest request) {
     log.debug("Request parameters: {}", searchParameters);
 
     final PageDto<ReportDto> paginated = reportFacade
@@ -41,12 +49,13 @@ public class ReportController implements ReportApi {
     return ResponseEntity.ok(paginated);
   }
 
-  @GetMapping(value = "/reports/{id}",
-      produces = {APPLICATION_OCTET_STREAM_VALUE})
+  @Auditable(type = DOWNLOAD_REPORT, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
+  @GetMapping(value = "/reports/{id}", produces = {APPLICATION_OCTET_STREAM_VALUE})
   public ResponseEntity<?> getReport(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final @PathVariable String id) {
+      final @PathVariable String id,
+      final HttpServletRequest request) {
 
     Resource resource = reportFacade.getReport(context, clientType, id);
 

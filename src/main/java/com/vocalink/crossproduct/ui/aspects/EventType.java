@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
+import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
@@ -30,8 +31,8 @@ public enum EventType {
   VIEW_ALERTS(AlertSearchRequest.class),
   SEND_BROADCAST(BroadcastRequest.class),
   VIEW_SENT_BROADCAST(BroadcastsSearchParameters.class),
-  VIEW_REPORTS(Object.class),
-  DOWNLOAD_REPORT(Object.class),
+  VIEW_REPORTS(ReportsSearchRequest.class),
+  DOWNLOAD_REPORT(String.class),
   VIEW_PARTICIPANT_MNG_LIST(ManagedParticipantsSearchRequest.class),
   VIEW_PARTICIPANT_MNG_DETAILS(String.class),
   VIEW_APPROVAL_DASHBOARD(Object.class),
