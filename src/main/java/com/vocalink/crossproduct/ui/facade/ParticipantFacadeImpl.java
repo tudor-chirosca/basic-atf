@@ -18,6 +18,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -67,20 +68,23 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
       String bic) {
     log.info("Fetching managed participant details for: {}, from: {}", bic, product);
 
+    final Participant participant = repositoryFactory.getParticipantRepository(product)
+        .findById(bic);
+    setFundedParticipants(participant, product);
+
+    final ApprovalRequestType requestType = participant.getStatus().equals(ParticipantStatus.ACTIVE)
+        ? ApprovalRequestType.PARTICIPANT_SUSPEND
+        : ApprovalRequestType.PARTICIPANT_UNSUSPEND;
+
     final ApprovalSearchCriteria criteria = ApprovalSearchCriteria.builder()
         .limit(1)
         .statuses(singletonList(ApprovalStatus.PENDING))
-        .requestTypes(asList(ApprovalRequestType.PARTICIPANT_SUSPEND,
-            ApprovalRequestType.PARTICIPANT_UNSUSPEND))
+        .requestTypes(asList(requestType))
         .participantIds(singletonList(bic))
         .build();
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
         .findPaginated(criteria).getItems();
-
-    final Participant participant = repositoryFactory.getParticipantRepository(product)
-        .findById(bic);
-    setFundedParticipants(participant, product);
 
     final Account account = repositoryFactory.getAccountRepository(product)
         .findByPartyCode(bic);

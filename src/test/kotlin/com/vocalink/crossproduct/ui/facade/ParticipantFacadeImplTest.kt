@@ -5,11 +5,11 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
-import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.routing.RoutingRepository
@@ -24,7 +24,6 @@ import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeast
@@ -173,7 +172,7 @@ class ParticipantFacadeImplTest {
     @Test
     fun `should invoke repository getParticipantById twice on FUNDED participants`() {
         val participant = Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDED, null,
+                null, ParticipantStatus.SUSPENDED, null, ParticipantType.FUNDED, null,
                 null, null, null, null, null,
                 null, null)
         val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
@@ -191,7 +190,7 @@ class ParticipantFacadeImplTest {
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
                 .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
+                        null, ParticipantStatus.SUSPENDED, null, null, null,
                         null, null, null, null,
                         null, null, null))))
 
@@ -224,7 +223,7 @@ class ParticipantFacadeImplTest {
     @Test
     fun `should invoke repository getParticipantById once on FUNDING participants`() {
         val participant = Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDING, null,
+                null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
                 null, null, null, null, null,
                 null, null)
         val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
@@ -242,7 +241,7 @@ class ParticipantFacadeImplTest {
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
                 .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
+                        null, ParticipantStatus.ACTIVE, null, null, null,
                         null, null, null, null,
                         null, null, null))))
 
