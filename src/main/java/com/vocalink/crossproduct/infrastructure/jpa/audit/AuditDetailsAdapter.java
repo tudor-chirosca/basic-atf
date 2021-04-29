@@ -33,7 +33,7 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   public static final String ZONE_ID_UTC = "UTC";
   public static final String QUERY_BY_NAME = "select activity from UserActivityJpa as activity where activity.name = :eventName";
   public static final String EVENT_NAME_USER_ACTIVITY = "eventName";
-  public static final String OPERATION_TYPE_REQUEST = "REQUEST";
+  public static final String CUSTOMER = "P27-SEK";
 
   @PersistenceContext
   private final EntityManager entityManager;
@@ -103,6 +103,8 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
         .username(userDetails.getUserId())
         .firstName(userDetails.getFirstName())
         .lastName(userDetails.getLastName())
+        .ipsSuiteApplicationName(event.getProduct())
+        .customer(CUSTOMER)
         .build();
 
     auditDetailsRepository.save(detailsJpa);
@@ -118,8 +120,15 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   }
 
   @Override
-  public List<AuditDetails> getGetUserReferencesByParticipantId(String id) {
-    return auditDetailsRepository.findUserDetailsByParticipantId(id).stream()
+  public List<AuditDetails> getAuditDetailsByParticipantIdAndGroupByUser(String id) {
+    return auditDetailsRepository.findByParticipantId(id).stream()
+        .map(MAPPER::toEntity)
+        .collect(toList());
+  }
+
+  @Override
+  public List<AuditDetails> getAuditDetailsByCorrelationId(String id) {
+    return auditDetailsRepository.findByCorrelationId(id).stream()
         .map(MAPPER::toEntity)
         .collect(toList());
   }

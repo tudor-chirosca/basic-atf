@@ -311,7 +311,8 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public AuditDetailsDto presentAuditDetails(AuditDetails details, Participant participant) {
+  public AuditDetailsDto presentAuditDetails(AuditDetails details,
+      AuditDetails response, Participant participant) {
     throw new RuntimeException("System API not implemented yet");
   }
 

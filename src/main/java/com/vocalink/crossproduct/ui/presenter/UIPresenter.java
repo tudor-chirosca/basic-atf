@@ -46,7 +46,6 @@ import com.vocalink.crossproduct.domain.validation.ValidationApproval;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.aspects.ContentUtils;
 import com.vocalink.crossproduct.ui.aspects.EventType;
-import com.vocalink.crossproduct.ui.aspects.OperationType;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
@@ -58,6 +57,7 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
+import com.vocalink.crossproduct.ui.dto.audit.ParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserActivityDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
@@ -96,7 +96,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -517,24 +516,30 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public AuditDetailsDto presentAuditDetails(AuditDetails details, Participant participant) {
-    final EventType eventType = getEventByDescription(details.getUserActivityString());
-
-    final OperationType operationType = EnumUtils
-        .getEnum(OperationType.class, details.getRequestOrResponseEnum());
+  public AuditDetailsDto presentAuditDetails(AuditDetails request, AuditDetails response,
+      Participant participant) {
+    final EventType eventType = getEventByDescription(request.getUserActivityString());
 
     final Object content = contentUtils
-        .toObject(details.getContents(), eventType, operationType);
+        .toObject(request.getContents(), eventType);
+
+    final ParticipantDetailsDto participantDto = new ParticipantDetailsDto(
+        participant.getBic(), participant.getName());
+
+    final UserDetailsDto userDto = new UserDetailsDto(request.getUsername(),
+        request.getFirstName() + SPACE + request.getLastName());
 
     return AuditDetailsDto.builder()
-        .id(details.getServiceId().toString())
-        .operationType(operationType.name())
+        .serviceId(serviceIdPrefix + HYPHEN_DELIMITER + request.getServiceId().toString())
         .eventType(eventType.name())
-        .timestamp(details.getTimestamp())
-        .interactionDetails(content)
-        .entityId(participant.getId())
-        .submitter(participant.getOrganizationId())
-        .submitterOrganisation(participant.getName())
+        .product(request.getIpsSuiteApplicationName())
+        .entity(participantDto)
+        .user(userDto)
+        .customer(request.getCustomer())
+        .request(content)
+        .requestDate(request.getTimestamp())
+        .response(response.getContents())
+        .responseDate(response.getTimestamp())
         .build();
   }
 

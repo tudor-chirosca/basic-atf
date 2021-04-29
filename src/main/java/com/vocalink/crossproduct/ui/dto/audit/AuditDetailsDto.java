@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuditDetailsDto {
 
-  private final String id;
+  private final String serviceId;
   private final String eventType;
-  private final String operationType;
-  private final ZonedDateTime timestamp;
-  private final String entityId;
-  private final String submitter;
-  private final String submitterOrganisation;
-  private final Object interactionDetails;
+  private final String product;
+  private final ParticipantDetailsDto entity;
+  private final UserDetailsDto user;
+  private final String customer;
+  private final ZonedDateTime requestDate;
+  private final ZonedDateTime responseDate;
+  private final Object request;
+  private final String response;
 }

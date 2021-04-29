@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -12,7 +13,9 @@ import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
+import com.vocalink.crossproduct.ui.aspects.OperationType;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +45,12 @@ public class AuditFacadeImpl implements AuditFacade {
       String participantId) {
     log.info("Fetching user details for {}", participantId);
 
-    final List<AuditDetails> auditDetails = repositoryFactory
+    final List<AuditDetails> userDetails = repositoryFactory
         .getAuditDetailsRepository(product)
-        .getGetUserReferencesByParticipantId(participantId);
+        .getAuditDetailsByParticipantIdAndGroupByUser(participantId);
 
     return presenterFactory.getPresenter(clientType)
-        .presentUserDetails(auditDetails);
+        .presentUserDetails(userDetails);
   }
 
   @Override
@@ -99,13 +103,19 @@ public class AuditFacadeImpl implements AuditFacade {
 
   @Override
   public AuditDetailsDto getAuditDetails(String product, ClientType clientType, String id) {
-    final AuditDetails details = repositoryFactory.getAuditDetailsRepository(product)
+    final AuditDetails request = repositoryFactory.getAuditDetailsRepository(product)
         .getAuditDetailsById(id);
 
+    final AuditDetails response = repositoryFactory.getAuditDetailsRepository(product)
+        .getAuditDetailsByCorrelationId(request.getCorrelationId()).stream()
+        .filter(r -> RESPONSE.name().equals(r.getRequestOrResponseEnum()))
+        .findFirst()
+        .orElseThrow(() -> new InfrastructureException("Missing response for request id: " + id));
+
     final Participant participant = repositoryFactory.getParticipantRepository(product)
-        .findById(details.getParticipantId());
+        .findById(request.getParticipantId());
 
     return presenterFactory.getPresenter(clientType)
-        .presentAuditDetails(details, participant);
+        .presentAuditDetails(request, response, participant);
   }
 }

@@ -64,7 +64,7 @@ class AuditFacadeImplTest {
     fun `should get user details`() {
         `when`(repositoryFactory.getAuditDetailsRepository(PRODUCT))
                 .thenReturn(auditDetailsRepository)
-        `when`(auditDetailsRepository.getGetUserReferencesByParticipantId(PARTICIPANT_ID))
+        `when`(auditDetailsRepository.getAuditDetailsByParticipantIdAndGroupByUser(PARTICIPANT_ID))
                 .thenReturn(AUDIT_DETAILS_LIST)
         `when`(presenterFactory.getPresenter(ClientType.UI))
                 .thenReturn(uiPresenter)
@@ -92,28 +92,41 @@ class AuditFacadeImplTest {
 
     @Test
     fun `should get audit details`() {
-        val auditDetails = AuditDetails.builder()
+        val id  = UUID.randomUUID()
+        val correlationId = "corId"
+        val request = AuditDetails.builder()
+                .id(id)
                 .userActivityString("FILE_ENQUIRY")
                 .requestOrResponseEnum("REQUEST")
                 .serviceId(SERVICE_ID)
                 .participantId(PARTICIPANT_ID)
+                .correlationId(correlationId)
                 .build()
-
+        val response = AuditDetails.builder()
+                .id(id)
+                .userActivityString("FILE_ENQUIRY")
+                .requestOrResponseEnum("RESPONSE")
+                .serviceId(SERVICE_ID)
+                .participantId(PARTICIPANT_ID)
+                .correlationId(correlationId)
+                .build()
         val participant = Participant.builder()
-                .id(PARTICIPANT_ID)
+                .bic(PARTICIPANT_ID)
                 .build()
 
         `when`(repositoryFactory.getAuditDetailsRepository(anyString())).thenReturn(auditDetailsRepository)
-        `when`(auditDetailsRepository.getAuditDetailsById(SERVICE_ID.toString())).thenReturn(auditDetails)
+        `when`(auditDetailsRepository.getAuditDetailsById(id.toString())).thenReturn(request)
+
+        `when`(auditDetailsRepository.getAuditDetailsByCorrelationId(request.correlationId)).thenReturn(listOf(response))
 
         `when`(repositoryFactory.getParticipantRepository(PRODUCT)).thenReturn(participantRepository)
         `when`(participantRepository.findById(PARTICIPANT_ID)).thenReturn(participant)
 
         `when`(presenterFactory.getPresenter(CLIENT_TYPE)).thenReturn(uiPresenter)
 
-        val auditDetailsDto = auditFacadeImpl.getAuditDetails(PRODUCT, CLIENT_TYPE, SERVICE_ID.toString())
+        val auditDetailsDto = auditFacadeImpl.getAuditDetails(PRODUCT, CLIENT_TYPE, id.toString())
 
-        assertThat(SERVICE_ID.toString()).isEqualTo(auditDetailsDto.id)
-        assertThat(PARTICIPANT_ID).isEqualTo(auditDetailsDto.entityId)
+        assertThat("null-$SERVICE_ID").isEqualTo(auditDetailsDto.serviceId)
+        assertThat(PARTICIPANT_ID).isEqualTo(auditDetailsDto.entity.bic)
     }
 }

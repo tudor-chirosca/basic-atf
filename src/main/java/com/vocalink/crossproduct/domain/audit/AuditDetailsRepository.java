@@ -16,5 +16,7 @@ public interface AuditDetailsRepository extends CrossproductRepository {
 
   AuditDetails getAuditDetailsByUsername(String name);
 
-  List<AuditDetails> getGetUserReferencesByParticipantId(String id);
+  List<AuditDetails> getAuditDetailsByParticipantIdAndGroupByUser(String id);
+
+  List<AuditDetails> getAuditDetailsByCorrelationId(String id);
 }

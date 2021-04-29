@@ -25,11 +25,7 @@ public class ContentUtils {
     }
   }
 
-  public Object toObject(String content, EventType eventType, OperationType operationType) {
-    if (operationType.equals(OperationType.RESPONSE)) {
-      return content;
-    }
-
+  public Object toObject(String content, EventType eventType) {
     try {
       return objectMapper.readValue(content, eventType.getRequestType());
     } catch (JsonProcessingException e) {

@@ -186,7 +186,8 @@ public interface Presenter {
 
   List<String> presentEvents(List<String> events);
 
-  AuditDetailsDto presentAuditDetails(AuditDetails details, Participant participant);
+  AuditDetailsDto presentAuditDetails(AuditDetails request, AuditDetails response,
+      Participant participant);
 
   List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails);
 

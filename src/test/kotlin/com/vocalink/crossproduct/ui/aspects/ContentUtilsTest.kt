@@ -2,8 +2,6 @@ package com.vocalink.crossproduct.ui.aspects;
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.vocalink.crossproduct.ui.aspects.EventType.FILE_ENQUIRY
-import com.vocalink.crossproduct.ui.aspects.OperationType.REQUEST
-import com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
 import com.vocalink.crossproduct.ui.exceptions.UILayerException
 import org.assertj.core.api.Assertions.assertThat
@@ -44,24 +42,16 @@ open class ContentUtilsTest {
     @Test
     fun `should serialize string to Object based on event and operation types`() {
 
-        val toObject = contentUtils.toObject(CONTENT, FILE_ENQUIRY, REQUEST) as FileEnquirySearchRequest
+        val toObject = contentUtils.toObject(CONTENT, FILE_ENQUIRY) as FileEnquirySearchRequest
 
         assertThat(CONTENT).contains(toObject.offset.toString())
         assertThat(CONTENT).contains(toObject.limit.toString())
     }
 
     @Test
-    fun `should return content if operation type RESPONSE`() {
-
-        val toObject = contentUtils.toObject(CONTENT, FILE_ENQUIRY, RESPONSE)
-
-        assertThat(CONTENT).isEqualTo(toObject)
-    }
-
-    @Test
     fun `should throw exception if failed serializing`() {
         assertThatExceptionOfType(UILayerException::class.java).isThrownBy {
-            contentUtils.toObject(INVALID_CONTENT, FILE_ENQUIRY, REQUEST)
+            contentUtils.toObject(INVALID_CONTENT, FILE_ENQUIRY)
         }
     }
 }

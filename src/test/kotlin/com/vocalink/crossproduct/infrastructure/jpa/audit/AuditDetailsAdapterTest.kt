@@ -121,9 +121,9 @@ open class AuditDetailsAdapterTest {
     fun `should get user references by participant id`() {
         val id = "id"
 
-        adapter.getGetUserReferencesByParticipantId(id)
+        adapter.getAuditDetailsByParticipantIdAndGroupByUser(id)
 
-        verify(repositoryJpa, atLeastOnce()).findUserDetailsByParticipantId(id)
+        verify(repositoryJpa, atLeastOnce()).findByParticipantId(id)
     }
 
     @Test
