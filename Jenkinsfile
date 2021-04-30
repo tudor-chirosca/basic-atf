@@ -102,7 +102,7 @@ pipeline {
                     }
                     steps {
                         println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                        publishArtifact()
+                        runMaven(goal: "-B deploy -Dmaven.test.skip=true")
                     }
                 }
             }//stages

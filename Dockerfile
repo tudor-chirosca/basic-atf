@@ -1,6 +1,6 @@
 FROM repo-api.mcvl-engineering.com/cp-portal-docker-release/tomcat/cpp-tomcat:8.5.57
 
-ADD ./target/international-suite-service-*.war /usr/local/tomcat/webapps/international-suite-service.war
+ADD ./application/target/international-suite-service-*.war /usr/local/tomcat/webapps/international-suite-service.war
 
 EXPOSE 8080
 

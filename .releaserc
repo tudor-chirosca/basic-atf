@@ -2,7 +2,7 @@
   verifyConditions: ['@conveyal/maven-semantic-release'],
   verifyRelease: ['@conveyal/maven-semantic-release'],
   prepare: ['@semantic-release/changelog', '@conveyal/maven-semantic-release', ['@semantic-release/git', {
-    assets: ['pom.xml', 'CHANGELOG.md']
+    assets: ['pom.xml', 'database/pom.xml', 'application/pom.xml', 'CHANGELOG.md']
   }]],
   publish: ['@conveyal/maven-semantic-release'],
   success: false,
