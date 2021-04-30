@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface SettlementDashboardApi {
@@ -16,7 +17,7 @@ public interface SettlementDashboardApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<SettlementDashboardDto> getSettlement(final ClientType clientType,
-      final String context, final String participantId);
+      final String context, final String participantId, final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Fetch self funded Settlement, including positions, participant info and cycles")
   @ApiResponses({
@@ -24,5 +25,5 @@ public interface SettlementDashboardApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<ParticipantDashboardSettlementDetailsDto> getSettlementDetails(
-      ClientType clientType, String context, String participantId);
+      ClientType clientType, String context, String participantId, final HttpServletRequest httpServletRequest);
 }
