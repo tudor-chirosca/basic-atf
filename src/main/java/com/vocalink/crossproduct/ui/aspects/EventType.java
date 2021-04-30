@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
@@ -31,8 +32,8 @@ public enum EventType {
   VIEW_SENT_BROADCAST(BroadcastsSearchParameters.class),
   VIEW_REPORTS(Object.class),
   DOWNLOAD_REPORT(Object.class),
-  VIEW_PARTICIPANT_MNG_LIST(Object.class),
-  VIEW_PARTICIPANT_MNG_DETAILS(Object.class),
+  VIEW_PARTICIPANT_MNG_LIST(ManagedParticipantsSearchRequest.class),
+  VIEW_PARTICIPANT_MNG_DETAILS(String.class),
   VIEW_APPROVAL_DASHBOARD(Object.class),
   VIEW_APPROVAL_REQ(Object.class),
   VIEW_SCHEME_SETTL_DASHBOARD(Object.class),

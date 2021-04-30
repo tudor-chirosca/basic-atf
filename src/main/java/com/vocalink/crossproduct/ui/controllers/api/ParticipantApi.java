@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface ParticipantApi {
@@ -18,7 +19,7 @@ public interface ParticipantApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<PageDto<ManagedParticipantDto>> getParticipants(final ClientType clientType,
-      final String context, final ManagedParticipantsSearchRequest request);
+      final String context, final ManagedParticipantsSearchRequest request, final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Fetch managed participant details records")
   @ApiResponses({
@@ -26,5 +27,5 @@ public interface ParticipantApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<ManagedParticipantDetailsDto> getManagedParticipantDetails(final ClientType clientType,
-      final String context, final String bic);
+      final String context, final String bic, final HttpServletRequest httpServletRequest);
 }
