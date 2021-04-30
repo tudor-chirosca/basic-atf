@@ -1,8 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.ui.controllers.api.TransactionsApi
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto
@@ -12,31 +11,23 @@ import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.math.BigDecimal
-import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@WebMvcTest(TransactionsApi::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class TransactionsControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var transactionsFacade: TransactionsFacade
-    
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -190,6 +181,9 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(VALID_MIN_BODY_REQUEST))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.TRANSACTION_ENQUIRY)
     }
 
     @Test
@@ -202,6 +196,9 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .content(VALID_BODY_REQUEST))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.TRANSACTION_ENQUIRY)
     }
 
     @Test
@@ -212,6 +209,10 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .content(INVALID_BODY_PARAM_NAMES_REQUEST))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.TRANSACTION_ENQUIRY)
     }
 
     @Test
@@ -223,6 +224,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -234,6 +237,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_SAME_SENDING_AND_RECEIVING_BIC_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("send_bic and recv_bic should not be the same")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -245,6 +250,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_DATE_FROM_EARLIER_THAN_DATE_LIMIT_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -256,6 +263,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_REASON_CODE_WITH_NO_STATUS_DAYS_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -267,6 +276,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_REASON_CODE_WITH_ACCEPTED_STATUS_DAYS_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -279,6 +290,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -291,6 +304,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -303,6 +318,10 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .content(VALID_REJECTED_BODY_REQUEST))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.TRANSACTION_ENQUIRY)
     }
 
     @Test
@@ -314,6 +333,8 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(INVALID_LIMIT_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -359,5 +380,9 @@ class TransactionsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.TRANSACTION_DETAILS)
     }
 }

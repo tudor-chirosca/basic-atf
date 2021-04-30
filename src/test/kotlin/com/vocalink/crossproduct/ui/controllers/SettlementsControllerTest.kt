@@ -1,11 +1,11 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -17,36 +17,28 @@ import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementDetailsD
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementCycleScheduleDto
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto
 import com.vocalink.crossproduct.ui.facade.api.SettlementsFacade
-import java.math.BigDecimal
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.mockito.Mockito.any
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-@WebMvcTest(SettlementsController::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class SettlementsControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var settlementsFacade: SettlementsFacade
-
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -147,6 +139,9 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.SETTL_DETAILS)
     }
 
     @Test
@@ -172,6 +167,8 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_CYCLES_RESPONSE))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -191,6 +188,8 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_SCHEDULE_RESPONSE))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -212,5 +211,7 @@ class SettlementsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .queryParams(queryParams))
             .andExpect(status().is4xxClientError)
             .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+
+        verifyNoInteractions(auditFacade)
     }
 }

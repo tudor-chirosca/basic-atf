@@ -1,9 +1,8 @@
 package com.vocalink.crossproduct.ui.controllers
 
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.ui.controllers.api.BatchesApi
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -11,34 +10,26 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade
-import java.nio.charset.Charset
+import org.hamcrest.CoreMatchers.containsString
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import org.hamcrest.CoreMatchers.containsString
-import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(BatchesApi::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class BatchesControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var batchesFacade: BatchesFacade
-
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -77,8 +68,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
-        val dateFrom = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        val dateTo = LocalDate.now().minusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val dateTo = LocalDate.now(ZoneId.of("UTC")).minusDays(5)
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
         `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
@@ -101,7 +93,7 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
-        val dateFrom = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
@@ -151,6 +143,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("not_expected_param_name", "some_value")
                 .param("msg_direction", "Sending"))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.BATCH_ENQUIRY)
     }
 
     @Test
@@ -161,12 +156,14 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
     fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
-        val dateFrom = LocalDate.now().minusDays(
-            (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        val dateFrom = LocalDate.now(ZoneId.of("UTC")).minusDays(
+                (getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
@@ -175,6 +172,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -187,6 +186,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -200,6 +201,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -212,6 +215,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("limit", "0"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -225,6 +230,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -238,6 +245,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -251,6 +260,8 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("sort", "-wrong_param"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Wrong sorting parameter")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -265,6 +276,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "PRE-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.BATCH_ENQUIRY)
     }
 
     @Test
@@ -279,6 +293,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "POST-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.BATCH_ENQUIRY)
     }
 
     @Test
@@ -306,5 +323,9 @@ class BatchesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.BATCH_DETAILS)
     }
+
 }

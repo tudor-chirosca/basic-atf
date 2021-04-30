@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.config.ControllerFeatures
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
@@ -10,39 +10,32 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
-import java.io.ByteArrayInputStream
-import java.nio.charset.Charset
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.togglz.junit5.AllDisabled
 import org.togglz.junit5.AllEnabled
+import java.io.ByteArrayInputStream
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ofPattern
 
-@WebMvcTest(FilesController::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class FilesControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var filesFacade: FilesFacade
-
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -79,8 +72,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
-        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
-        val dateTo = LocalDate.now().minusDays(5).format(ofPattern("yyyy-MM-dd"))
+        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
+                .format(ofPattern("yyyy-MM-dd"))
+        val dateTo = LocalDate.now(ZoneId.of("UTC"))
+                .minusDays(5).format(ofPattern("yyyy-MM-dd"))
 
         `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
@@ -103,7 +98,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
-        val dateFrom = LocalDate.now().format(ofPattern("yyyy-MM-dd"))
+        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
+                .format(ofPattern("yyyy-MM-dd"))
         `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
@@ -153,6 +149,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("not_expected_param_name", "some_value")
                 .param("msg_direction", "Sending"))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.FILE_ENQUIRY)
     }
 
     @Test
@@ -167,7 +167,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT`() {
-        val dateFrom = LocalDate.now().minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong())+1)
+        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
+                .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong())+1)
                 .format(ofPattern("yyyy-MM-dd"))
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -177,6 +178,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -189,6 +192,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -201,6 +206,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("limit", "0"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -214,6 +221,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
+
+        verifyNoInteractions(auditFacade)
     }
 
 
@@ -228,6 +237,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -241,6 +252,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
                         .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -254,6 +267,8 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("sort", "-wrong_param"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Wrong sorting parameter")))
+
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -268,6 +283,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("status", "NAK")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.FILE_ENQUIRY)
     }
 
     @Test
@@ -294,6 +313,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_DETAILS_RESPONSE))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.FILE_DETAILS)
     }
 
     @Test
@@ -308,6 +331,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isUnsupportedMediaType)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsFailed(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.FILE_DETAILS)
     }
 
     @Test
@@ -323,5 +350,10 @@ class FilesControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk)
                 .andExpect(content().bytes(byteArrayOf(125, 12)))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
+                EventType.FILE_DETAILS)
     }
+
 }

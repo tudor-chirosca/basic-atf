@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -14,32 +14,23 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.times
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
-import java.nio.charset.Charset
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-@WebMvcTest(AlertsController::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class AlertsControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var facade: AlertsServiceFacade
-
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(MediaType.APPLICATION_JSON.type,
-            MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8"))
 
     private companion object {
         const val VALID_EMPTY_REQUEST = "{}"
@@ -76,6 +67,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().isOk)
 
         verify(facade).getAlertsReference(any(), any())
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -91,6 +83,7 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(status().isOk)
 
         verify(facade).getAlertStats(any(), any())
+        verifyNoInteractions(auditFacade)
     }
 
     @Test
@@ -104,6 +97,9 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .content(VALID_EMPTY_REQUEST))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_RESPONSE, true))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_ALERTS)
     }
 
     @Test
@@ -114,6 +110,9 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .content(VALID_PARTIAL_ALERT_REQUEST))
                 .andExpect(status().isOk)
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_ALERTS)
     }
 
     @Test
@@ -128,12 +127,14 @@ class AlertsControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                         .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
         )
         mockMvc.perform(
-            get("/alerts")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
-                .queryParams(queryParams))
-            .andExpect(status().is4xxClientError)
-            .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+                get("/alerts")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                        .queryParams(queryParams))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+        verifyNoInteractions(auditFacade)
     }
+
 }
