@@ -40,13 +40,14 @@ public class AuditDetailsJpa implements Serializable {
   private static final String DESCENDING_SING = "-";
 
   @Getter(AccessLevel.PRIVATE)
-  private final static Map<String, String> SORT_BINDINGS = new HashMap<>();
+  private static final Map<String, String> SORT_BINDINGS = new HashMap<>();
 
   static {
-    SORT_BINDINGS.put("createdAt", "timestamp");
+    SORT_BINDINGS.put("createdAt", DEFAULT_SORT_PARAMETER);
     SORT_BINDINGS.put("serviceId", "serviceId");
     SORT_BINDINGS.put("eventType", "userActivityString");
     SORT_BINDINGS.put("user", "username");
+    SORT_BINDINGS.put("responseContent", "contents");
   }
 
   @Id

@@ -17,6 +17,7 @@ public class AuditSearchRequest {
   private final ZonedDateTime dateTo;
   private final String participant;
   private final String user;
+  private final String responseContent;
   private final List<String> events;
   private final List<String> sort;
 }

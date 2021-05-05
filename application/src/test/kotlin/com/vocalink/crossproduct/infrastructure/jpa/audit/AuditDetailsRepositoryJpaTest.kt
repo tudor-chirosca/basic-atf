@@ -13,8 +13,8 @@ import java.util.*
 
 @DataJpaTest
 @ActiveProfiles("test")
-open class AuditDetailsJpaRepositoryJpaTest @Autowired constructor(var auditDetailsRepository: AuditDetailsRepositoryJpa,
-                                                                   var userActivityRepository: UserActivityRepositoryJpa) {
+open class AuditDetailsRepositoryJpaTest @Autowired constructor(var auditDetailsRepository: AuditDetailsRepositoryJpa,
+                                                                var userActivityRepository: UserActivityRepositoryJpa) {
 
     companion object {
         private const val PARTICIPANT_ID = "any_id"

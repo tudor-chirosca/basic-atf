@@ -137,7 +137,7 @@ open class AuditDetailsAdapterTest {
         val projection = factory.createProjection(AuditDetailsView::class.java)
         val pageImpl = PageImpl<AuditDetailsView>(listOf(projection))
 
-        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any()))
+        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(pageImpl)
 
         val details = adapter.getAuditDetailsByParameters(parameters)
@@ -151,14 +151,14 @@ open class AuditDetailsAdapterTest {
         val parameters = AuditSearchRequest.builder()
                 .offset(0)
                 .limit(10)
-                .sort(listOf("+serviceId", "-createdAt", "user"))
+                .sort(listOf("+serviceId", "-createdAt", "user", "-responseContent"))
                 .build()
 
         val factory = SpelAwareProxyProjectionFactory()
         val projection = factory.createProjection(AuditDetailsView::class.java)
         val pageImpl = PageImpl<AuditDetailsView>(listOf(projection))
 
-        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any()))
+        `when`(repositoryJpa.getAllByParameters(any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(pageImpl)
 
         val details = adapter.getAuditDetailsByParameters(parameters)

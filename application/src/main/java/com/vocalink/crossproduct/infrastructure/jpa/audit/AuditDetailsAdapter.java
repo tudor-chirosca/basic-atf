@@ -70,6 +70,7 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
             params.getDateTo(),
             params.getParticipant(),
             params.getUser(),
+            params.getResponseContent(),
             params.getEvents(),
             new OffsetBasedPageRequest(params.getLimit(), params.getOffset(), sortBy));
 

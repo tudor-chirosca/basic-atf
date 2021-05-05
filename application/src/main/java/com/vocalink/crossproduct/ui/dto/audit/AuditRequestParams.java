@@ -27,6 +27,7 @@ public class AuditRequestParams {
   private ZonedDateTime dateTo;
   private String participant;
   private String user;
+  private String responseContent;
   @Setter(AccessLevel.PRIVATE)
   private List<String> events;
   private List<String> sort;
