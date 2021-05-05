@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_SUSPEND;
+import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_UNSUSPEND;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -28,7 +30,9 @@ import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchReq
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -60,7 +64,33 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
             })
             .collect(toList()));
 
-    return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants);
+    return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants,
+        getApprovals(managedParticipants.getItems(), request, product));
+  }
+
+  private Map<String, Approval> getApprovals(final List<Participant> managedParticipants,
+      final ManagedParticipantsSearchCriteria request, final String product) {
+
+    final Map<String, Approval> approvalParticipants = new HashMap<>();
+
+    final List<String> managedParticipantIds = managedParticipants.stream()
+        .map(Participant::getBic)
+        .collect(toList());
+
+    final ApprovalSearchCriteria approvalRequest = ApprovalSearchCriteria.builder()
+        .offset(request.getOffset())
+        .limit(request.getLimit())
+        .participantIds(managedParticipantIds)
+        .requestTypes(asList(PARTICIPANT_UNSUSPEND, PARTICIPANT_SUSPEND))
+        .build();
+
+    final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
+        .findPaginated(approvalRequest).getItems();
+
+    approvals.forEach(approval -> approval.getParticipantIds()
+        .forEach(id -> approvalParticipants.put(id, approval)));
+
+    return approvalParticipants;
   }
 
   @Override
@@ -73,8 +103,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
     setFundedParticipants(participant, product);
 
     final ApprovalRequestType requestType = participant.getStatus().equals(ParticipantStatus.ACTIVE)
-        ? ApprovalRequestType.PARTICIPANT_SUSPEND
-        : ApprovalRequestType.PARTICIPANT_UNSUSPEND;
+        ? PARTICIPANT_SUSPEND
+        : PARTICIPANT_UNSUSPEND;
 
     final ApprovalSearchCriteria criteria = ApprovalSearchCriteria.builder()
         .limit(1)

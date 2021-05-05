@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.ui.dto.PageDto
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalReferenceDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade
@@ -60,7 +61,8 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "hasActiveSuspensionRequests": false,
                 "tpspName": "Nordnet Bank",
                 "tpspId": "475347837892",
-                "fundedParticipantsCount": 0
+                "fundedParticipantsCount": 0,
+                "approvalReference": {}
             }]
         }"""
     }
@@ -68,7 +70,7 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     val items = ManagedParticipantDto("FORXSES1", null, "FORXSES1", "Forex Bank", ParticipantStatus.ACTIVE,
             null, ParticipantType.FUNDED, "194869924",
             "Nordnet Bank", "475347837892", null, 0,
-            null)
+            null, ApprovalReferenceDto.builder().build())
 
     @Test
     fun `should return 200 if no criteria specified and return valid response`() {

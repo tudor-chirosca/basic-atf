@@ -34,6 +34,7 @@ public class ManagedParticipantDto {
   private final int fundedParticipantsCount;
   @JsonInclude(Include.NON_EMPTY)
   private final List<RoutingRecord> reachableBics;
+  private final ApprovalReferenceDto approvalReference;
 
   public String getParticipantType() {
     return participantType.getDescription();

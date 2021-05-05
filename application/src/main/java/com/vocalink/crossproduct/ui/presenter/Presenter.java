@@ -71,6 +71,7 @@ import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.springframework.core.io.Resource;
 
 public interface Presenter {
@@ -150,7 +151,8 @@ public interface Presenter {
 
   ApprovalDetailsDto presentApprovalDetails(Approval approval, List<Participant> participants);
 
-  PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants);
+  PageDto<ManagedParticipantDto> presentManagedParticipants(Page<Participant> participants,
+      Map<String, Approval> approvals);
 
   PageDto<BroadcastDto> presentBroadcasts(int totalResults, List<BroadcastDto> broadcastDtos);
 

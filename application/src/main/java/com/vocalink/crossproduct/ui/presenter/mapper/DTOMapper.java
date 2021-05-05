@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDI
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -63,6 +64,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
+import com.vocalink.crossproduct.ui.dto.participant.ApprovalReferenceDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
@@ -91,6 +93,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.mapstruct.Context;
@@ -550,9 +553,6 @@ public interface DTOMapper {
   })
   CurrentUserInfoDto toDto(Participant participant, List<String> permissions, AuditDetails auditDetails);
 
-  //TODO: check ManagedParticipant != Participant?
-  ManagedParticipantDto toManagedDto(Participant participants);
-
   default <T> PageDto<T> toDto(Page<?> page, Class<T> targetType) {
     List<?> sourceItems = page.getItems();
 
@@ -600,4 +600,28 @@ public interface DTOMapper {
   AuditDto toDto(AuditDetails auditDetails);
 
   UserActivityDto toDto(UserActivity userActivity);
+
+  PageDto<ManagedParticipantDto> toDto(Page<Participant> participants,
+      @Context Map<String, Approval> approvals);
+
+  @Mappings({
+      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference")
+  })
+  ManagedParticipantDto toDto(Participant participant, @Context Map<String, Approval> approvals);
+
+  @Named("getApprovalReference")
+  default ApprovalReferenceDto getApprovalReference(Participant participant,
+      @Context Map<String, Approval> approvals) {
+    final Approval approval = approvals
+        .getOrDefault(participant.getId(), Approval.builder().build());
+
+    return ApprovalReferenceDto.builder()
+        .jobId(approval.getApprovalId())
+        .requestedBy(ofNullable(approval.getRequestedBy())
+            .orElse(UserDetails.builder().build())
+            .getFullName())
+        .requestedAt(approval.getDate())
+        .requestType(approval.getRequestType())
+        .build();
+  }
 }

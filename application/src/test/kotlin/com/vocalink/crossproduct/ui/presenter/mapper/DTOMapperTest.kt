@@ -920,6 +920,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map all fields of Participant to ManagedParticipantDto`() {
+        val date = ZonedDateTime.now()
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
                 null, ACTIVE, null, FUNDING, null,
@@ -942,7 +943,19 @@ class DTOMapperTest {
         )
         participant.reachableBics = listOf(routingRecords)
 
-        val result = MAPPER.toDto(participants, ManagedParticipantDto::class.java)
+        val userDetails = UserDetails.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .build()
+
+        val approval = Approval.builder()
+                .approvalId("1000015")
+                .requestType(ApprovalRequestType.PARTICIPANT_SUSPEND)
+                .date(date)
+                .requestedBy(userDetails)
+                .build()
+
+        val result = MAPPER.toDto(participants, mapOf( "FORXSES1" to approval))
 
         assertThat(result).isNotNull
 
@@ -975,6 +988,11 @@ class DTOMapperTest {
         assertThat(managedParticipant.reachableBics[0].validFrom).isEqualTo(participant.reachableBics[0].validFrom)
         assertThat(managedParticipant.reachableBics[0].validTo).isEqualTo(participant.reachableBics[0].validTo)
         assertThat(managedParticipant.reachableBics[0].currency).isEqualTo(participant.reachableBics[0].currency)
+        assertThat(managedParticipant.approvalReference).isNotNull
+        assertThat(managedParticipant.approvalReference.jobId).isEqualTo(approval.approvalId)
+        assertThat(managedParticipant.approvalReference.requestType).isEqualTo(approval.requestType)
+        assertThat(managedParticipant.approvalReference.requestedAt).isEqualTo(approval.date)
+        assertThat(managedParticipant.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
     }
 
     @Test

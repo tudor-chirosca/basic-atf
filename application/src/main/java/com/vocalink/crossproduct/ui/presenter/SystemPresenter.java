@@ -71,6 +71,7 @@ import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -227,7 +228,7 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
-      Page<Participant> participants) {
+      Page<Participant> participants, Map<String, Approval> approvals) {
     throw new RuntimeException("System API not implemented yet");
   }
 

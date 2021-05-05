@@ -98,6 +98,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -432,8 +433,8 @@ public class UIPresenter implements Presenter {
 
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
-      Page<Participant> participants) {
-    return MAPPER.toDto(participants, ManagedParticipantDto.class);
+      Page<Participant> participants, Map<String, Approval> approvals) {
+    return MAPPER.toDto(participants, approvals);
   }
 
   @Override
