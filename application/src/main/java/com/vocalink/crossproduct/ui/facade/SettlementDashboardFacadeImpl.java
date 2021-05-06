@@ -33,10 +33,6 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
     List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
 
-    if (cycles.size() < 2) {
-      throw new NonConsistentDataException("Expected at least two cycles!");
-    }
-
     if (nonNull(fundingParticipantId)) {
       Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(fundingParticipantId);

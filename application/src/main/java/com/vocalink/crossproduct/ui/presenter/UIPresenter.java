@@ -2,6 +2,8 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
+
+import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -92,8 +94,10 @@ import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
 import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -116,8 +120,8 @@ public class UIPresenter implements Presenter {
 
   private final ContentUtils contentUtils;
 
-  private final String PREVIOUS_CYCLE = "PREVIOUS";
-  private final String CURRENT_CYCLE = "CURRENT";
+  private final Clock clock;
+
   private final List<String> weekends = unmodifiableList(asList("Saturday", "Sunday"));
   private final List<String> rejectedStatuses =
       unmodifiableList(asList("NAK", "PRE-RJCT", "POST-RJCT"));
@@ -126,8 +130,8 @@ public class UIPresenter implements Presenter {
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
       List<Participant> participants) {
 
-    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
-    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+    Cycle currentCycle = getCurrentCycle(cycles);
+    Cycle previousCycle = getPreviousCycle(cycles);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->
@@ -142,8 +146,8 @@ public class UIPresenter implements Presenter {
       List<Participant> participants, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays) {
 
-    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
-    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+    Cycle currentCycle = getCurrentCycle(cycles);
+    Cycle previousCycle = getPreviousCycle(cycles);
 
     List<TotalPositionDto> positionsDto = participants.stream()
         .map(participant ->
@@ -160,8 +164,8 @@ public class UIPresenter implements Presenter {
   public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant) {
 
-    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
-    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+    Cycle currentCycle = getCurrentCycle(cycles);
+    Cycle previousCycle = getPreviousCycle(cycles);
 
     ParticipantPosition currentPosition = getPosition(positions, currentCycle);
     ParticipantPosition previousPosition = getPosition(positions, previousCycle);
@@ -175,8 +179,8 @@ public class UIPresenter implements Presenter {
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
-    Cycle currentCycle = getCycle(cycles, CURRENT_CYCLE);
-    Cycle previousCycle = getCycle(cycles, PREVIOUS_CYCLE);
+    Cycle currentCycle = getCurrentCycle(cycles);
+    Cycle previousCycle = getPreviousCycle(cycles);
 
     ParticipantPosition currentPosition = getPosition(positions, currentCycle);
     ParticipantPosition previousPosition = getPosition(positions, previousCycle);
@@ -193,12 +197,34 @@ public class UIPresenter implements Presenter {
         );
   }
 
-  private Cycle getCycle(List<Cycle> cycles, String cycleOrder) {
-    // Cycles are always in descending order
-    if (cycleOrder.equals(CURRENT_CYCLE)) {
-      return cycles.get(0);
+  public Cycle getCurrentCycle(List<Cycle> cycles) {
+    Cycle empty = Cycle.builder().build();
+    if (Objects.isNull(cycles) || cycles.isEmpty()) {
+      return empty;
     }
-    return cycles.get(1);
+    Cycle currentCycle = cycles.get(0);
+    if (cycles.size() > 1
+            && Objects.nonNull(currentCycle)
+            && TRUE.equals(currentCycle.getIsNextDayCycle())) {
+      return empty;
+    }
+    return currentCycle;
+  }
+
+  public Cycle getPreviousCycle(List<Cycle> cycles) {
+    Cycle empty = Cycle.builder().build();
+    if (Objects.isNull(cycles) || cycles.isEmpty()) {
+      return empty;
+    }
+    if (cycles.size() > 1 ) {
+      Cycle currentCycle = cycles.get(0);
+      Cycle previousCycle = cycles.get(1);
+      if (Objects.nonNull(currentCycle) && currentCycle.isNextSettlementCycle(clock)) {
+        return empty;
+      }
+      return previousCycle;
+    }
+    return empty;
   }
 
   @Override

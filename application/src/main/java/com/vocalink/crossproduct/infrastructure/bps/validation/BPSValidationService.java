@@ -28,10 +28,10 @@ public class BPSValidationService implements ValidationService {
     final Map<String, String> eodPeriod = bpsProperties.getEodPeriod();
 
     final ZonedDateTime start = ZonedDateTime.of(LocalDateTime
-            .of(LocalDate.now(), LocalTime.parse(eodPeriod.get(START_EOD_PERIOD_TIME))), ZoneId.of(ZONE));
+            .of(LocalDate.now(ZoneId.of(ZONE)), LocalTime.parse(eodPeriod.get(START_EOD_PERIOD_TIME))), ZoneId.of(ZONE));
 
     final ZonedDateTime end = ZonedDateTime.of(LocalDateTime
-            .of(LocalDate.now(), LocalTime.parse(eodPeriod.get(END_EOD_PERIOD_TIME))), ZoneId.of(ZONE));
+            .of(LocalDate.now(ZoneId.of(ZONE)), LocalTime.parse(eodPeriod.get(END_EOD_PERIOD_TIME))), ZoneId.of(ZONE));
 
     final boolean isAvailable = currentTime.isBefore(start) || currentTime.isAfter(end);
 

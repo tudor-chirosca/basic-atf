@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.infrastructure.bps.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties.Detail
 import org.springframework.context.annotation.Bean
 import java.time.Duration
@@ -74,4 +75,8 @@ open class BPSTestConfig {
         objectMapper.registerModule(JavaTimeModule())
         return objectMapper
     }
+
+    @Bean
+    open fun getClock() = TestConstants.FIXED_CLOCK
+
 }

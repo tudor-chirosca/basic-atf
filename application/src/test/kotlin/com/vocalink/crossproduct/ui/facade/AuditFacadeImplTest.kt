@@ -1,6 +1,7 @@
-package com.vocalink.crossproduct.ui.facade;
+package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -28,8 +29,9 @@ class AuditFacadeImplTest {
     private val auditDetailsRepository = mock(AuditDetailsRepository::class.java)
     private val participantRepository = mock(ParticipantRepository::class.java)
     private val contentUtils = mock(ContentUtils::class.java)
+    private val clock = FIXED_CLOCK
 
-    private val uiPresenter = UIPresenter(contentUtils)
+    private val uiPresenter = UIPresenter(contentUtils, clock)
 
     private var auditFacadeImpl = AuditFacadeImpl(repositoryFactory, presenterFactory)
 

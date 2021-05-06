@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
@@ -141,7 +142,7 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
-        val older = LocalDate.now().minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong()+1)
+        val older = LocalDate.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong()+1)
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,

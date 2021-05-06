@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.cycle.Cycle
 import com.vocalink.crossproduct.domain.cycle.CycleRepository
@@ -30,6 +31,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.time.ZonedDateTime
@@ -43,6 +45,7 @@ open class SettlementDashboardFacadeImplTest {
     private val cycleRepository = mock(CycleRepository::class.java)!!
     private val intraDayPositionGrossRepository = mock(IntraDayPositionGrossRepository::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
+    private val clock = FIXED_CLOCK
 
     private val settlementServiceFacadeImpl = SettlementDashboardFacadeImpl(
             repositoryFactory, presenterFactory)
@@ -104,14 +107,17 @@ open class SettlementDashboardFacadeImplTest {
     }
 
     @Test
-    fun `should throw error on cycles less than 2`() {
+    fun `should accept cycles with less than 2 elements`() {
         `when`(participantRepository.findAll())
                 .thenReturn(Page(2, MockParticipants().participants))
         `when`(cycleRepository.findAll())
                 .thenReturn(emptyList())
-        assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
-        }
+        `when`(presenterFactory.getPresenter(UI))
+                .thenReturn(uiPresenter)
+
+        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
+
+        verify(uiPresenter).presentAllParticipantsSettlement(eq(emptyList()), any())
     }
 
     @Test
@@ -364,7 +370,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(participantRepository.findAll())
             .thenReturn(Page(3, participants))
         `when`(presenterFactory.getPresenter(UI))
-            .thenReturn(UIPresenter(null))
+            .thenReturn(UIPresenter(null, clock))
 
         val result = settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
 

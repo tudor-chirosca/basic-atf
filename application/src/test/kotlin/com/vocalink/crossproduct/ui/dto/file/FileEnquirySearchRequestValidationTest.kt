@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.ui.dto.file;
+package com.vocalink.crossproduct.ui.dto.file
 
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
@@ -62,7 +63,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
-        val older = LocalDate.now().minusDays(
+        val older = LocalDate.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString()
         request.setDate_from(older)
 

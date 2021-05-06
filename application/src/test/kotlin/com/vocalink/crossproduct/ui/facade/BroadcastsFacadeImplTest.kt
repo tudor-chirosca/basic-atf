@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade
 
 
 import com.vocalink.crossproduct.RepositoryFactory
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsRepository
@@ -27,6 +28,7 @@ class BroadcastsFacadeImplTest {
     private val broadcastsRepository = mock(BroadcastsRepository::class.java)
     private val participantRepository = mock(ParticipantRepository::class.java)
     private val facadeImpl = BroadcastsFacadeImpl(repositoryFactory, presenterFactory)
+    private val clock = FIXED_CLOCK
 
     companion object {
         var PRODUCT = "BPS"
@@ -44,7 +46,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(any())).thenReturn(null)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null, clock))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -56,7 +58,7 @@ class BroadcastsFacadeImplTest {
 
     @Test
     fun `broadcast should contain mapped participant reference dto`() {
-        val participantId = "00000001";
+        val participantId = "00000001"
 
         val broadcastDto = Broadcast(ZonedDateTime.parse("2021-01-22T00:00:00Z"), "id", "msg", listOf("00000001"))
         val pageDto = Page<Broadcast>(1, listOf(broadcastDto))
@@ -69,7 +71,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null, clock))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -96,7 +98,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null, clock))
 
         val searchParameters = BroadcastsSearchParameters()
 
@@ -119,7 +121,7 @@ class BroadcastsFacadeImplTest {
         `when`(repositoryFactory.getParticipantRepository(any())).thenReturn(participantRepository)
         `when`(participantRepository.findById(participantId)).thenReturn(participant)
 
-        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null))
+        `when`(presenterFactory.getPresenter(any())).thenReturn(UIPresenter(null, clock))
 
         val created = facadeImpl.create(PRODUCT, CLIENT_TYPE, "msg", listOf(participantId))
 

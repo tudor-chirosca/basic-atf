@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.presenter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData
@@ -18,6 +19,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfig
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.aspects.ContentUtils
@@ -40,12 +42,107 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [UIPresenter::class, ContentUtils::class, ObjectMapper::class])
+@ContextConfiguration(classes = [UIPresenter::class, ContentUtils::class, ObjectMapper::class, BPSTestConfig::class])
 @TestPropertySource("classpath:application.properties")
 class UIPresenterTest {
 
     @Autowired
     private lateinit var uiPresenter: UIPresenter
+
+    companion object {
+        val clock = FIXED_CLOCK
+    }
+
+    @Test
+    fun `should get Settlement Dashboard DTO for all participants if cycles list is empty`() {
+        val cycles = emptyList<Cycle>()
+        val participants = MockParticipants().participants
+
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
+
+        assertThat(result.currentCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+        assertThat(result.previousCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+    }
+
+    @Test
+    fun `should get Settlement Dashboard DTO for all participants if cycles contain only current cycle`() {
+        val cycles = listOf(Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock).plusDays(1))
+                .id("03")
+                .build())
+        val participants = MockParticipants().participants
+
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
+
+        assertThat(result.previousCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+        assertThat(result.currentCycle.id).isEqualTo("03")
+        assertThat(result.currentCycle.settlementTime).isNotNull()
+    }
+
+    @Test
+    fun `should get Settlement Dashboard DTO for all participants if cycles contain current and previous`() {
+        val cycles = listOf(
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock))
+                .id("03")
+                .build(),
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock))
+                .id("02")
+                .build()
+        )
+        val participants = MockParticipants().participants
+
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
+
+        assertThat(result.previousCycle.id).isEqualTo("02")
+        assertThat(result.previousCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
+        assertThat(result.currentCycle.id).isEqualTo("03")
+        assertThat(result.currentCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
+    }
+
+    @Test
+    fun `should get Settlement Dashboard DTO if cycles contain next day cycle and previous cycle`() {
+        val cycles = listOf(
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock))
+                .isNextDayCycle(true)
+                .id("03")
+                .build(),
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock))
+                .id("02")
+                .build()
+        )
+        val participants = MockParticipants().participants
+
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
+
+        assertThat(result.previousCycle.id).isEqualTo("02")
+        assertThat(result.previousCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
+        assertThat(result.currentCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+    }
+
+    @Test
+    fun `should get Settlement Dashboard DTO if cycles contain next settlement cycle and previous cycle`() {
+        val cycles = listOf(
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock).plusDays(1))
+                .id("03")
+                .build(),
+            Cycle.builder()
+                .settlementTime(ZonedDateTime.now(clock))
+                .id("02")
+                .build()
+        )
+        val participants = MockParticipants().participants
+
+        val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
+
+        assertThat(result.previousCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+        assertThat(result.currentCycle.id).isEqualTo("03")
+        assertThat(result.currentCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock).plusDays(1))
+    }
 
     @Test
     fun `should get Settlement Dashboard DTO for paramId with null values if missing IntraDay or Positions`() {
