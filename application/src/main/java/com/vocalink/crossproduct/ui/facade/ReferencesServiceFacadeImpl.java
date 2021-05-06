@@ -6,9 +6,8 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
-import com.vocalink.crossproduct.domain.reference.EnquiryType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
@@ -19,6 +18,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -62,21 +62,22 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
       String enquiryType) {
     log.info("Fetching file references with type: {} from: {}", enquiryType, product);
 
-    final ReasonCodeValidation reasonCodeReferences = repositoryFactory
+    final Validation validation = repositoryFactory
         .getReferencesRepository(product)
-        .findReasonCodes()
+        .findReasonCodeReference()
+        .getValidations()
         .stream()
-        .filter(v -> v.getValidationLevel().equals(EnquiryType.valueOf(enquiryType)))
+        .filter(v -> Objects.equals(v.getValidationLevel(), enquiryType))
         .findFirst()
         .orElseThrow(() -> new NonConsistentDataException(
             "No reason codes found for type: " + enquiryType)
         );
 
-    final List<String> reasonCodes = repositoryFactory.getReferencesRepository(product)
+    final List<String> statuses = repositoryFactory.getReferencesRepository(product)
         .findStatuses(enquiryType);
 
     return presenterFactory.getPresenter(clientType)
-        .presentReasonCodeReferences(reasonCodeReferences, reasonCodes);
+        .presentReasonCodeReferences(validation, statuses);
   }
 
   @Override

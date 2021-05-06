@@ -55,10 +55,9 @@ import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
-import com.vocalink.crossproduct.domain.reference.EnquiryType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation.ReasonCode;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
@@ -108,8 +107,8 @@ import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPosition
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference.BPSReasonCode;
-import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference.BPSReasonCodeValidation;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSParticipantSettlement;
@@ -164,16 +163,6 @@ public interface EntityMapper {
   Batch toEntity(BPSBatchDetailed batch);
 
   File toEntity(BPSFile file);
-
-  @Mappings({
-      @Mapping(target = "validationLevel", source = "validationLevel", qualifiedByName = "convertBpsEnquiryType"),
-  })
-  ReasonCodeValidation toEntity(BPSReasonCodeValidation reasonCodeValidation);
-
-  @Named("convertBpsEnquiryType")
-  default EnquiryType convertBpsEnquiryType(BPSEnquiryType bpsEnquiryType) {
-    return EnquiryType.valueOf(bpsEnquiryType.name());
-  }
 
   ReasonCode toEntity(BPSReasonCode reasonCode);
 
@@ -567,4 +556,6 @@ public interface EntityMapper {
   AuditDetails toEntity(AuditDetailsView auditDetailsView);
 
   AuditDetails toEntity(UserDetailsView userDetailsView);
+
+  ReasonCodeReference toEntity(BPSReasonCodeReference bpsReasonCodeReference);
 }

@@ -7,7 +7,7 @@ public interface ReferencesRepository extends CrossproductRepository {
 
   List<MessageDirectionReference> findMessageDirectionReferences();
 
-  List<ReasonCodeValidation> findReasonCodes();
+  ReasonCodeReference findReasonCodeReference();
 
   List<String> findStatuses(String enquiryType);
 

@@ -16,9 +16,8 @@ import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfig
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
@@ -452,27 +451,35 @@ class UIPresenterTest {
 
     @Test
     fun `should present filtered File references by enquiryType`() {
-        val reasonCode = ReasonCodeValidation.ReasonCode(
+        val reasonCode1 = ReasonCodeReference.ReasonCode(
                 "F01",
-                "description",
+                "description 1",
                 true
         )
-        val validation = ReasonCodeValidation(
-                EnquiryType.FILES,
-                listOf(reasonCode)
+        val reasonCode2 = ReasonCodeReference.ReasonCode(
+                "F02",
+                "description 2",
+                false
         )
-        val statuses = listOf("NAK", "ACK")
-        val result = uiPresenter.presentReasonCodeReferences(validation, statuses)
-        assertThat(result.size).isEqualTo(2)
-        assertThat(result[0].enquiryType).isEqualTo(validation.validationLevel.name)
-        assertThat(result[0].isHasReason).isEqualTo(true)
-        assertThat(result[0].status).isEqualTo(statuses[0])
-        assertThat(result[0].reasonCodes[0]).isEqualTo(reasonCode.reasonCode)
+        val validation = ReasonCodeReference.Validation(
+                "FILE",
+                listOf(reasonCode1, reasonCode2)
+        )
+        val statuses = listOf("Accepted", "Rejected")
 
-        assertThat(result[1].enquiryType).isEqualTo(validation.validationLevel.name)
-        assertThat(result[1].isHasReason).isEqualTo(false)
+        val result = uiPresenter.presentReasonCodeReferences(validation, statuses)
+
+        assertThat(result.size).isEqualTo(2)
+
+        assertThat(result[0].enquiryType).isEqualTo(validation.validationLevel)
+        assertThat(result[0].hasReason).isEqualTo(false)
+        assertThat(result[0].status).isEqualTo(statuses[0])
+        assertThat(result[0].reasonCodes).isEmpty()
+
+        assertThat(result[1].enquiryType).isEqualTo(validation.validationLevel)
+        assertThat(result[1].hasReason).isEqualTo(true)
         assertThat(result[1].status).isEqualTo(statuses[1])
-        assertThat(result[1].reasonCodes).isEmpty()
+        assertThat(result[1].reasonCodes.size).isEqualTo(2)
     }
 
     @Test

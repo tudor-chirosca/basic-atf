@@ -4,8 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
@@ -13,7 +13,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
 
 @BPSTestConfiguration
 @Import(BPSReferenceRepository::class)
@@ -57,26 +56,31 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
         ]
         """
         const val VALID_FILE_REFERENCES_RESPONSE: String = """
-        [
+        {
+        "validations": [
             {
-                "messageType": "pacs.008.001.02",
-                "validations": [
+                "validationLevel": "FILE",
+                "reasonCodes": [
                     {
-                        "validationLevel": "FILE",
-                        "reasonCodes": [
-                            {
-                                "reasonCode": "F00",
-                                "description": "Describe",
-                                "active": true
-                            }
-                        ]
+                        "reasonCode": "F00",
+                        "description": "Serious structural failure",
+                        "active": true
                     }
                 ]
             }
-        ]
+            ]
+        }
         """
-        const val VALID_STATUSES_RESPONSE: String = """ ["ACK", "NAK"] """
-    }
+        const val VALID_STATUSES_RESPONSE: String = """ 
+    [
+        {
+            "status": "Accepted"
+        },
+        {
+            "status": "Rejected"
+        }
+    ]
+    """ }
 
     @Test
     fun `should pass message direction reference success`() {
@@ -108,28 +112,28 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_FILE_REFERENCES_RESPONSE)))
 
-        val result = client.findReasonCodes()
+        val result = client.findReasonCodeReference()
 
-        assertThat(result).isNotEmpty
-        assertThat(result[0].validationLevel).isEqualTo(EnquiryType.FILES)
-        assertThat(result[0].reasonCodes[0].reasonCode).isEqualTo("F00")
-        assertThat(result[0].reasonCodes[0].description).isEqualTo("Describe")
-        assertThat(result[0].reasonCodes[0].active).isEqualTo(true)
+        assertThat(result.validations).isNotEmpty
+        assertThat(result.validations[0].validationLevel).isEqualTo(BPSEnquiryType.FILE.name)
+        assertThat(result.validations[0].reasonCodes[0].reasonCode).isEqualTo("F00")
+        assertThat(result.validations[0].reasonCodes[0].description).isEqualTo("Serious structural failure")
+        assertThat(result.validations[0].reasonCodes[0].active).isEqualTo(true)
     }
 
     @Test
     fun `should pass statuses with success`() {
         mockServer.stubFor(
-                post(urlEqualTo("/reference/status/P27-SEK/FILES/readAll"))
+                post(urlEqualTo("/reference/status/P27-SEK/FILE/readAll"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_STATUSES_RESPONSE)))
 
-        val result = client.findStatuses("FILES")
+        val result = client.findStatuses("FILE")
 
         assertThat(result).isNotEmpty
-        assertThat(result[0]).isEqualTo("ACK")
-        assertThat(result[1]).isEqualTo("NAK")
+        assertThat(result[0]).isEqualTo("Accepted")
+        assertThat(result[1]).isEqualTo("Rejected")
     }
 }

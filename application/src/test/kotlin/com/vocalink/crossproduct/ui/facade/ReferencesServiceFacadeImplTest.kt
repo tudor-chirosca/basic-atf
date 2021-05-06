@@ -10,9 +10,8 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
@@ -197,35 +196,37 @@ class ReferencesServiceFacadeImplTest {
 
     @Test
     fun `should get reason codes filtered by enquiry type`() {
-        val reasonCodes = listOf(ReasonCodeValidation.ReasonCode(
+        val reasonCodes = listOf(ReasonCodeReference.ReasonCode(
                 "F01",
                 "description",
                 true
         ))
         val validations = listOf(
-                ReasonCodeValidation(EnquiryType.FILES, reasonCodes),
-                ReasonCodeValidation(EnquiryType.BATCHES, reasonCodes),
-                ReasonCodeValidation(EnquiryType.TRANSACTIONS, reasonCodes)
+                ReasonCodeReference.Validation("FILE", reasonCodes),
+                ReasonCodeReference.Validation("BATCH", reasonCodes),
+                ReasonCodeReference.Validation("TRANSACTION", reasonCodes)
         )
+
+        val reasonCodeReference = ReasonCodeReference(validations)
         val statuses = listOf("ACK", "NAK")
 
-        `when`(referencesRepository.findReasonCodes())
-                .thenReturn(validations)
+        `when`(referencesRepository.findReasonCodeReference())
+                .thenReturn(reasonCodeReference)
 
         `when`(referencesRepository.findStatuses("FILES"))
                 .thenReturn(statuses)
 
-        val captor = argumentCaptor<ReasonCodeValidation>()
+        val captor = argumentCaptor<ReasonCodeReference.Validation>()
 
         `when`(uiPresenter.presentReasonCodeReferences(captor.capture(), any()))
                 .thenReturn(listOf(ReasonCodeReferenceDto.builder().build()))
 
         val result = referenceServiceFacadeImpl
-                .getReasonCodeReferences(CONTEXT, ClientType.UI, "FILES")
+                .getReasonCodeReferences(CONTEXT, ClientType.UI, "FILE")
 
         val filteredReasonCode = captor.value
         assertNotNull(filteredReasonCode)
-        assertThat(filteredReasonCode.validationLevel).isEqualTo(EnquiryType.FILES)
+        assertThat(filteredReasonCode.validationLevel).isEqualTo("FILE")
         assertNotNull(result)
     }
 }

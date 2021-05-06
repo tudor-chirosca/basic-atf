@@ -24,7 +24,8 @@ import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -115,7 +116,7 @@ public interface Presenter {
       List<Participant> participants);
 
   List<ReasonCodeReferenceDto> presentReasonCodeReferences(
-      ReasonCodeValidation reasonCodeValidation,
+      Validation reasonCodeReference,
       List<String> status);
 
   List<MessageDirectionReferenceDto> presentMessageDirectionReferences(

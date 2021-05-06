@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
-
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -35,8 +34,8 @@ import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation.ReasonCode;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -124,8 +123,8 @@ public class UIPresenter implements Presenter {
   private final Clock clock;
 
   private final List<String> weekends = unmodifiableList(asList("Saturday", "Sunday"));
-  private final List<String> rejectedStatuses =
-      unmodifiableList(asList("NAK", "PRE-RJCT", "POST-RJCT"));
+  private final List<String> rejectedStatuses = unmodifiableList(
+      asList("Rejected", "Reject")); // TODO:  Subject to clarify with BPS
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
@@ -205,8 +204,8 @@ public class UIPresenter implements Presenter {
     }
     Cycle currentCycle = cycles.get(0);
     if (cycles.size() > 1
-            && Objects.nonNull(currentCycle)
-            && TRUE.equals(currentCycle.getIsNextDayCycle())) {
+        && Objects.nonNull(currentCycle)
+        && TRUE.equals(currentCycle.getIsNextDayCycle())) {
       return empty;
     }
     return currentCycle;
@@ -217,7 +216,7 @@ public class UIPresenter implements Presenter {
     if (Objects.isNull(cycles) || cycles.isEmpty()) {
       return empty;
     }
-    if (cycles.size() > 1 ) {
+    if (cycles.size() > 1) {
       Cycle currentCycle = cycles.get(0);
       Cycle previousCycle = cycles.get(1);
       if (Objects.nonNull(currentCycle) && currentCycle.isNextSettlementCycle(clock)) {
@@ -386,13 +385,13 @@ public class UIPresenter implements Presenter {
 
   @Override
   public List<ReasonCodeReferenceDto> presentReasonCodeReferences(
-      ReasonCodeValidation reasonCodeValidation, List<String> statuses) {
+      Validation validation, List<String> statuses) {
     return statuses.stream()
         .map(status -> ReasonCodeReferenceDto.builder()
-            .enquiryType(reasonCodeValidation.getValidationLevel().name())
+            .enquiryType(validation.getValidationLevel())
             .hasReason(rejectedStatuses.contains(status))
             .reasonCodes(
-                rejectedStatuses.contains(status) ? reasonCodeValidation.getReasonCodes()
+                rejectedStatuses.contains(status) ? validation.getReasonCodes()
                     .stream()
                     .map(ReasonCode::getReasonCode)
                     .collect(toList()) : emptyList()

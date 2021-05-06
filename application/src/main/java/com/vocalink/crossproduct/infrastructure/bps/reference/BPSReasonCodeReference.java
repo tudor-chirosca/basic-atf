@@ -7,25 +7,20 @@ import lombok.Getter;
 @Getter
 public class BPSReasonCodeReference {
 
-  private final String messageType;
-  private final List<BPSReasonCodeValidation> validations;
+  private final List<BPSValidation> validations;
 
-  public BPSReasonCodeReference(
-      @JsonProperty(value = "messageType") String messageType,
-      @JsonProperty(value = "validations") List<BPSReasonCodeValidation> validations) {
-    this.messageType = messageType;
+  public BPSReasonCodeReference(@JsonProperty("validations") List<BPSValidation> validations) {
     this.validations = validations;
   }
 
   @Getter
-  public static class BPSReasonCodeValidation {
+  public static class BPSValidation {
 
-    private final BPSEnquiryType validationLevel;
+    private final String validationLevel;
     private final List<BPSReasonCode> reasonCodes;
 
-    public BPSReasonCodeValidation(
-        @JsonProperty(value = "validationLevel") BPSEnquiryType validationLevel,
-        @JsonProperty(value = "reasonCodes") List<BPSReasonCode> reasonCodes) {
+    public BPSValidation(@JsonProperty("validationLevel") String validationLevel,
+        @JsonProperty("reasonCodes") List<BPSReasonCode> reasonCodes) {
       this.validationLevel = validationLevel;
       this.reasonCodes = reasonCodes;
     }
@@ -38,10 +33,9 @@ public class BPSReasonCodeReference {
     private final String description;
     private final Boolean active;
 
-    public BPSReasonCode(
-        @JsonProperty(value = "reasonCode") String reasonCode,
-        @JsonProperty(value = "description") String description,
-        @JsonProperty(value = "active") Boolean active) {
+    public BPSReasonCode(@JsonProperty("reasonCode") String reasonCode,
+        @JsonProperty("description") String description,
+        @JsonProperty("active") Boolean active) {
       this.reasonCode = reasonCode;
       this.description = description;
       this.active = active;

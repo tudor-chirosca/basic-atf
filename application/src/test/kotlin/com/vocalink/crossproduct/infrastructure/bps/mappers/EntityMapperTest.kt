@@ -10,7 +10,6 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel
-import com.vocalink.crossproduct.domain.reference.EnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
@@ -294,26 +293,13 @@ class EntityMapperTest {
 
     @Test
     fun `should map FileReference fields`() {
-        val reasonCodes = listOf(BPSReasonCodeReference.BPSReasonCode(
-                "reasonCode",
-                "description",
-                true
-        ))
-        val bps = BPSReasonCodeReference.BPSReasonCodeValidation(
-                BPSEnquiryType.FILES,
-                reasonCodes
-        )
+        val bpsReasonCode = BPSReasonCodeReference.BPSReasonCode("ONE", "One Code", true)
+        val bpsValidation = BPSReasonCodeReference.BPSValidation("FILE", listOf(bpsReasonCode))
+        val bps = BPSReasonCodeReference(listOf(bpsValidation))
         val entity = MAPPER.toEntity(bps)
-        assertThat(entity.validationLevel).isEqualTo(EnquiryType.FILES)
-        assertThat(entity.reasonCodes[0].reasonCode).isEqualTo(
-                bps.reasonCodes[0].reasonCode
-        )
-        assertThat(entity.reasonCodes[0].description).isEqualTo(
-                bps.reasonCodes[0].description
-        )
-        assertThat(entity.reasonCodes[0].active).isEqualTo(
-                bps.reasonCodes[0].active
-        )
+        assertThat(entity.validations).isNotEmpty()
+        assertThat(entity.validations[0].validationLevel).isEqualTo(BPSEnquiryType.FILE.name)
+        assertThat(entity.validations[0].reasonCodes[0].reasonCode).isEqualTo("ONE")
     }
 
     @Test

@@ -7,13 +7,14 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.S
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeValidation;
+import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -43,17 +44,15 @@ public class BPSReferenceRepository implements ReferencesRepository {
   }
 
   @Override
-  public List<ReasonCodeValidation> findReasonCodes() {
+  public ReasonCodeReference findReasonCodeReference() {
     return webClient.post()
         .uri(resolve(REASON_CODES_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
-        .bodyToFlux(BPSReasonCodeReference.class)
+        .bodyToMono(BPSReasonCodeReference.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
-        .flatMapIterable(BPSReasonCodeReference::getValidations)
         .map(MAPPER::toEntity)
-        .collectList()
         .block();
   }
 
@@ -61,10 +60,11 @@ public class BPSReferenceRepository implements ReferencesRepository {
   public List<String> findStatuses(String enquiryType) {
     return webClient.post()
         .uri(resolve(STATUSES_PATH, bpsProperties,
-            bpsProperties.getSchemeCode(), BPSEnquiryType.valueOf(enquiryType).getDescription()))
+            bpsProperties.getSchemeCode(), BPSEnquiryType.valueOf(enquiryType).name()))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+        .bodyToMono(new ParameterizedTypeReference<List<StatusWrapper>>() {})
+        .map(w -> w.stream().map(StatusWrapper::getStatus).collect(Collectors.toList()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .block();

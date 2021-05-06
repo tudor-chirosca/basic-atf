@@ -13,7 +13,7 @@ import lombok.Getter;
 public class ReasonCodeReferenceDto {
 
   private final String status;
-  private final boolean hasReason;
+  private final Boolean hasReason;
   @JsonInclude(Include.NON_EMPTY)
   private final List<String> reasonCodes;
   private final String enquiryType;
