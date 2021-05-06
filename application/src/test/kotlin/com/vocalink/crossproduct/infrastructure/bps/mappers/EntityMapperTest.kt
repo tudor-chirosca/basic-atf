@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers
 
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
@@ -65,6 +66,10 @@ import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
+    companion object {
+        var clock = FIXED_CLOCK
+    }
+
     @Test
     fun `should map Cycle fields`() {
         val bps = BPSCycle(
@@ -86,42 +91,38 @@ class EntityMapperTest {
 
     @Test
     fun `should map Cycle fields with total positions`() {
-        val amount10 = BPSAmount(BigDecimal.TEN, "SEK")
-        val amount1 = BPSAmount(BigDecimal.ONE, "SEK")
-        val amount100 = BPSAmount(BigDecimal.valueOf(100), "SEK")
-        val amount0 = BPSAmount(BigDecimal.ZERO, "SEK")
+        val paymentReceived = BPSPayment (234, BPSAmount(BigDecimal.TEN, "SEK"))
+        val paymentSent = BPSPayment(234, BPSAmount(BigDecimal.ONE, "SEK"))
+        val returnReceived = BPSPayment(234, BPSAmount(BigDecimal.valueOf(100), "SEK"))
+        val returnSent = BPSPayment(234, BPSAmount(BigDecimal.ZERO, "SEK"))
         val netAmount = BPSAmount(BigDecimal.valueOf(50), "SEK")
-
-        val paymentReceived = BPSPayment (234, amount10)
-        val paymentSent = BPSPayment(234, amount1)
-        val returnReceived = BPSPayment(234, amount100)
-        val returnSent = BPSPayment(234, amount0)
 
         val bpsCycle = BPSCycle(
                 "cycleId",
                 BPSCycleStatus.COMPLETED,
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                ZonedDateTime.now(clock).plusMonths(2),
+                ZonedDateTime.now(clock).plusMonths(1),
                 true,
-                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+                ZonedDateTime.now(clock)
         )
-        val bpsPositionMatchingCycleId = BPSSettlementPosition(
+        val bpsPosition0 = BPSSettlementPosition(
                 LocalDate.now(),
                 "participantId",
                 "cycleId",
                 "SEK",
                 paymentSent, paymentReceived, returnSent, returnReceived, netAmount
         )
-
-        val bpsPositionNotMatching= BPSSettlementPosition(
+        val bpsPosition1 = BPSSettlementPosition(
                 LocalDate.now(),
                 "participantId",
                 "not_matching",
                 "SEK",
                 paymentSent, paymentReceived, returnSent, returnReceived, netAmount
         )
+        val positionMap = HashMap<String, List<BPSSettlementPosition>>()
+        positionMap.put("cycleId", listOf(bpsPosition0, bpsPosition1))
 
-        val entity = MAPPER.toEntity(bpsCycle, listOf(bpsPositionMatchingCycleId, bpsPositionNotMatching))
+        val entity = MAPPER.toEntity(bpsCycle, positionMap)
 
         assertThat(entity.id).isEqualTo(bpsCycle.cycleId)
         assertThat(entity.cutOffTime).isEqualTo(bpsCycle.fileSubmissionCutOffTime)
@@ -129,26 +130,26 @@ class EntityMapperTest {
         assertThat(entity.settlementConfirmationTime).isEqualTo(bpsCycle.settlementConfirmationTime)
         assertThat(entity.settlementTime).isEqualTo(bpsCycle.settlementTime)
         assertThat(entity.status).isEqualTo(CycleStatus.COMPLETED)
-        assertThat(entity.totalPositions.size).isEqualTo(1)
+        assertThat(entity.totalPositions.size).isEqualTo(2)
 
-        assertThat(entity.totalPositions[0].participantId).isEqualTo(bpsPositionMatchingCycleId.participantId)
-        assertThat(entity.totalPositions[0].settlementDate).isEqualTo(bpsPositionMatchingCycleId.settlementDate)
-        assertThat(entity.totalPositions[0].cycleId).isEqualTo(bpsPositionMatchingCycleId.cycleId)
-        assertThat(entity.totalPositions[0].currency).isEqualTo(bpsPositionMatchingCycleId.currency)
-        assertThat(entity.totalPositions[0].paymentSent.count).isEqualTo(bpsPositionMatchingCycleId.paymentSent.count)
-        assertThat(entity.totalPositions[0].paymentSent.amount.currency).isEqualTo(bpsPositionMatchingCycleId.paymentSent.amount.currency)
-        assertThat(entity.totalPositions[0].paymentSent.amount.amount).isEqualTo(bpsPositionMatchingCycleId.paymentSent.amount.amount)
-        assertThat(entity.totalPositions[0].paymentReceived.count).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.count)
-        assertThat(entity.totalPositions[0].paymentReceived.amount.currency).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.amount.currency)
-        assertThat(entity.totalPositions[0].paymentReceived.amount.amount).isEqualTo(bpsPositionMatchingCycleId.paymentReceived.amount.amount)
-        assertThat(entity.totalPositions[0].returnSent.count).isEqualTo(bpsPositionMatchingCycleId.returnSent.count)
-        assertThat(entity.totalPositions[0].returnSent.amount.currency).isEqualTo(bpsPositionMatchingCycleId.returnSent.amount.currency)
-        assertThat(entity.totalPositions[0].returnSent.amount.amount).isEqualTo(bpsPositionMatchingCycleId.returnSent.amount.amount)
-        assertThat(entity.totalPositions[0].returnReceived.count).isEqualTo(bpsPositionMatchingCycleId.returnReceived.count)
-        assertThat(entity.totalPositions[0].returnReceived.amount.currency).isEqualTo(bpsPositionMatchingCycleId.returnReceived.amount.currency)
-        assertThat(entity.totalPositions[0].returnReceived.amount.amount).isEqualTo(bpsPositionMatchingCycleId.returnReceived.amount.amount)
-        assertThat(entity.totalPositions[0].netPositionAmount.amount).isEqualTo(bpsPositionMatchingCycleId.netPositionAmount.amount)
-        assertThat(entity.totalPositions[0].netPositionAmount.currency).isEqualTo(bpsPositionMatchingCycleId.netPositionAmount.currency)
+        assertThat(entity.totalPositions[0].participantId).isEqualTo(bpsPosition0.participantId)
+        assertThat(entity.totalPositions[0].settlementDate).isEqualTo(bpsPosition0.settlementDate)
+        assertThat(entity.totalPositions[0].cycleId).isEqualTo(bpsPosition0.cycleId)
+        assertThat(entity.totalPositions[0].currency).isEqualTo(bpsPosition0.currency)
+        assertThat(entity.totalPositions[0].paymentSent.count).isEqualTo(bpsPosition0.paymentSent.count)
+        assertThat(entity.totalPositions[0].paymentSent.amount.currency).isEqualTo(bpsPosition0.paymentSent.amount.currency)
+        assertThat(entity.totalPositions[0].paymentSent.amount.amount).isEqualTo(bpsPosition0.paymentSent.amount.amount)
+        assertThat(entity.totalPositions[0].paymentReceived.count).isEqualTo(bpsPosition0.paymentReceived.count)
+        assertThat(entity.totalPositions[0].paymentReceived.amount.currency).isEqualTo(bpsPosition0.paymentReceived.amount.currency)
+        assertThat(entity.totalPositions[0].paymentReceived.amount.amount).isEqualTo(bpsPosition0.paymentReceived.amount.amount)
+        assertThat(entity.totalPositions[0].returnSent.count).isEqualTo(bpsPosition0.returnSent.count)
+        assertThat(entity.totalPositions[0].returnSent.amount.currency).isEqualTo(bpsPosition0.returnSent.amount.currency)
+        assertThat(entity.totalPositions[0].returnSent.amount.amount).isEqualTo(bpsPosition0.returnSent.amount.amount)
+        assertThat(entity.totalPositions[0].returnReceived.count).isEqualTo(bpsPosition0.returnReceived.count)
+        assertThat(entity.totalPositions[0].returnReceived.amount.currency).isEqualTo(bpsPosition0.returnReceived.amount.currency)
+        assertThat(entity.totalPositions[0].returnReceived.amount.amount).isEqualTo(bpsPosition0.returnReceived.amount.amount)
+        assertThat(entity.totalPositions[0].netPositionAmount.amount).isEqualTo(bpsPosition0.netPositionAmount.amount)
+        assertThat(entity.totalPositions[0].netPositionAmount.currency).isEqualTo(bpsPosition0.netPositionAmount.currency)
     }
 
     @Test
