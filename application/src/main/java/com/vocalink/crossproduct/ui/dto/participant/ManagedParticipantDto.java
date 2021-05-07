@@ -4,14 +4,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class ManagedParticipantDto {
 
@@ -35,6 +38,7 @@ public class ManagedParticipantDto {
   @JsonInclude(Include.NON_EMPTY)
   private final List<RoutingRecord> reachableBics;
   private final ApprovalReferenceDto approvalReference;
+  private final SuspensionLevel suspensionLevel;
 
   public String getParticipantType() {
     return participantType.getDescription();

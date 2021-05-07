@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalReferenceDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
@@ -62,20 +63,56 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 "tpspName": "Nordnet Bank",
                 "tpspId": "475347837892",
                 "fundedParticipantsCount": 0,
-                "approvalReference": {}
+                "approvalReference": {},
+                "suspensionLevel": null
+            },
+            {
+                "bic": "SWEDENBB",
+                "fundingBic": null,
+                "id": "SWEDENBB",
+                "name": "SWEDBB Bank",
+                "status": "SUSPENDED",
+                "participantType": "DIRECT",
+                "organizationId": "194869753",
+                "hasActiveSuspensionRequests": false,
+                "tpspName": "SWEDBB Bank",
+                "tpspId": "115379817890",
+                "fundedParticipantsCount": 0,
+                "approvalReference": {},
+                "suspensionLevel": "SCHEME_FUNDING"
             }]
         }"""
     }
 
-    val items = ManagedParticipantDto("FORXSES1", null, "FORXSES1", "Forex Bank", ParticipantStatus.ACTIVE,
-            null, ParticipantType.FUNDED, "194869924",
-            "Nordnet Bank", "475347837892", null, 0,
-            null, ApprovalReferenceDto.builder().build())
+    val items = listOf(
+        ManagedParticipantDto.builder()
+            .bic("FORXSES1")
+            .id("FORXSES1")
+            .name("Forex Bank")
+            .status(ParticipantStatus.ACTIVE)
+            .participantType(ParticipantType.FUNDED)
+            .organizationId("194869924")
+            .tpspId("475347837892")
+            .tpspName("Nordnet Bank")
+            .approvalReference(ApprovalReferenceDto.builder().build())
+            .build(),
+        ManagedParticipantDto.builder()
+            .bic("SWEDENBB")
+            .id("SWEDENBB")
+            .name("SWEDBB Bank")
+            .status(ParticipantStatus.SUSPENDED)
+            .participantType(ParticipantType.DIRECT)
+            .organizationId("194869753")
+            .tpspId("115379817890")
+            .tpspName("SWEDBB Bank")
+            .approvalReference(ApprovalReferenceDto.builder().build())
+            .suspensionLevel(SuspensionLevel.SCHEME_FUNDING)
+            .build())
 
     @Test
     fun `should return 200 if no criteria specified and return valid response`() {
         `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java)))
-                .thenReturn(PageDto(22, listOf(items)))
+                .thenReturn(PageDto(22, items))
 
         mockMvc.perform(get("/participants")
                 .contentType(UTF8_CONTENT_TYPE)
@@ -89,7 +126,7 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     @Test
     fun `should return 200 if some criteria specified in request`() {
         `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java)))
-                .thenReturn(PageDto(22, listOf(items)))
+                .thenReturn(PageDto(22, items))
 
         mockMvc.perform(get("/participants")
                 .contentType(UTF8_CONTENT_TYPE)

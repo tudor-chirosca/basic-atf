@@ -139,8 +139,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   }
 
   private void setFundedParticipants(Participant participant, String product) {
-    if (participant.getParticipantType().equals(ParticipantType.DIRECT_FUNDING) ||
-        participant.getParticipantType().equals(ParticipantType.FUNDING)) {
+    if (ParticipantType.DIRECT_FUNDING.equals(participant.getParticipantType()) ||
+            ParticipantType.FUNDING.equals(participant.getParticipantType())) {
       List<Participant> fundedParticipants = repositoryFactory.getParticipantRepository(product)
           .findByConnectingPartyAndType(participant.getId(),
               ParticipantType.FUNDED.getDescription()).getItems();

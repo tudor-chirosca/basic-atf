@@ -7,7 +7,6 @@ import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository
-import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
@@ -68,13 +67,12 @@ class ParticipantFacadeImplTest {
                 .approvalId("10000015")
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
                 .build()))
-        val page = Page<Participant>(1, listOf(Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null,
-                null, null)))
-        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, 0, null, null)))
+        val page = Page<Participant>(1, listOf(Participant.builder()
+            .participantType(ParticipantType.FUNDING)
+            .build()))
+        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto.builder()
+            .participantType(ParticipantType.FUNDING)
+            .build()))
         
         val request = ManagedParticipantsSearchRequest()
 
@@ -82,10 +80,7 @@ class ParticipantFacadeImplTest {
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
-                        null, null, null, null,
-                        null, null, null))))
+                .thenReturn(Page(1, listOf(Participant.builder().build())))
 
         `when`(approvalRepository.findPaginated(any()))
                 .thenReturn(approvalPage)
@@ -111,16 +106,11 @@ class ParticipantFacadeImplTest {
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
                 .build()))
         val bic = "bic"
-        val page = Page<Participant>(1, listOf(Participant(null, bic, null,
-                null, null, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null,
-                null, null)))
-        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, 0, null, null)))
-        val routingRecord = RoutingRecord(
-                bic, null, null, null
-        )
+        val page = Page<Participant>(1, listOf(Participant.builder()
+            .participantType(ParticipantType.FUNDING)
+            .build()))
+        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto.builder().build()))
+        val routingRecord = RoutingRecord(bic, null, null, null)
 
         val request = ManagedParticipantsSearchRequest()
         request.q = "SEARCH"
@@ -129,10 +119,7 @@ class ParticipantFacadeImplTest {
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
-                        null, null, null, null,
-                        null, null, null))))
+                .thenReturn(Page(1, listOf(Participant.builder().build())))
 
         `when`(approvalRepository.findPaginated(any()))
                 .thenReturn(approvalPage)
@@ -161,23 +148,17 @@ class ParticipantFacadeImplTest {
                 .approvalId("10000015")
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
                 .build()))
-        val page = Page<Participant>(1, listOf(Participant(null, null, null,
-                null, null, null, ParticipantType.FUNDED, null,
-                null, null, null, null, null,
-                null, null)))
-        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, 0, null, null)))
+        val page = Page<Participant>(1, listOf(Participant.builder()
+            .participantType(ParticipantType.FUNDED)
+            .build()))
+        val pageDto = PageDto<ManagedParticipantDto>(1, listOf(ManagedParticipantDto.builder().build()))
         val request = ManagedParticipantsSearchRequest()
 
         `when`(participantRepository.findPaginated(any()))
                 .thenReturn(page)
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, null, null, null, null,
-                        null, null, null, null,
-                        null, null, null))))
+                .thenReturn(Page(1, listOf(Participant.builder().build())))
 
         `when`(approvalRepository.findPaginated(any()))
                 .thenReturn(approvalPage)
@@ -197,28 +178,17 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke repository getParticipantById twice on FUNDED participants`() {
-        val participant = Participant(null, null, null,
-                null, ParticipantStatus.SUSPENDED, null, ParticipantType.FUNDED, null,
-                null, null, null, null, null,
-                null, null)
-        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null)
+        val participant = Participant.builder()
+            .status(ParticipantStatus.SUSPENDED)
+            .participantType(ParticipantType.FUNDED).build()
+        val managedDetailsDto = ManagedParticipantDetailsDto.builder().build()
         val account = Account(null, null, null)
-        val configuration = ParticipantConfiguration(null, null,
-                null, null, null, null,
-                null, null, null,
-                null, null, null,
-                null, null, null)
+        val configuration = ParticipantConfiguration.builder().build()
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, ParticipantStatus.SUSPENDED, null, null, null,
-                        null, null, null, null,
-                        null, null, null))))
+                .thenReturn(Page(1, listOf(Participant.builder()
+                    .status(ParticipantStatus.SUSPENDED)
+                    .build())))
 
         `when`(approvalRepository.findPaginated(any()))
                 .thenReturn(Page(0, emptyList()))
@@ -248,28 +218,16 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke repository getParticipantById once on FUNDING participants`() {
-        val participant = Participant(null, null, null,
-                null, ParticipantStatus.ACTIVE, null, ParticipantType.FUNDING, null,
-                null, null, null, null, null,
-                null, null)
-        val managedDetailsDto = ManagedParticipantDetailsDto(null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null)
+        val participant = Participant.builder()
+            .status(ParticipantStatus.ACTIVE)
+            .participantType(ParticipantType.FUNDING)
+            .build()
+        val managedDetailsDto = ManagedParticipantDetailsDto.builder().build()
         val account = Account(null, null, null)
-        val configuration = ParticipantConfiguration(null, null,
-                null, null, null, null,
-                null, null, null,
-                null, null, null,
-                null, null, null)
+        val configuration = ParticipantConfiguration.builder().build()
 
         `when`(participantRepository.findByConnectingPartyAndType(any(), any()))
-                .thenReturn(Page(1, listOf(Participant(null, null, null,
-                        null, ParticipantStatus.ACTIVE, null, null, null,
-                        null, null, null, null,
-                        null, null, null))))
+                .thenReturn(Page(1, listOf(Participant.builder().status(ParticipantStatus.ACTIVE).build())))
 
         `when`(approvalRepository.findPaginated(any()))
                 .thenReturn(Page(0, emptyList()))
