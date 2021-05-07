@@ -11,8 +11,8 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
-import com.vocalink.crossproduct.domain.approval.ApprovalStatus
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.*
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus.*
 import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.batch.Batch
@@ -834,12 +834,12 @@ class DTOMapperTest {
 
         val approvalDetails = Approval(
                 approvalId,
-                ApprovalRequestType.PARTICIPANT_SUSPEND,
+                PARTICIPANT_SUSPEND,
                 listOf(participant.id),
                 date,
                 approvalUser,
                 date,
-                ApprovalStatus.APPROVED,
+                APPROVED,
                 approvalUser,
                 "This is the reason that I...",
                 approvalUser,
@@ -853,14 +853,14 @@ class DTOMapperTest {
 
         val result = MAPPER.toDto(approvalDetails, listOf(participant))
 
-        assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
+        assertThat(result.status).isEqualTo(APPROVED)
         assertThat(result.requestedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
         assertThat(result.requestedBy.id).isEqualTo(approvalUser.userId)
         assertThat(result.createdAt).isEqualTo(date)
         assertThat(result.approvedAt).isEqualTo(date)
         assertThat(result.rejectedAt).isEqualTo(date)
         assertThat(result.jobId).isEqualTo(approvalId)
-        assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
+        assertThat(result.requestType).isEqualTo(PARTICIPANT_SUSPEND)
         assertThat(result.participants[0].participantIdentifier).isEqualTo(participant.id)
         assertThat(result.participants[0].name).isEqualTo(participant.name)
         assertThat(result.participants[0].participantType.toString()).isEqualTo(participant.participantType.toString())
@@ -871,7 +871,7 @@ class DTOMapperTest {
 
     @Test
     fun `should map to ApprovalDetailsDto and sort reference participants by participant type`() {
-        val approval = Approval("9900000", ApprovalRequestType.PARTICIPANT_SUSPEND,
+        val approval = Approval("9900000", PARTICIPANT_SUSPEND,
                 listOf("funded1", "funding", "funded2", "funded3"),
                 null, null, null, null, null,
                 null, null, null, null, null,
@@ -950,7 +950,7 @@ class DTOMapperTest {
 
         val approval = Approval.builder()
                 .approvalId("1000015")
-                .requestType(ApprovalRequestType.PARTICIPANT_SUSPEND)
+                .requestType(PARTICIPANT_SUSPEND)
                 .date(date)
                 .requestedBy(userDetails)
                 .build()
@@ -1012,20 +1012,37 @@ class DTOMapperTest {
 
     @Test
     fun `should map to ManagedParticipantDetailsDto fields`() {
-        val participant = Participant(
-                "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ACTIVE, null, FUNDED, null,
-                "00002121", null, "Nordnet Bank", "475347837892",
-                emptyList(), 1,  null
-        )
+        val participantId = "FORXSES1"
+
+        val participant = Participant.builder()
+                .id(participantId)
+                .bic(participantId)
+                .name("Forex Bank")
+                .status(ACTIVE)
+                .participantType(FUNDED)
+                .organizationId("00002121")
+                .tpspName("Nordnet Bank")
+                .tpspId("475347837892")
+                .fundedParticipants(emptyList())
+                .fundedParticipantsCount(1)
+                .build()
+
         val approvalUser = UserDetails(
-                "E23423", "John", "Doe", "FORXSES1"
+                "E23423", "John", "Doe", participantId
         )
-        val approvals = listOf(Approval("approvalId", ApprovalRequestType.PARTICIPANT_SUSPEND,
-                listOf("FORXSES1"), ZonedDateTime.now(ZoneId.of("UTC")), approvalUser,
-                null, ApprovalStatus.PENDING, null, "comment",
-                null, null, null, null, null,
-                null, "notes"))
+
+        val approval = Approval.builder()
+                .approvalId("approvalId")
+                .requestType(PARTICIPANT_SUSPEND)
+                .participantIds(listOf(participantId))
+                .date(ZonedDateTime.now(ZoneId.of("UTC")))
+                .requestedBy(approvalUser)
+                .status(PENDING)
+                .requestComment("comment")
+                .notes("notes")
+                .build()
+
+        val approvals = mapOf(participantId to approval)
 
         participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant(
@@ -1105,6 +1122,11 @@ class DTOMapperTest {
         assertThat(result.updatedBy.id).isEqualTo(approvalUser.userId)
         assertThat(result.updatedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
         assertThat(result.updatedBy.participantName).isEqualTo(approvalUser.participantId)
+
+        assertThat(result.approvalReference.requestType).isEqualTo(approval.requestType)
+        assertThat(result.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
+        assertThat(result.approvalReference.requestedAt).isEqualTo(approval.date)
+        assertThat(result.approvalReference.jobId).isEqualTo(approval.approvalId)
     }
 
     @Test

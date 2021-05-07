@@ -468,13 +468,13 @@ public class UIPresenter implements Presenter {
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
       ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      List<Approval> approvals) {
+      Map<String, Approval> approvals) {
     return MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals);
   }
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account, List<Approval> approvals) {
+      ParticipantConfiguration configuration, Account account, Map<String, Approval> approvals) {
     return MAPPER.toDto(participant, configuration, account, approvals);
   }
 

@@ -166,10 +166,10 @@ public interface Presenter {
 
   ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
       ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      List<Approval> approvals);
+      Map<String, Approval> approvals);
 
   ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account, List<Approval> approvals);
+      ParticipantConfiguration configuration, Account account, Map<String, Approval> approvals);
 
   PageDto<ReportDto> presentReports(Page<Report> reports);
 

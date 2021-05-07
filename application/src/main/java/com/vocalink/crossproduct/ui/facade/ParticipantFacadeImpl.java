@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_SUSPEND;
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_UNSUSPEND;
-import static com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -17,10 +16,10 @@ import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
-import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
@@ -30,6 +29,7 @@ import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import com.vocalink.crossproduct.ui.presenter.Presenter;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.HashMap;
 import java.util.List;
@@ -65,25 +65,64 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
             })
             .collect(toList()));
 
-    return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants,
-        getApprovals(managedParticipants.getItems(), request, product));
-  }
-
-  private Map<String, Approval> getApprovals(final List<Participant> managedParticipants,
-      final ManagedParticipantsSearchCriteria request, final String product) {
-
-    final Map<String, Approval> approvalParticipants = new HashMap<>();
-
-    final List<String> managedParticipantIds = managedParticipants.stream()
+    final List<String> managedParticipantIds = managedParticipants.getItems().stream()
         .map(Participant::getBic)
         .collect(toList());
 
+    final List<ApprovalRequestType> requestTypes = asList(PARTICIPANT_UNSUSPEND, PARTICIPANT_SUSPEND);
+
+    return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants,
+        getApprovals(managedParticipantIds, request.getOffset(), request.getLimit(), product,
+            requestTypes));
+  }
+
+  @Override
+  public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
+      String bic) {
+    log.info("Fetching managed participant details for: {}, from: {}", bic, product);
+
+    final ParticipantRepository participantRepository = repositoryFactory
+        .getParticipantRepository(product);
+
+    final Participant participant = participantRepository.findById(bic);
+
+    setFundedParticipants(participant, product);
+
+    final ApprovalRequestType requestType = participant.getStatus().equals(ParticipantStatus.ACTIVE)
+        ? PARTICIPANT_SUSPEND
+        : PARTICIPANT_UNSUSPEND;
+
+    Map<String, Approval> approvals = getApprovals(singletonList(bic), 0, 1, product,
+        singletonList(requestType));
+
+    final Account account = repositoryFactory.getAccountRepository(product)
+        .findByPartyCode(bic);
+
+    final ParticipantConfiguration configuration = participantRepository.findConfigurationById(bic);
+
+    final Presenter presenter = presenterFactory.getPresenter(clientType);
+    if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
+      Participant fundingParticipant = participantRepository.findById(participant.getFundingBic());
+
+      return presenter.presentManagedParticipantDetails(
+          participant, configuration, fundingParticipant, account, approvals);
+    }
+
+    return presenter.presentManagedParticipantDetails(
+        participant, configuration, account, approvals);
+  }
+
+  private Map<String, Approval> getApprovals(final List<String> participantIds,
+      final int offset, final int limit, final String product,
+      List<ApprovalRequestType> requestTypes) {
+
+    final Map<String, Approval> approvalParticipants = new HashMap<>();
+
     final ApprovalSearchCriteria approvalRequest = ApprovalSearchCriteria.builder()
-        .offset(request.getOffset())
-        .limit(request.getLimit())
-        .participantIds(managedParticipantIds)
-        .requestTypes(asList(PARTICIPANT_UNSUSPEND, PARTICIPANT_SUSPEND))
-        .statuses(asList(PENDING))
+        .offset(offset)
+        .limit(limit)
+        .participantIds(participantIds)
+        .requestTypes(requestTypes)
         .build();
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
@@ -93,49 +132,6 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .forEach(id -> approvalParticipants.put(id, approval)));
 
     return approvalParticipants;
-  }
-
-  @Override
-  public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
-      String bic) {
-    log.info("Fetching managed participant details for: {}, from: {}", bic, product);
-
-    final Participant participant = repositoryFactory.getParticipantRepository(product)
-        .findById(bic);
-    setFundedParticipants(participant, product);
-
-    final ApprovalRequestType requestType = participant.getStatus().equals(ParticipantStatus.ACTIVE)
-        ? PARTICIPANT_SUSPEND
-        : PARTICIPANT_UNSUSPEND;
-
-    final ApprovalSearchCriteria criteria = ApprovalSearchCriteria.builder()
-        .limit(1)
-        .statuses(singletonList(PENDING))
-        .requestTypes(asList(requestType))
-        .participantIds(singletonList(bic))
-        .build();
-
-    final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
-        .findPaginated(criteria).getItems();
-
-    final Account account = repositoryFactory.getAccountRepository(product)
-        .findByPartyCode(bic);
-
-    final ParticipantConfiguration configuration = repositoryFactory
-        .getParticipantRepository(product)
-        .findConfigurationById(bic);
-
-    if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
-      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
-          .findById(participant.getFundingBic());
-
-      return presenterFactory.getPresenter(clientType)
-          .presentManagedParticipantDetails(participant, configuration, fundingParticipant,
-              account, approvals);
-    }
-
-    return presenterFactory.getPresenter(clientType)
-        .presentManagedParticipantDetails(participant, configuration, account, approvals);
   }
 
   private void setFundedParticipants(Participant participant, String product) {

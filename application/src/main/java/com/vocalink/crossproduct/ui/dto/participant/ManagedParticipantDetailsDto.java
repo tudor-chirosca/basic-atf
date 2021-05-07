@@ -52,6 +52,7 @@ public class ManagedParticipantDetailsDto {
   private final ZonedDateTime updatedAt;
   @JsonInclude(Include.NON_EMPTY)
   private final ApprovalUserDto updatedBy;
+  private final ApprovalReferenceDto approvalReference;
 
   public String getParticipantType() {
     return participantType.getDescription();

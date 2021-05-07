@@ -514,11 +514,12 @@ public interface DTOMapper {
       @Mapping(target = "debitCapLimitThresholds", source = "configuration.debitCapLimitThresholds"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
       @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
-      @Mapping(target = "hasActiveSuspensionRequests", source = "approvals", qualifiedByName = "setHasActiveSuspensionRequests")
+      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "hasActiveSuspensionRequests", expression = "java(!approvals.isEmpty())")
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
       ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      List<Approval> approvals);
+      @Context Map<String, Approval> approvals);
 
   @Mappings({
       @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
@@ -526,15 +527,12 @@ public interface DTOMapper {
       @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
       @Mapping(target = "outputChannel", source = "configuration.networkName"),
       @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
-      @Mapping(target = "hasActiveSuspensionRequests", source = "approvals", qualifiedByName = "setHasActiveSuspensionRequests")
+      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "hasActiveSuspensionRequests", expression = "java(!approvals.isEmpty())")
   })
   ManagedParticipantDetailsDto toDto(Participant participant,
-      ParticipantConfiguration configuration, Account account, List<Approval> approvals);
-
-  @Named("setHasActiveSuspensionRequests")
-  default Boolean setHasActiveSuspensionRequests(List<Approval> approvals) {
-    return !approvals.isEmpty();
-  }
+      ParticipantConfiguration configuration, Account account,
+      @Context Map<String, Approval> approvals);
 
   @Mappings({
       @Mapping(target = "id", source = "userId"),
