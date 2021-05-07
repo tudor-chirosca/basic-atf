@@ -17,7 +17,6 @@ class CycleTest {
 
         @JvmStatic
         fun getData() = Stream.of(
-            Arguments.of(null, false),
             Arguments.of(ZonedDateTime.now(clock), false),
             Arguments.of(ZonedDateTime.now(clock).plusDays(1), true),
             Arguments.of(ZonedDateTime.now(clock).with(LocalTime.MAX), false),
