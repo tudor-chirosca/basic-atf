@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_SUSPEND;
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_UNSUSPEND;
+import static com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -82,6 +83,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .limit(request.getLimit())
         .participantIds(managedParticipantIds)
         .requestTypes(asList(PARTICIPANT_UNSUSPEND, PARTICIPANT_SUSPEND))
+        .statuses(asList(PENDING))
         .build();
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
@@ -108,7 +110,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
     final ApprovalSearchCriteria criteria = ApprovalSearchCriteria.builder()
         .limit(1)
-        .statuses(singletonList(ApprovalStatus.PENDING))
+        .statuses(singletonList(PENDING))
         .requestTypes(asList(requestType))
         .participantIds(singletonList(bic))
         .build();
