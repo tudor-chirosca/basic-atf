@@ -9,7 +9,8 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 public interface ParticipantFacade {
 
   PageDto<ManagedParticipantDto> getPaginated(String product, ClientType clientType,
-      ManagedParticipantsSearchRequest requestDto);
+      ManagedParticipantsSearchRequest requestDto, String requestedParticipantId);
 
-  ManagedParticipantDetailsDto getById(String product, ClientType clientType, String bic);
+  ManagedParticipantDetailsDto getById(String product, ClientType clientType, String bic,
+      String requestedParticipantId);
 }

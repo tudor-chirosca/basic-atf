@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ParticipantController implements ParticipantApi {
 
+  public static final String X_PARTICIPANT_ID_HEADER = "x-participant-id";
+
   private final ParticipantFacade participantFacade;
 
   @Auditable(type = VIEW_PARTICIPANT_MNG_LIST, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
@@ -35,8 +37,10 @@ public class ParticipantController implements ParticipantApi {
       final ManagedParticipantsSearchRequest request,
       final HttpServletRequest httpServletRequest) {
 
+    final String requestedParticipant = httpServletRequest.getHeader(X_PARTICIPANT_ID_HEADER);
+
     final PageDto<ManagedParticipantDto> participantsDto = participantFacade
-        .getPaginated(context, clientType, request);
+        .getPaginated(context, clientType, request, requestedParticipant);
 
     return ResponseEntity.ok().body(participantsDto);
   }
@@ -49,8 +53,10 @@ public class ParticipantController implements ParticipantApi {
       @PathVariable String bic,
       final HttpServletRequest httpServletRequest) {
 
+    final String requestedParticipant = httpServletRequest.getHeader(X_PARTICIPANT_ID_HEADER);
+
     final ManagedParticipantDetailsDto managedParticipantDetailsDto = participantFacade
-        .getById(context, clientType, bic);
+        .getById(context, clientType, bic, requestedParticipant);
 
     return ResponseEntity.ok().body(managedParticipantDetailsDto);
   }

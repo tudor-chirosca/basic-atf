@@ -111,7 +111,7 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if no criteria specified and return valid response`() {
-        `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java)))
+        `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java), any()))
                 .thenReturn(PageDto(22, items))
 
         mockMvc.perform(get("/participants")
@@ -125,7 +125,7 @@ class ParticipantControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should return 200 if some criteria specified in request`() {
-        `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java)))
+        `when`(facade.getPaginated(any(), any(), any(ManagedParticipantsSearchRequest::class.java), any()))
                 .thenReturn(PageDto(22, items))
 
         mockMvc.perform(get("/participants")

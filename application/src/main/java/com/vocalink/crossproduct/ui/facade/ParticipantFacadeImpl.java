@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -49,7 +50,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
   @Override
   public PageDto<ManagedParticipantDto> getPaginated(String product, ClientType clientType,
-      ManagedParticipantsSearchRequest requestDto) {
+      ManagedParticipantsSearchRequest requestDto, String requestedParticipantId) {
 
     log.info("Fetching managed participant from: {}", product);
 
@@ -70,16 +71,19 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .map(Participant::getBic)
         .collect(toList());
 
-    final List<ApprovalRequestType> requestTypes = asList(PARTICIPANT_UNSUSPEND, PARTICIPANT_SUSPEND);
+    final List<ApprovalRequestType> requestTypes = asList(PARTICIPANT_UNSUSPEND,
+        PARTICIPANT_SUSPEND);
 
-    return presenterFactory.getPresenter(clientType).presentManagedParticipants(managedParticipants,
-        getApprovals(managedParticipantIds, request.getOffset(), request.getLimit(), product,
-            requestTypes));
+    final Map<String, Approval> approvals = getApprovals(request.getOffset(), request.getLimit(),
+        product, managedParticipantIds, requestedParticipantId, requestTypes);
+
+    return presenterFactory.getPresenter(clientType)
+        .presentManagedParticipants(managedParticipants, approvals);
   }
 
   @Override
   public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
-      String bic) {
+      String bic, String requestedParticipantId) {
     log.info("Fetching managed participant details for: {}, from: {}", bic, product);
 
     final ParticipantRepository participantRepository = repositoryFactory
@@ -93,8 +97,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         ? PARTICIPANT_SUSPEND
         : PARTICIPANT_UNSUSPEND;
 
-    Map<String, Approval> approvals = getApprovals(singletonList(bic), 0, 1, product,
-        singletonList(requestType));
+    Map<String, Approval> approvals = getApprovals(0, 1, product, singletonList(bic),
+        requestedParticipantId, singletonList(requestType));
 
     final Account account = repositoryFactory.getAccountRepository(product)
         .findByPartyCode(bic);
@@ -113,9 +117,9 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         participant, configuration, account, approvals);
   }
 
-  private Map<String, Approval> getApprovals(final List<String> participantIds,
-      final int offset, final int limit, final String product,
-      List<ApprovalRequestType> requestTypes) {
+  private Map<String, Approval> getApprovals(final int offset, final int limit, final String product,
+      final List<String> participantIds, final String requestedParticipantId,
+      final List<ApprovalRequestType> requestTypes) {
 
     final Map<String, Approval> approvalParticipants = new HashMap<>();
 
@@ -128,10 +132,13 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .build();
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
-        .findPaginated(approvalRequest).getItems();
+        .findPaginated(approvalRequest).getItems().stream()
+        .filter(approval -> approval.getRequestedBy().getParticipantId().equals(requestedParticipantId))
+        .collect(toList());
 
-    approvals.forEach(approval -> approval.getParticipantIds()
-        .forEach(id -> approvalParticipants.put(id, approval)));
+    approvals.forEach(approval -> approvalParticipants
+        .put(approval.getOriginalData().getOrDefault("id", StringUtils.EMPTY).toString(),
+            approval));
 
     return approvalParticipants;
   }

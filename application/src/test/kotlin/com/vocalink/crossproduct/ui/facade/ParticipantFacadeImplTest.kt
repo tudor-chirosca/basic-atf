@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository
+import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
@@ -63,9 +64,15 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on funding participants`() {
+        val requestedParticipantId = "DABASESXGBG"
+        val requestedBy = UserDetails.builder()
+                .participantId(requestedParticipantId)
+                .build()
         val approvalPage = Page<Approval>(1, listOf(Approval.builder()
                 .approvalId("10000015")
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
+                .originalData(mapOf("id" to "LAHYSESS"))
+                .requestedBy(requestedBy)
                 .build()))
         val page = Page<Participant>(1, listOf(Participant.builder()
             .participantType(ParticipantType.FUNDING)
@@ -88,7 +95,7 @@ class ParticipantFacadeImplTest {
         `when`(uiPresenter.presentManagedParticipants(any(), any()))
                 .thenReturn(pageDto)
 
-        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request, requestedParticipantId)
 
         verify(participantRepository).findPaginated(any())
         verify(approvalRepository).findPaginated(any())
@@ -101,9 +108,15 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke repository getRoutingRepository and findAllById for routing records on present search param in request`() {
+        val requestedParticipantId = "DABASESXGBG"
+        val requestedBy = UserDetails.builder()
+                .participantId(requestedParticipantId)
+                .build()
         val approvalPage = Page<Approval>(1, listOf(Approval.builder()
                 .approvalId("10000015")
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
+                .originalData(mapOf("id" to "LAHYSESS"))
+                .requestedBy(requestedBy)
                 .build()))
         val bic = "bic"
         val page = Page<Participant>(1, listOf(Participant.builder()
@@ -130,7 +143,7 @@ class ParticipantFacadeImplTest {
         `when`(uiPresenter.presentManagedParticipants(any(), any()))
                 .thenReturn(pageDto)
 
-        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request, requestedParticipantId)
 
         verify(participantRepository).findPaginated(any())
         verify(approvalRepository).findPaginated(any())
@@ -144,9 +157,15 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should not invoke presenter and repository when participant type is funded`() {
+        val requestedParticipantId = "DABASESXGBG"
+        val requestedBy = UserDetails.builder()
+                .participantId(requestedParticipantId)
+                .build()
         val approvalPage = Page<Approval>(1, listOf(Approval.builder()
                 .approvalId("10000015")
                 .participantIds(listOf("ELLFSESP", "LAHYSESS"))
+                .originalData(mapOf("id" to "LAHYSESS"))
+                .requestedBy(requestedBy)
                 .build()))
         val page = Page<Participant>(1, listOf(Participant.builder()
             .participantType(ParticipantType.FUNDED)
@@ -166,7 +185,7 @@ class ParticipantFacadeImplTest {
         `when`(uiPresenter.presentManagedParticipants(any(), any()))
                 .thenReturn(pageDto)
 
-        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = participantFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request, requestedParticipantId)
 
         verify(participantRepository).findPaginated(any())
         verify(approvalRepository).findPaginated(any())
@@ -178,6 +197,7 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke repository getParticipantById twice on FUNDED participants`() {
+        val requestedParticipantId = "DABASESXGBG"
         val participant = Participant.builder()
             .status(ParticipantStatus.SUSPENDED)
             .participantType(ParticipantType.FUNDED).build()
@@ -205,7 +225,7 @@ class ParticipantFacadeImplTest {
         `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any(), any(), any()))
                 .thenReturn(managedDetailsDto)
 
-        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
+        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "", requestedParticipantId)
 
         verify(participantRepository, atLeast(2)).findById(any())
         verify(accountRepository).findByPartyCode(any())
@@ -218,6 +238,7 @@ class ParticipantFacadeImplTest {
 
     @Test
     fun `should invoke repository getParticipantById once on FUNDING participants`() {
+        val requestedParticipantId = "DABASESXGBG"
         val participant = Participant.builder()
             .status(ParticipantStatus.ACTIVE)
             .participantType(ParticipantType.FUNDING)
@@ -244,7 +265,7 @@ class ParticipantFacadeImplTest {
         `when`(uiPresenter.presentManagedParticipantDetails(any(), any(), any(), any()))
                 .thenReturn(managedDetailsDto)
 
-        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "")
+        val result = participantFacadeImpl.getById(TestConstants.CONTEXT, ClientType.UI, "", requestedParticipantId)
 
         verify(participantRepository, atMost(1)).findById(any())
         verify(accountRepository).findByPartyCode(any())
