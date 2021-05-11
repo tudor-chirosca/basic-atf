@@ -47,7 +47,7 @@ public class AuditDetailsJpa implements Serializable {
     SORT_BINDINGS.put("serviceId", "serviceId");
     SORT_BINDINGS.put("eventType", "userActivityString");
     SORT_BINDINGS.put("user", "username");
-    SORT_BINDINGS.put("responseContent", "contents");
+    SORT_BINDINGS.put("responseContent", "responseContent");
   }
 
   @Id
