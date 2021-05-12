@@ -12,9 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IODashboardDto {
 
-  private LocalDate dateFrom;
-  private String filesRejected;
-  private String batchesRejected;
-  private String transactionsRejected;
-  private List<ParticipantIODataDto> rows;
+  private final LocalDate dateFrom;
+  private final String filesRejected;
+  private final String batchesRejected;
+  private final String transactionsRejected;
+  private final List<ParticipantIODataDto> rows;
 }

@@ -6,6 +6,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface InputOutputApi {
@@ -15,8 +16,8 @@ public interface InputOutputApi {
       @ApiResponse(code = 200, message = "Input output retrieved successfully", response = IODashboardDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<IODashboardDto> getSettlement(ClientType clientType, String context,
-      String timestamp);
+  ResponseEntity<IODashboardDto> getSettlement(final ClientType clientType, final String context,
+      final String timestamp, final HttpServletRequest httpServletRequest);
 
 
   @ApiOperation("Fetch input output data")
@@ -24,6 +25,7 @@ public interface InputOutputApi {
       @ApiResponse(code = 200, message = "Input output retrieved successfully", response = IODashboardDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<IODetailsDto> getIODetails(ClientType clientType, String context,
-      String participantId, String forDate);
+  ResponseEntity<IODetailsDto> getIODetails(final ClientType clientType, final String context,
+      final String participantId, final String forDate,
+      final HttpServletRequest httpServletRequest);
 }

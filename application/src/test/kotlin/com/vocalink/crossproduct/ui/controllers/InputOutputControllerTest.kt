@@ -1,29 +1,21 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.mocks.MockIOData
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.facade.api.InputOutputFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDate
 
-@WebMvcTest(InputOutputController::class)
-@ContextConfiguration(classes=[TestConfig::class])
-class InputOutputControllerTest {
-
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+class InputOutputControllerTest : ControllerTest(){
 
     @MockBean
     private lateinit var inputOutputFacade: InputOutputFacade
@@ -76,6 +68,9 @@ class InputOutputControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].batches.rejected").value("0.0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.submitted").value("0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.rejected").value("0.0"))
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_SCHEME_IO_DASHBOARD)
     }
 
     @Test
@@ -91,5 +86,8 @@ class InputOutputControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk)
 
         verify(inputOutputFacade).getInputOutputDetails(any(), any(), any(), any())
+
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_PTT_IO_DASHBOARD)
     }
 }
