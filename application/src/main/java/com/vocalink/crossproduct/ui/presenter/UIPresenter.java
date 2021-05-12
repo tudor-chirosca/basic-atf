@@ -96,8 +96,8 @@ import java.io.InputStream;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -124,7 +124,7 @@ public class UIPresenter implements Presenter {
 
   private final List<String> weekends = unmodifiableList(asList("Saturday", "Sunday"));
   private final List<String> rejectedStatuses = unmodifiableList(
-      asList("Rejected", "Reject")); // TODO:  Subject to clarify with BPS
+      asList("NAK", "PRE-RJCT", "POST-RJCT"));
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,

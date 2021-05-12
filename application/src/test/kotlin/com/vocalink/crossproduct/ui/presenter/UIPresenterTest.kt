@@ -465,7 +465,7 @@ class UIPresenterTest {
                 "FILE",
                 listOf(reasonCode1, reasonCode2)
         )
-        val statuses = listOf("Accepted", "Rejected")
+        val statuses = listOf("ACK", "NAK")
 
         val result = uiPresenter.presentReasonCodeReferences(validation, statuses)
 
