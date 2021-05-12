@@ -74,9 +74,9 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
                         "schemeId": "P27-SEK",
                         "mlSettlementPositions": [
                             {
-                                "settlementDate": "2020-12-09",
+                                "settlementDate": "2021-01-15",
                                 "participantId": "HANDSESS",
-                                "cycleId": "001",
+                                "cycleId": "20201209001",
                                 "currency": "SEK",
                                 "paymentSent": {
                                     "count": 2,
@@ -141,7 +141,7 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
         val findAll = cycleRepository.findAll()
 
         assertThat(findAll).isNotEmpty
-        assertThat(findAll[0].totalPositions).isNotEmpty
+        assertThat(findAll[0].totalPositions.isNotEmpty())
         assertThat(findAll[0].id).isEqualTo("20201209001")
     }
 

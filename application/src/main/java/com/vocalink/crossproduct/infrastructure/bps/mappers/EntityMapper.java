@@ -1,23 +1,10 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
@@ -151,8 +138,17 @@ import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
-
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface EntityMapper {
@@ -189,12 +185,13 @@ public interface EntityMapper {
       @Mapping(target = "status", source = "status", qualifiedByName = "toCycleStatus"),
       @Mapping(target = "totalPositions", source = "cycleId", qualifiedByName = "setTotalPositions")
   })
-  Cycle toEntity(BPSCycle cycle, @Context Map<String, List<BPSSettlementPosition>> positions);
+  Cycle toEntity(BPSCycle cycle, @Context List<BPSSettlementPosition> positions);
 
   @Named("setTotalPositions")
   default List<ParticipantPosition> setTotalPositions(String cycleId,
-      @Context Map<String, List<BPSSettlementPosition>> positions) {
-    return positions.getOrDefault(cycleId, Collections.emptyList()).stream()
+      @Context List<BPSSettlementPosition> positions) {
+    return positions.stream()
+        .filter(pos -> pos.getCycleId().equals(cycleId))
         .map(this::toEntity)
         .collect(toList());
   }

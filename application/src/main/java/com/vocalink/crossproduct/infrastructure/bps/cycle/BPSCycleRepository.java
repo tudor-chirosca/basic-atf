@@ -18,12 +18,7 @@ import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,8 +29,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Repository
 public class BPSCycleRepository implements CycleRepository {
-
-  private static final String CYCLE_ID_DATE_FORMAT = "yyyyMMdd";
 
   private final BPSProperties bpsProperties;
   private final BPSRetryWebClientConfig retryWebClientConfig;
@@ -49,24 +42,13 @@ public class BPSCycleRepository implements CycleRepository {
     final List<String> cycleIds = bpsCycles.stream()
         .map(BPSCycle::getCycleId).collect(toList());
 
-    final DateTimeFormatter cycleIdDateFormatter = DateTimeFormatter.ofPattern(CYCLE_ID_DATE_FORMAT);
     final List<BPSSettlementPosition> positions = getSettlementPositions()
         .getMlSettlementPositions().stream()
-        .filter(p -> cycleIds.contains(p.getSettlementDate().format(cycleIdDateFormatter) + p.getCycleId()))
+        .filter(p -> cycleIds.contains(p.getCycleId()))
         .collect(toList());
 
-    Map<String, List<BPSSettlementPosition>> settlementPositionMap = new HashMap<>();
-    cycleIds.forEach(e -> settlementPositionMap.put(e, new ArrayList<>()));
-
-    positions.forEach(e -> {
-      String cycleId = e.getSettlementDate().format(cycleIdDateFormatter) + e.getCycleId();
-      if (settlementPositionMap.containsKey(cycleId)) {
-        settlementPositionMap.get(cycleId).add(e);
-      }
-    });
-
     return bpsCycles.stream()
-        .map(c -> MAPPER.toEntity(c, settlementPositionMap))
+        .map(c -> MAPPER.toEntity(c, positions))
         .collect(toList());
   }
 
