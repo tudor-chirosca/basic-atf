@@ -60,7 +60,7 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
                 {
                     "settlementDate": "2021-01-15",
                     "participantId": "HANDSESS",
-                    "cycleId": "20210122001",
+                    "cycleId": "001",
                     "currency": "SEK",
                     "paymentSent": {
                         "count": 2,
@@ -119,7 +119,7 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
 
         assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, 1, 15))
         assertThat(result.participantId).isEqualTo("HANDSESS")
-        assertThat(result.cycleId).isEqualTo("20210122001")
+        assertThat(result.cycleId).isEqualTo("20210115001")
         assertThat(result.currency).isEqualTo("SEK")
 
         assertThat(result.paymentSent.count).isEqualTo(2)
