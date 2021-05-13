@@ -1,6 +1,11 @@
 package com.vocalink.crossproduct.ui.controllers;
 
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.AUDIT_LOG_ENQUIRY;
+import static com.vocalink.crossproduct.ui.aspects.EventType.AUDIT_LOG_EVENT_DETAILS;
+
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.AuditApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
@@ -10,6 +15,7 @@ import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,22 +53,26 @@ public class AuditController implements AuditApi {
     return ResponseEntity.ok(events);
   }
 
+  @Auditable(type = AUDIT_LOG_ENQUIRY, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/audits", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<AuditDto>> getAuditLog(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
       @RequestHeader final String context,
-      final AuditRequestParams parameters) {
+      final AuditRequestParams parameters,
+      final HttpServletRequest httpServletRequest) {
 
     PageDto<AuditDto> auditDetailsDto = auditFacade.getAuditLogs(context, clientType, parameters);
 
     return ResponseEntity.ok(auditDetailsDto);
   }
 
+  @Auditable(type = AUDIT_LOG_EVENT_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/audits/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AuditDetailsDto> getAuditDetails(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
       @RequestHeader final String context,
-      @PathVariable final String id) {
+      @PathVariable final String id,
+      final HttpServletRequest httpServletRequest) {
 
     AuditDetailsDto detailsDto = auditFacade.getAuditDetails(context, clientType, id);
 

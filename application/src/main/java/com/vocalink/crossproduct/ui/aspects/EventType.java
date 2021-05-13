@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects;
 
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
+import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastsSearchParameters;
@@ -26,8 +27,8 @@ public enum EventType {
   TRANSACTION_DETAILS(String.class),
   SETTL_ENQUIRY(SettlementEnquiryRequest.class),
   SETTL_DETAILS(ParticipantSettlementRequest.class),
-  AUDIT_LOG_ENQUIRY(Object.class),
-  AUDIT_LOG_EVENT_DETAILS(Object.class),
+  AUDIT_LOG_ENQUIRY(AuditRequestParams.class),
+  AUDIT_LOG_EVENT_DETAILS(String.class),
   VIEW_ALERTS(AlertSearchRequest.class),
   SEND_BROADCAST(BroadcastRequest.class),
   VIEW_SENT_BROADCAST(BroadcastsSearchParameters.class),

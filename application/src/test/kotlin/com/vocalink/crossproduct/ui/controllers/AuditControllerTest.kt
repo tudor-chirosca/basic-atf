@@ -1,42 +1,28 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams
 import com.vocalink.crossproduct.ui.dto.audit.ParticipantDetailsDto
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto
-import com.vocalink.crossproduct.ui.facade.api.AuditFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import org.apache.commons.lang3.StringUtils
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.Clock.fixed
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.Month
 import java.time.ZoneOffset.UTC
 
-@WebMvcTest(AuditController::class)
-@ContextConfiguration(classes = [TestConfig::class])
-class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
-
-    @MockBean
-    private lateinit var auditFacade: AuditFacade
+class AuditControllerTest : ControllerTest() {
 
     private companion object {
         const val VALID_AUDIT_EVENTS_RESPONSE = """["UI"]"""
@@ -66,7 +52,6 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val PARTICIPANT_ID_PARAMETER = "participantId"
 
         const val VALID_GET_AUDIT_RESPONSE = """{"totalResults":0,"items":[]}"""
-        val clock = fixed(LocalDateTime.of(2021, 4, 21, 22, 48, 56).toInstant(UTC), UTC)!!
     }
 
     @Test
@@ -83,6 +68,9 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().string(VALID_GET_AUDIT_RESPONSE))
 
         verify(auditFacade).getAuditLogs(any(), any(), any(AuditRequestParams::class.java))
+
+        verify(auditFacade, Mockito.times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.AUDIT_LOG_ENQUIRY)
     }
 
     @Test
@@ -112,6 +100,8 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .andExpect(content().json(VALID_AUDIT_BY_SERVICE_ID_RESPONSE, true))
 
         verify(auditFacade).getAuditDetails(any(), any(), eq(id))
+        verify(auditFacade, Mockito.times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.AUDIT_LOG_EVENT_DETAILS)
     }
 
     @Test
@@ -142,5 +132,4 @@ class AuditControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         verify(auditFacade).getUserDetails(any(), any(), any())
     }
-
 }
