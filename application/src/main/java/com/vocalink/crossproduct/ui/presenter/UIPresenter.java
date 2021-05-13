@@ -190,6 +190,10 @@ public class UIPresenter implements Presenter {
   }
 
   private ParticipantPosition getPosition(List<ParticipantPosition> positions, Cycle cycle) {
+    if (cycle.isEmpty()) {
+      return ParticipantPosition.builder()
+              .build();
+    }
     return positions.stream()
         .filter(f -> f.getCycleId().equalsIgnoreCase(cycle.getId())).findFirst()
         .orElseThrow(() -> new NonConsistentDataException(

@@ -29,4 +29,8 @@ public class Cycle {
     ZonedDateTime eod = ZonedDateTime.now(clock).with(LocalTime.MAX);
     return Objects.nonNull(settlementTime) && eod.isBefore(settlementTime);
   }
+  
+  public boolean isEmpty() {
+    return id == null;
+  }
 }

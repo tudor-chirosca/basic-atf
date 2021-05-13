@@ -31,5 +31,19 @@ class CycleTest {
 
         assertThat(cycle.isNextSettlementCycle(clock)).isEqualTo(isNextCycle)
     }
+
+    fun `should isEmpty if Cycle has empty fields`() {
+        val cycle = Cycle.builder().build()
+
+        assertThat(cycle.isEmpty).isTrue()
+    }
+
+    fun `should not isEmpty cycle id is not null`() {
+        val cycle = Cycle.builder()
+            .id("005")
+            .build()
+
+        assertThat(cycle.isEmpty).isFalse()
+    }
 }
 

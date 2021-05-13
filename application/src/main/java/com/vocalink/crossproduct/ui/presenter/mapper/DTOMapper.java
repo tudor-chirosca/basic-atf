@@ -343,6 +343,12 @@ public interface DTOMapper {
 
   @Named("toCustomerCreditTransfer")
   default ParticipantPositionDto toCustomerCreditTransfer(ParticipantPosition position) {
+    if (position.getPaymentSent() == null
+            || position.getPaymentSent().getAmount() == null
+            || position.getPaymentReceived() == null
+            || position.getPaymentReceived().getAmount() == null) {
+      return null;
+    }
     BigDecimal debit = position.getPaymentSent().getAmount().getAmount();
     BigDecimal credit = position.getPaymentReceived().getAmount().getAmount();
 
@@ -351,6 +357,12 @@ public interface DTOMapper {
 
   @Named("toPaymentReturn")
   default ParticipantPositionDto toPaymentReturn(ParticipantPosition position) {
+    if (position.getReturnSent() == null
+            || position.getReturnSent().getAmount() == null
+            || position.getReturnReceived() == null
+            || position.getReturnReceived().getAmount() == null) {
+      return null;
+    }
     BigDecimal debit = position.getReturnSent().getAmount().getAmount();
     BigDecimal credit = position.getReturnReceived().getAmount().getAmount();
 
@@ -385,6 +397,12 @@ public interface DTOMapper {
 
   @Named("countTotalCredit")
   default BigDecimal countTotalCredit(ParticipantPosition position) {
+    if (position.getPaymentReceived() == null
+            || position.getPaymentReceived().getAmount() == null
+            || position.getReturnReceived() == null
+            || position.getReturnReceived().getAmount() == null) {
+      return null;
+    }
     BigDecimal paymentCredit = position.getPaymentReceived().getAmount().getAmount();
     BigDecimal returnCredit = position.getReturnReceived().getAmount().getAmount();
     return paymentCredit.add(returnCredit);
@@ -392,6 +410,12 @@ public interface DTOMapper {
 
   @Named("countTotalDebit")
   default BigDecimal countTotalDebit(ParticipantPosition position) {
+    if (position.getPaymentSent() == null
+            || position.getPaymentSent().getAmount() == null
+            || position.getReturnSent() == null
+            || position.getReturnSent().getAmount() == null) {
+      return null;
+    }
     BigDecimal paymentDebit = position.getPaymentSent().getAmount().getAmount();
     BigDecimal returnDebit = position.getReturnSent().getAmount().getAmount();
     return paymentDebit.add(returnDebit);

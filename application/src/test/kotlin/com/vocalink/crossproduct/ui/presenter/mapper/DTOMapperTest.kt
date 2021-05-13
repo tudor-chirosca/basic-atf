@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter.mapper
 
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Amount
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.account.Account
@@ -59,6 +60,11 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
+
+    private companion object {
+        @JvmStatic
+        var clock = FIXED_CLOCK
+    }
 
     @Test
     fun `should map all fields`() {
@@ -639,6 +645,53 @@ class DTOMapperTest {
         val entity = AlertPriorityData("name", null, true)
         val result = MAPPER.toDto(entity)
         assertNull(result.threshold)
+    }
+
+    @Test
+    fun `should map ParticipantDashboardSettlementDetailsDto with empty settlement position`() {
+        val previousCycle = Cycle.builder()
+            .id("cycleId")
+            .build()
+        val currentCycle = Cycle.builder().build()
+        val count: Long = 100
+        val paymentAmount = Amount(BigDecimal(100), "SEK")
+        val payment = Payment(count, paymentAmount)
+        val previousPosition = ParticipantPosition.builder()
+            .settlementDate(LocalDate.now())
+            .participantId("participantId")
+            .cycleId("cycleId")
+            .currency("currency")
+            .paymentSent(payment)
+            .paymentReceived(payment)
+            .returnReceived(payment)
+            .returnSent(payment)
+            .netPositionAmount(paymentAmount)
+            .build()
+        val currentPosition = ParticipantPosition.builder().build()
+        val participant = Participant.builder().build()
+        val debitCapAmount = Amount(BigDecimal(1000), "SEK")
+        val debitPositionAmount = Amount(BigDecimal(2000), "SEK")
+        val intraDay = IntraDayPositionGross(
+            "schemeId",
+            "debitParticipantId",
+            LocalDate.now(), debitCapAmount, debitPositionAmount
+        )
+
+        val result = MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
+            participant, participant, intraDay)
+
+        assertThat(result.previousCycle.id).isNotNull()
+        assertThat(result.previousPosition.customerCreditTransfer).isNotNull()
+        assertThat(result.previousPosition.paymentReturn).isNotNull()
+        assertThat(result.previousPositionTotals.totalCredit).isNotNull()
+        assertThat(result.previousPositionTotals.totalDebit).isNotNull()
+        assertThat(result.previousPositionTotals.totalNetPosition).isNotNull()
+        assertThat(result.currentCycle.id).isNull()
+        assertThat(result.currentPositionTotals.totalCredit).isNull()
+        assertThat(result.currentPositionTotals.totalDebit).isNull()
+        assertThat(result.currentPositionTotals.totalNetPosition).isNull()
+        assertThat(result.currentPosition.customerCreditTransfer).isNull()
+        assertThat(result.currentPosition.paymentReturn).isNull()
     }
 
     @Test
