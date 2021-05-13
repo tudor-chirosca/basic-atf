@@ -43,6 +43,7 @@ import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportSearchReques
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementDetailsRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
+import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest.BPSParticipantWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -198,7 +199,7 @@ public interface BPSMapper {
   }
 
   @Mappings({
-      @Mapping(target = "participant", source = "participants", qualifiedByName = "getFirstParticipant"),
+      @Mapping(target = "participants", source = "participants", qualifiedByName = "mapParticipants"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapSettlementSortParams"),
       @Mapping(target = "dateFrom", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
@@ -206,9 +207,11 @@ public interface BPSMapper {
   })
   BPSSettlementEnquiryRequest toBps(SettlementEnquirySearchCriteria criteria);
 
-  @Named("getFirstParticipant")
-  default String getFirstParticipant(List<String> participants) {
-    return participants.get(0);
+  @Named("mapParticipants")
+  default List<BPSParticipantWrapper> mapParticipants(List<String> ids) {
+    final List<BPSParticipantWrapper> participantList = new ArrayList<>();
+   ids.forEach(id -> participantList.add(new BPSParticipantWrapper(id)));
+   return participantList;
   }
 
   @Named("mapSettlementSortParams")

@@ -72,7 +72,9 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
             "dateFrom": null,
             "dateTo": null,
             "sessionInstanceId": null,
-            "participant": "HANDSESS",
+            "participant": [
+                {"participantId": "HANDSESS"}
+            ],
             "sortingOrder" : [ ]
         }
         """

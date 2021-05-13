@@ -87,10 +87,9 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
     final SettlementEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
 
-    final SettlementsRepository settlementsRepository = repositoryFactory
-        .getSettlementsRepository(product);
-
-    final Page<ParticipantSettlement> participantSettlements = settlementsRepository.findPaginated(request);
+    final Page<ParticipantSettlement> participantSettlements = repositoryFactory
+        .getSettlementsRepository(product)
+        .findPaginated(request);
 
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);

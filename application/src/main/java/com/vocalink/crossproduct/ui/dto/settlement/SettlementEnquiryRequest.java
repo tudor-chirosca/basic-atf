@@ -25,7 +25,7 @@ public class SettlementEnquiryRequest {
   @Setter
   private List<String> sort;
   @ValidFromDate
-  private LocalDate dateFrom = LocalDate.now().minusDays(parseLong(getDefault(DAYS_LIMIT)));
+  private LocalDate dateFrom;
   private LocalDate dateTo;
   private String cycleId;
   @Setter
