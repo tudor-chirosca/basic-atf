@@ -37,6 +37,9 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
       Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(fundingParticipantId);
 
+      List<ParticipantPosition> positions = repositoryFactory.getPositionRepository(product)
+              .findByParticipantId(fundingParticipantId);
+
       List<Participant> participants = repositoryFactory.getParticipantRepository(product)
           .findByConnectingPartyAndType(fundingParticipantId,
               ParticipantType.FUNDED.getDescription()).getItems();
@@ -46,7 +49,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
           .findById(fundingParticipantId);
 
       return presenterFactory.getPresenter(clientType)
-          .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
+          .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, positions, intraDays);
     }
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product)

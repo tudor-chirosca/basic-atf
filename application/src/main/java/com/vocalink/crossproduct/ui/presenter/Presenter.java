@@ -24,7 +24,6 @@ import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
-import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
@@ -85,6 +84,7 @@ public interface Presenter {
       List<Cycle> cycles,
       List<Participant> participants,
       Participant fundingParticipant,
+      List<ParticipantPosition> positionsDetails,
       List<IntraDayPositionGross> intraDays);
 
   ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,

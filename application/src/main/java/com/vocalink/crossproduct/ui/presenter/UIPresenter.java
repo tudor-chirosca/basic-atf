@@ -144,7 +144,7 @@ public class UIPresenter implements Presenter {
   @Override
   public SettlementDashboardDto presentFundingParticipantSettlement(List<Cycle> cycles,
       List<Participant> participants, Participant fundingParticipant,
-      List<IntraDayPositionGross> intraDays) {
+      List<ParticipantPosition> positionsDetails, List<IntraDayPositionGross> intraDays) {
 
     Cycle currentCycle = getCurrentCycle(cycles);
     Cycle previousCycle = getPreviousCycle(cycles);
@@ -156,8 +156,11 @@ public class UIPresenter implements Presenter {
 
     ParticipantDto fundingParticipantDto = MAPPER.toDto(fundingParticipant);
 
-    return MAPPER
-        .toDto(currentCycle, previousCycle, positionsDto, fundingParticipantDto, intraDays);
+    ParticipantDashboardSettlementDetailsDto settlementDetailsDto = presentParticipantSettlementDetails(cycles,
+            positionsDetails, fundingParticipant);
+
+    return MAPPER.toDto(currentCycle, previousCycle, positionsDto, fundingParticipantDto,
+            settlementDetailsDto, intraDays);
   }
 
   @Override

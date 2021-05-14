@@ -96,13 +96,13 @@ open class SettlementDashboardFacadeImplTest {
         `when`(intraDayPositionGrossRepository
                 .findById(fundedParticipantId))
                 .thenReturn(listOf(intraDay))
-        `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any()))
+        `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any(), any()))
                 .thenReturn(mockModel)
 
         settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, participantId)
 
         verify(intraDayPositionGrossRepository, atLeastOnce()).findById(any())
-        verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
+        verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any(), any())
 
     }
 

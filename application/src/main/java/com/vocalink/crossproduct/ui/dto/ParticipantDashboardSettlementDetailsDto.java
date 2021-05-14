@@ -8,9 +8,11 @@ import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class ParticipantDashboardSettlementDetailsDto {
 

@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfig
@@ -145,23 +146,26 @@ class UIPresenterTest {
 
     @Test
     fun `should get Settlement Dashboard DTO for paramId with null values if missing IntraDay or Positions`() {
-        val cycles = listOf(Cycle.builder()
-                .cutOffTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                .settlementTime(ZonedDateTime.of(2019, 12, 10, 15, 10, 0, 0, ZoneId.of("UTC")))
+        val cycles = listOf(
+            Cycle.builder()
                 .id("02")
-                .status(CycleStatus.OPEN)
                 .build(),
-                Cycle.builder()
-                        .cutOffTime(ZonedDateTime.of(2019, 12, 10, 10, 10, 0, 0, ZoneId.of("UTC")))
-                        .settlementTime(ZonedDateTime.of(2019, 12, 10, 12, 10, 0, 0, ZoneId.of("UTC")))
-                        .id("01")
-                        .status(CycleStatus.COMPLETED)
-                        .build()
+            Cycle.builder()
+                .id("01")
+                .build()
         )
         val participants = MockParticipants().participants
         val fundingParticipant = MockParticipants().getParticipant(false)
+        val positions = listOf(
+            ParticipantPosition.builder()
+                .cycleId("01")
+                .build(),
+            ParticipantPosition.builder()
+                .cycleId("02")
+                .build()
+        )
 
-        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
+        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, positions, emptyList())
         assertNotNull(result.fundingParticipant)
         assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
         assertNotNull(result.intraDayPositionTotals)
