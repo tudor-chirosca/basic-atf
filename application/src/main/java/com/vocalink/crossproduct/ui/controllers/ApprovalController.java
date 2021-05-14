@@ -1,6 +1,10 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_DASHBOARD;
+
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.ui.aspects.Auditable;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -12,6 +16,7 @@ import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -50,11 +55,13 @@ public class ApprovalController implements ApprovalApi {
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
 
+  @Auditable(type = VIEW_APPROVAL_DASHBOARD, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/approvals", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
-      final ApprovalSearchRequest request) {
+      final ApprovalSearchRequest request,
+      final HttpServletRequest httpServletRequest) {
 
     final PageDto<ApprovalDetailsDto> approvalDetailsDto = approvalFacade
         .getApprovals(context, clientType, request);

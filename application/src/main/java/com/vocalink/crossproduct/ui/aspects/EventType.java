@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects;
 
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastRequest;
@@ -36,7 +37,7 @@ public enum EventType {
   DOWNLOAD_REPORT(String.class),
   VIEW_PARTICIPANT_MNG_LIST(ManagedParticipantsSearchRequest.class),
   VIEW_PARTICIPANT_MNG_DETAILS(String.class),
-  VIEW_APPROVAL_DASHBOARD(Object.class),
+  VIEW_APPROVAL_DASHBOARD(ApprovalSearchRequest.class),
   VIEW_APPROVAL_REQ(Object.class),
   VIEW_SCHEME_SETTL_DASHBOARD(String.class),
   VIEW_PTT_SETTL_DASHBOARD(String.class),

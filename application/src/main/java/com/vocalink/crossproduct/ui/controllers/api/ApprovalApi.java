@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,8 +44,10 @@ public interface ApprovalApi {
       @ApiResponse(code = 200, message = "Approvals fetched successfully", response = PageDto.class),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
-  ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(final ClientType clientType, final String context,
-      @Valid final ApprovalSearchRequest request);
+  ResponseEntity<PageDto<ApprovalDetailsDto>> getApprovals(final ClientType clientType,
+      final String context,
+      @Valid final ApprovalSearchRequest request,
+      final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Create Approval request")
   @ApiResponses({
@@ -58,7 +61,7 @@ public interface ApprovalApi {
 
   @ApiOperation("Fetch Request by users references")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Request by users references successfully", response = ApprovalUserDto.class, responseContainer="List"),
+      @ApiResponse(code = 200, message = "Request by users references successfully", response = ApprovalUserDto.class, responseContainer = "List"),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<List<ApprovalUserDto>> findRequestedDetails(
@@ -66,7 +69,7 @@ public interface ApprovalApi {
 
   @ApiOperation("Fetch Approval request types references")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Approval request types references successfully", response = ApprovalRequestType.class, responseContainer="List"),
+      @ApiResponse(code = 200, message = "Approval request types references successfully", response = ApprovalRequestType.class, responseContainer = "List"),
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<List<ApprovalRequestType>> findApprovalRequestTypes(

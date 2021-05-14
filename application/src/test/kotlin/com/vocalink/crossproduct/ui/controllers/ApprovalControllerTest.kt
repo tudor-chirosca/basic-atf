@@ -1,11 +1,10 @@
 package com.vocalink.crossproduct.ui.controllers
 
-import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
-import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi
+import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto
@@ -13,36 +12,27 @@ import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ApprovalFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
-import java.nio.charset.Charset
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
-@WebMvcTest(ApprovalApi::class)
-@ContextConfiguration(classes = [TestConfig::class])
-class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
+class ApprovalControllerTest : ControllerTest() {
 
     @MockBean
     private lateinit var approvalFacade: ApprovalFacade
-
-    private val UTF8_CONTENT_TYPE: MediaType = MediaType(
-        MediaType.APPLICATION_JSON.type,
-        MediaType.APPLICATION_JSON.subtype, Charset.forName("utf8")
-    )
 
     private companion object {
         const val CONTEXT_HEADER = "context"
@@ -529,6 +519,8 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("from_date", "2020-02-15T00:00:00Z"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
+
+        verifyNoInteractions(approvalFacade)
     }
 
     @Test
@@ -555,6 +547,8 @@ class ApprovalControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .param("sort", "status"))
                 .andExpect(status().isOk)
 
+        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
+        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_APPROVAL_DASHBOARD)
     }
 
     @Test
