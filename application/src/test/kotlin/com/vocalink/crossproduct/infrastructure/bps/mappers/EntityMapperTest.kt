@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
@@ -49,6 +50,7 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest
 import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest
+import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
@@ -897,5 +899,68 @@ class EntityMapperTest {
         assertThat(result.scheduleDayDetails[0].cycles[0].startTime).isEqualTo(bpsCycle.startTime)
         assertThat(result.scheduleDayDetails[0].cycles[0].cutOffTime).isEqualTo(bpsCycle.endTime)
         assertThat(result.scheduleDayDetails[0].cycles[0].settlementStartTime).isEqualTo(bpsCycle.settlementTime)
+    }
+
+    @Test
+    fun `should map to ManagedParticipantsSearchCriteria fields`() {
+        val request = ManagedParticipantsSearchRequest()
+        request.offset = 0
+        request.limit = 20
+        request.q = "DABASESXGBG"
+        request.sort = listOf(
+                "-name", "+name",
+                "-status", "+status",
+                "-organizationId", "+organizationId",
+                "-participantType", "+participantType",
+                "-tpspName", "+tpspName",
+                "-fundedParticipantsCount", "+fundedParticipantsCount")
+
+        val result = MAPPER.toEntity(request)
+
+        assertThat(result.limit).isEqualTo(request.limit)
+        assertThat(result.offset).isEqualTo(request.offset)
+        assertThat(result.sort).isEqualTo(request.sort)
+        assertThat(result.q).isEqualTo(request.q)
+        assertThat(result.sort.size).isEqualTo(request.sort.size)
+        assertThat(result.sort).isEqualTo(request.sort)
+    }
+
+    @Test
+    fun `should map from BPSManagedParticipant to Participant `() {
+        val fromDate = ZonedDateTime.now()
+        val tillDate = ZonedDateTime.now().plusDays(1L)
+        val bpsManagedParticipant = BPSManagedParticipant.builder()
+                .schemeCode("P27-SEK")
+                .schemeParticipantIdentifier("HANDSESSXXX")
+                .countryCode("SWE")
+                .partyCode("HANDSESSXXX")
+                .participantType("DIRECT")
+                .connectingParty("NA")
+                .status("SUSPENDED")
+                .effectiveFromDate(fromDate)
+                .effectiveTillDate(tillDate)
+                .participantName("Svenska Handelsbanken")
+                .rcvngParticipantConnectionId("NA")
+                .participantConnectionId("NA")
+                .suspensionLevel("SELF")
+                .partyExternalIdentifier("34534534")
+                .tpspName("Forex Bank")
+                .tpspId("940404004")
+                .build()
+
+        val result = MAPPER.toEntity(bpsManagedParticipant)
+
+        assertThat(result.id).isEqualTo(bpsManagedParticipant.schemeParticipantIdentifier)
+        assertThat(result.bic).isEqualTo(bpsManagedParticipant.schemeParticipantIdentifier)
+        assertThat(result.name).isEqualTo(bpsManagedParticipant.participantName)
+        assertThat(result.fundingBic).isEqualTo(bpsManagedParticipant.connectingParty)
+        assertThat(result.status).isEqualTo(ParticipantStatus.valueOf(bpsManagedParticipant.status))
+        assertThat(result.suspendedTime).isEqualTo(bpsManagedParticipant.effectiveTillDate)
+        assertThat(result.participantType).isEqualTo(ParticipantType.valueOf(bpsManagedParticipant.participantType))
+        assertThat(result.schemeCode).isEqualTo(bpsManagedParticipant.schemeCode)
+        assertThat(result.organizationId).isEqualTo(bpsManagedParticipant.partyExternalIdentifier)
+        assertThat(result.suspensionLevel).isEqualTo(SuspensionLevel.valueOf(bpsManagedParticipant.suspensionLevel))
+        assertThat(result.tpspName).isEqualTo(bpsManagedParticipant.tpspName)
+        assertThat(result.tpspId).isEqualTo(bpsManagedParticipant.tpspId)
     }
 }

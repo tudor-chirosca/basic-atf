@@ -73,6 +73,15 @@ abstract class MapperUtils {
     put("totalCredit", "totalAmountCredited");
   }};
 
+  private static final Map<String, String> managedParticipantSearchRequestSortParams = new HashMap<String, String>() {{
+    put("name", "name");
+    put("status", "status");
+    put("organizationId", "partyExternalIdentifier");
+    put("participantType", "participantType");
+    put("tpspName", "tpspName");
+    put("fundedParticipantsCount", "fundedParticipantsCount");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -91,6 +100,10 @@ abstract class MapperUtils {
 
   static Map<String, String> getSettlementDetailsSearchRequestSortParams() {
     return unmodifiableMap(settlementDetailsSearchRequestSortParams);
+  }
+
+  static Map<String, String> getManagedParticipantSearchRequestSortParams(){
+    return unmodifiableMap(managedParticipantSearchRequestSortParams);
   }
 
   static String getNameByType(String type) {

@@ -4,6 +4,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.re
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getManagedParticipantSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementDetailsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
@@ -227,7 +228,15 @@ public interface BPSMapper {
     }
   }
 
+  @Mappings({
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapManagedParticipantSortParams")
+  })
   BPSManagedParticipantsSearchRequest toBps(ManagedParticipantsSearchCriteria criteria);
+
+  @Named("mapManagedParticipantSortParams")
+  default List<BPSSortingQuery> mapManagedParticipantSortParams(List<String> sortParams) {
+    return map(sortParams, getManagedParticipantSearchRequestSortParams());
+  }
 
   BPSBroadcastsSearchRequest toBps(BroadcastsSearchCriteria criteria);
 

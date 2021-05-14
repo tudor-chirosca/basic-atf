@@ -3,9 +3,11 @@ package com.vocalink.crossproduct.infrastructure.bps.participant;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.ZonedDateTime;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class BPSManagedParticipant {
 
   private final String schemeCode;

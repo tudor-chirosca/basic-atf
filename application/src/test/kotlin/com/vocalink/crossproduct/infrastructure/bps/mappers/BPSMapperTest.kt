@@ -9,10 +9,12 @@ import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.*
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
@@ -188,34 +190,34 @@ class BPSMapperTest {
         assertThat(request.transactionRangeTo.currency).isEqualTo(currency)
 
         assertThat(request.sortingOrder[0].sortOrderBy).isEqualTo("instructionId")
-        assertThat(request.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[0].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[1].sortOrderBy).isEqualTo("instructionId")
-        assertThat(request.sortingOrder[1].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[1].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[2].sortOrderBy).isEqualTo("createdDateTime")
-        assertThat(request.sortingOrder[2].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[2].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[3].sortOrderBy).isEqualTo("createdDateTime")
-        assertThat(request.sortingOrder[3].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[3].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[4].sortOrderBy).isEqualTo("originator")
-        assertThat(request.sortingOrder[4].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[4].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[5].sortOrderBy).isEqualTo("originator")
-        assertThat(request.sortingOrder[5].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[5].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[6].sortOrderBy).isEqualTo("messageType")
-        assertThat(request.sortingOrder[6].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[6].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[7].sortOrderBy).isEqualTo("messageType")
-        assertThat(request.sortingOrder[7].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[7].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[8].sortOrderBy).isEqualTo("amount")
-        assertThat(request.sortingOrder[8].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[8].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[9].sortOrderBy).isEqualTo("amount")
-        assertThat(request.sortingOrder[9].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[9].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[10].sortOrderBy).isEqualTo("status")
-        assertThat(request.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(request.sortingOrder[10].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[11].sortOrderBy).isEqualTo("status")
-        assertThat(request.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(request.sortingOrder[11].sortOrder).isEqualTo(ASC)
     }
 
     @Test
@@ -282,34 +284,34 @@ class BPSMapperTest {
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("participantName")
-        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[1].sortOrderBy).isEqualTo("participantName")
-        assertThat(result.sortingOrder[1].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[1].sortOrder).isEqualTo(ASC)
 
         assertThat(result.sortingOrder[2].sortOrderBy).isEqualTo("requestType")
-        assertThat(result.sortingOrder[2].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[2].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[3].sortOrderBy).isEqualTo("requestType")
-        assertThat(result.sortingOrder[3].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[3].sortOrder).isEqualTo(ASC)
 
         assertThat(result.sortingOrder[4].sortOrderBy).isEqualTo("approvalId")
-        assertThat(result.sortingOrder[4].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[4].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[5].sortOrderBy).isEqualTo("approvalId")
-        assertThat(result.sortingOrder[5].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[5].sortOrder).isEqualTo(ASC)
 
         assertThat(result.sortingOrder[6].sortOrderBy).isEqualTo("date")
-        assertThat(result.sortingOrder[6].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[6].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[7].sortOrderBy).isEqualTo("date")
-        assertThat(result.sortingOrder[7].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[7].sortOrder).isEqualTo(ASC)
 
         assertThat(result.sortingOrder[8].sortOrderBy).isEqualTo("requestedBy")
-        assertThat(result.sortingOrder[8].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[8].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[9].sortOrderBy).isEqualTo("requestedBy")
-        assertThat(result.sortingOrder[9].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[9].sortOrder).isEqualTo(ASC)
 
         assertThat(result.sortingOrder[10].sortOrderBy).isEqualTo("status")
-        assertThat(result.sortingOrder[10].sortOrder).isEqualTo(BPSSortOrder.DESC)
+        assertThat(result.sortingOrder[10].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("status")
-        assertThat(result.sortingOrder[11].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[11].sortOrder).isEqualTo(ASC)
     }
 
     @Test
@@ -332,7 +334,7 @@ class BPSMapperTest {
         assertThat(result.requestedBy).isEqualTo(listOf("23451sdf"))
         assertThat(result.statuses).isEqualTo(listOf(BPSApprovalStatus.PENDING))
         assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("status")
-        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(BPSSortOrder.ASC)
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(ASC)
     }
 
     @Test
@@ -379,5 +381,52 @@ class BPSMapperTest {
         assertThat(request.approvalId).isEqualTo(approvalConfirmation.approvalId)
         assertThat(request.isApproved).isEqualTo(false)
         assertThat(request.notes).isEqualTo(approvalConfirmation.message)
+    }
+
+    @Test
+    fun `should map from ManagedParticipantsSearchCriteria to BPSManagedParticipantsSearchRequest`() {
+        val allSortingFields = listOf(
+                "-name", "+name",
+                "-status", "+status",
+                "-organizationId", "+organizationId",
+                "-participantType", "+participantType",
+                "-tpspName", "+tpspName",
+                "-fundedParticipantsCount", "+fundedParticipantsCount")
+        val criteria = ManagedParticipantsSearchCriteria.builder()
+                .offset(0)
+                .limit(20)
+                .q("DABASESXGBG")
+                .sort(allSortingFields)
+                .build()
+
+        val result = BPSMAPPER.toBps(criteria)
+
+        assertThat(result.offset).isEqualTo(criteria.offset)
+        assertThat(result.limit).isEqualTo(criteria.limit)
+        assertThat(result.q).isEqualTo(criteria.q)
+        assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("name")
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[1].sortOrderBy).isEqualTo("name")
+        assertThat(result.sortingOrder[1].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[2].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[2].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[3].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[3].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[4].sortOrderBy).isEqualTo("partyExternalIdentifier")
+        assertThat(result.sortingOrder[4].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[5].sortOrderBy).isEqualTo("partyExternalIdentifier")
+        assertThat(result.sortingOrder[5].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[6].sortOrderBy).isEqualTo("participantType")
+        assertThat(result.sortingOrder[6].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[7].sortOrderBy).isEqualTo("participantType")
+        assertThat(result.sortingOrder[7].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[8].sortOrderBy).isEqualTo("tpspName")
+        assertThat(result.sortingOrder[8].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[9].sortOrderBy).isEqualTo("tpspName")
+        assertThat(result.sortingOrder[9].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[10].sortOrderBy).isEqualTo("fundedParticipantsCount")
+        assertThat(result.sortingOrder[10].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("fundedParticipantsCount")
+        assertThat(result.sortingOrder[11].sortOrder).isEqualTo(ASC)
     }
 }

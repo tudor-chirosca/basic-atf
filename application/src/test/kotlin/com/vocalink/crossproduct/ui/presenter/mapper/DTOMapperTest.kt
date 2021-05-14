@@ -25,12 +25,11 @@ import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.*
 import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
-import com.vocalink.crossproduct.domain.participant.SuspensionLevel
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel.*
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
@@ -977,7 +976,7 @@ class DTOMapperTest {
         val participant = Participant(
                 "FORXSES1", "FORXSES1", "Forex Bank",
                 null, ACTIVE, null, FUNDING, null,
-                "00002121", SuspensionLevel.SCHEME, "Nordnet Bank", "475347837892",
+                "00002121", SCHEME, "Nordnet Bank", "475347837892",
                 listOf(
                         Participant(
                                 "FORXSES1", "FORXSES1", "Forex Bank", null,
@@ -1293,4 +1292,65 @@ class DTOMapperTest {
         assertThat(entity.user.userId).isEqualTo(userId)
         assertThat(entity.user.name).isEqualTo("$userFirstName $userLastName")
     }
+
+    @Test
+    fun `should map all fields from Participant to ManagedParticipantDto`() {
+        val userDetail = UserDetails.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .build()
+        val approval = Approval.builder()
+                .requestType(PARTICIPANT_SUSPEND)
+                .requestedBy(userDetail)
+                .date(ZonedDateTime.now())
+                .approvalId("10000000")
+                .build()
+        val routingRecord = RoutingRecord(
+                "reachableBic",
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                ZonedDateTime.now(ZoneId.of("UTC")),
+                "currency")
+        val fundedParticipant = Participant.builder()
+                .id("FORXSES1")
+                .bic("FORXSES1")
+                .build()
+        val participant = Participant.builder()
+                .id("FORXSES1")
+                .bic("FORXSES1")
+                .name("Forex Bank")
+                .fundingBic("NA")
+                .status(ACTIVE)
+                .suspendedTime(ZonedDateTime.now())
+                .participantType(FUNDING)
+                .schemeCode("P27-SEK")
+                .organizationId("00002121")
+                .suspensionLevel(SCHEME)
+                .tpspName("Nordnet Bank")
+                .tpspId("475347837892")
+                .fundedParticipants(listOf(fundedParticipant))
+                .fundedParticipantsCount(1)
+                .reachableBics(listOf(routingRecord))
+                .build()
+
+        val result = MAPPER.toDto(participant, mapOf(participant.id to approval))
+
+        assertThat(result.bic).isEqualTo(participant.bic)
+        assertThat(result.fundingBic).isEqualTo(participant.fundingBic)
+        assertThat(result.id).isEqualTo(participant.id)
+        assertThat(result.name).isEqualTo(participant.name)
+        assertThat(result.status).isEqualTo(participant.status)
+        assertThat(result.suspendedTime).isEqualTo(participant.suspendedTime)
+        assertThat(result.participantType).isEqualTo(participant.participantType.description)
+        assertThat(result.organizationId).isEqualTo(participant.organizationId)
+        assertThat(result.suspensionLevel).isEqualTo(participant.suspensionLevel)
+        assertThat(result.tpspName).isEqualTo(participant.tpspName)
+        assertThat(result.tpspId).isEqualTo(participant.tpspId)
+        assertThat(result.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
+        assertThat(result.reachableBics).isEqualTo(participant.reachableBics)
+        assertThat(result.approvalReference.jobId).isEqualTo(approval.approvalId)
+        assertThat(result.approvalReference.requestedAt).isEqualTo(approval.date)
+        assertThat(result.approvalReference.requestType).isEqualTo(approval.requestType)
+        assertThat(result.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
+    }
 }
+
