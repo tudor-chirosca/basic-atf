@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import java.io.IOException;
+
 import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_DETAILS;
 import static com.vocalink.crossproduct.ui.aspects.EventType.FILE_ENQUIRY;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -20,9 +22,9 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,11 +54,11 @@ public class FilesController implements FilesApi {
 
   @Auditable(type = FILE_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/enquiry/files/{id}",
-      produces = {APPLICATION_JSON_VALUE, APPLICATION_OCTET_STREAM_VALUE})
-  public ResponseEntity<?> getFile(
+      produces = APPLICATION_OCTET_STREAM_VALUE)
+  public void getFile(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
-      final @PathVariable String id, HttpServletRequest request) {
+      final @PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     final MediaType mediaType = valueOf(request.getHeader(ACCEPT_HEADER));
 
@@ -66,16 +68,25 @@ public class FilesController implements FilesApi {
           "MediaType not supported: " + mediaType);
     }
 
-    if (mediaType.isCompatibleWith(APPLICATION_JSON)) {
-      return ResponseEntity.ok(filesFacade.getDetailsById(context, clientType, id));
+    filesFacade.writeFileToOutputStream(context, clientType, id, response.getOutputStream());
+    response.addHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE);
+    response.addHeader(CONTENT_DISPOSITION, "attachment;filename=" + id);
+    response.setStatus(HttpStatus.OK.value());
+  }
+
+  @Auditable(type = FILE_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
+  @GetMapping(value = "/enquiry/files/{id}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> getFileDetails(
+          final @RequestHeader("client-type") ClientType clientType,
+          final @RequestHeader String context,
+          final @PathVariable String id, HttpServletRequest request) {
+
+    final MediaType mediaType = valueOf(request.getHeader(ACCEPT_HEADER));
+
+    if (!mediaType.isCompatibleWith(APPLICATION_JSON)) {
+      throw new ClientRequestException(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+              "MediaType not supported: " + mediaType);
     }
-
-    Resource resource = filesFacade.getFile(context, clientType, id);
-
-    final HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE);
-    httpHeaders.add(CONTENT_DISPOSITION, "attachment;filename=" + id);
-
-    return new ResponseEntity<>(resource, httpHeaders, HttpStatus.OK);
+    return ResponseEntity.ok(filesFacade.getDetailsById(context, clientType, id));
   }
 }

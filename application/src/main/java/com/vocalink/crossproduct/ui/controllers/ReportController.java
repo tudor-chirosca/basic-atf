@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import java.io.IOException;
+
 import static com.vocalink.crossproduct.ui.aspects.EventType.DOWNLOAD_REPORT;
 import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_REPORTS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -16,10 +18,10 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ReportFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,18 +53,17 @@ public class ReportController implements ReportApi {
 
   @Auditable(type = DOWNLOAD_REPORT, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/reports/{id}", produces = {APPLICATION_OCTET_STREAM_VALUE})
-  public ResponseEntity<?> getReport(
+  public void getReport(
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final @PathVariable String id,
-      final HttpServletRequest request) {
+      final HttpServletRequest request,
+      final HttpServletResponse response) throws IOException {
 
-    Resource resource = reportFacade.getReport(context, clientType, id);
+    reportFacade.writeReportToOutputStream(context, clientType, id, response.getOutputStream());
 
-    final HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE);
-    httpHeaders.add(CONTENT_DISPOSITION, "attachment;filename=" + id);
-
-    return new ResponseEntity<>(resource, httpHeaders, HttpStatus.OK);
+    response.addHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE);
+    response.addHeader(CONTENT_DISPOSITION, "attachment;filename=" + id);
+    response.setStatus(HttpStatus.OK.value());
   }
 }

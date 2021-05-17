@@ -16,10 +16,10 @@ import com.vocalink.crossproduct.ui.facade.api.ReportFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -45,11 +45,10 @@ public class ReportFacadeImpl implements ReportFacade {
   }
 
   @Override
-  public Resource getReport(String product, ClientType clientType, String reportId) {
+  public void writeReportToOutputStream(String product, ClientType clientType, String reportId, OutputStream outputStream) {
     try {
-      final InputStream input = serviceFactory.getDownloadService(product)
-          .getResource(DOWNLOAD_REPORT_PATH, reportId);
-      return presenterFactory.getPresenter(clientType).presentStream(input);
+      serviceFactory.getDownloadService(product)
+            .writeResourceToOutputStream(DOWNLOAD_REPORT_PATH, reportId, outputStream);
     } catch (IOException e) {
       throw new UILayerException(e, "Exception thrown while reading input stream.");
     }

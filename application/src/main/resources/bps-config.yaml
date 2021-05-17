@@ -67,7 +67,7 @@ bps-config:
       path: /enquiries/file/{schemeCode}/read
       base: MOCK
     download-file-path:
-      path: /enquiries/file/downloadFile/{schemeCode}
+      path: /enquiries/file/downloadFile/{schemeCode}/{id}
       base: MOCK
     single-batch-path:
       path: /enquiries/batches/{schemeCode}/read
@@ -118,7 +118,7 @@ bps-config:
       path: /reports
       base: MOCK
     download-report-path:
-      path: /reports/downloadFile/{schemeCode}
+      path: /reports/downloadFile/{schemeCode}/{id}
       base: MOCK
     approval-request-by-path:
       path: /reference/approvals/requestedBy/{schemeCode}/readAll

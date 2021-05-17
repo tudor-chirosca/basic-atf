@@ -322,8 +322,6 @@ class FilesControllerTest : ControllerTest() {
     @AllDisabled(ControllerFeatures::class)
     fun `should return 415 on download file by Id when file download is disabled`() {
         val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
-        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
-        `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
         mockMvc.perform(get("/enquiry/files/$id")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
@@ -340,15 +338,13 @@ class FilesControllerTest : ControllerTest() {
     @AllEnabled(ControllerFeatures::class)
     fun `should return 415 on download file by Id when file download is enabled`() {
         val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
-        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
-        `when`(filesFacade.getFile(any(), any(), any())).thenReturn(stream)
         mockMvc.perform(get("/enquiry/files/$id")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk)
-                .andExpect(content().bytes(byteArrayOf(125, 12)))
+                .andExpect(content().bytes(byteArrayOf()))
 
         verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
         assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],

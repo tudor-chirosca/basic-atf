@@ -16,7 +16,6 @@ import org.mockito.Mockito.any
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -27,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.LinkedMultiValueMap
-import java.io.ByteArrayInputStream
 import java.nio.charset.Charset
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -137,16 +135,14 @@ class ReportControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should return report data for id` () {
+    fun `should return empty report data for id` () {
         val id = "10000000006"
-        val stream = InputStreamResource(ByteArrayInputStream(byteArrayOf(125, 12)))
-        `when`(reportFacade.getReport(any(), any(), any())).thenReturn(stream)
         mockMvc.perform(get("/reports/$id")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .header(HttpHeaders.ACCEPT, APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk)
-                .andExpect(content().bytes(byteArrayOf(125, 12)))
+                .andExpect(content().bytes(byteArrayOf()))
     }
 }

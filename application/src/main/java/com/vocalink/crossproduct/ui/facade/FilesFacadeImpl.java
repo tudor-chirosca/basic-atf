@@ -19,10 +19,10 @@ import com.vocalink.crossproduct.ui.facade.api.FilesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -62,11 +62,10 @@ public class FilesFacadeImpl implements FilesFacade {
   }
 
   @Override
-  public Resource getFile(String product, ClientType clientType, String fileId) {
+  public void writeFileToOutputStream(String product, ClientType clientType, String fileId, OutputStream outputStream) {
     try {
-      final InputStream input = serviceFactory.getDownloadService(product)
-          .getResource(DOWNLOAD_FILE_PATH, fileId);
-      return presenterFactory.getPresenter(clientType).presentStream(input);
+      serviceFactory.getDownloadService(product)
+          .writeResourceToOutputStream(DOWNLOAD_FILE_PATH, fileId, outputStream);
     } catch (IOException e) {
       throw new UILayerException(e, "Exception thrown while reading input stream.");
     }
