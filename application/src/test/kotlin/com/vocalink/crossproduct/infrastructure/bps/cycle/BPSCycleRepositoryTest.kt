@@ -7,6 +7,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -26,7 +29,7 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
 
         const val VALID_DAY_CYCLE_REQUEST_JSON: String = """{
                     "schemeCode": "P27-SEK",
-                    "settlementDate" : "2020-11-05"
+                    "settlementDate" : "2021-11-05T00:00:00Z"
                 }"""
 
         const val VALID_SETTLEMENT_REQUEST_JSON: String = """{
@@ -147,7 +150,7 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
 
     @Test
     fun `should return cycles by date with success`() {
-        val date = LocalDate.parse("2020-11-05", DateTimeFormatter.ISO_DATE)
+        val date = ZonedDateTime.of(LocalDate.of(2021, 11, 5), LocalTime.MIN, ZoneId.of("UTC"))
 
         mockServer.stubFor(
                 post(urlEqualTo("/cycles/read"))

@@ -42,7 +42,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields and null dates if cycle present`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, LocalDate.now(), LocalDate.now(),
+                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
                 "cycle1", "sending", "msg_type",
                 "participant_bic", "status", "reasonCode",
                 null, listOf("id"))
@@ -63,15 +63,15 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields with dates if cycle id missing`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, LocalDate.now(), LocalDate.now(),
+                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
                 null, "receiving", "msg_type",
                 "participant_bic", "status", "reasonCode",
                 null, listOf("id"))
 
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
-        assertThat(entity.createdFromDate.toLocalDate()).isEqualTo(request.dateFrom)
-        assertThat(entity.createdToDate.toLocalDate()).isEqualTo(request.dateTo)
+        assertThat(entity.createdFromDate).isEqualTo(request.dateFrom)
+        assertThat(entity.createdToDate).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingParticipant).isNull()
@@ -84,7 +84,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields having cycle id`() {
         val request = FileEnquirySearchCriteria(
-                0, 20, LocalDate.now(), LocalDate.now(),
+                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
                 "cycle1", "sending", "msg_type",
                 "participant_bic",  "status", "reasonCode",
                 "id", listOf("nrOfBatches"))
@@ -106,7 +106,7 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields not having cycle id`() {
         val request = FileEnquirySearchCriteria(
-                0, 20, LocalDate.now(), LocalDate.now(),
+                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
                 null, "receiving", "msg_type",
                 "participant_bic", "status", "reasonCode",
                 "id", listOf("nrOfBatches"))
@@ -114,8 +114,8 @@ class BPSMapperTest {
         val entity = BPSMAPPER.toBps(request)
 
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo(request.sort[0])
-        assertThat(entity.createdFromDate.toLocalDate()).isEqualTo(request.dateFrom)
-        assertThat(entity.createdToDate.toLocalDate()).isEqualTo(request.dateTo)
+        assertThat(entity.createdFromDate).isEqualTo(request.dateFrom)
+        assertThat(entity.createdToDate).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingParticipant).isNull()
@@ -145,7 +145,7 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSTransactionEnquirySearchRequest fields and remove dates if cycleName and cycleDay persist`() {
-        val date = LocalDate.now()
+        val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val currency = "SEK"
         val sorting = listOf(
                 "-instructionId", "+instructionId",
@@ -172,7 +172,7 @@ class BPSMapperTest {
         val request = BPSMAPPER.toBps(criteria, currency)
         assertNull(request.createdDateFrom)
         assertNull(request.createdDateTo)
-        assertThat(request.cycleDay).isEqualTo(ZonedDateTime.of(criteria.cycleDay, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
+        assertThat(request.cycleDay).isEqualTo(criteria.cycleDay)
         assertThat(request.cycleName).isEqualTo(criteria.cycleName)
         assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
@@ -183,7 +183,7 @@ class BPSMapperTest {
         assertThat(request.instructionIdentifier).isEqualTo(criteria.id)
         assertThat(request.sendingAccount).isEqualTo(criteria.sendingAccount)
         assertThat(request.receivingAccount).isEqualTo(criteria.receivingAccount)
-        assertThat(request.valueDate).isEqualTo(ZonedDateTime.of(criteria.valueDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
+        assertThat(request.valueDate).isEqualTo(criteria.valueDate)
         assertThat(request.transactionRangeFrom.amount).isEqualTo(criteria.txnFrom)
         assertThat(request.transactionRangeFrom.currency).isEqualTo(currency)
         assertThat(request.transactionRangeTo.amount).isEqualTo(criteria.txnTo)
@@ -222,7 +222,7 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSTransactionEnquirySearchRequest fields`() {
-        val date = LocalDate.now()
+        val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val currency = "SEK"
         val criteria = TransactionEnquirySearchCriteria(
                 0, 0, null, date, date,
@@ -240,8 +240,8 @@ class BPSMapperTest {
                 date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria, currency)
-        assertThat(request.createdDateFrom).isEqualTo(ZonedDateTime.of(criteria.dateFrom, LocalTime.MIN, ZoneId.of("UTC")))
-        assertThat(request.createdDateTo).isEqualTo(ZonedDateTime.of(criteria.dateTo, LocalTime.of(23, 59, 59), ZoneId.of("UTC")))
+        assertThat(request.createdDateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(request.createdDateTo).isEqualTo(criteria.dateTo)
     }
 
     @Test

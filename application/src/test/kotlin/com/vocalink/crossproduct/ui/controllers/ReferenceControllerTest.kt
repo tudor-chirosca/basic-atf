@@ -13,6 +13,9 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
@@ -265,7 +268,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get 200 for find cycles by date`() {
-        val stringDate = "2020-11-03"
+        val stringDate = "2020-11-03T00:00:00Z"
         mockMvc.perform(get("/reference/cycles")
                 .param(REQUIRED_DATE_PARAM, stringDate)
                 .header(CONTEXT_HEADER, CONTEXT)
@@ -275,8 +278,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get 200 for find cycles by date and return valid response`() {
-        val stringDate = "2020-11-03"
-        val date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_DATE)
+        val date = ZonedDateTime.of(LocalDate.of(2021, 11, 3), LocalTime.MIN, ZoneId.of("UTC"))
 
         val cycles = listOf(
                 DayCycleDto(
@@ -289,7 +291,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .thenReturn(cycles)
 
         mockMvc.perform(get("/reference/cycles")
-                .param(REQUIRED_DATE_PARAM, stringDate)
+                .param(REQUIRED_DATE_PARAM, date.format(DateTimeFormatter.ISO_ZONED_DATE_TIME))
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().isOk)

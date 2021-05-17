@@ -199,9 +199,9 @@ class SettlementsControllerTest : ControllerTest() {
                 Pair("offset", listOf("0")),
                 Pair("limit", listOf("10")),
                 Pair("date_from", listOf(
-                    LocalDate.now(ZoneId.of("UTC"))
+                        ZonedDateTime.now(ZoneId.of("UTC"))
                         .minusDays((DefaultDtoConfiguration.getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1)
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE))))
+                        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME))))
         )
         mockMvc.perform(
             get("/enquiry/settlements")

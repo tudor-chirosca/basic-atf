@@ -16,7 +16,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -82,10 +82,11 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   @Override
   public List<DayCycleDto> getDayCyclesByDate(String product, ClientType clientType,
-      LocalDate date, boolean settled) {
+      ZonedDateTime date, boolean settled) {
     log.info("Fetching cycles by date from: {}", product);
 
-    List<DayCycle> cycles = repositoryFactory.getCycleRepository(product).findByDate(date)
+    List<DayCycle> cycles = repositoryFactory.getCycleRepository(product)
+        .findByDate(date)
         .stream()
         .filter(settled ? c -> !c.getStatus().equals(CycleStatus.OPEN) : c -> true)
         .collect(toList());

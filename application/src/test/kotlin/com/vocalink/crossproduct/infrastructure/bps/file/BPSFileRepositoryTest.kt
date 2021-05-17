@@ -17,6 +17,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.MediaType
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSFileRepository::class)
@@ -92,12 +96,11 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
                                 .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_FILE_RESULT_LIST_RESPONSE))
         )
-
         val request = FileEnquirySearchCriteria.builder()
                 .offset(0)
                 .limit(20)
-                .dateFrom(LocalDate.of(2021, 1, 3))
-                .dateTo(LocalDate.of(2021, 1, 4))
+                .dateFrom(ZonedDateTime.of(LocalDate.of(2021, 1, 3), LocalTime.MIN, ZoneId.of("UTC")))
+                .dateTo(ZonedDateTime.of(2021, Month.JANUARY.value, 4, 23, 59, 59, 0, ZoneId.of("UTC")))
                 .messageDirection("Sending")
                 .build()
 

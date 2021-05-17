@@ -11,7 +11,7 @@ import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
 import com.vocalink.crossproduct.ui.validations.ValidSort;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,8 +32,8 @@ public class FileEnquirySearchRequest {
   @Setter
   private List<String> sort;
   @ValidFromDate
-  private LocalDate dateFrom;
-  private LocalDate dateTo;
+  private ZonedDateTime dateFrom;
+  private ZonedDateTime dateTo;
   private String cycleId;
   @ValidDirection
   private String messageDirection;
@@ -47,11 +47,11 @@ public class FileEnquirySearchRequest {
   private String id;
 
   public void setDate_from(String dateFrom) {
-    this.dateFrom = LocalDate.parse(dateFrom);
+    this.dateFrom = ZonedDateTime.parse(dateFrom);
   }
 
   public void setDate_to(String dateTo) {
-    this.dateTo = LocalDate.parse(dateTo);
+    this.dateTo = ZonedDateTime.parse(dateTo);
   }
 
   public void setCycle_ids(List<String> cycleId) {

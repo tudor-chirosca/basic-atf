@@ -8,6 +8,7 @@ import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -64,7 +65,7 @@ public class ReferenceController implements ReferenceApi {
       final @RequestParam(value = "settled", required = false) boolean settled) {
 
     final List<DayCycleDto> cycleDto = referencesServiceFacade
-        .getDayCyclesByDate(context, clientType, LocalDate.parse(date), settled);
+        .getDayCyclesByDate(context, clientType, ZonedDateTime.parse(date), settled);
 
     return ResponseEntity.ok().body(cycleDto);
   }

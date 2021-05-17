@@ -10,6 +10,10 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,10 +25,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 class BatchesControllerTest : ControllerTest() {
 
@@ -68,9 +68,9 @@ class BatchesControllerTest : ControllerTest() {
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val dateTo = LocalDate.now(ZoneId.of("UTC")).minusDays(5)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ISO_DATE_TIME)
+        val dateTo = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5)
+                .format(DateTimeFormatter.ISO_DATE_TIME)
 
         `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
@@ -93,7 +93,7 @@ class BatchesControllerTest : ControllerTest() {
 
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
         `when`(batchesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/batches")
@@ -162,8 +162,8 @@ class BatchesControllerTest : ControllerTest() {
 
     @Test
     fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT from today`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC")).minusDays(
-                (getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
+                (getDefault(DtoProperties.DAYS_LIMIT).toLong()) + 1).format(DateTimeFormatter.ISO_DATE_TIME)
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)

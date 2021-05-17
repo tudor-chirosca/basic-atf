@@ -18,6 +18,7 @@ import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -63,7 +64,7 @@ public class BPSCycleRepository implements CycleRepository {
   }
 
   @Override
-  public List<DayCycle> findByDate(LocalDate date) {
+  public List<DayCycle> findByDate(ZonedDateTime date) {
     final BPSDayCycleRequest request = new BPSDayCycleRequest(bpsProperties.getSchemeCode(), date);
     return webClient.post()
         .uri(resolve(DAY_CYCLES_PATH, bpsProperties))

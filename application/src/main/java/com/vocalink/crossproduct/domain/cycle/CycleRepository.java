@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.domain.cycle;
 
 import com.vocalink.crossproduct.domain.CrossproductRepository;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface CycleRepository extends CrossproductRepository {
@@ -10,7 +10,7 @@ public interface CycleRepository extends CrossproductRepository {
 
   List<Cycle> findByIds(List<String> cycleIds);
 
-  List<DayCycle> findByDate(LocalDate date);
+  List<DayCycle> findByDate(ZonedDateTime date);
 
   List<Cycle> findLatest(int nrLatestCycles);
 }

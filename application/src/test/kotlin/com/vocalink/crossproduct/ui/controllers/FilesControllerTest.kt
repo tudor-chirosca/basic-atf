@@ -10,6 +10,10 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
+import java.io.ByteArrayInputStream
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -26,11 +30,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.togglz.junit5.AllDisabled
 import org.togglz.junit5.AllEnabled
-import java.io.ByteArrayInputStream
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
 
 class FilesControllerTest : ControllerTest() {
 
@@ -72,10 +71,10 @@ class FilesControllerTest : ControllerTest() {
 
     @Test
     fun `should return 200 when date_to, date_from and other params without cycle_ids are specified in request`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
-                .format(ofPattern("yyyy-MM-dd"))
-        val dateTo = LocalDate.now(ZoneId.of("UTC"))
-                .minusDays(5).format(ofPattern("yyyy-MM-dd"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC"))
+                .format(ISO_ZONED_DATE_TIME)
+        val dateTo = ZonedDateTime.now(ZoneId.of("UTC"))
+                .minusDays(5).format(ISO_ZONED_DATE_TIME)
 
         `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
@@ -98,8 +97,8 @@ class FilesControllerTest : ControllerTest() {
 
     @Test
     fun `should return 200 when cycle_ids and other params, without date_to are specified in request`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
-                .format(ofPattern("yyyy-MM-dd"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC"))
+                .format(ISO_ZONED_DATE_TIME)
         `when`(filesFacade.getPaginated(any(), any(), any()))
                 .thenReturn(PageDto(0, null))
         mockMvc.perform(get("/enquiry/files")
@@ -167,9 +166,9 @@ class FilesControllerTest : ControllerTest() {
 
     @Test
     fun `should fail with 400 when dateFrom is earlier than DAYS_LIMIT`() {
-        val dateFrom = LocalDate.now(ZoneId.of("UTC"))
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC"))
                 .minusDays((getDefault(DtoProperties.DAYS_LIMIT).toLong())+1)
-                .format(ofPattern("yyyy-MM-dd"))
+                .format(ISO_ZONED_DATE_TIME)
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)

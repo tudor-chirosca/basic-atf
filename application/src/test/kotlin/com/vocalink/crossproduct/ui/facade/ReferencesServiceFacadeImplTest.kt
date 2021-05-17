@@ -19,6 +19,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertNotNull
@@ -128,7 +129,7 @@ class ReferencesServiceFacadeImplTest {
 
     @Test
     fun `should get cycles by date`() {
-        val date = LocalDate.of(2020, 11, 3)
+        val date = ZonedDateTime.of(LocalDate.of(2020, 11, 3), LocalTime.MIN, ZoneId.of("UTC"))
         val cycles = listOf(DayCycle(
                 "cycleCode",
                 "sessionCode",
@@ -161,7 +162,7 @@ class ReferencesServiceFacadeImplTest {
 
     @Test
     fun `should filter remove OPEN cycles when settled`() {
-        val date = LocalDate.of(2020, 11, 3)
+        val date = ZonedDateTime.of(LocalDate.of(2020, 11, 3), LocalTime.MIN, ZoneId.of("UTC"))
         val cycles = listOf(DayCycle(
                 "cycleCode",
                 "sessionCode",

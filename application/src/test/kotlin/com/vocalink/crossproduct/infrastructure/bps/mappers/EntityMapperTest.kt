@@ -584,7 +584,7 @@ class EntityMapperTest {
         request.sort = listOf("sort")
         request.status = "status"
         request.id = "id"
-        request.setDate_to(LocalDate.now().toString())
+        request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
         request.setMsg_direction("sending")
         request.setMsg_type("msg_type")
         request.setParticipant_bic("participant_bic")
@@ -620,7 +620,7 @@ class EntityMapperTest {
         request.sort = listOf("sort")
         request.status = "status"
         request.id = "id"
-        request.setDate_to(LocalDate.now().toString())
+        request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
         request.setMsg_direction("msg_direction")
         request.setMsg_type("msg_type")
         request.setParticipant_bic("participant_bic")
@@ -671,7 +671,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map TransactionEnquirySearchCriteria fields`() {
-        val date = LocalDate.now()
+        val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val request = TransactionEnquirySearchRequest(
                 0, 0, listOf("sortBy"), date, date, date,
                 "cycleName",

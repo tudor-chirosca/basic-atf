@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
@@ -63,7 +64,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
-        val older = LocalDate.now(ZoneId.of("UTC")).minusDays(
+        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString()
         request.setDate_from(older)
 

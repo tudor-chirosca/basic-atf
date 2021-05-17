@@ -9,13 +9,17 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.time.LocalDate
 
 @BPSTestConfiguration
 @Import(BPSBatchRepository::class)
@@ -86,8 +90,11 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(VALID_BATCH_RESULT_LIST_RESPONSE)))
 
+
         val request = BatchEnquirySearchCriteria(
-                0, 20, LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 4),
+                0, 20,
+                ZonedDateTime.of(LocalDate.of(2021, 1, 3), LocalTime.MIN, ZoneId.of("UTC")),
+                ZonedDateTime.of(2021, Month.JANUARY.value, 4, 23, 59, 59, 0, ZoneId.of("UTC")),
                 null, "Sending", null,  null, null,
                 null, null, listOf())
 

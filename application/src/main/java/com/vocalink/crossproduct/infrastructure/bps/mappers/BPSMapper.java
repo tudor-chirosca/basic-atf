@@ -75,8 +75,8 @@ public interface BPSMapper {
   BPSParticipantsSearchRequest toBps(String connectingParty, String participantType);
 
   @Mappings({
-      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
-      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "createdFromDate", source = "dateFrom"),
+      @Mapping(target = "createdToDate", source = "dateTo"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "identifier", source = "id"),
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapBatchSortParams")
@@ -109,8 +109,8 @@ public interface BPSMapper {
   }
 
   @Mappings({
-      @Mapping(target = "createdFromDate", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
-      @Mapping(target = "createdToDate", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "createdFromDate", source = "dateFrom"),
+      @Mapping(target = "createdToDate", source = "dateTo"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "identifier", source = "id"),
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapFileSortParams")
@@ -137,26 +137,14 @@ public interface BPSMapper {
     }
   }
 
-  @Named("toZonedDateTimeConverter-SOD")
-  default ZonedDateTime toZonedDateTimeSOD(LocalDate localDate) {
-    return localDate == null ? null : ZonedDateTime.of(localDate, LocalTime.MIN, ZoneId.of("UTC"));
-  }
-
-  @Named("toZonedDateTimeConverter-EOD")
-  default ZonedDateTime toZonedDateTimeEOD(LocalDate localDate) {
-    return localDate == null ? null : ZonedDateTime.of(localDate, LocalTime.of(23, 59, 59), ZoneId.of("UTC"));
-  }
-
   @Named("mapFileSortParams")
   default List<BPSSortingQuery> mapFileSortParams(List<String> sortParams) {
     return map(sortParams, getFileSearchRequestSortParams());
   }
 
   @Mappings({
-      @Mapping(target = "createdDateFrom", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
-      @Mapping(target = "createdDateTo", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
-      @Mapping(target = "cycleDay", source = "cycleDay", qualifiedByName = "toZonedDateTimeConverter-EOD"),
-      @Mapping(target = "valueDate", source = "valueDate", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "createdDateFrom", source = "dateFrom"),
+      @Mapping(target = "createdDateTo", source = "dateTo"),
       @Mapping(target = "sendingParticipant", source = "sendingBic"),
       @Mapping(target = "receivingParticipant", source = "receivingBic"),
       @Mapping(target = "instructionIdentifier", source = "id"),
@@ -202,9 +190,7 @@ public interface BPSMapper {
   @Mappings({
       @Mapping(target = "participants", source = "participants", qualifiedByName = "mapParticipants"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapSettlementSortParams"),
-      @Mapping(target = "dateFrom", source = "dateFrom", qualifiedByName = "toZonedDateTimeConverter-SOD"),
-      @Mapping(target = "dateTo", source = "dateTo", qualifiedByName = "toZonedDateTimeConverter-EOD"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapSettlementSortParams")
   })
   BPSSettlementEnquiryRequest toBps(SettlementEnquirySearchCriteria criteria);
 
