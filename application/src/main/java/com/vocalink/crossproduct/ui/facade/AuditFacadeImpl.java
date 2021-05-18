@@ -2,18 +2,17 @@ package com.vocalink.crossproduct.ui.facade;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
-import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.AuditSearchRequest;
 import com.vocalink.crossproduct.domain.audit.Event;
-import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
+import com.vocalink.crossproduct.ui.aspects.EventType;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
@@ -24,7 +23,6 @@ import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -61,23 +59,14 @@ public class AuditFacadeImpl implements AuditFacade {
     Page<AuditDetails> details = repositoryFactory.getAuditDetailsRepository(product)
         .getAuditDetailsByParameters(auditSearchRequest);
 
-    final List<UUID> activityIds = details.getItems().stream().map(AuditDetails::getActivityId)
-        .collect(toList());
-
-    final List<UserActivity> activities = repositoryFactory.getUserActivityRepository(product)
-        .getActivitiesByIds(activityIds);
-
     return presenterFactory.getPresenter(clientType)
-        .presentAuditDetails(details, activities);
+        .presentAuditDetails(details);
   }
 
   @Override
   public List<String> getEventTypes(String product, ClientType clientType) {
-    List<String> events = repositoryFactory.getUserActivityRepository(product)
-        .getEventTypes();
-
     return presenterFactory.getPresenter(clientType)
-        .presentEvents(events);
+        .presentEvents(EventType.getEventsList());
   }
 
   @Override
@@ -93,7 +82,9 @@ public class AuditFacadeImpl implements AuditFacade {
         .map(MAPPER::toEntity)
         .findFirst()
         .orElseThrow(() -> new EntityNotFoundException(
-            "No user details found by id: " + occurringEvent.getUserId()));
+            "No user details found matching: " + occurringEvent.getParticipantId()
+                + " and "
+                + occurringEvent.getUserId()));
 
     repositoryFactory.getAuditDetailsRepository(event.getProduct())
         .logOperation(event, userDetails);

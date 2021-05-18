@@ -18,7 +18,6 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
-import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -59,7 +58,6 @@ import com.vocalink.crossproduct.ui.dto.approval.ApprovalDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDetailsDto;
 import com.vocalink.crossproduct.ui.dto.audit.AuditDto;
 import com.vocalink.crossproduct.ui.dto.audit.ParticipantDetailsDto;
-import com.vocalink.crossproduct.ui.dto.audit.UserActivityDto;
 import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -523,22 +521,12 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details,
-      List<UserActivity> activities) {
-
-    final List<UserActivityDto> dtoActivities = activities.stream().map(MAPPER::toDto)
-        .collect(toList());
-
+  public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details) {
     final List<AuditDto> dtoDetails = details.getItems().stream()
         .map(MAPPER::toDto)
-        .peek(d -> d.setEventType(
-            dtoActivities.stream()
-                .filter(a -> a.getId().equals(d.getActivityId()))
-                .map(UserActivityDto::getName)
-                .findFirst()
-                .orElse(null)))
-        .peek(d -> d.prefixServiceId(serviceIdPrefix + HYPHEN_DELIMITER))
         .collect(toList());
+
+    dtoDetails.forEach(d -> d.prefixServiceId(serviceIdPrefix + HYPHEN_DELIMITER));
 
     return new PageDto<>(details.getTotalResults(), dtoDetails);
   }
@@ -551,7 +539,7 @@ public class UIPresenter implements Presenter {
   @Override
   public AuditDetailsDto presentAuditDetails(AuditDetails request, AuditDetails response,
       Participant participant) {
-    final EventType eventType = getEventByDescription(request.getUserActivityString());
+    final EventType eventType = getEventByDescription(request.getActivityName());
 
     final Object content = contentUtils
         .toObject(request.getContents(), eventType);

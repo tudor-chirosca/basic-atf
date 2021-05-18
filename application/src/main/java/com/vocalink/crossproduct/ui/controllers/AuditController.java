@@ -29,13 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuditController implements AuditApi {
 
   public static final String CLIENT_TYPE_HEADER = "client-type";
+  public static final String CONTEXT_HEADER = "context";
 
   private final AuditFacade auditFacade;
 
   @GetMapping(value = "/reference/audit/users", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<UserDetailsDto>> getUsers(
       @RequestHeader(CLIENT_TYPE_HEADER) final ClientType clientType,
-      @RequestHeader final String context,
+      @RequestHeader(CONTEXT_HEADER) final String context,
       final String participantId) {
 
     List<UserDetailsDto> users = auditFacade.getUserDetails(context, clientType, participantId);
@@ -46,7 +47,7 @@ public class AuditController implements AuditApi {
   @GetMapping(value = "/reference/audit/events", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<String>> getEvents(
       @RequestHeader(CLIENT_TYPE_HEADER) final ClientType clientType,
-      @RequestHeader final String context) {
+      @RequestHeader(CONTEXT_HEADER) final String context) {
 
     List<String> events = auditFacade.getEventTypes(context, clientType);
 
@@ -57,7 +58,7 @@ public class AuditController implements AuditApi {
   @GetMapping(value = "/audits", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<AuditDto>> getAuditLog(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
-      @RequestHeader final String context,
+      @RequestHeader(CONTEXT_HEADER) final String context,
       final AuditRequestParams parameters,
       final HttpServletRequest httpServletRequest) {
 
@@ -70,7 +71,7 @@ public class AuditController implements AuditApi {
   @GetMapping(value = "/audits/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AuditDetailsDto> getAuditDetails(
       @RequestHeader(CLIENT_TYPE_HEADER) ClientType clientType,
-      @RequestHeader final String context,
+      @RequestHeader(CONTEXT_HEADER) final String context,
       @PathVariable final String id,
       final HttpServletRequest httpServletRequest) {
 

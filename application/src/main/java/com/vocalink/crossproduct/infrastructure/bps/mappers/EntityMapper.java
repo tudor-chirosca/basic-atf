@@ -26,7 +26,6 @@ import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import com.vocalink.crossproduct.domain.audit.AuditSearchRequest;
 import com.vocalink.crossproduct.domain.audit.Event;
-import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
@@ -119,7 +118,6 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSche
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsJpa;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsView;
 import com.vocalink.crossproduct.infrastructure.jpa.audit.UserDetailsView;
@@ -531,12 +529,7 @@ public interface EntityMapper {
     return new Page<>(result.getSummary().getTotalCount(), targetItems);
   }
 
-  @Mappings({
-      @Mapping(target = "activityId", source = "activityId.id")
-  })
   AuditDetails toEntity(AuditDetailsJpa details);
-
-  UserActivity toEntity(UserActivityJpa activityJpa);
 
   AuditSearchRequest toEntity(AuditRequestParams parameters);
 

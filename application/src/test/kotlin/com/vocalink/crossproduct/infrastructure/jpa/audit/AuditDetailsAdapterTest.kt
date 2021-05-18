@@ -5,7 +5,6 @@ import com.vocalink.crossproduct.domain.audit.Event
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
@@ -16,17 +15,14 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory
+import java.time.Clock
 import java.util.*
-import javax.persistence.EntityManager
-import javax.persistence.TypedQuery
 
 open class AuditDetailsAdapterTest {
 
     private val repositoryJpa = mock(AuditDetailsRepositoryJpa::class.java)
-    private val entityManager = mock(EntityManager::class.java)
-    private val typedQuery = mock(TypedQuery::class.java) as TypedQuery<UserActivityJpa>
 
-    private val adapter = AuditDetailsAdapter(entityManager, repositoryJpa)
+    private val adapter = AuditDetailsAdapter(repositoryJpa, Clock.systemUTC())
 
     companion object {
         private var PARTICIPANT_ID = "anyId"
@@ -39,12 +35,10 @@ open class AuditDetailsAdapterTest {
                 .id(id)
                 .build()
 
-        val event = Event("product", "client", "any", "any", "any", "any", "any", "any", "any")
-        val userDetails = UserDetails.builder()
+        private val event = Event("product", "client", "any", "any", "any", "any", "any", "any", "any")
+        private val userDetails = UserDetails.builder()
                 .userId("any")
                 .build()
-
-        const val QUERY_BY_NAME = "select activity from UserActivityJpa as activity where activity.name = :eventName"
     }
 
     @Test
@@ -68,19 +62,7 @@ open class AuditDetailsAdapterTest {
     }
 
     @Test
-    fun `should throw exception if user activity not found by name`() {
-        `when`(entityManager.createQuery(QUERY_BY_NAME, UserActivityJpa::class.java)).thenReturn(typedQuery)
-
-        assertThatExceptionOfType(EntityNotFoundException::class.java).isThrownBy { adapter.logOperation(event, userDetails) }
-    }
-
-    @Test
     fun `should log operation with success`() {
-        val activity = UserActivityJpa.builder().id(UUID.randomUUID()).build()
-
-        `when`(entityManager.createQuery(QUERY_BY_NAME, UserActivityJpa::class.java)).thenReturn(typedQuery)
-        `when`(typedQuery.singleResult).thenReturn(activity)
-
         adapter.logOperation(event, userDetails)
 
         verify(repositoryJpa, atLeastOnce()).save(any())

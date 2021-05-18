@@ -11,16 +11,10 @@ import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
-import com.vocalink.crossproduct.infrastructure.jpa.activities.UserActivityJpa;
-import java.time.ZoneId;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -30,14 +24,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuditDetailsAdapter implements AuditDetailsRepository {
 
-  public static final String ZONE_ID_UTC = "UTC";
-  public static final String QUERY_BY_NAME = "select activity from UserActivityJpa as activity where activity.name = :eventName";
-  public static final String EVENT_NAME_USER_ACTIVITY = "eventName";
   public static final String CUSTOMER = "P27-SEK";
 
-  @PersistenceContext
-  private final EntityManager entityManager;
   private final AuditDetailsRepositoryJpa auditDetailsRepository;
+  private final Clock clock;
 
   @Override
   public List<AuditDetails> getAuditDetailsByParticipantId(String participantId) {
@@ -84,20 +74,14 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
   }
 
   public void logOperation(Event event, UserDetails userDetails) {
-    final String eventName = event.getEventType();
-
-    final UserActivityJpa activity = findActivityByName(eventName)
-        .orElseThrow(() -> new EntityNotFoundException(
-            "User activity not found for event name: " + eventName));
 
     final AuditDetailsJpa detailsJpa = AuditDetailsJpa.builder()
         .id(UUID.randomUUID())
-        .activityId(activity)
-        .timestamp(ZonedDateTime.now(ZoneId.of(ZONE_ID_UTC)))
+        .activityName(event.getEventType())
+        .timestamp(ZonedDateTime.now(clock))
         .correlationId(event.getCorrelationId())
         .requestOrResponseEnum(event.getOperationType())
         .channel(event.getClient())
-        .userActivityString(eventName)
         .requestUrl(event.getRequestUrl())
         .contents(event.getContent())
         .participantId(event.getParticipantId())
@@ -132,18 +116,6 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
     return auditDetailsRepository.findByCorrelationId(id).stream()
         .map(MAPPER::toEntity)
         .collect(toList());
-  }
-
-  private Optional<UserActivityJpa> findActivityByName(String eventName) {
-    final TypedQuery<UserActivityJpa> query = entityManager
-        .createQuery(QUERY_BY_NAME, UserActivityJpa.class);
-    query.setParameter(EVENT_NAME_USER_ACTIVITY, eventName);
-
-    try {
-      return Optional.ofNullable(query.getSingleResult());
-    } catch (PersistenceException e) {
-      return Optional.empty();
-    }
   }
 
   @Override

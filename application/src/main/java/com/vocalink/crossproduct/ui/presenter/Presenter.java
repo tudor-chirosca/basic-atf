@@ -8,7 +8,6 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
-import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -184,8 +183,7 @@ public interface Presenter {
 
   List<UserDetailsDto> presentUserDetails(List<AuditDetails> details);
 
-  PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details,
-      List<UserActivity> activities);
+  PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details);
 
   List<String> presentEvents(List<String> events);
 

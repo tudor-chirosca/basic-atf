@@ -25,7 +25,7 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
 
   @Query("SELECT"
       + "    a.id AS id,"
-      + "    a.activityId.id AS activityId,"
+      + "    a.activityName.id AS activityName,"
       + "    a.serviceId AS serviceId,"
       + "    a.timestamp AS timestamp,"
       + "    a.correlationId AS correlationId,"
@@ -44,7 +44,7 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
       + "    AND (:dateTo IS NULL OR a.timestamp < :dateTo)"
       + "    AND (:participantId IS NULL OR a.participantId = :participantId)"
       + "    AND (:userId IS NULL OR a.username = :userId)"
-      + "    AND (COALESCE(:events) IS NULL OR a.userActivityString IN :events)"
+      + "    AND (COALESCE(:events) IS NULL OR a.activityName IN :events)"
       + "    AND (:responseContent IS NULL OR b.contents = :responseContent)")
 
   Page<AuditDetailsView> getAllByParameters(ZonedDateTime dateFrom, ZonedDateTime dateTo,

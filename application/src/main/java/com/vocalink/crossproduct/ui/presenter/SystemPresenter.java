@@ -8,7 +8,6 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.audit.AuditDetails;
-import com.vocalink.crossproduct.domain.audit.UserActivity;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.broadcasts.Broadcast;
@@ -302,8 +301,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details,
-      List<UserActivity> activities) {
+  public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details) {
     throw new RuntimeException("System API not implemented yet");
   }
 

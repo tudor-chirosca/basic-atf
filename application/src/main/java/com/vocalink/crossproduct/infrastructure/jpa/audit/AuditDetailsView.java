@@ -7,7 +7,7 @@ public interface AuditDetailsView {
 
   UUID getId();
 
-  UUID getActivityId();
+  String getActivityName();
 
   String getServiceId();
 

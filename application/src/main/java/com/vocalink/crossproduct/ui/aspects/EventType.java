@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects;
 
+import static java.util.Arrays.stream;
+
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
@@ -12,7 +14,8 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
-
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -57,4 +60,10 @@ public enum EventType {
   REJECT_PTT_CONFIG_AMENDMENT(Object.class);
 
   private final Class<?> requestType;
+
+  public static List<String> getEventsList() {
+    return stream(EventType.values())
+        .map(Enum::name)
+        .collect(Collectors.toList());
+  }
 }

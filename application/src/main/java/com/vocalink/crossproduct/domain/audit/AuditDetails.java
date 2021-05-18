@@ -12,7 +12,7 @@ import lombok.Getter;
 public class AuditDetails {
 
   private final UUID id;
-  private final UUID activityId;
+  private final String activityName;
   private final ZonedDateTime timestamp;
   private final String customer;
   private final String ipsSuiteApplicationName;
@@ -21,7 +21,6 @@ public class AuditDetails {
   private final String username;
   private final String employerOrRepresentation;
   private final String userRoleList;
-  private final String userActivityString;
   private final String correlationId;
   private final Long serviceId;
   private final String approvalRequestId;
