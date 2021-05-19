@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class BPSIOSummary {
+public class BPSIOTransactionSummary {
 
   private final String messageType;
   private final Integer submitted;
@@ -16,7 +16,8 @@ public class BPSIOSummary {
   private final Integer output;
   private final BPSAmount amountOutput;
 
-  public BPSIOSummary(@JsonProperty(value = "messageType", required = true) String messageType,
+  public BPSIOTransactionSummary(
+      @JsonProperty(value = "messageType", required = true) String messageType,
       @JsonProperty(value = "submitted", required = true) Integer submitted,
       @JsonProperty(value = "accepted", required = true) Integer accepted,
       @JsonProperty(value = "amountAccepted") BPSAmount amountAccepted,

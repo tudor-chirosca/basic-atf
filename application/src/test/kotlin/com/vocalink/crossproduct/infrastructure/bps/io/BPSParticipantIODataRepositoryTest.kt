@@ -55,6 +55,7 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
             "files": {
                 "submitted": 1,
                 "accepted": 1,
+                "output": 1,
                 "rejected": "0.00%"
             },
             "batches": [
@@ -62,136 +63,64 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
                     "messageType": "Pacs.008",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Pacs.004",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Pacs.002",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Camt.056",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Camt.029 v3",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Camt.029 v8",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Camt.087",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Camt.027",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 },
                 {
                     "messageType": "Admi.004",
                     "submitted": 100,
                     "accepted": 100,
-                    "amountAccepted": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    },
                     "rejected": "2.31%",
-                    "output": 231,
-                    "amountOutput": {
-                        "amount": 2145.41,
-                        "currency": "SEK"
-                    }
+                    "output": 231
                 }
             ],
             "transactions": [
@@ -355,7 +284,7 @@ class BPSParticipantIODataRepositoryTest @Autowired constructor(var client: BPSP
         assertEquals(1, result.files.accepted)
         assertEquals(0.0, result.files.rejected)
         assertEquals(1, result.files.submitted)
-        assertEquals(2, result.files.output)
+        assertEquals(1, result.files.output)
         assertEquals(9, result.transactions.size)
         assertEquals(9, result.batches.size)
     }

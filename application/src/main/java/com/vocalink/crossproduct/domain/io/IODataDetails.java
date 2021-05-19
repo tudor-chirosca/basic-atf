@@ -11,6 +11,6 @@ public class IODataDetails {
 
   private final Integer submitted;
   private final Integer accepted;
-  private final Integer output;
   private final Double rejected;
+  private final Integer output;
 }

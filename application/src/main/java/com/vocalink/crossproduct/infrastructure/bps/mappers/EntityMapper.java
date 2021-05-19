@@ -94,10 +94,11 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOBatchSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODashboard;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
-import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOSummary;
+import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
@@ -105,7 +106,6 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantCo
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
-import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference.BPSReasonCode;
@@ -201,15 +201,14 @@ public interface EntityMapper {
   IntraDayPositionGross toEntity(BPSIntraDayPositionGross intraDayPositionGross);
 
   @Mappings({
-      @Mapping(target = "files.output", expression = "java(bPSIODataDetails.getAccepted() + bPSIODataDetails.getSubmitted())"),
-      @Mapping(target = "files.rejected", expression = "java(Double.valueOf(bPSIODataDetails.getRejected().replace(\"%\", \"\")))"),
+      @Mapping(target = "files.rejected", expression = "java(Double.valueOf(bPSIOFileSummary.getRejected().replace(\"%\", \"\")))"),
       @Mapping(target = "batches", source = "batches", qualifiedByName = "mapBatches"),
       @Mapping(target = "transactions", source = "transactions", qualifiedByName = "mapTransactions")
   })
   IODetails toEntity(BPSIODetails ioDetails);
 
   @Named("mapBatches")
-  default List<IOBatchesMessageTypes> mapBatches(List<BPSIOSummary> batches) {
+  default List<IOBatchesMessageTypes> mapBatches(List<BPSIOBatchSummary> batches) {
     if (batches == null) {
       return Collections.emptyList();
     }
@@ -220,13 +219,14 @@ public interface EntityMapper {
             new IODataDetails(
                 e.getSubmitted(),
                 e.getAccepted(),
-                e.getOutput(),
-                Double.valueOf(e.getRejected().replaceAll("%", "")))))
+                Double.valueOf(e.getRejected().replaceAll("%", "")),
+                e.getOutput())))
         .collect(toList());
   }
 
   @Named("mapTransactions")
-  default List<IOTransactionsMessageTypes> mapTransactions(List<BPSIOSummary> transactions) {
+  default List<IOTransactionsMessageTypes> mapTransactions(
+      List<BPSIOTransactionSummary> transactions) {
     if (transactions == null) {
       return Collections.emptyList();
     }
@@ -268,7 +268,8 @@ public interface EntityMapper {
   }
 
   default List<ParticipantPosition> toEntity(BPSSettlementPositionWrapper positionsWrapper) {
-    return positionsWrapper.getMlSettlementPositions().stream().map(this::toEntity).collect(toList());
+    return positionsWrapper.getMlSettlementPositions().stream().map(this::toEntity)
+        .collect(toList());
   }
 
   ParticipantPosition toEntity(BPSSettlementPosition position);
@@ -412,7 +413,8 @@ public interface EntityMapper {
   })
   Approval toEntity(BPSApproval approval);
 
-  ApprovalConfirmationResponse toEntity(BPSApprovalConfirmationResponse approvalConfirmationResponse);
+  ApprovalConfirmationResponse toEntity(
+      BPSApprovalConfirmationResponse approvalConfirmationResponse);
 
   @Named("convertApprovalStatus")
   default ApprovalStatus convertApprovalStatus(BPSApprovalStatus bpsApprovalStatus) {
@@ -420,7 +422,8 @@ public interface EntityMapper {
   }
 
   @Named("convertBpsApprovalRequestType")
-  default ApprovalRequestType convertBpsApprovalRequestType(BPSApprovalRequestType bpsApprovalRequestType) {
+  default ApprovalRequestType convertBpsApprovalRequestType(
+      BPSApprovalRequestType bpsApprovalRequestType) {
     return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
   }
 
@@ -479,7 +482,8 @@ public interface EntityMapper {
           try {
             return method.invoke(this, obj);
           } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new InfrastructureException(e.getCause(), "DataTransferObject mapping exception!");
+            throw new InfrastructureException(e.getCause(),
+                "DataTransferObject mapping exception!");
           }
         })
         .map(targetType::cast)
@@ -489,9 +493,9 @@ public interface EntityMapper {
   }
 
   @Mappings({
-   @Mapping(target = "batchId", source = "messageIdentifier"),
-   @Mapping(target = "createdAt", source = "createdDateTime"),
-   @Mapping(target = "senderBic", source = "originator")
+      @Mapping(target = "batchId", source = "messageIdentifier"),
+      @Mapping(target = "createdAt", source = "createdDateTime"),
+      @Mapping(target = "senderBic", source = "originator")
   })
   Batch toEntity(BPSBatchPart partialBatch);
 
@@ -517,7 +521,8 @@ public interface EntityMapper {
           try {
             return method.invoke(this, obj);
           } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new InfrastructureException(e.getCause(), "DataTransferObject mapping exception!");
+            throw new InfrastructureException(e.getCause(),
+                "DataTransferObject mapping exception!");
           }
         })
         .map(targetType::cast)
