@@ -33,11 +33,11 @@ public class AuditRequestParams {
   private List<String> sort;
 
   public void setDate_from(String dateFrom) {
-    this.dateFrom = ZonedDateTime.of(LocalDate.parse(dateFrom), LocalTime.MIN, ZoneId.of("UTC"));
+    this.dateFrom = ZonedDateTime.parse(dateFrom);
   }
 
   public void setDate_to(String dateTo) {
-    this.dateTo = ZonedDateTime.of(LocalDate.parse(dateTo), LocalTime.MAX, ZoneId.of("UTC"));
+    this.dateTo = ZonedDateTime.parse(dateTo);
   }
 
   public void setEvent_types(List<String> events) {
