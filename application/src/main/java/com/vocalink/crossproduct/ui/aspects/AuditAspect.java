@@ -3,13 +3,13 @@ package com.vocalink.crossproduct.ui.aspects;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.REQUEST;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
 import static com.vocalink.crossproduct.ui.aspects.Positions.POSITION_NOT_SET;
+import static java.lang.Boolean.valueOf;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,7 @@ public class AuditAspect {
   public static final String RESPONSE_FAILURE = "NOK";
   public static final String X_USER_ID_HEADER = "x-user-id";
   public static final String X_PARTICIPANT_ID_HEADER = "x-participant-id";
+  public static final String X_POLLING_UI_HEADER = "x-polling-ui";
 
   @Value("${app.logging.correlation.mdc}")
   private String mdcKey;
@@ -41,9 +42,14 @@ public class AuditAspect {
 
   @Around(value = "@annotation(auditable)")
   Object log(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
+    final Optional<HttpServletRequest> request = getHttpRequest(joinPoint, auditable);
+
+    if (isPolling(request)) {
+      return joinPoint.proceed();
+    }
+
     final String client = getClientType(joinPoint, auditable);
     final String product = getProduct(joinPoint, auditable);
-    final Optional<HttpServletRequest> request = getHttpRequest(joinPoint, auditable);
     final String jsonString = getContent(joinPoint, auditable);
 
     final EventType eventType = auditable.type();
@@ -81,6 +87,11 @@ public class AuditAspect {
 
       throw throwable;
     }
+  }
+
+  private boolean isPolling(Optional<HttpServletRequest> request) {
+    return request.map(r -> valueOf(r.getHeader(X_POLLING_UI_HEADER)))
+        .orElse(false);
   }
 
   protected String getContent(ProceedingJoinPoint joinPoint, Auditable auditable) {

@@ -19,7 +19,7 @@ import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import java.util.Optional
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 class AuditAspectTest {
@@ -32,6 +32,7 @@ class AuditAspectTest {
     private companion object {
         const val PRODUCT = "BPS"
         const val USER_ID = "User_ID"
+        const val IS_POLLING = "true"
         const val PARTICIPANT_ID = "Participant_ID"
         const val REQUEST_URL = "http://hostname"
         val CLIENT_TYPE = SYSTEM
@@ -175,6 +176,19 @@ class AuditAspectTest {
         assertEvent(requestEvent)
         assertThat(responseEvent.operationType).isEqualTo(OPERATION_TYPE_RESPONSE)
         assertThat(responseEvent.content).isEqualTo(AuditAspect.RESPONSE_FAILURE)
+    }
+
+    @Test
+    fun `should not log if isPolling = true`() {
+        val request = mock(HttpServletRequest::class.java)
+
+        `when`(auditAspect.getHttpRequest(joinPoint, auditable)).thenReturn(Optional.of(request))
+        `when`(request.getHeader(AuditAspect.X_POLLING_UI_HEADER)).thenReturn(IS_POLLING)
+        doCallRealMethod().`when`(auditAspect).log(joinPoint, auditable)
+
+        auditAspect.log(joinPoint, auditable)
+
+        verify(joinPoint).proceed()
     }
 
     private fun prepareEvent(): AuditFacade {
