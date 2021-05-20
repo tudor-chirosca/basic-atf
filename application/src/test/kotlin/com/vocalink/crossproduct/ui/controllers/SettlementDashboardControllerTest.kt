@@ -14,12 +14,15 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest
 import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import java.math.BigDecimal
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -96,62 +99,7 @@ open class SettlementDashboardControllerTest {
                     "netPosition":0
                  }
               }
-           ],
-           "settlementDetails": {
-              "participant":{
-                "id":"NDEASESSXXX",
-                "bic":"NDEASESSXXX",
-                "name":"Nordea",
-                "fundingBic":"NA",
-                "status":"ACTIVE",
-                "suspendedTime":null,
-                "participantType":"DIRECT"
-              },
-              "currentCycle":{
-                "id":"02",
-                "settlementTime":"2019-12-10T15:10:00Z",
-                "cutOffTime":"2019-12-10T12:10:00Z",
-                "status":"OPEN"
-              },
-              "previousCycle":{
-                "id":"01",
-                "settlementTime":"2019-12-10T12:10:00Z",
-                "cutOffTime":"2019-12-10T10:10:00Z",
-                "status":"COMPLETED"
-              },
-              "currentPosition":{
-                 "customerCreditTransfer":{
-                  "credit":1,
-                  "debit":10,
-                  "netPosition":9
-                 },
-                 "paymentReturn":{
-                  "credit":10,
-                  "debit":10,
-                  "netPosition":0
-                }
-              },
-              "previousPosition":{
-                 "customerCreditTransfer":{
-                   "credit":0,
-                   "debit":1,
-                   "netPosition":1
-                },
-                 "paymentReturn":{
-                   "credit":10,
-                   "debit":1,
-                   "netPosition":10
-                }
-              },
-              "previousPositionTotals":{
-                "totalCredit":0,
-                "totalDebit":0
-              },
-              "currentPositionTotals":{
-                "totalCredit":10,
-                "totalDebit":10
-             }
-           }
+           ]
         }
         """
     }
@@ -212,54 +160,18 @@ open class SettlementDashboardControllerTest {
                         .participant(participant2)
                         .build()
         )
-        val currentPositionDetails = PositionDetailsDto(
-            ParticipantPositionDto.builder()
-                .credit(BigDecimal.ONE)
-                .debit(BigDecimal.TEN)
-                .netPosition(BigDecimal.valueOf(9))
-                .build(),
-            ParticipantPositionDto.builder()
-                .credit(BigDecimal.TEN)
-                .debit(BigDecimal.TEN)
-                .netPosition(BigDecimal.ZERO)
-                .build()
-        )
-        val previousPositionDetails = PositionDetailsDto(
-            ParticipantPositionDto.builder()
-                .credit(BigDecimal.ZERO)
-                .debit(BigDecimal.ONE)
-                .netPosition(BigDecimal.ONE)
-                .build(),
-            ParticipantPositionDto.builder()
-                .credit(BigDecimal.TEN)
-                .debit(BigDecimal.ONE)
-                .netPosition(BigDecimal.TEN)
-                .build()
-        )
-        val currentPositionTotals = PositionDetailsTotalsDto(BigDecimal.TEN, BigDecimal.TEN)
-        val previousPositionTotals = PositionDetailsTotalsDto(BigDecimal.ZERO, BigDecimal.ZERO)
-        val settlementDetails = ParticipantDashboardSettlementDetailsDto.builder()
-            .participant(participant1)
-            .currentCycle(currentCycle)
-            .previousCycle(previousCycle)
-            .currentPosition(currentPositionDetails)
-            .previousPosition(previousPositionDetails)
-            .currentPositionTotals(currentPositionTotals)
-            .previousPositionTotals(previousPositionTotals)
-            .build()
         val dto = SettlementDashboardDto.builder()
-                .previousCycle(previousCycle)
-                .currentCycle(currentCycle)
-                .positions(totalPositions)
-                .settlementDetails(settlementDetails)
-                .build()
-        `when`(settlementDashboardFacade.getParticipantSettlement(TestConstants.CONTEXT, ClientType.UI, null))
-                .thenReturn(dto)
+            .previousCycle(previousCycle)
+            .currentCycle(currentCycle)
+            .positions(totalPositions)
+            .build()
+        `when`(settlementDashboardFacade.getParticipantSettlement(eq(TestConstants.CONTEXT), eq(ClientType.UI), any()))
+            .thenReturn(dto)
         mockMvc.perform(get("/settlement")
-                .header("context", TestConstants.CONTEXT)
-                .header("client-type", TestConstants.CLIENT_TYPE))
-                .andExpect(status().isOk)
-                .andExpect(content().json(VALID_SETTLEMENT_RESPONSE))
+            .header("context", TestConstants.CONTEXT)
+            .header("client-type", TestConstants.CLIENT_TYPE))
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_SETTLEMENT_RESPONSE))
     }
 
     @Test

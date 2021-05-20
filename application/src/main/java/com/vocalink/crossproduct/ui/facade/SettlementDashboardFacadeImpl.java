@@ -13,6 +13,7 @@ import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundExceptio
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest;
 import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
@@ -29,16 +30,14 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
 
   @Override
   public SettlementDashboardDto getParticipantSettlement(String product, ClientType clientType,
-      String fundingParticipantId) {
+      SettlementDashboardRequest settlementDashboardRequest) {
 
     List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
+    final String fundingParticipantId = settlementDashboardRequest.getFundingParticipantId();
 
     if (nonNull(fundingParticipantId)) {
       Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(fundingParticipantId);
-
-      List<ParticipantPosition> positions = repositoryFactory.getPositionRepository(product)
-              .findByParticipantId(fundingParticipantId);
 
       List<Participant> participants = repositoryFactory.getParticipantRepository(product)
           .findByConnectingPartyAndType(fundingParticipantId,
@@ -49,7 +48,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
           .findById(fundingParticipantId);
 
       return presenterFactory.getPresenter(clientType)
-          .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, positions, intraDays);
+          .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
     }
 
     List<Participant> participants = repositoryFactory.getParticipantRepository(product)

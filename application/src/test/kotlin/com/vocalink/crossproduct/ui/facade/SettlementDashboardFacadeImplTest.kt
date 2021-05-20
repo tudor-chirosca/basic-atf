@@ -19,6 +19,7 @@ import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataExcep
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest
 import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
@@ -76,6 +77,7 @@ open class SettlementDashboardFacadeImplTest {
     @Test
     fun `should get settlement dto by participant id`() {
         val participantId = "NDEASESSXXX"
+        val settlementRequest = SettlementDashboardRequest(participantId)
         val fundedParticipantId = MockParticipants().getParticipant(false).id
         val mockModel = SettlementDashboardDto.builder().build()
         val intraDay = IntraDayPositionGross(
@@ -96,18 +98,19 @@ open class SettlementDashboardFacadeImplTest {
         `when`(intraDayPositionGrossRepository
                 .findById(fundedParticipantId))
                 .thenReturn(listOf(intraDay))
-        `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any(), any()))
+        `when`(uiPresenter.presentFundingParticipantSettlement(any(), any(), any(), any()))
                 .thenReturn(mockModel)
 
-        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, participantId)
+        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, settlementRequest)
 
         verify(intraDayPositionGrossRepository, atLeastOnce()).findById(any())
-        verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any(), any())
+        verify(uiPresenter, atLeastOnce()).presentFundingParticipantSettlement(any(), any(), any(), any())
 
     }
 
     @Test
     fun `should accept cycles with less than 2 elements`() {
+        val settlementRequest = SettlementDashboardRequest(null)
         `when`(participantRepository.findAll())
                 .thenReturn(Page(2, MockParticipants().participants))
         `when`(cycleRepository.findAll())
@@ -115,7 +118,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(presenterFactory.getPresenter(UI))
                 .thenReturn(uiPresenter)
 
-        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
+        settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, settlementRequest)
 
         verify(uiPresenter).presentAllParticipantsSettlement(eq(emptyList()), any())
     }
@@ -343,7 +346,7 @@ open class SettlementDashboardFacadeImplTest {
         val typeDirect = ParticipantType.DIRECT
         val typeScheme = ParticipantType.SCHEME_OPERATOR
         val typeFunded = ParticipantType.FUNDED
-
+        val settlementRequest = SettlementDashboardRequest(null)
         val participants = listOf(
             Participant.builder()
                 .bic("NDEASESSXXY")
@@ -372,7 +375,7 @@ open class SettlementDashboardFacadeImplTest {
         `when`(presenterFactory.getPresenter(UI))
             .thenReturn(UIPresenter(null, clock))
 
-        val result = settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, null)
+        val result = settlementServiceFacadeImpl.getParticipantSettlement(CONTEXT, UI, settlementRequest)
 
         assertThat(result.positions.size).isEqualTo(1)
         assertThat(result.positions[0].participant.participantType).isEqualTo(typeDirect.toString())

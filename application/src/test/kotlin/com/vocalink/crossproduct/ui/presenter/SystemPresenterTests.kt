@@ -34,8 +34,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present Funding Participants Settlement for System`() {
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFundingParticipantSettlement(emptyList(), emptyList(),
-                null, null, emptyList())
+            systemPresenter.presentFundingParticipantSettlement(emptyList(), emptyList(), null, emptyList())
         }
     }
 

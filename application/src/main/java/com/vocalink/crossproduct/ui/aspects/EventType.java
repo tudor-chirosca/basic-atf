@@ -12,6 +12,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileEnquirySearchRequest;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.util.List;
@@ -42,8 +43,8 @@ public enum EventType {
   VIEW_PARTICIPANT_MNG_DETAILS(String.class),
   VIEW_APPROVAL_DASHBOARD(ApprovalSearchRequest.class),
   VIEW_APPROVAL_REQ(Object.class),
-  VIEW_SCHEME_SETTL_DASHBOARD(String.class),
-  VIEW_PTT_SETTL_DASHBOARD(String.class),
+  VIEW_SETTLEMENT_DASHBOARD(SettlementDashboardRequest.class),
+  VIEW_SETTLEMENT_DASHBOARD_BY_MESSAGE_TYPE(String.class),
   VIEW_SCHEME_IO_DASHBOARD(String.class),
   VIEW_PTT_IO_DASHBOARD(String.class),
   REQ_BATCH_CANCELLATION(Object.class),

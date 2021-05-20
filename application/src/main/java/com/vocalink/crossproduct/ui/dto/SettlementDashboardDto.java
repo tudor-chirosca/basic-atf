@@ -22,7 +22,6 @@ public class SettlementDashboardDto {
   private final CycleDto currentCycle;
   private final CycleDto previousCycle;
   private final List<TotalPositionDto> positions;
-  private final ParticipantDashboardSettlementDetailsDto settlementDetails;
   @JsonInclude(Include.NON_EMPTY)
   private final PositionDetailsTotalsDto previousPositionTotals;
   @JsonInclude(Include.NON_EMPTY)

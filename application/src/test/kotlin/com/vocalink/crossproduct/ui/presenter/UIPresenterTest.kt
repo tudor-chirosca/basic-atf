@@ -16,7 +16,6 @@ import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfig
@@ -156,16 +155,7 @@ class UIPresenterTest {
         )
         val participants = MockParticipants().participants
         val fundingParticipant = MockParticipants().getParticipant(false)
-        val positions = listOf(
-            ParticipantPosition.builder()
-                .cycleId("01")
-                .build(),
-            ParticipantPosition.builder()
-                .cycleId("02")
-                .build()
-        )
-
-        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, positions, emptyList())
+        val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
         assertNotNull(result.fundingParticipant)
         assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
         assertNotNull(result.intraDayPositionTotals)

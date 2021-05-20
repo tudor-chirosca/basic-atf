@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers.api;
 
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
+import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -17,7 +18,9 @@ public interface SettlementDashboardApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<SettlementDashboardDto> getSettlement(final ClientType clientType,
-      final String context, final String participantId, final HttpServletRequest httpServletRequest);
+      final String context,
+      final SettlementDashboardRequest settlementDashboardRequest,
+      final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Fetch self funded Settlement, including positions, participant info and cycles")
   @ApiResponses({

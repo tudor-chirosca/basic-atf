@@ -83,7 +83,6 @@ public interface Presenter {
       List<Cycle> cycles,
       List<Participant> participants,
       Participant fundingParticipant,
-      List<ParticipantPosition> positionsDetails,
       List<IntraDayPositionGross> intraDays);
 
   ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(List<Cycle> cycles,
