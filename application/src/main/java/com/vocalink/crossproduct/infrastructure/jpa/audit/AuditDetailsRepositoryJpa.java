@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
-import com.vocalink.crossproduct.domain.audit.AuditDetails;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public interface AuditDetailsRepositoryJpa extends JpaRepository<AuditDetailsJpa
 
   @Query("SELECT"
       + "    a.id AS id,"
-      + "    a.activityName.id AS activityName,"
+      + "    a.activityName AS activityName,"
       + "    a.serviceId AS serviceId,"
       + "    a.timestamp AS timestamp,"
       + "    a.correlationId AS correlationId,"
