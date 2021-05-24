@@ -56,7 +56,7 @@ public enum EventType {
   UNSUSPEND_PTT(Object.class),
   APPROVE_UNSUSPENSION(Object.class),
   REJECT_UNSUSPENSION(Object.class),
-  AMEND_PTT_CONFIGURATION(Object.class),
+  AMEND_PTT_CONFIG(Object.class),
   APPROVE_PTT_CONFIG_AMENDMENT(Object.class),
   REJECT_PTT_CONFIG_AMENDMENT(Object.class);
 

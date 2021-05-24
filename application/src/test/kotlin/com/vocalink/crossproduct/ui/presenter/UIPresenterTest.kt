@@ -27,13 +27,16 @@ import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.stream.Stream
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -50,6 +53,132 @@ class UIPresenterTest {
 
     companion object {
         val clock = FIXED_CLOCK
+
+        class CycleDashboardTestCase (val currentCycle: Cycle?, val previousCycle: Cycle?,
+                                      val showCurrent: Boolean, val showPrevious: Boolean)
+
+        @JvmStatic
+        fun getEodSodTestData() = Stream.of(
+            Arguments.of(
+                "During the day, before SOD/EOD",
+                CycleDashboardTestCase(
+                    currentCycle =  Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = true,
+                    showPrevious = true
+                )
+            ),
+            Arguments.of(
+                "SOD/EOD in the same date",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.NOT_STARTED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .isNextDayCycle(true)
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = false,
+                    showPrevious = true
+                )
+            ),
+            Arguments.of(
+                "BPS is in a first cycle of day",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .settlementTime(ZonedDateTime.now(clock).plusDays(1))
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = true,
+                    showPrevious = false
+                )
+            ),
+            Arguments.of(
+                "BPS is in a first cycle of day, no previous cycle",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .build(),
+                    previousCycle = null,
+                    showCurrent = true,
+                    showPrevious = false
+                )
+            ),
+            Arguments.of(
+                "Cycles in different dates",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .settlementTime(ZonedDateTime.now(clock).plusDays(1))
+                        .isNextDayCycle(true)
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = true,
+                    showPrevious = false
+                )
+            ),
+            Arguments.of(
+                "SOD/EOD",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.NOT_STARTED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = false,
+                    showPrevious = true
+                )
+            )
+        )
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getEodSodTestData")
+    fun `should return current settlement cycle`(description: String, testCase: CycleDashboardTestCase) {
+        val cycles = listOf(testCase.currentCycle, testCase.previousCycle)
+
+        val currentCycle = uiPresenter.getCurrentCycle(cycles)
+
+        assertThat(currentCycle.isEmpty).isEqualTo(!testCase.showCurrent)
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("getEodSodTestData")
+    fun `should return previous settlement cycle`(description: String, testCase: CycleDashboardTestCase) {
+        val cycles = listOf(testCase.currentCycle, testCase.previousCycle)
+
+        val previousCycle = uiPresenter.getPreviousCycle(cycles)
+
+        assertThat(previousCycle.isEmpty).isEqualTo(!testCase.showPrevious)
     }
 
     @Test
@@ -95,9 +224,7 @@ class UIPresenterTest {
         val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
 
         assertThat(result.previousCycle.id).isEqualTo("02")
-        assertThat(result.previousCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
         assertThat(result.currentCycle.id).isEqualTo("03")
-        assertThat(result.currentCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
     }
 
     @Test
@@ -118,8 +245,7 @@ class UIPresenterTest {
         val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
 
         assertThat(result.previousCycle.id).isEqualTo("02")
-        assertThat(result.previousCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock))
-        assertThat(result.currentCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+        assertThat(result.currentCycle.id).isEqualTo("03")
     }
 
     @Test

@@ -1,12 +1,9 @@
 package com.vocalink.crossproduct.domain.cycle;
 
-import com.vocalink.crossproduct.domain.position.ParticipantPosition;
-
-import java.time.Clock;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
+
+import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,9 +22,21 @@ public class Cycle {
   private final ZonedDateTime settlementConfirmationTime;
   private final List<ParticipantPosition> totalPositions;
 
-  public boolean isNextSettlementCycle(Clock clock) {
-    ZonedDateTime eod = ZonedDateTime.now(clock).with(LocalTime.MAX);
-    return Objects.nonNull(settlementTime) && eod.isBefore(settlementTime);
+  public boolean isPreviousDayCycle(Cycle previousCycle) {
+    if (previousCycle == null || previousCycle.getSettlementTime() == null) {
+      return true;
+    }
+    return settlementTime.toLocalDate().isAfter(previousCycle.getSettlementTime().toLocalDate());
+  }
+
+  public boolean isInEodSodPeriod(Cycle previousCycle) {
+    if (CycleStatus.NOT_STARTED.equals(status)) {
+      if (previousCycle != null && CycleStatus.OPEN.equals(previousCycle.getStatus())) {
+        throw new IllegalStateException("Previous cycle cannot be open when EOD/SOD period");
+      }
+      return true;
+    }
+    return false;
   }
   
   public boolean isEmpty() {

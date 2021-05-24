@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
-import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -209,9 +208,11 @@ public class UIPresenter implements Presenter {
       return empty;
     }
     Cycle currentCycle = cycles.get(0);
-    if (cycles.size() > 1
-        && Objects.nonNull(currentCycle)
-        && TRUE.equals(currentCycle.getIsNextDayCycle())) {
+    if (cycles.size() == 1) {
+      return currentCycle;
+    }
+    Cycle previousCycle = cycles.get(1);
+    if (currentCycle.isInEodSodPeriod(previousCycle)) {
       return empty;
     }
     return currentCycle;
@@ -219,13 +220,13 @@ public class UIPresenter implements Presenter {
 
   public Cycle getPreviousCycle(List<Cycle> cycles) {
     Cycle empty = Cycle.builder().build();
-    if (Objects.isNull(cycles) || cycles.isEmpty()) {
+    if (cycles == null || cycles.isEmpty()) {
       return empty;
     }
     if (cycles.size() > 1) {
       Cycle currentCycle = cycles.get(0);
       Cycle previousCycle = cycles.get(1);
-      if (Objects.nonNull(currentCycle) && currentCycle.isNextSettlementCycle(clock)) {
+      if (currentCycle != null && currentCycle.isPreviousDayCycle(previousCycle)) {
         return empty;
       }
       return previousCycle;

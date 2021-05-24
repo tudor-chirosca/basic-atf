@@ -4,14 +4,16 @@ import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import lombok.AccessLevel;
@@ -19,9 +21,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.Type;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -37,14 +42,14 @@ public class AuditDetailsJpa implements Serializable {
   private static final String DESCENDING_SING = "-";
 
   @Getter(AccessLevel.PRIVATE)
-  private static final Map<String, String> SORT_BINDINGS = new HashMap<>();
+  private static final Map<String, List<String>> SORT_BINDINGS = new HashMap<>();
 
   static {
-    SORT_BINDINGS.put("createdAt", DEFAULT_SORT_PARAMETER);
-    SORT_BINDINGS.put("serviceId", "serviceId");
-    SORT_BINDINGS.put("eventType", "userActivityString");
-    SORT_BINDINGS.put("user", "username");
-    SORT_BINDINGS.put("responseContent", "responseContent");
+    SORT_BINDINGS.put("createdAt", Collections.singletonList(DEFAULT_SORT_PARAMETER));
+    SORT_BINDINGS.put("serviceId", Collections.singletonList("serviceId"));
+    SORT_BINDINGS.put("eventType", Collections.singletonList("userActivityString"));
+    SORT_BINDINGS.put("user", Arrays.asList("first_name", "last_name"));
+    SORT_BINDINGS.put("responseContent", Collections.singletonList("responseContent"));
   }
 
   @Id
@@ -100,16 +105,20 @@ public class AuditDetailsJpa implements Serializable {
 
     final List<Order> orders = new ArrayList<>();
 
-    sort.forEach(e -> {
-      if (!e.startsWith(DESCENDING_SING) && !e.startsWith(ASCENDING_SIGN)) {
-        orders.add(Order.asc(SORT_BINDINGS.get(e)));
+    sort.forEach(sortParameter -> {
+      final String field = (sortParameter.startsWith(ASCENDING_SIGN)
+              || sortParameter.startsWith(DESCENDING_SING)) ? sortParameter.substring(1) : sortParameter;
+      if (!SORT_BINDINGS.containsKey(field)) {
         return;
       }
-
-      final String sign = e.substring(0, 1);
-      final String orderType = SORT_BINDINGS.get(e.replace(sign, ""));
-
-      orders.add(sign.equals(ASCENDING_SIGN) ? Order.asc(orderType) : Order.desc(orderType));
+      final String direction = (sortParameter.startsWith(ASCENDING_SIGN)
+              || sortParameter.startsWith(DESCENDING_SING)) ? sortParameter.substring(0, 1) : EMPTY;
+      final List<String> entityFields = SORT_BINDINGS.getOrDefault(field, Collections.emptyList());
+      if (DESCENDING_SING.equals(direction)) {
+        entityFields.forEach(s -> orders.add(Order.desc(s)));
+      } else {
+        entityFields.forEach(s -> orders.add(Order.asc(s)));
+      }
     });
 
     return Sort.by(orders);
