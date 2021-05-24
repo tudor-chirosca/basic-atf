@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.dto.broadcasts;
 
+import static java.util.Objects.isNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -17,5 +19,10 @@ public class BroadcastRequest {
       @JsonProperty(value = "recipients", required = true) List<String> recipients) {
     this.message = message;
     this.recipients = recipients;
+  }
+
+  @JsonProperty("broadcastForAll")
+  private Boolean broadcastForAll(){
+    return !isNull(recipients) && recipients.isEmpty();
   }
 }
