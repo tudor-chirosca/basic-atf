@@ -379,12 +379,12 @@ class UIPresenterTest {
         val receiving = "receiving"
         val model = listOf(
                 MessageDirectionReference.builder()
-                        .name(sending)
-                        .types(emptyList())
+                        .messageDirection(sending)
+                        .messageType("")
                         .build(),
                 MessageDirectionReference.builder()
-                        .name(receiving)
-                        .types(emptyList())
+                        .messageDirection(receiving)
+                        .messageType("")
                         .build()
         )
         val result = uiPresenter.presentMessageDirectionReferences(model)

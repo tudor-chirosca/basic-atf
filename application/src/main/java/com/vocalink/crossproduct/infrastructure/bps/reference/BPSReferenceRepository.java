@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.M
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.REASON_CODES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.STATUSES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
@@ -12,7 +13,9 @@ import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import com.vocalink.crossproduct.ui.dto.EmptyBody;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +38,7 @@ public class BPSReferenceRepository implements ReferencesRepository {
     return webClient.post()
         .uri(resolve(MESSAGE_DIRECTION_REFERENCES_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .body(fromPublisher(Mono.just(EmptyBody.builder().build()), EmptyBody.class))
         .retrieve()
         .bodyToFlux(BPSMessageDirectionReference.class)
         .retryWhen(retryWebClientConfig.fixedRetry())

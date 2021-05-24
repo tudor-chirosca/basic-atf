@@ -32,7 +32,6 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -74,7 +73,6 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
-import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
@@ -118,8 +116,6 @@ public interface DTOMapper {
   AlertReferenceDataDto toDto(AlertReferenceData alertReferenceData);
 
   AlertStatsDto toDto(AlertStats alertStats);
-
-  MessageDirectionReferenceDto toDto(MessageDirectionReference alert);
 
   @Mapping(target = "dateFrom", source = "date")
   IODetailsDto toDto(IODetails ioDetails, Participant participant, LocalDate date);

@@ -125,22 +125,6 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map all Message references fields and set isDefault to false`() {
-        val sending = "Sending"
-        val type = "some_type"
-        val model = MessageDirectionReference.builder()
-                .name(sending)
-                .types(listOf(type))
-                .build()
-
-        val result = MAPPER.toDto(model)
-
-        assertEquals(sending, result.name)
-        assertEquals(type, result.types[0])
-        assertFalse(result.isDefault)
-    }
-
-    @Test
     fun `should map Alerts fields`() {
         val dateRaised = ZonedDateTime.now(ZoneId.of("UTC"))
         val alert = Alert.builder()

@@ -46,7 +46,7 @@ bps-config:
       path: /alerts
       base: MOCK
     message-direction-references-path:
-      path: /reference/messages
+      path: /reference/messageTypes/{schemeCode}/readAll
       base: MOCK
     alert-threshold-path:
       path: /reference/alerts

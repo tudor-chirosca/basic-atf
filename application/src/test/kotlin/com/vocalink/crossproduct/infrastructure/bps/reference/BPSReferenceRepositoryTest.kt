@@ -22,37 +22,23 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
         const val VALID_MESSAGE_REFERENCE_RESPONSE: String = """
         [
             {
-              "name": "Sending",
-              "types": [
-                "pacs.004",
-                "pacs.008",
-                "camt.056",
-                "camt.029(v3)",
-                "camt.027",
-                "camt.087",
-                "camt.029(v8)",
-                "rocs.001"
-              ]
+                "messageType": "camt.029.001.08",
+                "description": "ResponseInquiry",
+                "formatName": "camt.029.08",
+                "messageDirection": "Input"
             },
             {
-              "name": "Receiving",
-              "types": [
-                "pacs.004",
-                "pacs.002",
-                "camt.056",
-                "camt.029(v3)",
-                "pacs.008",
-                "camt.027",
-                "camt.087",
-                "camt.029(v8)",
-                "admi.004",
-                "rocs.001",
-                "prtp.001-prtp.004",
-                "prtp.001FA",
-                "prtp.001SO",
-                "prtp.005-prtp.006"
-            ]
-          }
+                "messageType": "camt.087.001.05",
+                "description": "ValueCorrection",
+                "formatName": "camt.087",
+                "messageDirection": "Output"
+            },
+            {
+                "messageType": "camt.027.001.06",
+                "description": "ClaimNonReceipt",
+                "formatName": "camt.027",
+                "messageDirection": "Input / Output"
+            }
         ]
         """
         const val VALID_FILE_REFERENCES_RESPONSE: String = """
@@ -93,14 +79,11 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
 
         val result = client.findMessageDirectionReferences()
 
-        assertFalse(result.isEmpty())
-        assertEquals(2, result.size)
+        assertThat(result.size).isEqualTo(3)
 
-        assertEquals("Sending", result[0].name)
-        assertEquals(8, result[0].types.size)
-
-        assertEquals("Receiving", result[1].name)
-        assertEquals(14, result[1].types.size)
+        assertThat(result[0].messageDirection).isEqualTo("sending")
+        assertThat(result[1].messageDirection).isEqualTo("receiving")
+        assertThat(result[2].messageDirection).isEqualTo("sending / receiving")
     }
 
     @Test

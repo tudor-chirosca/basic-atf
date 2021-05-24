@@ -82,6 +82,12 @@ abstract class MapperUtils {
     put("fundedParticipantsCount", "fundedParticipantsCount");
   }};
 
+  private static final Map<String, String> messageType = new HashMap<String, String>() {{
+    put("input", "sending");
+    put("output", "receiving");
+    put("input / output", "sending / receiving");
+  }};
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -109,4 +115,9 @@ abstract class MapperUtils {
   static String getNameByType(String type) {
     return nameType.getOrDefault(type, "N/A");
   }
+
+  static String getMessageType(String type) {
+    return messageType.get(type);
+  }
+
 }
