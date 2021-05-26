@@ -628,12 +628,20 @@ public interface DTOMapper {
   AuditDto toDto(AuditDetails auditDetails);
 
   PageDto<ManagedParticipantDto> toDto(Page<Participant> participants,
-      @Context Map<String, Approval> approvals);
+      @Context Map<String, Approval> approvals, @Context Map<String, String> fundingParticipants);
 
   @Mappings({
-      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference")
+      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "fundingName", source = "participant", qualifiedByName = "getFundingName")
   })
-  ManagedParticipantDto toDto(Participant participant, @Context Map<String, Approval> approvals);
+  ManagedParticipantDto toDto(Participant participant, @Context Map<String, Approval> approvals,
+      @Context Map<String, String> fundingParticipants);
+
+  @Named("getFundingName")
+  default String getFundingName(Participant participant,
+      @Context Map<String, String> fundingParticipants) {
+    return fundingParticipants.get(participant.getFundingBic());
+  }
 
   @Named("getApprovalReference")
   default ApprovalReferenceDto getApprovalReference(Participant participant,

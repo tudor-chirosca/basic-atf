@@ -12,8 +12,9 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.alert.AlertStatsData
 import com.vocalink.crossproduct.domain.approval.Approval
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.*
-import com.vocalink.crossproduct.domain.approval.ApprovalStatus.*
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.PARTICIPANT_SUSPEND
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus.APPROVED
+import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.batch.Batch
@@ -28,15 +29,15 @@ import com.vocalink.crossproduct.domain.io.IOData
 import com.vocalink.crossproduct.domain.io.ParticipantIOData
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus.*
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
-import com.vocalink.crossproduct.domain.participant.SuspensionLevel.*
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel.SCHEME
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
-import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
@@ -49,17 +50,15 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class DTOMapperTest {
 
@@ -960,20 +959,32 @@ class DTOMapperTest {
     @Test
     fun `should map all fields of Participant to ManagedParticipantDto`() {
         val date = ZonedDateTime.now()
-        val participant = Participant(
-                "FORXSES1", "FORXSES1", "Forex Bank",
-                null, ACTIVE, null, FUNDING, null,
-                "00002121", SCHEME, "Nordnet Bank", "475347837892",
-                listOf(
-                        Participant(
-                                "FORXSES1", "FORXSES1", "Forex Bank", null,
-                                ACTIVE, null, FUNDING, null,
-                                "00002121", null, "Nordnet Bank", "475347837892",
-                                null, 0, null
-                        )
-                ), 1, null
-        )
-        val participants = Page<Participant>(1, listOf(participant))
+
+        val fundedParticipant = Participant.builder()
+                .id("ELLFSESS")
+                .bic("ELLFSESS")
+                .fundingBic("FORXSES1")
+                .name("Lansfosakringar Bank")
+                .participantType(FUNDED)
+                .build()
+
+        val participant = Participant.builder()
+                .id("FORXSES1")
+                .bic("FORXSES1")
+                .name("Forex Bank")
+                .fundingBic("NA")
+                .status(ACTIVE)
+                .participantType(FUNDING)
+                .organizationId("00002121")
+                .suspensionLevel(SCHEME)
+                .tpspName("Nordnet Bank")
+                .tpspId("475347837892")
+                .fundedParticipants(listOf(fundedParticipant))
+                .fundedParticipantsCount(1)
+                .build()
+
+
+        val participants = Page<Participant>(1, listOf(participant, fundedParticipant))
         val routingRecords = RoutingRecord(
                 "reachableBic",
                 ZonedDateTime.now(ZoneId.of("UTC")),
@@ -994,12 +1005,15 @@ class DTOMapperTest {
                 .requestedBy(userDetails)
                 .build()
 
-        val result = MAPPER.toDto(participants, mapOf( "FORXSES1" to approval))
+        val result = MAPPER.toDto(participants, mapOf("FORXSES1" to approval), mapOf("FORXSES1" to "Forex Bank"))
 
         assertThat(result).isNotNull
 
         val managedParticipant: ManagedParticipantDto =
                 result.items.elementAt(0) as ManagedParticipantDto
+
+        val fundedManagedParticipant: ManagedParticipantDto =
+                result.items.elementAt(1) as ManagedParticipantDto
 
         assertThat(managedParticipant.bic).isEqualTo(participant.bic)
         assertThat(managedParticipant.name).isEqualTo(participant.name)
@@ -1013,17 +1027,13 @@ class DTOMapperTest {
         assertThat(managedParticipant.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
         assertThat(managedParticipant.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
         assertThat(managedParticipant.fundedParticipants[0].connectingParticipantId).isEqualTo(
-                participant.fundedParticipants[0].fundingBic
-        )
+                participant.fundedParticipants[0].fundingBic)
         assertThat(managedParticipant.fundedParticipants[0].participantIdentifier).isEqualTo(
-                participant.fundedParticipants[0].id
-        )
+                participant.fundedParticipants[0].id)
         assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(
-                participant.fundedParticipants[0].participantType.description
-        )
+                participant.fundedParticipants[0].participantType.description)
         assertThat(managedParticipant.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
-        assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic
-        )
+        assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic)
         assertThat(managedParticipant.reachableBics[0].validFrom).isEqualTo(participant.reachableBics[0].validFrom)
         assertThat(managedParticipant.reachableBics[0].validTo).isEqualTo(participant.reachableBics[0].validTo)
         assertThat(managedParticipant.reachableBics[0].currency).isEqualTo(participant.reachableBics[0].currency)
@@ -1032,6 +1042,12 @@ class DTOMapperTest {
         assertThat(managedParticipant.approvalReference.requestType).isEqualTo(approval.requestType)
         assertThat(managedParticipant.approvalReference.requestedAt).isEqualTo(approval.date)
         assertThat(managedParticipant.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
+
+        assertThat(fundedManagedParticipant.bic).isEqualTo(fundedParticipant.bic)
+        assertThat(fundedManagedParticipant.fundingBic).isEqualTo(participant.bic)
+        assertThat(fundedManagedParticipant.fundingName).isEqualTo(participant.name)
+        assertThat(fundedManagedParticipant.id).isEqualTo(fundedParticipant.id)
+        assertThat(fundedManagedParticipant.participantType).isEqualTo(FUNDED.description)
     }
 
     @Test
@@ -1319,7 +1335,7 @@ class DTOMapperTest {
                 .reachableBics(listOf(routingRecord))
                 .build()
 
-        val result = MAPPER.toDto(participant, mapOf(participant.id to approval))
+        val result = MAPPER.toDto(participant, mapOf(participant.id to approval), mapOf("FORXSES1" to "Forex Bank"))
 
         assertThat(result.bic).isEqualTo(participant.bic)
         assertThat(result.fundingBic).isEqualTo(participant.fundingBic)

@@ -59,15 +59,13 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
     final Page<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findPaginated(request);
 
-    final Page<Participant> managedParticipants = new Page<>(participants.getTotalResults(),
-        participants.getItems().stream()
-            .peek(p -> {
-              setFundedParticipants(p, product);
-              setRoutingRecords(p, product, requestDto.getQ());
-            })
-            .collect(toList()));
+    participants.getItems()
+        .forEach(participant -> {
+          setFundedParticipants(participant, product);
+          setRoutingRecords(participant, product, requestDto.getQ());
+        });
 
-    final List<String> managedParticipantIds = managedParticipants.getItems().stream()
+    final List<String> managedParticipantIds = participants.getItems().stream()
         .map(Participant::getBic)
         .collect(toList());
 
@@ -78,7 +76,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         product, managedParticipantIds, requestedParticipantId, requestTypes);
 
     return presenterFactory.getPresenter(clientType)
-        .presentManagedParticipants(managedParticipants, approvals);
+        .presentManagedParticipants(participants, approvals);
   }
 
   @Override

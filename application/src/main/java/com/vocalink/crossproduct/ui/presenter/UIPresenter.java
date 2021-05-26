@@ -7,6 +7,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.vocalink.crossproduct.domain.Page;
@@ -454,7 +455,10 @@ public class UIPresenter implements Presenter {
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
       Page<Participant> participants, Map<String, Approval> approvals) {
-    return MAPPER.toDto(participants, approvals);
+    final Map<String, String> fundingParticipants = participants.getItems().stream()
+        .filter(participant -> participant.getFundingBic().equals("NA"))
+        .collect(toMap(Participant::getId, Participant::getName));
+    return MAPPER.toDto(participants, approvals, fundingParticipants);
   }
 
   @Override

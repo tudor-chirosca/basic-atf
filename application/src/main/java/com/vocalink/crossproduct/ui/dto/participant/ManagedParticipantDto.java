@@ -20,6 +20,8 @@ public class ManagedParticipantDto {
 
   private final String bic;
   private final String fundingBic;
+  @JsonInclude(Include.NON_EMPTY)
+  private final String fundingName;
   private final String id;
   private final String name;
   private final ParticipantStatus status;
