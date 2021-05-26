@@ -15,8 +15,8 @@ class AuditDetailsJpaTest {
 
         assertThat(result.toList()).containsExactly(
             Order.asc("serviceId"),
-            Order.asc("first_name"),
-            Order.asc("last_name"),
+            Order.asc("firstName"),
+            Order.asc("lastName"),
             Order.desc("userActivityString")
         )
     }
@@ -29,8 +29,8 @@ class AuditDetailsJpaTest {
 
         assertThat(result.toList()).containsExactly(
             Order.asc("serviceId"),
-            Order.desc("first_name"),
-            Order.desc("last_name")
+            Order.desc("firstName"),
+            Order.desc("lastName")
         )
     }
 
