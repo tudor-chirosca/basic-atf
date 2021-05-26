@@ -1,9 +1,12 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static java.util.stream.Collectors.toList;
+
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.InputOutputFacade;
@@ -11,6 +14,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,10 +32,18 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
       LocalDate date) {
     log.info("Fetching IO Dashboard from: {}", product);
 
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product).findAll()
-        .getItems();
+    Predicate<Participant> scheme = p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR;
+    Predicate<Participant> tpsp = p -> p.getParticipantType() != ParticipantType.TPSP;
 
-    IODashboard ioDashboard = repositoryFactory.getParticipantsIODataRepository(product).findAll();
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+        .findAll()
+        .getItems()
+        .stream()
+        .filter(scheme.and(tpsp))
+        .collect(toList());
+
+    final IODashboard ioDashboard = repositoryFactory.getParticipantsIODataRepository(product)
+        .findAll();
 
     return presenterFactory.getPresenter(clientType).presentInputOutput(participants, ioDashboard, date);
   }

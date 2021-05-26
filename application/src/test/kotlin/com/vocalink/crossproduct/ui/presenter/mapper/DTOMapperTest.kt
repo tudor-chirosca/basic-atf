@@ -23,6 +23,9 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.cycle.DayCycle
 import com.vocalink.crossproduct.domain.files.EnquirySenderDetails
 import com.vocalink.crossproduct.domain.files.File
+import com.vocalink.crossproduct.domain.io.IODashboard
+import com.vocalink.crossproduct.domain.io.IOData
+import com.vocalink.crossproduct.domain.io.ParticipantIOData
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.*
@@ -1335,6 +1338,75 @@ class DTOMapperTest {
         assertThat(result.approvalReference.requestedAt).isEqualTo(approval.date)
         assertThat(result.approvalReference.requestType).isEqualTo(approval.requestType)
         assertThat(result.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
+    }
+
+    @Test
+    fun `should map to IODashboardDto, populating with empty if no rows for participant`() {
+        val forex = Participant.builder()
+                .id("FORXSES1")
+                .bic("FORXSES1")
+                .name("Forex Bank")
+                .fundingBic("NA")
+                .status(ACTIVE)
+                .suspendedTime(ZonedDateTime.now())
+                .participantType(FUNDING)
+                .schemeCode("P27-SEK")
+                .organizationId("00002121")
+                .suspensionLevel(SCHEME)
+                .build()
+        val ndeases = Participant.builder()
+                .id("NDEASESXXX")
+                .bic("NDEASESXXX")
+                .name("NDEA Bank")
+                .fundingBic("NA")
+                .status(ACTIVE)
+                .suspendedTime(ZonedDateTime.now())
+                .participantType(FUNDING)
+                .schemeCode("P27-SEK")
+                .organizationId("00002121")
+                .suspensionLevel(SCHEME)
+                .build()
+        val ioData = IOData.builder()
+                .submitted(1)
+                .rejected("1.0")
+                .output(100)
+                .build()
+        val participantIoData = listOf(
+                ParticipantIOData.builder()
+                        .batches(ioData)
+                        .transactions(ioData)
+                        .files(ioData)
+                        .schemeParticipantIdentifier(forex.bic)
+                        .build(),
+                ParticipantIOData.builder()
+                        .batches(ioData)
+                        .transactions(ioData)
+                        .files(ioData)
+                        .schemeParticipantIdentifier("-")
+                        .build()
+        )
+        val ioDashboard = IODashboard(
+                "file_rej", "batch_rej", "transaction_rej", participantIoData
+        )
+
+        val result = MAPPER.toDto(ioDashboard, listOf(forex, ndeases), LocalDate.now())
+
+        assertThat(result.rows.size).isEqualTo(2)
+        assertThat(result.batchesRejected).isEqualTo("batch_rej")
+        assertThat(result.filesRejected).isEqualTo("file_rej")
+        assertThat(result.transactionsRejected).isEqualTo("transaction_rej")
+        assertThat(result.rows[0].batches.output).isEqualTo(ioData.output)
+        assertThat(result.rows[0].batches.rejected).isEqualTo(1.0)
+        assertThat(result.rows[0].batches.submitted).isEqualTo(ioData.submitted)
+        assertThat(result.rows[0].files.output).isEqualTo(ioData.output)
+        assertThat(result.rows[0].files.rejected).isEqualTo(1.0)
+        assertThat(result.rows[0].files.submitted).isEqualTo(ioData.submitted)
+        assertThat(result.rows[0].transactions.output).isEqualTo(ioData.output)
+        assertThat(result.rows[0].transactions.rejected).isEqualTo(1.0)
+        assertThat(result.rows[0].transactions.submitted).isEqualTo(ioData.submitted)
+        assertThat(result.rows[1].batches).isNull()
+        assertThat(result.rows[1].files).isNull()
+        assertThat(result.rows[1].transactions).isNull()
     }
 }
 

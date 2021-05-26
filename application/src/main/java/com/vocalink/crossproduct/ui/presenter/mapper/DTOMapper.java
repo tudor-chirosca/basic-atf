@@ -458,14 +458,26 @@ public interface DTOMapper {
       @Mapping(target = "batchesRejected", source = "ioDashboard.batchesRejected", qualifiedByName = "removePercent"),
       @Mapping(target = "transactionsRejected", source = "ioDashboard.transactionsRejected", qualifiedByName = "removePercent"),
       @Mapping(target = "dateFrom", source = "date"),
-      @Mapping(target = "rows", source = "ioDashboard.summary")
+      @Mapping(target = "rows", source = "ioDashboard.summary", qualifiedByName = "mapRowsToParticipants")
   })
   IODashboardDto toDto(IODashboard ioDashboard, @Context List<Participant> participants, LocalDate date);
 
+  @Named("mapRowsToParticipants")
+  default List<ParticipantIODataDto> mapRowsToParticipants(List<ParticipantIOData> summary,
+      @Context List<Participant> participants) {
+    return participants.stream().map(p ->
+        summary.stream()
+            .filter(r -> r.getSchemeParticipantIdentifier().equals(p.getBic()))
+            .findFirst()
+            .map(r -> this.toDto(r, p))
+            .orElse(ParticipantIODataDto.builder().participant(this.toDto(p)).build()))
+        .collect(toList());
+  }
+
   @Mappings({
-      @Mapping(target = "participant", source = "participantIOData.schemeParticipantIdentifier", qualifiedByName = "getParticipantById")
+      @Mapping(target = "participant", source = "participant")
   })
-  ParticipantIODataDto toDto(ParticipantIOData participantIOData, @Context List<Participant> participants);
+  ParticipantIODataDto toDto(ParticipantIOData participantIOData, Participant participant);
 
   ParticipantDto toDto(Participant participant);
 

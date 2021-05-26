@@ -35,6 +35,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.stream.Stream
 import kotlin.test.assertEquals
@@ -301,7 +302,35 @@ class UIPresenterTest {
     @Test
     fun `should get participant IO data DTO`() {
         val date = LocalDate.now()
-        val participants = MockParticipants().participants
+        val participants = listOf(
+                Participant.builder()
+                        .id("ESSESESS")
+                        .bic("ESSESESS")
+                        .fundingBic("NA")
+                        .name("SEB Bank")
+                        .suspendedTime(null)
+                        .status(ParticipantStatus.ACTIVE)
+                        .build(),
+                Participant.builder()
+                        .id("HANDSESS")
+                        .bic("HANDSESS")
+                        .fundingBic("NDEASESSXXX")
+                        .name("Svenska Handelsbanken")
+                        .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
+                        .status(ParticipantStatus.SUSPENDED)
+                        .participantType(ParticipantType.DIRECT)
+                        .build(),
+                Participant.builder()
+                        .id("NDEASESSXXX")
+                        .bic("NDEASESSXXX")
+                        .fundingBic("NA")
+                        .name("Nordea")
+                        .suspendedTime(null)
+                        .status(ParticipantStatus.ACTIVE)
+                        .participantType(ParticipantType.DIRECT)
+                        .build()
+        )
+
         val filesRejected = "1.98%"
         val batchesRejected = "2.09%"
         val transactionsRejected = "1.90%"
