@@ -146,7 +146,7 @@ pipeline {
                             
                             deployContainer(
                                     containerName: projectName,
-                                    deployHost: PREPROD_IP,
+                                    deployHost: DEV_IP,
                                     repoType: repoType,
                                     dockerArgs: dockerArgs,
                                     imageTag: env.gitTag
@@ -158,7 +158,7 @@ pipeline {
                                 buildNumber: BUILD_NUMBER, 
                                 componentName: projectName, 
                                 data: [], 
-                                nameOfEnv: 'PREPROD', 
+                                nameOfEnv: 'DEV', 
                                 packageName: env.gitTag
                             ) {}
                         }
