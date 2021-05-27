@@ -31,25 +31,13 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
         const val VALID_TRANSACTIONS_REQUEST: String = """ 
         {
             "createdDateFrom": "2021-02-18T00:00:00Z",
-            "createdDateTo": null,
-            "cycleDay": null,
-            "cycleName": null,
+            "createdDateTo": "2021-03-18T00:00:00Z",
             "messageDirection": "sending",
-            "sendingParticipant": null,
-            "receivingParticipant": null,
-            "messageType": null,
-            "status": null,
-            "reasonCode": null,
-            "instructionIdentifier": null,
-            "sendingAccount": null,
-            "receivingAccount": null,
-            "valueDate": null,
-            "transactionRangeFrom": null,
+            "sendingParticipant": "BARCGB22XXX",
             "transactionRangeTo": {
                 "amount": 10,
                 "currency": "SEK"
-            },
-            "sortingOrder" : [ ]
+            }
         }"""
 
         const val VALID_TRANSACTION_REQUEST: String = """ 
@@ -63,7 +51,8 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                 {
                     "instructionId": "20210115MEEOSES1B2187",
                     "createdDateTime": "2021-02-18T16:00:00Z",
-                    "originator": "MEEOSES1",
+                    "senderBic": "SWEDENBB",
+                    "receiverBic": "ATFTEST2XXX",
                     "messageType": "camt.056",
                     "amount": {
                         "amount": 4234523.43,
@@ -94,18 +83,14 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                     "amount": 777777.77,
                     "currency": "SEK"
                 },
-                "sender": {
-                    "entityName": "Ikano Bank",
-                    "entityBic": "IKANSE21",
-                    "iban": "SE23 9999 9999 9999 9999 2170",
-                    "fullName": "Mark Markson"
-                },
-                "receiver": {
-                    "entityName": "Nordea",
-                    "entityBic": "NDEASESSXXX",
-                    "iban": "SE23 9999 9999 9999 9999 2142",
-                    "fullName": "John Smith"
-                }
+                "senderBank": "Ikano Bank",
+                "senderBic": "IKANSE21",
+                "senderIBAN": "SE23 9999 9999 9999 9999 2170",
+                "senderFullName": "Mark Markson",
+                "receiverBank": "Nordea",
+                "receiverBic": "NDEASESSXXX",
+                "receiverIBAN": "SE23 9999 9999 9999 9999 2142",
+                "receiverFullName": "John Smith"
             }
         """
     }
@@ -124,9 +109,11 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
 
 
         val request = TransactionEnquirySearchCriteria(
-                0, 1, null, ZonedDateTime.of(LocalDate.of(2021, 2, 18), LocalTime.MIN, ZoneId.of("UTC")),
-                null, null, null, "sending", null,
-                null, null, null, null, null, 
+                0, 1, null,
+                ZonedDateTime.of(LocalDate.of(2021, 2, 18), LocalTime.MIN, ZoneId.of("UTC")),
+                ZonedDateTime.of(LocalDate.of(2021, 3, 18), LocalTime.MIN, ZoneId.of("UTC")),
+                null, null, "sending", null,
+                "BARCGB22XXX", null, null, null, null,
                 null, null, null, null, BigDecimal.TEN
         )
         val result = transactionRepository.findPaginated(request)
@@ -137,7 +124,8 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
         val item = result.items[0]
         assertThat(item.instructionId).isEqualTo("20210115MEEOSES1B2187")
         assertThat(item.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 16, 0, 0, 0, ZoneId.of("UTC")))
-        assertThat(item.originator).isEqualTo("MEEOSES1")
+        assertThat(item.senderBic).isEqualTo("SWEDENBB")
+        assertThat(item.receiverBic).isEqualTo("ATFTEST2XXX")
         assertThat(item.messageType).isEqualTo("camt.056")
         assertThat(item.amount.amount).isEqualTo(BigDecimal.valueOf(4234523.43))
         assertThat(item.amount.currency).isEqualTo("SEK")
@@ -167,14 +155,14 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
         assertThat(result.amount.amount).isEqualTo(BigDecimal.valueOf(777777.77))
         assertThat(result.amount.currency).isEqualTo("SEK")
 
-        assertThat(result.sender.entityName).isEqualTo("Ikano Bank")
-        assertThat(result.sender.entityBic).isEqualTo("IKANSE21")
-        assertThat(result.sender.iban).isEqualTo("SE23 9999 9999 9999 9999 2170")
-        assertThat(result.sender.fullName).isEqualTo("Mark Markson")
+        assertThat(result.senderBank).isEqualTo("Ikano Bank")
+        assertThat(result.senderBic).isEqualTo("IKANSE21")
+        assertThat(result.senderIBAN).isEqualTo("SE23 9999 9999 9999 9999 2170")
+        assertThat(result.senderFullName).isEqualTo("Mark Markson")
 
-        assertThat(result.receiver.entityName).isEqualTo("Nordea")
-        assertThat(result.receiver.entityBic).isEqualTo("NDEASESSXXX")
-        assertThat(result.receiver.iban).isEqualTo("SE23 9999 9999 9999 9999 2142")
-        assertThat(result.receiver.fullName).isEqualTo("John Smith")
+        assertThat(result.receiverBank).isEqualTo("Nordea")
+        assertThat(result.receiverBic).isEqualTo("NDEASESSXXX")
+        assertThat(result.receiverIBAN).isEqualTo("SE23 9999 9999 9999 9999 2142")
+        assertThat(result.receiverFullName).isEqualTo("John Smith")
     }
 }

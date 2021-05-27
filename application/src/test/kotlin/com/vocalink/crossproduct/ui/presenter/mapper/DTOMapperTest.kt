@@ -528,22 +528,9 @@ class DTOMapperTest {
     @Test
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "Mark Twain"
-        )
-        val receiver = EnquirySenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "Bob Sinclair"
-        )
         val transaction = Transaction(
                 "instructionId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "originator",
                 "messageType",
                 amount,
                 "status",
@@ -552,37 +539,30 @@ class DTOMapperTest {
                 LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
                 "reasonCode",
-                sender,
-                receiver
+                "senderEntityName",
+                "senderEntityBic",
+                "senderIban",
+                "Mark Twain",
+                "receiverEntityName",
+                "receiverEntityBic",
+                "receiverIban",
+                "Tom Hawk"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
-        assertThat(result.senderBic).isEqualTo(transaction.originator)
+        assertThat(result.senderBic).isEqualTo(transaction.senderBic)
         assertThat(result.status).isEqualTo(transaction.status)
     }
 
     @Test
     fun `should map TransactionDetailsDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "fullName"
-        )
-        val receiver = EnquirySenderDetails(
-                "entityName",
-                "entityBic",
-                "iban",
-                "fullName"
-        )
         val transaction = Transaction(
                 "instructionId",
                 ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "originator",
                 "messageType",
                 amount,
                 "status",
@@ -591,8 +571,14 @@ class DTOMapperTest {
                 LocalDate.of(2021, 1, 15),
                 "settlementCycleId",
                 "reasonCode",
-                sender,
-                receiver
+                "senderEntityName",
+                "senderEntityBic",
+                "senderIban",
+                "Mark Twain",
+                "receiverEntityName",
+                "receiverEntityBic",
+                "receiverIban",
+                "Tom Hawk"
         )
         val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -607,13 +593,15 @@ class DTOMapperTest {
         assertThat(result.reasonCode).isEqualTo(transaction.reasonCode)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
 
-        assertThat(result.sender.entityName).isEqualTo(sender.entityName)
-        assertThat(result.sender.entityBic).isEqualTo(sender.entityBic)
-        assertThat(result.sender.iban).isEqualTo(sender.iban)
+        assertThat(result.sender.entityName).isEqualTo(transaction.senderBank)
+        assertThat(result.sender.entityBic).isEqualTo(transaction.senderBic)
+        assertThat(result.sender.iban).isEqualTo(transaction.senderIBAN)
+        assertThat(result.sender.fullName).isEqualTo(transaction.senderFullName)
 
-        assertThat(result.receiver.entityName).isEqualTo(receiver.entityName)
-        assertThat(result.receiver.entityBic).isEqualTo(receiver.entityBic)
-        assertThat(result.receiver.iban).isEqualTo(receiver.iban)
+        assertThat(result.receiver.entityName).isEqualTo(transaction.receiverBank)
+        assertThat(result.receiver.entityBic).isEqualTo(transaction.receiverBic)
+        assertThat(result.receiver.iban).isEqualTo(transaction.receiverIBAN)
+        assertThat(result.receiver.fullName).isEqualTo(transaction.receiverFullName)
     }
 
     @Test

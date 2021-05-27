@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.transaction;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import java.time.ZonedDateTime;
@@ -10,6 +12,7 @@ import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
+@JsonInclude(Include.NON_EMPTY)
 public class BPSTransactionEnquirySearchRequest {
 
   @Setter

@@ -29,7 +29,6 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSDayCycle
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSPayment
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
-import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
@@ -396,7 +395,8 @@ class EntityMapperTest {
         val bps = BPSTransaction(
                 "instructionId",
                 ZonedDateTime.now(ZoneId.of("UTC")),
-                "originator",
+                "senderBic",
+                "receiverBic",
                 "messageType",
                 amount,
                 "status"
@@ -407,19 +407,14 @@ class EntityMapperTest {
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
         assertThat(entity.createdAt).isEqualTo(bps.createdDateTime)
         assertThat(entity.status).isEqualTo(bps.status)
-        assertThat(entity.originator).isEqualTo(bps.originator)
+        assertThat(entity.senderBic).isEqualTo(bps.senderBic)
+        assertThat(entity.receiverBic).isEqualTo(bps.receiverBic)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
     }
 
     @Test
     fun `should map Transaction from BPSTransactionDetails fields`() {
         val amount = BPSAmount(BigDecimal.TEN, "SEK")
-        val sender = BPSSenderDetails(
-                "senderName", "senderBic", "iban", "fullname"
-        )
-        val receiver = BPSSenderDetails(
-                "receiverName", "receiverBic", "iban", "fullname"
-        )
         val bps = BPSTransactionDetails(
                 "txnsInstructionId",
                 "messageType",
@@ -431,8 +426,8 @@ class EntityMapperTest {
                 "fileName",
                 "batchId",
                 amount,
-                sender,
-                receiver
+                "senderName", "senderBic", "iban", "fullname",
+                "receiverName", "receiverBic", "iban", "fullname"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
@@ -447,15 +442,15 @@ class EntityMapperTest {
         assertThat(entity.amount.amount).isEqualTo(bps.transactionAmount.amount)
         assertThat(entity.amount.currency).isEqualTo(bps.transactionAmount.currency)
 
-        assertThat(entity.sender.entityBic).isEqualTo(bps.sender.entityBic)
-        assertThat(entity.sender.fullName).isEqualTo(bps.sender.fullName)
-        assertThat(entity.sender.iban).isEqualTo(bps.sender.iban)
-        assertThat(entity.sender.entityName).isEqualTo(bps.sender.entityName)
+        assertThat(entity.senderBic).isEqualTo(bps.senderBic)
+        assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
+        assertThat(entity.senderIBAN).isEqualTo(bps.senderIBAN)
+        assertThat(entity.senderBank).isEqualTo(bps.senderBank)
 
-        assertThat(entity.receiver.entityBic).isEqualTo(bps.receiver.entityBic)
-        assertThat(entity.receiver.fullName).isEqualTo(bps.receiver.fullName)
-        assertThat(entity.receiver.iban).isEqualTo(bps.receiver.iban)
-        assertThat(entity.receiver.entityName).isEqualTo(bps.receiver.entityName)
+        assertThat(entity.receiverBic).isEqualTo(bps.receiverBic)
+        assertThat(entity.receiverBank).isEqualTo(bps.receiverBank)
+        assertThat(entity.receiverIBAN).isEqualTo(bps.receiverIBAN)
+        assertThat(entity.receiverFullName).isEqualTo(bps.receiverFullName)
     }
 
     @Test

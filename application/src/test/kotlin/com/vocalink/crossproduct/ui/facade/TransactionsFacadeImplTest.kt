@@ -57,7 +57,8 @@ class TransactionsFacadeImplTest {
                 Transaction(null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null
+                        null, null, null, null,
+                        null, null
                 )
         ))
         val pageDto = PageDto<TransactionDto>(1, listOf(
@@ -92,7 +93,8 @@ class TransactionsFacadeImplTest {
         val transaction = Transaction(
                 null, null, null, null, null,
                 null, null, null, null,
-                null, null, null, null
+                null, null, null, null, null, null, null,
+                null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
                 null, null, null, null, null, null,

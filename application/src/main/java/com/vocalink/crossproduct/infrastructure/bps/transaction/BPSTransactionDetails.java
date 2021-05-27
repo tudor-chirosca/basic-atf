@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.bps.transaction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
-import com.vocalink.crossproduct.infrastructure.bps.file.BPSSenderDetails;
 import java.time.ZonedDateTime;
 import lombok.Getter;
 
@@ -19,8 +18,14 @@ public class BPSTransactionDetails {
   private final String fileName;
   private final String batchId;
   private final BPSAmount transactionAmount;
-  private final BPSSenderDetails sender;
-  private final BPSSenderDetails receiver;
+  private final String senderBank;
+  private final String senderBic;
+  private final String senderIBAN;
+  private final String senderFullName;
+  private final String receiverBank;
+  private final String receiverBic;
+  private final String receiverIBAN;
+  private final String receiverFullName;
 
   public BPSTransactionDetails(
       @JsonProperty(value = "txnsInstructionId") String txnsInstructionId,
@@ -33,8 +38,14 @@ public class BPSTransactionDetails {
       @JsonProperty(value = "fileName") String fileName,
       @JsonProperty(value = "batchId") String batchId,
       @JsonProperty(value = "transactionAmount") BPSAmount transactionAmount,
-      @JsonProperty(value = "sender") BPSSenderDetails sender,
-      @JsonProperty(value = "receiver") BPSSenderDetails receiver) {
+      @JsonProperty(value = "senderBank") String senderBank,
+      @JsonProperty(value = "senderBic") String senderBic,
+      @JsonProperty(value = "senderIBAN") String senderIBAN,
+      @JsonProperty(value = "senderFullName") String senderFullName,
+      @JsonProperty(value = "receiverBank") String receiverBank,
+      @JsonProperty(value = "receiverBic") String receiverBic,
+      @JsonProperty(value = "receiverIBAN") String receiverIBAN,
+      @JsonProperty(value = "receiverFullName") String receiverFullName) {
     this.txnsInstructionId = txnsInstructionId;
     this.messageType = messageType;
     this.sentDateTime = sentDateTime;
@@ -45,7 +56,13 @@ public class BPSTransactionDetails {
     this.fileName = fileName;
     this.batchId = batchId;
     this.transactionAmount = transactionAmount;
-    this.sender = sender;
-    this.receiver = receiver;
+    this.senderBank = senderBank;
+    this.senderBic = senderBic;
+    this.senderIBAN = senderIBAN;
+    this.senderFullName = senderFullName;
+    this.receiverBank = receiverBank;
+    this.receiverBic = receiverBic;
+    this.receiverIBAN = receiverIBAN;
+    this.receiverFullName = receiverFullName;
   }
 }

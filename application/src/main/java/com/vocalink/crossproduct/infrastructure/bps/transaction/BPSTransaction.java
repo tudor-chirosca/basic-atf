@@ -10,7 +10,8 @@ public class BPSTransaction {
 
   private final String instructionId;
   private final ZonedDateTime createdDateTime;
-  private final String originator;
+  private final String senderBic;
+  private final String receiverBic;
   private final String messageType;
   private final BPSAmount amount;
   private final String status;
@@ -18,13 +19,15 @@ public class BPSTransaction {
   public BPSTransaction(
       @JsonProperty(value = "instructionId") String instructionId,
       @JsonProperty(value = "createdDateTime") ZonedDateTime createdDateTime,
-      @JsonProperty(value = "originator") String originator,
+      @JsonProperty(value = "senderBic") String senderBic,
+      @JsonProperty(value = "receiverBic") String receiverBic,
       @JsonProperty(value = "messageType") String messageType,
       @JsonProperty(value = "amount") BPSAmount amount,
       @JsonProperty(value = "status") String status) {
     this.instructionId = instructionId;
     this.createdDateTime = createdDateTime;
-    this.originator = originator;
+    this.senderBic = senderBic;
+    this.receiverBic = receiverBic;
     this.messageType = messageType;
     this.amount = amount;
     this.status = status;

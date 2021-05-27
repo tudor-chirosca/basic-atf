@@ -315,13 +315,20 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "amount", source = "amount.amount"),
-      @Mapping(target = "senderBic", source = "originator")
   })
   TransactionDto toDto(Transaction transaction);
 
   @Mappings({
       @Mapping(target = "currency", source = "transaction.amount.currency"),
-      @Mapping(target = "amount", source = "transaction.amount.amount")
+      @Mapping(target = "amount", source = "transaction.amount.amount"),
+      @Mapping(target = "sender.entityName", source = "transaction.senderBank"),
+      @Mapping(target = "sender.entityBic", source = "transaction.senderBic"),
+      @Mapping(target = "sender.iban", source = "transaction.senderIBAN"),
+      @Mapping(target = "sender.fullName", source = "transaction.senderFullName"),
+      @Mapping(target = "receiver.entityName", source = "transaction.receiverBank"),
+      @Mapping(target = "receiver.entityBic", source = "transaction.receiverBic"),
+      @Mapping(target = "receiver.iban", source = "transaction.receiverIBAN"),
+      @Mapping(target = "receiver.fullName", source = "transaction.receiverFullName")
   })
   TransactionDetailsDto toDetailsDto(Transaction transaction);
 
