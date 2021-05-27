@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_DASHB
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.ui.aspects.Auditable;
 import com.vocalink.crossproduct.ui.aspects.Positions;
+import com.vocalink.crossproduct.ui.aspects.AuditableDetail;
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
@@ -32,14 +33,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApprovalController implements ApprovalApi {
 
+  private final AuditableDetail auditableDetail;
+
   private final ApprovalFacade approvalFacade;
 
+  @Auditable(params = @Positions(clientType = 0, context = 1, content = 3, request = 4, requestId = 2))
   @PostMapping(value = "/approvals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApprovalConfirmationResponseDto> submitApprovalConfirmation(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
       @PathVariable final String id,
-      @RequestBody final ApprovalConfirmationRequest request) {
+      @RequestBody final ApprovalConfirmationRequest request,
+      final HttpServletRequest httpServletRequest) {
     final ApprovalConfirmationResponseDto approvalDetailsDto = approvalFacade
         .submitApprovalConfirmation(context, clientType, request, id);
     return ResponseEntity.ok().body(approvalDetailsDto);
@@ -69,15 +74,18 @@ public class ApprovalController implements ApprovalApi {
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
 
+  @Auditable(params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @PostMapping(value = "/approvals", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApprovalDetailsDto> requestApproval(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
-      @Valid @RequestBody final ApprovalChangeRequest request) {
+      @Valid @RequestBody final ApprovalChangeRequest request,
+      final HttpServletRequest httpServletRequest) {
 
     final ApprovalDetailsDto approvalDetailsDto = approvalFacade
         .requestApproval(context, clientType, request);
 
+    auditableDetail.setJobId(approvalDetailsDto.getJobId());
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
 

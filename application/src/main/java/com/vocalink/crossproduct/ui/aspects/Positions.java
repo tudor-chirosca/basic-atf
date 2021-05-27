@@ -19,4 +19,6 @@ public @interface Positions {
   int content() default POSITION_NOT_SET;
 
   int request() default POSITION_NOT_SET;
+
+  int requestId() default POSITION_NOT_SET;
 }

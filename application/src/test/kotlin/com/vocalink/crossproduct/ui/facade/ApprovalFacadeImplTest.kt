@@ -165,7 +165,7 @@ class ApprovalFacadeImplTest {
             null, null, null, null, null, null,
             null, null, null, null, null, null, null, null)
 
-        val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"),"notes")
+        val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes")
 
         `when`(approvalRepository.requestApproval(any()))
             .thenReturn(approval)

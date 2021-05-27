@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getMessageType;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;

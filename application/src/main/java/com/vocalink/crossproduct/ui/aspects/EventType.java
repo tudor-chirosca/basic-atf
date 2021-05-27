@@ -3,6 +3,8 @@ package com.vocalink.crossproduct.ui.aspects;
 import static java.util.Arrays.stream;
 
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalSearchRequest;
 import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams;
 import com.vocalink.crossproduct.ui.dto.batch.BatchEnquirySearchRequest;
@@ -47,23 +49,19 @@ public enum EventType {
   VIEW_SETTLEMENT_DASHBOARD_BY_MESSAGE_TYPE(String.class),
   VIEW_SCHEME_IO_DASHBOARD(String.class),
   VIEW_PTT_IO_DASHBOARD(String.class),
-  REQ_BATCH_CANCELLATION(Object.class),
-  APPROVE_BATCH_CANCELLATION_REQ(Object.class),
-  REJECT_BATCH_CANCELLATION_REQ(Object.class),
-  SUSPEND_PTT(Object.class),
-  APPROVE_SUSPEND(Object.class),
-  REJECT_SUSPEND(Object.class),
-  UNSUSPEND_PTT(Object.class),
-  APPROVE_UNSUSPENSION(Object.class),
-  REJECT_UNSUSPENSION(Object.class),
-  AMEND_PTT_CONFIG(Object.class),
-  APPROVE_PTT_CONFIG_AMENDMENT(Object.class),
-  REJECT_PTT_CONFIG_AMENDMENT(Object.class);
+  REQ_BATCH_CANCELLATION(ApprovalChangeRequest.class),
+  SUSPEND_PTT(ApprovalChangeRequest.class),
+  UNSUSPEND_PTT(ApprovalChangeRequest.class),
+  AMEND_PTT_CONFIG(ApprovalChangeRequest.class),
+  APPROVE_REQUEST(ApprovalConfirmationRequest.class),
+  REJECT_REQUEST(ApprovalConfirmationRequest.class),
+  UNKNOWN(Object.class);
 
   private final Class<?> requestType;
 
   public static List<String> getEventsList() {
     return stream(EventType.values())
+        .filter(e -> e!=UNKNOWN)
         .map(Enum::name)
         .collect(Collectors.toList());
   }

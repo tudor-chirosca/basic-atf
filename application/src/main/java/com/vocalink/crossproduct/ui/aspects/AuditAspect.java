@@ -8,6 +8,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
+import java.security.InvalidParameterException;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class AuditAspect {
 
   private final AuditFacade auditFacade;
   private final ContentUtils contentUtils;
+  private final AuditableDetail auditableDetail;
 
   @Around(value = "@annotation(auditable)")
   Object log(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
@@ -52,7 +54,7 @@ public class AuditAspect {
     final String product = getProduct(joinPoint, auditable);
     final String jsonString = getContent(joinPoint, auditable);
 
-    final EventType eventType = auditable.type();
+    final EventType eventType = getEventType(joinPoint, auditable);
 
     final String userId = request.map(r -> r.getHeader(X_USER_ID_HEADER))
         .orElse(EMPTY);
@@ -78,9 +80,8 @@ public class AuditAspect {
 
     try {
       Object obj = joinPoint.proceed();
-
+      event.setApprovalRequestId(getApprovalRequestId(joinPoint, auditable));
       getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
-
       return obj;
     } catch (Throwable throwable) {
       getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_FAILURE, RESPONSE));
@@ -89,16 +90,45 @@ public class AuditAspect {
     }
   }
 
+  private String getApprovalRequestId(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    if (auditable.params().requestId() == POSITION_NOT_SET) {
+      return auditableDetail.getJobId();
+    }
+    return joinPoint.getArgs()[auditable.params().requestId()].toString();
+  }
+
   private boolean isPolling(Optional<HttpServletRequest> request) {
     return request.map(r -> valueOf(r.getHeader(X_POLLING_UI_HEADER)))
         .orElse(false);
   }
 
   protected String getContent(ProceedingJoinPoint joinPoint, Auditable auditable) {
-    if (auditable.params().content() != POSITION_NOT_SET) {
+    if (auditable.params().content() == POSITION_NOT_SET) {
+      return EMPTY_CONTENT;
+    }
+    if (!EventType.UNKNOWN.equals(auditable.type())) {
       return getContentUtils().toJsonString(joinPoint.getArgs()[auditable.params().content()]);
     }
-    return EMPTY_CONTENT;
+    Object content = joinPoint.getArgs()[auditable.params().content()];
+    if (content instanceof AuditableRequest) {
+      return getContentUtils().toJsonString(((AuditableRequest) content).getAuditableContent());
+    }
+    throw new InvalidParameterException("Could not resolve request object at content position");
+  }
+
+  protected EventType getEventType(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    EventType eventType = auditable.type();
+    if (!EventType.UNKNOWN.equals(eventType)) {
+      return eventType;
+    }
+    if (auditable.params().content() == POSITION_NOT_SET) {
+      throw new IllegalStateException("No Request object at content position");
+    }
+    Object content = joinPoint.getArgs()[auditable.params().content()];
+    if (content instanceof AuditableRequest) {
+      return ((AuditableRequest) content).getEventType();
+    }
+    throw new InvalidParameterException("Could not resolve request object at content position");
   }
 
   protected Optional<HttpServletRequest> getHttpRequest(ProceedingJoinPoint joinPoint,

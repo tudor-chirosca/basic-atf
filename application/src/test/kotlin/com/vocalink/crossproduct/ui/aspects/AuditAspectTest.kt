@@ -1,14 +1,17 @@
 package com.vocalink.crossproduct.ui.aspects
 
+import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
 import com.vocalink.crossproduct.infrastructure.config.JacksonConfig
 import com.vocalink.crossproduct.ui.aspects.AuditAspect.EMPTY_CONTENT
 import com.vocalink.crossproduct.ui.aspects.EventType.SETTL_DETAILS
+import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationRequest
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType.SYSTEM
 import org.apache.commons.lang.RandomStringUtils.random
 import org.apache.commons.lang3.StringUtils.EMPTY
 import org.aspectj.lang.ProceedingJoinPoint
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,6 +22,7 @@ import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import java.security.InvalidParameterException
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 
@@ -41,7 +45,8 @@ class AuditAspectTest {
         val OPERATION_TYPE_REQUEST = OperationType.REQUEST
         val OPERATION_TYPE_RESPONSE = OperationType.RESPONSE
         val CONTENT = random(128)!!
-        val ENDPOINT_PARAMETERS = arrayOf(PRODUCT, mapOf("limit" to "100", "offset" to "50"), CLIENT_TYPE, HTTP_REQUEST)
+        val APPROVE_CONFIRM_REQUEST = ApprovalConfirmationRequest(ApprovalConfirmationType.APPROVE, "some message")
+        val ENDPOINT_PARAMETERS = arrayOf(PRODUCT, APPROVE_CONFIRM_REQUEST, CLIENT_TYPE, HTTP_REQUEST)
     }
 
     @BeforeEach
@@ -49,6 +54,7 @@ class AuditAspectTest {
         joinPoint = mock(ProceedingJoinPoint::class.java)
         auditable = mock(Auditable::class.java)
         positions = mock(Positions::class.java)
+        `when`(auditable.type).thenReturn(EVENT_TYPE)
         `when`(auditable.params).thenReturn(positions)
         `when`(joinPoint.args).thenReturn(ENDPOINT_PARAMETERS)
     }
@@ -93,6 +99,82 @@ class AuditAspectTest {
         val content = auditAspect.getContent(joinPoint, auditable)
 
         assertThat(content).isEqualTo(contentUtils.toJsonString(ENDPOINT_PARAMETERS[1]))
+    }
+
+    @Test
+    fun `should return content JSON when content is instanceof AuditableRequest`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        doCallRealMethod().`when`(auditAspect).getContent(joinPoint, auditable)
+
+        val content = auditAspect.getContent(joinPoint, auditable)
+
+        assertThat(content).isEqualTo(contentUtils.toJsonString(APPROVE_CONFIRM_REQUEST.auditableContent))
+    }
+
+    @Test
+    fun `should throw exception InvalidParameterException during executing getContent`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        `when`(joinPoint.args).thenReturn(arrayOf(PRODUCT, mapOf("limit" to "100", "offset" to "50")))
+        doCallRealMethod().`when`(auditAspect).getContent(joinPoint, auditable)
+
+        assertThatExceptionOfType(InvalidParameterException::class.java)
+                .isThrownBy { auditAspect.getContent(joinPoint, auditable) }
+    }
+
+    @Test
+    fun `should define and return event type for approvals when it wasn't specified`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        doCallRealMethod().`when`(auditAspect).getEventType(joinPoint, auditable)
+
+        val eventType = auditAspect.getEventType(joinPoint, auditable)
+
+        assertThat(eventType).isEqualTo(EventType.APPROVE_REQUEST)
+    }
+
+    @Test
+    fun `should return eventType when it was specified`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        doCallRealMethod().`when`(auditAspect).getEventType(joinPoint, auditable)
+
+        val eventType = auditAspect.getEventType(joinPoint, auditable)
+
+        assertThat(eventType).isEqualTo(auditable.type)
+    }
+
+    @Test
+    fun `should throw exception IllegalStateException during executing getEventType`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(Positions.POSITION_NOT_SET)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        doCallRealMethod().`when`(auditAspect).getEventType(joinPoint, auditable)
+
+        assertThatExceptionOfType(IllegalStateException::class.java)
+                .isThrownBy { auditAspect.getEventType(joinPoint, auditable) }
+    }
+
+    @Test
+    fun `should throw exception InvalidParameterException during executing getEventType`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        `when`(joinPoint.args).thenReturn(arrayOf(PRODUCT, mapOf("limit" to "100", "offset" to "50")))
+        doCallRealMethod().`when`(auditAspect).getEventType(joinPoint, auditable)
+
+        assertThatExceptionOfType(InvalidParameterException::class.java)
+                .isThrownBy { auditAspect.getEventType(joinPoint, auditable) }
     }
 
     @Test
@@ -204,6 +286,7 @@ class AuditAspectTest {
         `when`(auditAspect.getContent(joinPoint, auditable)).thenReturn(CONTENT)
         `when`(auditAspect.getClientType(joinPoint, auditable)).thenReturn(CLIENT_TYPE.name)
         `when`(auditAspect.getHttpRequest(joinPoint, auditable)).thenReturn(Optional.of(request))
+        `when`(auditAspect.getEventType(joinPoint, auditable)).thenReturn(EVENT_TYPE)
         return auditFacade
     }
 

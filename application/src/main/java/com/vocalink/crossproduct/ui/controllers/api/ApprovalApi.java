@@ -37,7 +37,8 @@ public interface ApprovalApi {
   })
   ResponseEntity<ApprovalConfirmationResponseDto> submitApprovalConfirmation(
       final ClientType clientType, final String context, final String id,
-      @Valid final ApprovalConfirmationRequest request);
+      @Valid final ApprovalConfirmationRequest request,
+      final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Fetch all Approvals")
   @ApiResponses({
@@ -57,7 +58,8 @@ public interface ApprovalApi {
   ResponseEntity<ApprovalDetailsDto> requestApproval(
       final ClientType clientType,
       final String context,
-      @Valid final ApprovalChangeRequest request);
+      @Valid final ApprovalChangeRequest request,
+      final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Fetch Request by users references")
   @ApiResponses({

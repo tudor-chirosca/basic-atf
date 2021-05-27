@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects;
 
 import static java.lang.annotation.ElementType.METHOD;
+import static com.vocalink.crossproduct.ui.aspects.EventType.UNKNOWN;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -12,7 +13,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Auditable {
 
-  EventType type();
+  EventType type() default UNKNOWN;
 
   Positions params();
 }

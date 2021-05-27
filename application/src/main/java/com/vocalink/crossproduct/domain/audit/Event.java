@@ -19,4 +19,5 @@ public class Event {
   private final String correlationId;
   private final String eventType;
   private final String operationType;
+  private final String approvalRequestId;
 }

@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.aspects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -18,6 +19,8 @@ public class OccurringEvent {
   private final String correlationId;
   private final EventType eventType;
   private final OperationType operationType;
+  @Setter
+  private String approvalRequestId;
 
   public OccurringEvent(OccurringEvent event, String content, OperationType operationType) {
     this.product = event.getProduct();
@@ -29,5 +32,6 @@ public class OccurringEvent {
     this.eventType = event.getEventType();
     this.content = content;
     this.operationType = operationType;
+    this.approvalRequestId = event.getApprovalRequestId();
   }
 }

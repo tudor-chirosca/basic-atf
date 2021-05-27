@@ -65,6 +65,7 @@ class ApprovalControllerTest : ControllerTest() {
         const val VALID_STATUS_CHANGE_WITH_NOTES_REQUEST_BODY = """ {
            "requestType" : "PARTICIPANT_SUSPEND",
            "requestedChange" : {
+                "id": "CITISESXXXX",
                 "status": "some_new_status"
               },
            "notes" : "notes"
@@ -73,6 +74,7 @@ class ApprovalControllerTest : ControllerTest() {
         const val VALID_STATUS_CHANGE_REQUEST_BODY = """ {
            "requestType" : "PARTICIPANT_SUSPEND",
            "requestedChange" : {
+                "id": "CITISESXXXX",
                 "status": "some_new_status"
               },
            "notes" : "notes"
