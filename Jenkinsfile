@@ -128,7 +128,7 @@ pipeline {
                         }
                     }
                 }
-                stage("Migrate PREPROD DB") {
+                stage("Migrate DEV DB") {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         runDBMigrations(goal: 'RELEASE')
@@ -136,11 +136,11 @@ pipeline {
                 }       
                 
                 
-                stage("Deploy to PREPROD") {
+                stage("Deploy to DEV") {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         script {
-                            echo "Deploying ${env.gitTag} to ${PREPROD_IP}"
+                            echo "Deploying ${env.gitTag} to ${DEV_IP}"
                             def envVars = "-e BPS_CONFIG.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRING_PROFILES_ACTIVE=preprod -e JAVA_OPTS='-Xmx2g'"
                             def dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
                             
