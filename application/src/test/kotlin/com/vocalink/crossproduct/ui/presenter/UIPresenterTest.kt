@@ -66,6 +66,7 @@ class UIPresenterTest {
                     currentCycle =  Cycle.builder()
                         .id("002")
                         .status(CycleStatus.OPEN)
+                        .isNextDayCycle(false)
                         .settlementTime(ZonedDateTime.now(clock))
                         .build(),
                     previousCycle = Cycle.builder()
@@ -78,13 +79,13 @@ class UIPresenterTest {
                 )
             ),
             Arguments.of(
-                "SOD/EOD in the same date",
+                "SOD/EOD when cycles are in different dates",
                 CycleDashboardTestCase(
                     currentCycle = Cycle.builder()
                         .id("002")
                         .status(CycleStatus.NOT_STARTED)
-                        .settlementTime(ZonedDateTime.now(clock))
                         .isNextDayCycle(true)
+                        .settlementTime(ZonedDateTime.now(clock).plusDays(1))
                         .build(),
                     previousCycle = Cycle.builder()
                         .id("001")
@@ -96,28 +97,12 @@ class UIPresenterTest {
                 )
             ),
             Arguments.of(
-                "BPS is in a first cycle of day",
+                "BPS is in a first cycle of the next day, no previous cycle",
                 CycleDashboardTestCase(
                     currentCycle = Cycle.builder()
                         .id("002")
                         .status(CycleStatus.OPEN)
-                        .settlementTime(ZonedDateTime.now(clock).plusDays(1))
-                        .build(),
-                    previousCycle = Cycle.builder()
-                        .id("001")
-                        .status(CycleStatus.CLOSED)
-                        .settlementTime(ZonedDateTime.now(clock))
-                        .build(),
-                    showCurrent = true,
-                    showPrevious = false
-                )
-            ),
-            Arguments.of(
-                "BPS is in a first cycle of day, no previous cycle",
-                CycleDashboardTestCase(
-                    currentCycle = Cycle.builder()
-                        .id("002")
-                        .status(CycleStatus.OPEN)
+                        .isNextDayCycle(true)
                         .build(),
                     previousCycle = null,
                     showCurrent = true,
@@ -125,38 +110,16 @@ class UIPresenterTest {
                 )
             ),
             Arguments.of(
-                "Cycles in different dates",
+                "BPS is in a first cycle of the current day, no previous cycle",
                 CycleDashboardTestCase(
                     currentCycle = Cycle.builder()
                         .id("002")
                         .status(CycleStatus.OPEN)
-                        .settlementTime(ZonedDateTime.now(clock).plusDays(1))
-                        .isNextDayCycle(true)
+                        .isNextDayCycle(false)
                         .build(),
-                    previousCycle = Cycle.builder()
-                        .id("001")
-                        .status(CycleStatus.CLOSED)
-                        .settlementTime(ZonedDateTime.now(clock))
-                        .build(),
+                    previousCycle = null,
                     showCurrent = true,
                     showPrevious = false
-                )
-            ),
-            Arguments.of(
-                "SOD/EOD",
-                CycleDashboardTestCase(
-                    currentCycle = Cycle.builder()
-                        .id("002")
-                        .status(CycleStatus.NOT_STARTED)
-                        .settlementTime(ZonedDateTime.now(clock))
-                        .build(),
-                    previousCycle = Cycle.builder()
-                        .id("001")
-                        .status(CycleStatus.CLOSED)
-                        .settlementTime(ZonedDateTime.now(clock))
-                        .build(),
-                    showCurrent = false,
-                    showPrevious = true
                 )
             )
         )
@@ -250,14 +213,17 @@ class UIPresenterTest {
     }
 
     @Test
-    fun `should get Settlement Dashboard DTO if cycles contain next settlement cycle and previous cycle`() {
+    fun `should get Settlement Dashboard DTO if cycles contain next day settlement cycle and previous cycle`() {
         val cycles = listOf(
             Cycle.builder()
                 .settlementTime(ZonedDateTime.now(clock).plusDays(1))
+                .status(CycleStatus.NOT_STARTED)
+                .isNextDayCycle(false)
                 .id("03")
                 .build(),
             Cycle.builder()
                 .settlementTime(ZonedDateTime.now(clock))
+                .status(CycleStatus.CLOSED)
                 .id("02")
                 .build()
         )
@@ -265,9 +231,8 @@ class UIPresenterTest {
 
         val result = uiPresenter.presentAllParticipantsSettlement(cycles, participants)
 
-        assertThat(result.previousCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
-        assertThat(result.currentCycle.id).isEqualTo("03")
-        assertThat(result.currentCycle.settlementTime).isEqualTo(ZonedDateTime.now(clock).plusDays(1))
+        assertThat(result.currentCycle).extracting("id", "settlementTime", "cutOffTime", "status").containsOnlyNulls()
+        assertThat(result.previousCycle.id).isEqualTo("02")
     }
 
     @Test

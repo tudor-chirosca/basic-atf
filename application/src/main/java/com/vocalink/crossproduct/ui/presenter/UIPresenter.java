@@ -92,7 +92,6 @@ import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -220,18 +219,14 @@ public class UIPresenter implements Presenter {
 
   public Cycle getPreviousCycle(List<Cycle> cycles) {
     Cycle empty = Cycle.builder().build();
-    if (cycles == null || cycles.isEmpty()) {
+    if (cycles == null || cycles.isEmpty() || cycles.size() == 1) {
       return empty;
     }
-    if (cycles.size() > 1) {
-      Cycle currentCycle = cycles.get(0);
-      Cycle previousCycle = cycles.get(1);
-      if (currentCycle != null && currentCycle.isPreviousDayCycle(previousCycle)) {
-        return empty;
-      }
-      return previousCycle;
+    Cycle previousCycle = cycles.get(1);
+    if (previousCycle == null) {
+      return empty;
     }
-    return empty;
+    return previousCycle;
   }
 
   @Override
