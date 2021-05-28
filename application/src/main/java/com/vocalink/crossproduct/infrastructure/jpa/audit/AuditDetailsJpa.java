@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.jpa.audit;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -10,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,12 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import org.hibernate.annotations.Type;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Entity
 @Table(name = "user_audit_details")
@@ -47,7 +45,7 @@ public class AuditDetailsJpa implements Serializable {
   static {
     SORT_BINDINGS.put("createdAt", Collections.singletonList(DEFAULT_SORT_PARAMETER));
     SORT_BINDINGS.put("serviceId", Collections.singletonList("serviceId"));
-    SORT_BINDINGS.put("eventType", Collections.singletonList("userActivityString"));
+    SORT_BINDINGS.put("eventType", Collections.singletonList("activityName"));
     SORT_BINDINGS.put("user", Arrays.asList("firstName", "lastName"));
     SORT_BINDINGS.put("responseContent", Collections.singletonList("responseContent"));
   }

@@ -17,7 +17,7 @@ class AuditDetailsJpaTest {
             Order.asc("serviceId"),
             Order.asc("firstName"),
             Order.asc("lastName"),
-            Order.desc("userActivityString")
+            Order.desc("activityName")
         )
     }
 
