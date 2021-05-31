@@ -9,8 +9,6 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
-import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto;
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto;
 import com.vocalink.crossproduct.ui.dto.settlement.SettlementDashboardRequest;
@@ -18,6 +16,8 @@ import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,18 +32,19 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   public SettlementDashboardDto getParticipantSettlement(String product, ClientType clientType,
       SettlementDashboardRequest settlementDashboardRequest) {
 
-    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
+    final List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
+    
     final String fundingParticipantId = settlementDashboardRequest.getFundingParticipantId();
 
     if (nonNull(fundingParticipantId)) {
-      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
+      final Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(fundingParticipantId);
 
-      List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+      final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
           .findByConnectingPartyAndType(fundingParticipantId,
               ParticipantType.FUNDED.getDescription()).getItems();
 
-      List<IntraDayPositionGross> intraDays = repositoryFactory
+      final List<IntraDayPositionGross> intraDays = repositoryFactory
           .getIntradayPositionGrossRepository(product)
           .findById(fundingParticipantId);
 
@@ -51,13 +52,15 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
           .presentFundingParticipantSettlement(cycles, participants, fundingParticipant, intraDays);
     }
 
-    List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+    Predicate<Participant> scheme = p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR;
+    Predicate<Participant> tpsp = p -> p.getParticipantType() != ParticipantType.TPSP;
+    Predicate<Participant> funded = p -> p.getParticipantType() != ParticipantType.FUNDED;
+
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findAll()
         .getItems()
         .stream()
-        .filter(p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR)
-        .filter(p -> p.getParticipantType() != ParticipantType.TPSP)
-        .filter(p -> p.getParticipantType() != ParticipantType.FUNDED)
+        .filter(Stream.of(scheme, tpsp, funded).reduce(x -> true, Predicate::and))
         .collect(toList());
 
     return presenterFactory.getPresenter(clientType)
@@ -68,36 +71,26 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   public ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String product,
       ClientType clientType, String participantId) {
 
-    Participant participant = repositoryFactory.getParticipantRepository(product)
+    final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);
 
-    List<ParticipantPosition> positions = repositoryFactory.getPositionRepository(product)
+    final List<ParticipantPosition> positions = repositoryFactory.getPositionRepository(product)
         .findByParticipantId(participantId);
 
-    List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findLatest(2);
-
-    if (cycles.isEmpty()) {
-      throw new EntityNotFoundException("No cycles found for participantId: " + participantId);
-    }
-
-    if (cycles.size() != positions.size()) {
-      throw new NonConsistentDataException(
-          "Number of Cycles is not equal with number of Position Details");
-    }
+    final List<Cycle> cycles = repositoryFactory.getCycleRepository(product)
+        .findLatest(2);
 
     if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
-      Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
+      final Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
           .findById(participant.getFundingBic());
 
-      IntraDayPositionGross intraDayPositionGross = repositoryFactory
+      final IntraDayPositionGross intraDayPositionGross = repositoryFactory
           .getIntradayPositionGrossRepository(product)
           .findById(participant.getFundingBic())
           .stream()
           .filter(f -> f.getDebitParticipantId().equals(participantId))
           .findFirst()
-          .orElseThrow(() -> new EntityNotFoundException(
-              "There is no Intra-Day Participant Position gross for participant id: "
-                  + participant.getId()));
+          .orElse(IntraDayPositionGross.builder().build());
 
       return presenterFactory.getPresenter(clientType)
           .presentFundedParticipantSettlementDetails(cycles, positions, participant,

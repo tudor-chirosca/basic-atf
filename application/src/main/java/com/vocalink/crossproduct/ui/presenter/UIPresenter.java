@@ -43,7 +43,6 @@ import com.vocalink.crossproduct.domain.settlement.SettlementDetails;
 import com.vocalink.crossproduct.domain.settlement.SettlementSchedule;
 import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.validation.ValidationApproval;
-import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.aspects.ContentUtils;
 import com.vocalink.crossproduct.ui.aspects.EventType;
 import com.vocalink.crossproduct.ui.dto.IODashboardDto;
@@ -165,11 +164,11 @@ public class UIPresenter implements Presenter {
   public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant) {
 
-    Cycle currentCycle = getCurrentCycle(cycles);
-    Cycle previousCycle = getPreviousCycle(cycles);
+    final Cycle currentCycle = getCurrentCycle(cycles);
+    final Cycle previousCycle = getPreviousCycle(cycles);
 
-    ParticipantPosition currentPosition = getPosition(positions, currentCycle);
-    ParticipantPosition previousPosition = getPosition(positions, previousCycle);
+    final ParticipantPosition currentPosition = getPosition(positions, currentCycle);
+    final ParticipantPosition previousPosition = getPosition(positions, previousCycle);
 
     return MAPPER
         .toDto(currentCycle, previousCycle, currentPosition, previousPosition, participant);
@@ -180,11 +179,11 @@ public class UIPresenter implements Presenter {
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
 
-    Cycle currentCycle = getCurrentCycle(cycles);
-    Cycle previousCycle = getPreviousCycle(cycles);
+    final Cycle currentCycle = getCurrentCycle(cycles);
+    final Cycle previousCycle = getPreviousCycle(cycles);
 
-    ParticipantPosition currentPosition = getPosition(positions, currentCycle);
-    ParticipantPosition previousPosition = getPosition(positions, previousCycle);
+    final ParticipantPosition currentPosition = getPosition(positions, currentCycle);
+    final ParticipantPosition previousPosition = getPosition(positions, previousCycle);
 
     return MAPPER.toDto(currentCycle, previousCycle, currentPosition, previousPosition,
         participant, fundingParticipant, intradayPositionGross);
@@ -192,14 +191,12 @@ public class UIPresenter implements Presenter {
 
   private ParticipantPosition getPosition(List<ParticipantPosition> positions, Cycle cycle) {
     if (cycle.isEmpty()) {
-      return ParticipantPosition.builder()
-              .build();
+      return ParticipantPosition.builder().build();
     }
     return positions.stream()
-        .filter(f -> f.getCycleId().equalsIgnoreCase(cycle.getId())).findFirst()
-        .orElseThrow(() -> new NonConsistentDataException(
-            "Current position does not match current cycle id")
-        );
+        .filter(f -> f.getCycleId().equalsIgnoreCase(cycle.getId()))
+        .findFirst()
+        .orElse(ParticipantPosition.builder().build());
   }
 
   public Cycle getCurrentCycle(List<Cycle> cycles) {

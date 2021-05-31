@@ -48,7 +48,6 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
                     "updatedDate": "2021-02-18T15:00:00Z"
                 }"""
 
-
         const val VALID_CYCLE_RESPONSE: String = """{
             "currency": "SEK",
             "schemeCode": "P27-SEK",
@@ -71,6 +70,11 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
                      }
              ]
              }"""
+
+        const val VALID_NO_CYCLES_RESPONSE: String = """{
+            "currency": "SEK",
+            "schemeCode": "P27-SEK"
+        }"""
 
         const val VALID_SETTLEMENT_RESPONSE: String =
                 """{
@@ -181,5 +185,28 @@ class BPSCycleRepositoryTest @Autowired constructor(var cycleRepository: BPSCycl
 
         assertThat(result).isNotEmpty
         assertThat(result[0].id).isEqualTo(cycleIds[0])
+    }
+
+    @Test
+    fun `should pass with success when no cycles arrives`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/settlement/runningSettlementPositions/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json; charset=utf-8")
+                                .withBody(VALID_SETTLEMENT_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_SETTLEMENT_REQUEST_JSON)))
+
+        mockServer.stubFor(
+                post(urlEqualTo("/cycles/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "application/json; charset=utf-8")
+                                .withBody(VALID_NO_CYCLES_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_CYCLE_REQUEST_JSON)))
+
+        val response = cycleRepository.findAll()
+        assertThat(response).isNotNull
+        assertThat(response.size).isEqualTo(0)
     }
 }

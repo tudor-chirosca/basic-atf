@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.cycle;
 
+import static java.util.Collections.emptyList;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -20,7 +22,7 @@ public class BPSCycleWrapper {
       @JsonProperty("cycles") List<BPSCycle> cycles) {
     this.currency = currency;
     this.schemeCode = schemeCode;
-    this.cycles = cycles;
+    this.cycles = cycles == null ? emptyList() : cycles;
   }
 
 }

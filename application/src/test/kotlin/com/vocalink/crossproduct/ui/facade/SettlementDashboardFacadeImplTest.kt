@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.PositionRepository
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
-import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException
 import com.vocalink.crossproduct.mocks.MockParticipants
 import com.vocalink.crossproduct.ui.dto.ParticipantDashboardSettlementDetailsDto
 import com.vocalink.crossproduct.ui.dto.SettlementDashboardDto
@@ -24,6 +23,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType.UI
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -35,7 +35,6 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import java.time.ZonedDateTime
 
 open class SettlementDashboardFacadeImplTest {
 
@@ -124,57 +123,6 @@ open class SettlementDashboardFacadeImplTest {
     }
 
     @Test
-    fun `should throw EntityNotFoundException on cycles less than 2 for participant settlement details`() {
-        val participantId = "HANDSESS"
-        `when`(participantRepository.findById(any()))
-                .thenReturn(MockParticipants().getParticipant(false))
-        `when`(positionRepository.findByParticipantId(any()))
-                .thenReturn(emptyList())
-        `when`(cycleRepository.findLatest(2))
-                .thenReturn(emptyList())
-        `when`(participantRepository.findAll())
-                .thenReturn(Page(2, MockParticipants().participants))
-        `when`(cycleRepository.findAll())
-                .thenReturn(emptyList())
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
-        }
-    }
-
-    @Test
-    fun `should throw EntityNotFoundException if no IntraDayPositionGross found`() {
-        val participant = Participant.builder()
-                .id("HANDSESS")
-                .bic("HANDSESS")
-                .fundingBic("NDEASESSXXX")
-                .name("Svenska Handelsbanken")
-                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
-                .status(ParticipantStatus.SUSPENDED)
-                .participantType(ParticipantType.FUNDED)
-                .build()
-        val positionsDetails = ParticipantPosition(
-                null, null,null,null,null,
-                null,null,null,null
-        )
-        val cycle = Cycle(
-                null, null, null, null,null,
-                null, null
-        )
-        `when`(participantRepository.findById(any()))
-                .thenReturn(participant)
-        `when`(positionRepository.findByParticipantId(any()))
-                .thenReturn(listOf(positionsDetails, positionsDetails))
-        `when`(cycleRepository.findLatest(2))
-                .thenReturn(listOf(cycle, cycle))
-        `when`(intraDayPositionGrossRepository.findById(any()))
-                .thenReturn(emptyList())
-
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participant.id)
-        }
-    }
-
-    @Test
     fun `should enter in presentFundedParticipantSettlementDetails if FUNDED participant`() {
         val participant = Participant.builder()
                 .id("HANDSESS")
@@ -243,102 +191,6 @@ open class SettlementDashboardFacadeImplTest {
 
         verify(uiPresenter, atLeastOnce()).presentParticipantSettlementDetails(
                 any(), any(), any())
-    }
-
-    @Test
-    fun `should throw NonConsistentDataException when positions and cycle size differs`() {
-        val participantId = "HANDSESS"
-        val cycles = listOf(
-                Cycle.builder().build(),
-                Cycle.builder().build()
-        )
-        `when`(participantRepository.findById(any()))
-                .thenReturn(MockParticipants().getParticipant(false))
-        `when`(positionRepository.findByParticipantId(any()))
-                .thenReturn(emptyList())
-        `when`(cycleRepository.findLatest(2))
-                .thenReturn(cycles)
-        assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
-        }
-    }
-
-    @Test
-    fun `should throw error on settlements details if cycles are empty`() {
-        val participantId = "HANDSESS"
-        val positionsDetails = ParticipantPosition(
-                null, null,null,null,null,
-                null,null,null,null
-        )
-        `when`(participantRepository
-                .findById(participantId))
-                .thenReturn(MockParticipants().getParticipant(false))
-        `when`(positionRepository
-                .findByParticipantId(participantId))
-                .thenReturn(listOf(positionsDetails))
-        `when`(cycleRepository.findByIds(emptyList()))
-                .thenReturn(emptyList())
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
-        }
-    }
-
-    @Test
-    fun `should throw error if no funding Participant with given id`() {
-        val participantId = "HANDSESS"
-        val positionsDetails = ParticipantPosition(
-               null, null,null,null,null,
-                null,null,null,null
-        )
-        val mockModel = ParticipantDashboardSettlementDetailsDto(
-                null, null,null,null,null,
-                null,null,null,null
-        )
-        val cycles = listOf(
-                Cycle.builder().build(),
-                Cycle.builder().build()
-        )
-        `when`(participantRepository.findById(any()))
-                .thenReturn(MockParticipants().getParticipant(true))
-        `when`(positionRepository.findByParticipantId(any()))
-                .thenReturn(listOf(positionsDetails))
-        `when`(cycleRepository.findByIds(any()))
-                .thenReturn(cycles)
-        `when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any()))
-                .thenReturn(mockModel)
-
-        assertThrows(EntityNotFoundException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
-        }
-    }
-
-    @Test
-    fun `should throw error if no Intra-Day Participant Position gross for participant id`() {
-        val participantId = "ESSESESS"
-        val positionsDetails = ParticipantPosition(
-                null, null,null,null,null,
-                null,null,null,null
-        )
-        val mockModel = ParticipantDashboardSettlementDetailsDto(
-                null, null,null,null,null,
-                null,null,null,null
-        )
-        val cycles = listOf(
-                Cycle.builder().build(),
-                Cycle.builder().build()
-        )
-        `when`(participantRepository.findById(any()))
-                .thenReturn(selfFundingParticipant)
-        `when`(positionRepository.findByParticipantId(any()))
-                .thenReturn(listOf(positionsDetails))
-        `when`(cycleRepository.findLatest(2))
-                .thenReturn(cycles)
-        `when`(uiPresenter.presentParticipantSettlementDetails(any(), any(), any()))
-                .thenReturn(mockModel)
-
-        assertThrows(NonConsistentDataException::class.java) {
-            settlementServiceFacadeImpl.getParticipantSettlementDetails(CONTEXT, UI, participantId)
-        }
     }
 
     @Test
