@@ -1,6 +1,9 @@
 package com.vocalink.crossproduct.ui.presenter.mapper;
 
+import static com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT_FUNDING;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING;
+import static com.vocalink.crossproduct.domain.participant.SuspensionLevel.SELF;
+
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -30,6 +33,7 @@ import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.io.ParticipantIOData;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.report.Report;
@@ -88,10 +92,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -456,6 +462,7 @@ public interface DTOMapper {
   @Mappings({
       @Mapping(target = "createdAt", source = "date"),
       @Mapping(target = "jobId", source = "approvalId"),
+      @Mapping(target = "suspensionLevel", source="participantIds", qualifiedByName = "getApprovalSuspensionLevel"),
       @Mapping(target = "participants", source = "participantIds", qualifiedByName = "getApprovalReferenceParticipants")
   })
   ApprovalDetailsDto toDto(Approval approval, @Context List<Participant> participants);
@@ -503,25 +510,58 @@ public interface DTOMapper {
 
   @Named("getRejectedFromString")
   default Double getRejectedFromString(String rejected) {
-    return Double.valueOf(rejected.replaceAll("%", ""));
+    return Double.valueOf(rejected.replace("%", ""));
   }
 
 //  TODO: check if percent symbol is needed in response
   @Named("removePercent")
   default String removePercent(String totalRejected) {
-    return totalRejected.replaceAll("%", "");
+    return totalRejected.replace("%", "");
   }
 
   @Named("getApprovalReferenceParticipants")
-  default List<ParticipantReferenceDto> getApprovalReferenceParticipants(List<String> participantIds, @Context List<Participant> participants) {
+  default List<ParticipantReferenceDto> getApprovalReferenceParticipants(List<String> participantIds,
+          @Context List<Participant> participants) {
+    List<ParticipantReferenceDto> referenceDtoList = getParticipantsById(participantIds, participants).stream()
+            .map(this::toReferenceDto)
+            .collect(toList());
+
+    if (referenceDtoList.isEmpty() || referenceDtoList.size() == 1) {
+      return referenceDtoList;
+    }
+
+    ParticipantReferenceDto fundingParticipantDto = referenceDtoList.get(0);
+    Participant fundingParticipant = participants.stream()
+            .filter(p -> p.getId().equals(fundingParticipantDto.getParticipantIdentifier()))
+            .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant in list"));
+
+    if (SELF.equals(fundingParticipant.getSuspensionLevel())
+            && (FUNDING.equals(fundingParticipant.getParticipantType())
+                    || DIRECT_FUNDING.equals(fundingParticipant.getParticipantType()))) {
+      return Collections.singletonList(fundingParticipantDto);
+    }
+
+    return referenceDtoList;
+  }
+
+  default List<Participant> getParticipantsById(List<String> participantIds, List<Participant> participants) {
     return participants.stream()
-        .filter(p -> participantIds.contains(p.getId()))
-        .map(this::toReferenceDto)
-        .sorted(comparing((ParticipantReferenceDto p) -> !p.getParticipantType()
-            .contains(FUNDING.getDescription()))
-            .thenComparing(ParticipantReferenceDto::getName))
-        .skip(0)
-        .collect(toList());
+            .filter(p -> participantIds.contains(p.getId()))
+            .sorted(comparing((Participant p) -> (!FUNDING.equals(p.getParticipantType())
+                    && !DIRECT_FUNDING.equals(p.getParticipantType())))
+                    .thenComparing(Participant::getName))
+            .skip(0)
+            .collect(toList());
+  }
+
+  @Named("getApprovalSuspensionLevel")
+  default SuspensionLevel getApprovalSuspensionLevel(List<String> participantIds,
+          @Context List<Participant> participants) {
+    List<Participant> approvalParticipants = getParticipantsById(participantIds, participants);
+    if (approvalParticipants.isEmpty()) {
+      return null;
+    }
+    return approvalParticipants.get(0).getSuspensionLevel();
   }
 
   @Mapping(target = "recipients", ignore = true)

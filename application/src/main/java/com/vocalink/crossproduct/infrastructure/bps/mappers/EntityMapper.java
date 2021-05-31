@@ -75,7 +75,6 @@ import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
-import com.vocalink.crossproduct.infrastructure.bps.BPSSortingQuery;
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
@@ -87,7 +86,6 @@ import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirma
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed;
-import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchPart;
 import com.vocalink.crossproduct.infrastructure.bps.broadcasts.BPSBroadcast;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
@@ -145,11 +143,9 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
@@ -223,7 +219,7 @@ public interface EntityMapper {
             new IODataDetails(
                 e.getSubmitted(),
                 e.getAccepted(),
-                Double.valueOf(e.getRejected().replaceAll("%", "")),
+                Double.valueOf(e.getRejected().replace("%", "")),
                 e.getOutput())))
         .collect(toList());
   }
@@ -242,7 +238,7 @@ public interface EntityMapper {
                 e.getSubmitted(),
                 e.getAccepted(),
                 e.getOutput(),
-                Double.valueOf(e.getRejected().replaceAll("%", "")),
+                Double.valueOf(e.getRejected().replace("%", "")),
                 e.getAmountAccepted().getAmount(),
                 e.getAmountOutput().getAmount()
             )))

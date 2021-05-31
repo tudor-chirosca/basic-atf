@@ -105,7 +105,7 @@ class ApprovalFacadeImplTest {
                 listOf(participantReferenceDto),
                 "This is the reason that I...",
                 approvalUserDto, date, "Notes",
-                originalData, requestedChange)
+                originalData, requestedChange, null)
 
         `when`(approvalRepository.findByJobId(approvalId))
                 .thenReturn(approvalDetails)
@@ -133,7 +133,7 @@ class ApprovalFacadeImplTest {
             null, null, null, null)))
         val pageDto = PageDto<ApprovalDetailsDto>(1, listOf(ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null, null, null)))
+            null, null, null, null, null, null, null, null)))
         val request = ApprovalSearchRequest()
 
         `when`(approvalRepository.findPaginated(any()))
@@ -163,7 +163,7 @@ class ApprovalFacadeImplTest {
 
         val approvalDetailsDto = ApprovalDetailsDto(null,
             null, null, null, null, null, null,
-            null, null, null, null, null, null, null)
+            null, null, null, null, null, null, null, null)
 
         val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"),"notes")
 

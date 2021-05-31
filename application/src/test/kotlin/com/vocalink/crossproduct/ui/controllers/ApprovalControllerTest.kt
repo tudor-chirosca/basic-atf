@@ -4,6 +4,7 @@ import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalConfirmationResponseDto
@@ -153,7 +154,8 @@ class ApprovalControllerTest : ControllerTest() {
             "requestComment": "This is the reason that I...",
             "requestedChange": {
                 "status": "suspended"
-            }
+            },
+            "suspensionLevel": "SCHEME_FUNDING"
         }"""
 
         const val VALID_APPROVAL_RESPONSE = """{
@@ -224,7 +226,7 @@ class ApprovalControllerTest : ControllerTest() {
             listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, createdAt, "Notes",
-            originalData, requestedChange
+            originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
         `when`(approvalFacade.getApprovalDetailsById(TestConstants.CONTEXT, ClientType.UI, jobId))
@@ -257,7 +259,7 @@ class ApprovalControllerTest : ControllerTest() {
             listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, createdAt, "Notes",
-            originalData, requestedChange
+            originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
@@ -291,7 +293,7 @@ class ApprovalControllerTest : ControllerTest() {
             listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, createdAt, "Notes",
-            originalData, requestedChange
+            originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
@@ -325,7 +327,7 @@ class ApprovalControllerTest : ControllerTest() {
             listOf(participantReferenceDto),
             "This is the reason that I...",
             approvalUser, createdAt, "Notes",
-            originalData, requestedChange
+            originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
         `when`(approvalFacade.requestApproval(any(), any(), any()))
@@ -450,7 +452,7 @@ class ApprovalControllerTest : ControllerTest() {
             listOf(participantReferenceDto),
             "This is the reason that I have requested this change to be made.",
             approvalUser, createdAt, "Please check ticket number 342 and resubmit the change.",
-            originalData, requestedChange
+            originalData, requestedChange,SuspensionLevel.SCHEME_FUNDING
         )
 
         `when`(approvalFacade.getApprovals(any(), any(), any()))
@@ -463,7 +465,7 @@ class ApprovalControllerTest : ControllerTest() {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
         )
             .andExpect(status().isOk)
-            .andExpect(content().json(VALID_APPROVAL_RESPONSE));
+            .andExpect(content().json(VALID_APPROVAL_RESPONSE))
     }
 
     @Test
