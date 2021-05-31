@@ -13,19 +13,17 @@ import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCri
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
-import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder
-import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.*
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.ASC
+import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.DESC
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertNull
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -156,8 +154,8 @@ class BPSMapperTest {
                 "-status", "+status"
         )
         val criteria = TransactionEnquirySearchCriteria(
-                0, 0, sorting, date, date, date,
-                "cycleName",
+                0, 0, sorting, null, null,
+                "20210601001",
                 "messageDirection",
                 "messageType",
                 "sendingBic",
@@ -172,8 +170,7 @@ class BPSMapperTest {
         val request = BPSMAPPER.toBps(criteria, currency)
         assertNull(request.createdDateFrom)
         assertNull(request.createdDateTo)
-        assertThat(request.cycleDay).isEqualTo(criteria.cycleDay)
-        assertThat(request.cycleName).isEqualTo(criteria.cycleName)
+        assertThat(request.sessionInstanceId).isEqualTo(criteria.cycleId)
         assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
         assertThat(request.sendingParticipant).isEqualTo(criteria.sendingBic)
@@ -226,7 +223,6 @@ class BPSMapperTest {
         val currency = "SEK"
         val criteria = TransactionEnquirySearchCriteria(
                 0, 0, null, date, date,
-                null,
                 null,
                 "messageDirection",
                 "messageType",

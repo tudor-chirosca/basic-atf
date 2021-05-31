@@ -16,7 +16,6 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,6 +23,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import kotlin.test.assertNotNull
 
 class TransactionsFacadeImplTest {
 
@@ -70,7 +70,7 @@ class TransactionsFacadeImplTest {
                 0, 20, null, null, null, null,
                 "sending", null, null, null, null,
                 null, null, null, null, null,
-                null, null, null
+                null, null
         )
 
         `when`(transactionRepository.findPaginated(any()))

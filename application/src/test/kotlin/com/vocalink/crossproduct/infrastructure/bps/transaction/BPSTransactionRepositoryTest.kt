@@ -9,18 +9,18 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.Month
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.Month
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSTransactionRepository::class)
@@ -112,7 +112,7 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                 0, 1, null,
                 ZonedDateTime.of(LocalDate.of(2021, 2, 18), LocalTime.MIN, ZoneId.of("UTC")),
                 ZonedDateTime.of(LocalDate.of(2021, 3, 18), LocalTime.MIN, ZoneId.of("UTC")),
-                null, null, "sending", null,
+                null, "sending", null,
                 "BARCGB22XXX", null, null, null, null,
                 null, null, null, null, BigDecimal.TEN
         )

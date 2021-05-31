@@ -19,11 +19,10 @@ public class BPSTransactionEnquirySearchRequest {
   private ZonedDateTime createdDateFrom;
   @Setter
   private ZonedDateTime createdDateTo;
-  private final ZonedDateTime cycleDay;
-  private final String cycleName;
   private final String messageDirection;
   private final String sendingParticipant;
   private final String receivingParticipant;
+  private final String sessionInstanceId;
   private final String messageType;
   private final String status;
   private final String reasonCode;

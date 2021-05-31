@@ -47,10 +47,6 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnqu
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest.BPSParticipantWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -147,6 +143,7 @@ public interface BPSMapper {
       @Mapping(target = "createdDateTo", source = "dateTo"),
       @Mapping(target = "sendingParticipant", source = "sendingBic"),
       @Mapping(target = "receivingParticipant", source = "receivingBic"),
+      @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "instructionIdentifier", source = "id"),
       @Mapping(target = "transactionRangeFrom", source = "txnFrom", qualifiedByName = "mapToBpsAmount"),
       @Mapping(target = "transactionRangeTo", source = "txnTo", qualifiedByName = "mapToBpsAmount"),
@@ -156,7 +153,7 @@ public interface BPSMapper {
 
   @AfterMapping
   default void updateRequest(@MappingTarget BPSTransactionEnquirySearchRequest request) {
-    if (request.getCycleDay() != null && request.getCycleName() != null) {
+    if (request.getSessionInstanceId() != null) {
       request.setCreatedDateFrom(null);
       request.setCreatedDateTo(null);
     }

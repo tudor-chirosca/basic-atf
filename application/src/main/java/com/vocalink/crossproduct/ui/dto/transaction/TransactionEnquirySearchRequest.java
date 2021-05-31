@@ -1,11 +1,9 @@
 package com.vocalink.crossproduct.ui.dto.transaction;
 
 import static com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault;
-import static com.vocalink.crossproduct.ui.dto.DtoProperties.DAYS_LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
-import static java.lang.Long.parseLong;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,7 +15,6 @@ import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
 import com.vocalink.crossproduct.ui.validations.ValidSort;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.math.BigDecimal;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -36,8 +33,7 @@ public class TransactionEnquirySearchRequest {
   @ValidFromDate
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;
-  private final ZonedDateTime cycleDay;
-  private final String cycleName;
+  private final String cycleId;
   @ValidDirection
   private final String messageDirection;
   private final String messageType;
@@ -60,8 +56,7 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "sort") List<String> sort,
       @JsonProperty(value = "dateFrom") ZonedDateTime dateFrom,
       @JsonProperty(value = "dateTo") ZonedDateTime dateTo,
-      @JsonProperty(value = "cycleDay") ZonedDateTime cycleDay,
-      @JsonProperty(value = "cycleName") String cycleName,
+      @JsonProperty(value = "cycleId") String cycleId,
       @JsonProperty(value = "messageDirection") String messageDirection,
       @JsonProperty(value = "messageType") String messageType,
       @JsonProperty(value = "sendingBic") String sendingBic,
@@ -77,11 +72,9 @@ public class TransactionEnquirySearchRequest {
 
     this.offset = offset == null ? parseInt(getDefault(OFFSET)) : offset;
     this.limit = limit == null ? parseInt(getDefault(LIMIT)) : limit;
-    this.dateFrom = dateFrom == null
-        ? ZonedDateTime.now(ZoneId.of("UTC")).minusDays(parseLong(getDefault(DAYS_LIMIT))) : dateFrom;
+    this.dateFrom = dateFrom;
     this.dateTo = dateTo;
-    this.cycleDay = cycleDay;
-    this.cycleName = cycleName;
+    this.cycleId = cycleId;
     this.messageDirection = messageDirection;
     this.messageType = messageType;
     this.sendingBic = sendingBic;

@@ -223,7 +223,7 @@ class TransactionsControllerTest : ControllerTest() {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .content(INVALID_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("msg_direction in request parameters in empty or missing")))
+                .andExpect(content().string(containsString("Message direction in request is empty or missing")))
 
         verifyNoInteractions(auditFacade)
     }

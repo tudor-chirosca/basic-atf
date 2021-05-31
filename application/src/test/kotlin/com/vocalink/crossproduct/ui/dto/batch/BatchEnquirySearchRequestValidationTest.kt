@@ -5,10 +5,8 @@ import com.vocalink.crossproduct.ui.dto.DtoProperties
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.*
 import javax.validation.Validation
 import javax.validation.Validator
 
@@ -18,7 +16,7 @@ class BatchEnquirySearchRequestValidationTest {
     private lateinit var request: BatchEnquirySearchRequest
 
     companion object {
-        const val MSG_DIRECTION_ERROR = "msg_direction in request parameters in empty or missing"
+        const val MSG_DIRECTION_ERROR = "Message direction in request is empty or missing"
         const val WILDCARD_ERROR = "wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"
         const val DIFFERENT_BIC_ERROR = "send_bic and recv_bic should not be the same"
         const val OLDER_THEN_DAYS_LIMIT_ERROR = "date_from can not be earlier than DAYS_LIMIT"

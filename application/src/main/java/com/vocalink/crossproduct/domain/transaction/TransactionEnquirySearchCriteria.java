@@ -15,8 +15,7 @@ public class TransactionEnquirySearchCriteria {
   private final List<String> sort;
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;
-  private final ZonedDateTime cycleDay;
-  private final String cycleName;
+  private final String cycleId;
   private final String messageDirection;
   private final String messageType;
   private final String sendingBic;

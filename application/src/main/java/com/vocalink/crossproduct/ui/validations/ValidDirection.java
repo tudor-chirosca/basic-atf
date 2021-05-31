@@ -16,7 +16,7 @@ import javax.validation.Payload;
 @Documented
 public @interface ValidDirection {
 
-  String message() default "msg_direction in request parameters in empty or missing";
+  String message() default "Message direction in request is empty or missing";
 
   Class<?>[] groups() default {};
 

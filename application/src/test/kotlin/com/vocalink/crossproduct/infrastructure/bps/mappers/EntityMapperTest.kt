@@ -55,15 +55,15 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -675,8 +675,8 @@ class EntityMapperTest {
     fun `should map TransactionEnquirySearchCriteria fields`() {
         val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val request = TransactionEnquirySearchRequest(
-                0, 0, listOf("sortBy"), date, date, date,
-                "cycleName",
+                0, 0, listOf("sortBy"), date, date,
+                "cycleId",
                 "messageDirection",
                 "messageType",
                 "sendingBic",
@@ -694,8 +694,7 @@ class EntityMapperTest {
         assertThat(criteria.sort).isEqualTo(request.sort)
         assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
         assertThat(criteria.dateTo).isEqualTo(request.dateTo)
-        assertThat(criteria.cycleDay).isEqualTo(request.cycleDay)
-        assertThat(criteria.cycleName).isEqualTo(request.cycleName)
+        assertThat(criteria.cycleId).isEqualTo(request.cycleId)
         assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
         assertThat(criteria.messageType).isEqualTo(request.messageType)
         assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
@@ -713,7 +712,7 @@ class EntityMapperTest {
     @Test
     fun `should set default date sort to TransactionEnquirySearchRequest if sort is missing`() {
         val request = TransactionEnquirySearchRequest(
-                0, 0, null, null, null, null,
+                0, 0, null, null, null,
                 null, null, null, null,
                 null, null, null, null, null,
                 null, null, null, null
