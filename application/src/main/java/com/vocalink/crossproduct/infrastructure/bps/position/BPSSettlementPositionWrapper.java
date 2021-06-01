@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSSettlementPosition;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class BPSSettlementPositionWrapper {
 
   private final String schemeId;

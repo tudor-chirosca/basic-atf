@@ -6,6 +6,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
+import java.math.BigDecimal
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -13,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import java.math.BigDecimal
-import java.time.LocalDate
 
 @BPSTestConfiguration
 @Import(BPSPositionRepository::class)
@@ -29,27 +29,6 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
             "participantIds" : ["NDEASESSXXX"],
             "numberOfCycles" : null
         } 
-        """
-        const val REQUEST_JSON_INTRA_DAY_POSITION: String = """ 
-        {
-            "schemeCode" : "P27-SEK",
-            "schemeParticipantIdentifiers" :["HANDSESS", "ESSESESS"]
-        } 
-        """
-
-        const val VALID_INTRA_DAY_POSITION_RESPONSE: String = """
-        [    
-            {
-                "participantId": "HANDSESS",
-                "debitCap": 10000.00,
-                "debitPosition": 9877.53
-            },
-            {
-                "participantId": "ESSESESS",
-                "debitCap": 10001.00,
-                "debitPosition": 9878.53
-            }
-        ]    
         """
 
         const val VALID_POSITION_DETAILS_RESPONSE: String = """ 
@@ -140,5 +119,29 @@ class BPSPositionRepositoryTest @Autowired constructor(var client: BPSPositionRe
 
         assertThat(result.netPositionAmount.amount).isEqualTo(BigDecimal.valueOf(2145.41))
         assertThat(result.netPositionAmount.currency).isEqualTo("SEK")
+    }
+
+    @Test
+    fun `should return empty positions on 404 NOT_FOUND response`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/settlement/runningSettlementPositions/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(404))
+                        .withRequestBody(equalToJson(REQUEST_JSON_POSITION_DETAILS)))
+
+        val result = client.findByParticipantId("NDEASESSXXX")
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `should return empty positions on 204 NO_CONTENT response`() {
+        mockServer.stubFor(
+                post(urlEqualTo("/settlement/runningSettlementPositions/readAll"))
+                        .willReturn(aResponse()
+                                .withStatus(204))
+                        .withRequestBody(equalToJson(REQUEST_JSON_POSITION_DETAILS)))
+
+        val result = client.findByParticipantId("NDEASESSXXX")
+        assertThat(result).isEmpty()
     }
 }

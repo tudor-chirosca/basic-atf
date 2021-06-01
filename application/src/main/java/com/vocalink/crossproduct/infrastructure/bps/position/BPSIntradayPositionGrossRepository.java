@@ -10,10 +10,12 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGrossRepository
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,7 +44,10 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(body), BPSIntraDayPositionRequest.class))
         .retrieve()
+        .onStatus(s -> s.equals(HttpStatus.NOT_FOUND) || s.equals(HttpStatus.NO_CONTENT), r ->
+            Mono.error(new EntityNotFoundException()))
         .bodyToFlux(BPSIntraDayPositionGross.class)
+        .onErrorResume(EntityNotFoundException.class, e -> Mono.empty())
         .retryWhen(BPSRetryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)

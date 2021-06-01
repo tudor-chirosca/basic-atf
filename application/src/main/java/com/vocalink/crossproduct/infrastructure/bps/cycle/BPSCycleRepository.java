@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.C
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.DAY_CYCLES_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.SETTLEMENT_POSITION_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -16,12 +17,14 @@ import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -111,7 +114,14 @@ public class BPSCycleRepository implements CycleRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSPositionsRequest.class))
         .retrieve()
+        .onStatus(s -> s.equals(HttpStatus.NOT_FOUND) || s.equals(HttpStatus.NO_CONTENT), r ->
+            Mono.error(new EntityNotFoundException()))
         .bodyToMono(BPSSettlementPositionWrapper.class)
+        .onErrorResume(EntityNotFoundException.class, e ->
+            Mono.just(BPSSettlementPositionWrapper.builder()
+                .schemeId(bpsProperties.getSchemeCode())
+                .mlSettlementPositions(emptyList())
+                .build()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .block();
