@@ -62,6 +62,7 @@ abstract class MapperUtils {
     put("settlementTime", "settlementStartDate");
     put("status", "status");
     put("participantId", "schemeParticipantIdentifier");
+    put("participantName", "participantName");
   }};
 
   private static final Map<String, String> settlementDetailsSearchRequestSortParams = new HashMap<String, String>() {{
