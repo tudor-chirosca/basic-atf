@@ -38,11 +38,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.stream.Stream
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [UIPresenter::class, ContentUtils::class, ObjectMapper::class, BPSTestConfig::class])
@@ -61,7 +56,7 @@ class UIPresenterTest {
         @JvmStatic
         fun getEodSodTestData() = Stream.of(
             Arguments.of(
-                "During the day, before SOD/EOD",
+                "During the day from 7 AM till 4 PM, before SOD/EOD",
                 CycleDashboardTestCase(
                     currentCycle =  Cycle.builder()
                         .id("002")
@@ -115,6 +110,51 @@ class UIPresenterTest {
                     currentCycle = Cycle.builder()
                         .id("002")
                         .status(CycleStatus.OPEN)
+                        .isNextDayCycle(false)
+                        .build(),
+                    previousCycle = null,
+                    showCurrent = true,
+                    showPrevious = false
+                )
+            ),
+            Arguments.of(
+                "From 4 PM till SOD completion",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.NOT_STARTED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .isNextDayCycle(false)
+                        .build(),
+                    previousCycle = Cycle.builder()
+                        .id("001")
+                        .status(CycleStatus.CLOSED)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    showCurrent = false,
+                    showPrevious = true
+                )
+            ),
+            Arguments.of(
+                "SOD completion till 7 AM",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .settlementTime(ZonedDateTime.now(clock))
+                        .build(),
+                    previousCycle = null,
+                    showCurrent = true,
+                    showPrevious = false
+                )
+            ),
+            Arguments.of(
+                "7 AM on the Go-Live Day",
+                CycleDashboardTestCase(
+                    currentCycle = Cycle.builder()
+                        .id("002")
+                        .status(CycleStatus.OPEN)
+                        .settlementTime(ZonedDateTime.now(clock))
                         .isNextDayCycle(false)
                         .build(),
                     previousCycle = null,
@@ -248,20 +288,20 @@ class UIPresenterTest {
         val participants = MockParticipants().participants
         val fundingParticipant = MockParticipants().getParticipant(false)
         val result = uiPresenter.presentFundingParticipantSettlement(cycles, participants, fundingParticipant, emptyList())
-        assertNotNull(result.fundingParticipant)
-        assertEquals("NDEASESSXXX", result.fundingParticipant.bic)
-        assertNotNull(result.intraDayPositionTotals)
+        assertThat(result.fundingParticipant).isNotNull()
+        assertThat(result.fundingParticipant.bic).isEqualTo("NDEASESSXXX")
+        assertThat(result.intraDayPositionTotals).isNotNull()
 
-        assertNotNull(result.intraDayPositionTotals)
-        assertNotNull(result.currentPositionTotals)
-        assertNotNull(result.previousPositionTotals)
+        assertThat(result.intraDayPositionTotals).isNotNull()
+        assertThat(result.currentPositionTotals).isNotNull()
+        assertThat(result.previousPositionTotals).isNotNull()
 
-        assertNull(result.positions[0].currentPosition.credit)
-        assertNull(result.positions[0].currentPosition.debit)
-        assertNull(result.positions[0].previousPosition.credit)
-        assertNull(result.positions[0].previousPosition.debit)
-        assertNull(result.positions[0].intraDayPositionGross.debitCap)
-        assertNull(result.positions[0].intraDayPositionGross.debitPosition)
+        assertThat(result.positions[0].currentPosition.credit).isNull()
+        assertThat(result.positions[0].currentPosition.debit).isNull()
+        assertThat(result.positions[0].previousPosition.credit).isNull()
+        assertThat(result.positions[0].previousPosition.debit).isNull()
+        assertThat(result.positions[0].intraDayPositionGross.debitCap).isNull()
+        assertThat(result.positions[0].intraDayPositionGross.debitPosition).isNull()
     }
 
     @Test
@@ -303,50 +343,25 @@ class UIPresenterTest {
 
         val result = uiPresenter.presentInputOutput(participants, ioData, date)
 
-        assertEquals("2.09", result.batchesRejected)
-        assertEquals("1.98", result.filesRejected)
-        assertEquals("1.90", result.transactionsRejected)
-
-        assertEquals(3, result.rows.size)
-
-        assertEquals("ESSESESS", result.rows[0].participant.id)
-        assertEquals("ESSESESS", result.rows[0].participant.bic)
-        assertEquals("SEB Bank", result.rows[0].participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.rows[0].participant.status)
-        assertNull(result.rows[0].participant.suspendedTime)
-
-        assertEquals(1, result.rows[0].batches.submitted)
-        assertEquals(1.00, result.rows[0].batches.rejected)
-        assertEquals(1, result.rows[0].files.submitted)
-        assertEquals(1.00, result.rows[0].files.rejected)
-        assertEquals(1, result.rows[0].transactions.submitted)
-        assertEquals(1.00, result.rows[0].transactions.rejected)
-
-        assertEquals("HANDSESS", result.rows[1].participant.id)
-        assertEquals("HANDSESS", result.rows[1].participant.bic)
-        assertEquals("Svenska Handelsbanken", result.rows[1].participant.name)
-        assertEquals(ParticipantStatus.SUSPENDED, result.rows[1].participant.status)
-        assertNotNull(result.rows[1].participant.suspendedTime)
-
-        assertEquals(10, result.rows[1].batches.submitted)
-        assertEquals(1.00, result.rows[1].batches.rejected)
-        assertEquals(10, result.rows[1].files.submitted)
-        assertEquals(1.00, result.rows[1].files.rejected)
-        assertEquals(10, result.rows[1].transactions.submitted)
-        assertEquals(1.00, result.rows[1].transactions.rejected)
-
-        assertEquals("NDEASESSXXX", result.rows[2].participant.id)
-        assertEquals("NDEASESSXXX", result.rows[2].participant.bic)
-        assertEquals("Nordea", result.rows[2].participant.name)
-        assertEquals(ParticipantStatus.ACTIVE, result.rows[2].participant.status)
-        assertNull(result.rows[2].participant.suspendedTime)
-
-        assertEquals(0, result.rows[2].batches.submitted)
-        assertEquals(0.00, result.rows[2].batches.rejected)
-        assertEquals(0, result.rows[2].files.submitted)
-        assertEquals(0.00, result.rows[2].files.rejected)
-        assertEquals(0, result.rows[2].transactions.submitted)
-        assertEquals(0.00, result.rows[2].transactions.rejected)
+        assertThat(result.batchesRejected).isEqualTo("2.09")
+        assertThat(result.filesRejected).isEqualTo("1.98")
+        assertThat(result.transactionsRejected).isEqualTo("1.90")
+        assertThat(result.rows.size).isEqualTo(3)
+        assertThat(result.rows.map { e -> e.transactions.submitted }).containsExactly(1, 10, 0)
+        assertThat(result.rows.map { e -> e.transactions.rejected }).containsExactly(1.00, 1.00, 0.00)
+        assertThat(result.rows.map { e -> e.batches.submitted }).containsExactly(1, 10, 0)
+        assertThat(result.rows.map { e -> e.batches.rejected }).containsExactly(1.00, 1.00, 0.00)
+        assertThat(result.rows.map { e -> e.files.submitted }).containsExactly(1, 10, 0)
+        assertThat(result.rows.map { e -> e.files.rejected }).containsExactly(1.00, 1.00, 0.00)
+        assertThat(result.rows.map { e -> e.participant.id }).containsExactly("ESSESESS", "HANDSESS", "NDEASESSXXX")
+        assertThat(result.rows.map { e -> e.participant.bic }) .containsExactly("ESSESESS", "HANDSESS", "NDEASESSXXX")
+        assertThat(result.rows.map { e -> e.participant.name })
+            .containsExactly("SEB Bank", "Svenska Handelsbanken", "Nordea")
+        assertThat(result.rows.map { e -> e.participant.status })
+            .containsExactly(ParticipantStatus.ACTIVE, ParticipantStatus.SUSPENDED, ParticipantStatus.ACTIVE)
+        assertThat(result.rows[0].participant.suspendedTime).isNull()
+        assertThat(result.rows[1].participant.suspendedTime).isNotNull()
+        assertThat(result.rows[2].participant.suspendedTime).isNull()
     }
 
     @Test
@@ -357,29 +372,25 @@ class UIPresenterTest {
                 LocalDate.now()
         )
 
-        assertEquals(3, result.batches.size)
-        assertEquals("Pacs.008", result.batches[0].code)
-        assertEquals("Customer Credit Transfer", result.batches[0].name)
-
-        assertEquals(10, result.files.submitted)
-        assertEquals(10, result.files.accepted)
-        assertEquals(1.5, result.files.rejected)
-        assertEquals(10, result.files.output)
-
-        assertEquals(10, result.batches[0].data.accepted)
-        assertEquals(10, result.batches[0].data.output)
-        assertEquals(1.50, result.batches[0].data.rejected)
-        assertEquals(10, result.batches[0].data.submitted)
-
-        assertEquals(3, result.transactions.size)
-        assertEquals("Pacs.004", result.transactions[1].code)
-        assertEquals("Payment Return", result.transactions[1].name)
-        assertEquals(10, result.transactions[1].data.accepted)
-        assertEquals(10, result.transactions[1].data.output)
-        assertEquals(1.50, result.transactions[1].data.rejected)
-        assertEquals(10, result.transactions[1].data.submitted)
-        assertEquals(10, result.transactions[1].data.amountAccepted)
-        assertEquals(10, result.transactions[1].data.amountOutput)
+        assertThat(result.batches.size).isEqualTo(3)
+        assertThat(result.transactions.size).isEqualTo(3)
+        assertThat(result.files.submitted).isEqualTo(10)
+        assertThat(result.files.accepted).isEqualTo(10)
+        assertThat(result.files.rejected).isEqualTo(1.5)
+        assertThat(result.files.output).isEqualTo(10)
+        assertThat(result.transactions.map { e -> e.data.submitted }).containsExactly(10, 10, 10)
+        assertThat(result.transactions.map { e -> e.data.rejected }).containsExactly(1.50, 1.50, 1.50)
+        assertThat(result.transactions.map { e -> e.data.amountAccepted }).containsExactly(10, 10, 10)
+        assertThat(result.transactions.map { e -> e.data.amountOutput }).containsExactly(10, 10, 10)
+        assertThat(result.batches.map { e -> e.data.submitted }).containsExactly(10, 10, 10)
+        assertThat(result.batches.map { e -> e.data.accepted }).containsExactly(10, 10, 10)
+        assertThat(result.batches.map { e -> e.data.rejected }).containsExactly(1.50, 1.50, 1.50)
+        assertThat(result.batches.map { e -> e.code }).containsExactly("Pacs.008", "Pacs.004", "Pacs.002")
+        assertThat(result.batches.map { e -> e.name })
+            .containsExactly("Customer Credit Transfer", "Payment Return", "Payment Reversal")
+        assertThat(result.transactions.map { e -> e.code }).containsExactly("Pacs.008", "Pacs.004", "Pacs.002")
+        assertThat(result.transactions.map { e -> e.name })
+            .containsExactly("Customer Credit Transfer", "Payment Return", "Payment Reversal")
     }
 
     @Test
@@ -396,11 +407,11 @@ class UIPresenterTest {
         )
         val result = uiPresenter.presentAlertReference(model)
 
-        assertEquals(2, result.alertTypes.size)
-        assertEquals(2, result.priorities.size)
-        assertEquals(alertType, result.alertTypes[0])
-        assertEquals(priorityName, result.priorities[0].name)
-        assertEquals(threshold, result.priorities[0].threshold)
+        assertThat(result.alertTypes.size).isEqualTo(2)
+        assertThat(result.priorities.size).isEqualTo(2)
+        assertThat(result.alertTypes[0]).isEqualTo(alertType)
+        assertThat(result.priorities[0].name).isEqualTo(priorityName)
+        assertThat(result.priorities[0].threshold).isEqualTo(threshold)
 
     }
 
@@ -413,49 +424,47 @@ class UIPresenterTest {
         val model = AlertStats(total, listOf(alertData))
         val result = DTOMapper.MAPPER.toDto(model)
 
-        assertEquals(1, result.items.size)
-        assertEquals(total, result.total)
-        assertEquals(priority, result.items[0].priority)
-        assertEquals(count, result.items[0].count)
+        assertThat(result.items.size).isEqualTo(1)
+        assertThat(result.total).isEqualTo(total)
+        assertThat(result.items[0].priority).isEqualTo(priority)
+        assertThat(result.items[0].count).isEqualTo(count)
     }
 
     @Test
     fun `should get participant references sorted by name`() {
-        val aaa = "Aaa"
-        val bbb = "Bbb"
-        val ccc = "Ccc"
+        val name0 = "Aaa"
+        val name1 = "Bbb"
+        val name2 = "Ccc"
         val id = "id"
         val participantType = ParticipantType.DIRECT
         val model = listOf(
                 Participant.builder()
                         .id(id)
-                        .name(ccc)
+                        .name(name2)
                         .participantType(participantType)
                         .build(),
                 Participant.builder()
                         .id(id)
-                        .name(aaa)
+                        .name(name0)
                         .participantType(participantType)
                         .build(),
                 Participant.builder()
                         .id(id)
-                        .name(bbb)
+                        .name(name1)
                         .participantType(participantType)
                         .build()
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
 
-        assertEquals(aaa, result[0].name)
-        assertEquals(bbb, result[1].name)
-        assertEquals(ccc, result[2].name)
+        assertThat(result.map { e -> e.name }).containsExactly(name0, name1, name2)
     }
 
     @Test
     fun `should get P27 as first participant references sorted by name`() {
-        val aaa = "Aaa"
-        val bbb = "Bbb"
-        val p27 = "P27"
+        val name1 = "Aaa"
+        val name2 = "Bbb"
+        val name0 = "P27"
         val id = "id"
 
         val pTypeDirect = ParticipantType.DIRECT
@@ -465,32 +474,30 @@ class UIPresenterTest {
         val model = listOf(
                 Participant.builder()
                         .id(id)
-                        .name(aaa)
+                        .name(name1)
                         .participantType(pTypeDirect)
                         .build(),
                 Participant.builder()
                         .id(id)
-                        .name(p27)
+                        .name(name0)
                         .participantType(pTypeScheme)
                         .build(),
                 Participant.builder()
                         .id(id)
-                        .name(bbb)
+                        .name(name2)
                         .participantType(pTypeFunding)
                         .build()
         )
 
         val result = uiPresenter.presentParticipantReferences(model)
 
-        assertEquals(p27, result[0].name)
-        assertEquals(aaa, result[1].name)
-        assertEquals(bbb, result[2].name)
+        assertThat(result.map { e -> e.name }).containsExactly(name0, name1, name2)
     }
 
     @Test
     fun `should get UI ClientType`() {
         val result = uiPresenter.clientType
-        assertEquals(ClientType.UI, result)
+        assertThat(result).isEqualTo(ClientType.UI)
     }
 
     @Test
@@ -509,11 +516,8 @@ class UIPresenterTest {
         )
         val result = uiPresenter.presentMessageDirectionReferences(model)
 
-        assertEquals(sending, result[0].name)
-        assertTrue(result[0].isDefault)
-
-        assertEquals(receiving, result[1].name)
-        assertFalse(result[1].isDefault)
+        assertThat(result.map { e -> e.name }).containsExactly(sending, receiving)
+        assertThat(result.map { e -> e.isDefault }).containsExactly(true, false)
     }
 
     @Test
@@ -579,21 +583,17 @@ class UIPresenterTest {
                 "FILE",
                 listOf(reasonCode1, reasonCode2)
         )
-        val statuses = listOf("ACK", "NAK")
+        val status0 = "ACK"
+        val status1 = "NAK"
 
-        val result = uiPresenter.presentReasonCodeReferences(validation, statuses)
+        val result = uiPresenter.presentReasonCodeReferences(validation, listOf(status0, status1))
 
         assertThat(result.size).isEqualTo(2)
-
-        assertThat(result[0].enquiryType).isEqualTo(validation.validationLevel)
-        assertThat(result[0].hasReason).isEqualTo(false)
-        assertThat(result[0].status).isEqualTo(statuses[0])
         assertThat(result[0].reasonCodes).isEmpty()
-
-        assertThat(result[1].enquiryType).isEqualTo(validation.validationLevel)
-        assertThat(result[1].hasReason).isEqualTo(true)
-        assertThat(result[1].status).isEqualTo(statuses[1])
         assertThat(result[1].reasonCodes.size).isEqualTo(2)
+        assertThat(result.map { e -> e.enquiryType }).containsOnly(validation.validationLevel)
+        assertThat(result.map { e -> e.hasReason }).containsExactly(false, true)
+        assertThat(result.map { e -> e.status }).containsExactly(status0, status1)
     }
 
     @Test
