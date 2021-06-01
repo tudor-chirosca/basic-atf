@@ -25,6 +25,7 @@ public class CorsConfig {
               "X-COMPANY-ID",
               "X-PARTICIPANT-ID",
               "X-ROLES",
+              "X-POLLING-UI",
               "X-USER-ID"
             )
             .allowedOrigins(corsHosts);
