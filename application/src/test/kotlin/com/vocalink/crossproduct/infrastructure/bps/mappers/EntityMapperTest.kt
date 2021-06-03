@@ -11,6 +11,9 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel
+import com.vocalink.crossproduct.domain.transaction.Transaction
+import com.vocalink.crossproduct.infrastructure.bps.BPSPage
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult
 import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
@@ -64,6 +67,7 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Collections
 
 class EntityMapperTest {
 
@@ -963,5 +967,58 @@ class EntityMapperTest {
         assertThat(result.suspensionLevel).isEqualTo(SuspensionLevel.valueOf(bpsManagedParticipant.suspensionLevel))
         assertThat(result.tpspName).isEqualTo(bpsManagedParticipant.tpspName)
         assertThat(result.tpspId).isEqualTo(bpsManagedParticipant.tpspId)
+    }
+
+    @Test
+    fun `should map generic BPSResult object if summary field is null`() {
+        val transaction = BPSTransaction("id", ZonedDateTime.now(clock), "senderBic", "receiverBic",
+            "messageType", BPSAmount(BigDecimal.valueOf(1), "SEK"), "status")
+        val dto = BPSResult<BPSTransaction>(listOf(transaction), null)
+
+        val result = MAPPER.toEntity(dto, Transaction::class.java)
+
+        assertThat(result.items.size).isEqualTo(1)
+        assertThat(result.totalResults).isEqualTo(1)
+    }
+
+    @Test
+    fun `should map BPSResult object if all fields are null`() {
+        val dto = BPSResult<BPSTransaction>(null, null)
+
+        val result = MAPPER.toEntity(dto, Transaction::class.java)
+
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should map BPSResult object if data field is null`() {
+        val summary = BPSResult.BPSResultSummary(1, 2, 100500)
+        val dto = BPSResult<BPSTransaction>(null, summary)
+
+        val result = MAPPER.toEntity(dto, Transaction::class.java)
+
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should map generic BPSPage object if items field is null`() {
+        val dto = BPSPage<BPSTransaction>(100500, null)
+
+        val result = MAPPER.toEntity(dto, Transaction::class.java)
+
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should map generic BPSPage object if totalResults field is null`() {
+        val dto = BPSPage<BPSTransaction>(null, Collections.emptyList())
+
+        val result = MAPPER.toEntity(dto, Transaction::class.java)
+
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
     }
 }

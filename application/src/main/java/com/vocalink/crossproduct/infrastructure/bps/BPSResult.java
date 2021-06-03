@@ -13,8 +13,8 @@ public class BPSResult<T> {
 
   @JsonCreator
   public BPSResult(
-      @JsonProperty(value = "data", required = true) List<T> data,
-      @JsonProperty(value = "summary", required = true) BPSResultSummary summary) {
+      @JsonProperty(value = "data") List<T> data,
+      @JsonProperty(value = "summary") BPSResultSummary summary) {
     this.data = data;
     this.summary = summary;
   }

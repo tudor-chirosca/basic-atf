@@ -13,9 +13,9 @@ public class BPSPage<T> {
 
   @JsonCreator
   public BPSPage(
-      @JsonProperty(value = "totalResults", required = true) final int totalResults,
-      @JsonProperty(value = "items", required = true) final List<T> items) {
-    this.totalResults = totalResults;
+      @JsonProperty(value = "totalResults") final Integer totalResults,
+      @JsonProperty(value = "items") final List<T> items) {
+    this.totalResults = totalResults == null ? 0 : totalResults;
     this.items = items;
   }
 }

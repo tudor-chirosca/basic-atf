@@ -536,7 +536,7 @@ public interface EntityMapper {
         .map(targetType::cast)
         .collect(toList());
 
-    return new Page<>(result.getSummary().getTotalCount(), targetItems);
+    return new Page<>(result.getSummary() == null ? sourceData.size(): result.getSummary().getTotalCount(), targetItems);
   }
 
   AuditDetails toEntity(AuditDetailsJpa details);
