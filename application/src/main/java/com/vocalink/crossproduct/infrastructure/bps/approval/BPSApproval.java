@@ -30,21 +30,21 @@ public class BPSApproval {
 
   @JsonCreator
   public BPSApproval(
-      @JsonProperty(value = "approvalId", required = true) String approvalId,
+      @JsonProperty(value = "approvalId") String approvalId,
       @JsonProperty(value = "requestType") BPSApprovalRequestType requestType,
-      @JsonProperty(value = "participantIds", required = true) List<String> participantIds,
+      @JsonProperty(value = "participantIds") List<String> participantIds,
       @JsonProperty(value = "date") ZonedDateTime date,
-      @JsonProperty(value = "requestedBy", required = true) BPSUserDetails requestedBy,
+      @JsonProperty(value = "requestedBy") BPSUserDetails requestedBy,
       @JsonProperty(value = "status") BPSApprovalStatus status,
       @JsonProperty(value = "approvedBy") BPSUserDetails approvedBy,
       @JsonProperty(value = "approvedAt") ZonedDateTime approvedAt,
-      @JsonProperty(value = "requestComment", required = true) String requestComment,
+      @JsonProperty(value = "requestComment") String requestComment,
       @JsonProperty(value = "rejectedBy") BPSUserDetails rejectedBy,
       @JsonProperty(value = "rejectedAt") ZonedDateTime rejectedAt,
-      @JsonProperty(value = "originalData", required = true) Map<String, Object> originalData,
-      @JsonProperty(value = "requestedChange", required = true) Map<String, Object> requestedChange,
-      @JsonProperty(value = "oldData", required = true) String oldData,
-      @JsonProperty(value = "newData", required = true) String newData,
+      @JsonProperty(value = "originalData") Map<String, Object> originalData,
+      @JsonProperty(value = "requestedChange") Map<String, Object> requestedChange,
+      @JsonProperty(value = "oldData") String oldData,
+      @JsonProperty(value = "newData") String newData,
       @JsonProperty(value = "notes") String notes) {
 
     this.approvalId = approvalId;

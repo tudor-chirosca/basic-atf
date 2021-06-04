@@ -22,24 +22,24 @@ public class BPSFile {
 
   @JsonCreator
   public BPSFile(
-      @JsonProperty(value = "instructionId", required = true) String instructionId,
-      @JsonProperty(value = "fileName", required = true) String fileName,
-      @JsonProperty(value = "fileSize", required = true) long fileSize,
-      @JsonProperty(value = "createdDate", required = true) ZonedDateTime createdDate,
-      @JsonProperty(value = "originator", required = true) String originator,
-      @JsonProperty(value = "messageType", required = true) String messageType,
-      @JsonProperty(value = "nrOfBatches", required = true) int nrOfBatches,
-      @JsonProperty(value = "status", required = true) String status,
-      @JsonProperty(value = "reasonCode", required = true) String reasonCode,
-      @JsonProperty(value = "settlementCycle", required = true) String settlementCycle,
-      @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier) {
+      @JsonProperty(value = "instructionId") String instructionId,
+      @JsonProperty(value = "fileName") String fileName,
+      @JsonProperty(value = "fileSize") Long fileSize,
+      @JsonProperty(value = "createdDate") ZonedDateTime createdDate,
+      @JsonProperty(value = "originator") String originator,
+      @JsonProperty(value = "messageType") String messageType,
+      @JsonProperty(value = "nrOfBatches") Integer nrOfBatches,
+      @JsonProperty(value = "status") String status,
+      @JsonProperty(value = "reasonCode") String reasonCode,
+      @JsonProperty(value = "settlementCycle") String settlementCycle,
+      @JsonProperty(value = "schemeParticipantIdentifier") String schemeParticipantIdentifier) {
     this.instructionId = instructionId;
     this.fileName = fileName;
-    this.fileSize = fileSize;
+    this.fileSize = fileSize == null ? 0 : fileSize;
     this.createdDate = createdDate;
     this.originator = originator;
     this.messageType = messageType;
-    this.nrOfBatches = nrOfBatches;
+    this.nrOfBatches = nrOfBatches == null ? 0 : nrOfBatches;
     this.status = status;
     this.reasonCode = reasonCode;
     this.settlementCycle = settlementCycle;

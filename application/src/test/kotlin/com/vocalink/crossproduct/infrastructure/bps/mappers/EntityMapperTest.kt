@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
+import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -526,6 +527,45 @@ class EntityMapperTest {
     }
 
     @Test
+    fun `should map BPSApprovalDetails to ApprovalDetails if all optional fields are null`() {
+        val bpsApprovalDetails = BPSApproval(null, null, null, null, null,
+            null, null, null, null, null, null, null,
+            null, null, null, null)
+
+        val result = MAPPER.toEntity(bpsApprovalDetails)
+
+        assertThat(result).extracting("requestedBy", "date", "approvedAt", "rejectedAt", "requestType",
+            "participantIds", "requestedBy", "rejectedBy", "requestedChange").containsOnlyNulls()
+    }
+
+    @Test
+    fun `should map BPSDayCycle to DayCycle if all optional fields are null`() {
+        val bpsDayCycle = BPSDayCycle(null, null, null, null, null, null)
+
+        val result = MAPPER.toEntity(bpsDayCycle)
+
+        assertThat(result).extracting("cycleCode", "sessionCode", "sessionInstanceId",
+            "status", "createdDate", "updatedDate").containsOnlyNulls()
+    }
+
+    @Test
+    fun `should map BPSResult with BPSFiles if all optional fields are null`() {
+        val bpsFile = BPSFile(null, null, null, null, null, null,
+            null, null, null, null, null)
+        val dto = BPSResult<BPSFile>(listOf(bpsFile), null)
+
+        val result = MAPPER.toEntity(dto, File::class.java)
+
+        assertThat(result.totalResults).isEqualTo(1)
+        assertThat(result.items.size).isEqualTo(1)
+        assertThat(result.items[0].fileSize).isEqualTo(0)
+        assertThat(result.items[0].nrOfBatches).isEqualTo(0)
+        assertThat(result.items[0]).extracting("instructionId", "fileName",
+            "originator", "createdDate", "messageType", "status",
+            "reasonCode", "settlementCycle", "schemeParticipantIdentifier").containsOnlyNulls()
+    }
+
+    @Test
     fun `should map RoutingRecord fields`() {
         val entity = BPSRoutingRecord(
                 "schemeId",
@@ -904,6 +944,27 @@ class EntityMapperTest {
         assertThat(result.scheduleDayDetails[0].cycles[0].startTime).isEqualTo(bpsCycle.startTime)
         assertThat(result.scheduleDayDetails[0].cycles[0].cutOffTime).isEqualTo(bpsCycle.endTime)
         assertThat(result.scheduleDayDetails[0].cycles[0].settlementStartTime).isEqualTo(bpsCycle.settlementTime)
+    }
+
+    @Test
+    fun `should map SettlementSchedule if all optional fields are null`() {
+        val dto = BPSSettlementSchedule(null, null)
+
+        val result = MAPPER.toEntity(dto)
+
+        assertThat(result.updatedAt).isNull()
+        assertThat(result.scheduleDayDetails).isEmpty()
+    }
+
+
+    @Test
+    fun `should map scheduleDayDetails to SettlementSchedule if all optional fields are null`() {
+        val dto = BPSScheduleDayDetails(null, null)
+
+        val result = MAPPER.toEntity(dto)
+
+        assertThat(result.weekDay).isNull()
+        assertThat(result.cycles).isEmpty()
     }
 
     @Test

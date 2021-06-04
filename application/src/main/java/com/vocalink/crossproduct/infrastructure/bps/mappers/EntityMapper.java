@@ -425,13 +425,19 @@ public interface EntityMapper {
 
   @Named("convertApprovalStatus")
   default ApprovalStatus convertApprovalStatus(BPSApprovalStatus bpsApprovalStatus) {
-    return ApprovalStatus.valueOf(bpsApprovalStatus.name());
+    if (bpsApprovalStatus != null) {
+      return ApprovalStatus.valueOf(bpsApprovalStatus.name());
+    }
+    return null;
   }
 
   @Named("convertBpsApprovalRequestType")
   default ApprovalRequestType convertBpsApprovalRequestType(
       BPSApprovalRequestType bpsApprovalRequestType) {
-    return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
+    if (bpsApprovalRequestType != null) {
+      return ApprovalRequestType.valueOf(bpsApprovalRequestType.name());
+    }
+    return null;
   }
 
   ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);

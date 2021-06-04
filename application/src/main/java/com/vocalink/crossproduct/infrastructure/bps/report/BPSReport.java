@@ -18,12 +18,12 @@ public class BPSReport {
   private final String participantName;
 
   public BPSReport(
-      @JsonProperty(value = "reportId", required = true) String reportId,
-      @JsonProperty(value = "reportType", required = true) String reportType,
-      @JsonProperty(value = "createdAt", required = true) ZonedDateTime createdAt,
+      @JsonProperty(value = "reportId") String reportId,
+      @JsonProperty(value = "reportType") String reportType,
+      @JsonProperty(value = "createdAt") ZonedDateTime createdAt,
       @JsonProperty(value = "cycleId") String cycleId,
-      @JsonProperty(value = "participantIdentifier", required = true) String participantIdentifier,
-      @JsonProperty(value = "participantName", required = true) String participantName) {
+      @JsonProperty(value = "participantIdentifier") String participantIdentifier,
+      @JsonProperty(value = "participantName") String participantName) {
     this.reportId = reportId;
     this.reportType = reportType;
     this.createdAt = createdAt;
