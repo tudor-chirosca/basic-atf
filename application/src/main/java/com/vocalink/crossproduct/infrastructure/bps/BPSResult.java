@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps;
 
+import static java.util.Collections.emptyList;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -17,6 +19,11 @@ public class BPSResult<T> {
       @JsonProperty(value = "summary") BPSResultSummary summary) {
     this.data = data;
     this.summary = summary;
+  }
+
+  public BPSResult() {
+    this.data = emptyList();
+    this.summary = new BPSResultSummary(0, 0, 0);
   }
 
   @Getter

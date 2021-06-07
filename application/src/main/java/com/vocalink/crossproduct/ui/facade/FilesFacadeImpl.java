@@ -6,7 +6,6 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.ServiceFactory;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -20,7 +19,6 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -55,10 +53,8 @@ public class FilesFacadeImpl implements FilesFacade {
         .findById(id);
     final Participant sender = repositoryFactory.getParticipantRepository(product)
         .findById(file.getOriginator());
-    final Account account = repositoryFactory.getAccountRepository(product)
-        .findByPartyCode(sender.getBic());
 
-    return presenterFactory.getPresenter(clientType).presentFileDetails(file, sender, account);
+    return presenterFactory.getPresenter(clientType).presentFileDetails(file, sender);
   }
 
   @Override

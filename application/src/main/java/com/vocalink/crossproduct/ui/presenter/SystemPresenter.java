@@ -164,8 +164,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(File file, Participant participant,
-      Account account) {
+  public FileDetailsDto presentFileDetails(File file, Participant participant) {
     throw new RuntimeException("System API not implemented yet");
   }
 

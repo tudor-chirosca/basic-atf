@@ -20,5 +20,6 @@ public class File {
   private final String status;
   private final String reasonCode;
   private final String settlementCycle;
+  private final ZonedDateTime settlementDate;
   private final String schemeParticipantIdentifier;
 }

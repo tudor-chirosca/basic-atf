@@ -1394,5 +1394,44 @@ class DTOMapperTest {
         assertThat(result.rows[1].files).isNull()
         assertThat(result.rows[1].transactions).isNull()
     }
+
+    @Test
+    fun `should map all FileDetailsDto fields`() {
+        val file = File(
+                "name",
+                "fileName",
+                234234,
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "originator",
+                "msgType",
+                10,
+                "status",
+                "reasonCode",
+                "cycleId",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+                "P27"
+        )
+        val participant = Participant.builder()
+                .id("participantId")
+                .bic("participantId")
+                .name("name")
+                .fundingBic("fundingBic")
+                .status(ACTIVE)
+                .participantType(FUNDING)
+                .organizationId("organizationId")
+                .build()
+
+        val dto = MAPPER.toDto(file, participant)
+        assertThat(dto.fileSize).isEqualTo(file.fileSize)
+        assertThat(dto.createdAt).isEqualTo(file.createdDate)
+        assertThat(dto.fileName).isEqualTo(file.fileName)
+        assertThat(dto.messageType).isEqualTo(file.messageType)
+        assertThat(dto.nrOfBatches).isEqualTo(file.nrOfBatches)
+        assertThat(dto.reasonCode).isEqualTo(file.reasonCode)
+        assertThat(dto.settlementCycleId).isEqualTo(file.settlementCycle)
+        assertThat(dto.status).isEqualTo(file.status)
+        assertThat(dto.sender.entityName).isEqualTo(participant.name)
+        assertThat(dto.sender.entityBic).isEqualTo(participant.bic)
+    }
 }
 

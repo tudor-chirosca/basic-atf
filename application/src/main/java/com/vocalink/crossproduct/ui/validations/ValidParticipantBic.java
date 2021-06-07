@@ -11,11 +11,11 @@ import javax.validation.Payload;
 
 @Target({FIELD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidDirectionValidator.class)
+@Constraint(validatedBy = ValidParticipantBicValidator.class)
 @Documented
-public @interface ValidDirection {
+public @interface ValidParticipantBic {
 
-  String message() default "Message direction in request is empty or missing";
+  String message() default "Participant bic in request is empty or missing";
 
   Class<?>[] groups() default {};
 

@@ -5,8 +5,6 @@ import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.ResourceService
-import com.vocalink.crossproduct.domain.account.Account
-import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.files.FileRepository
 import com.vocalink.crossproduct.domain.participant.Participant
@@ -31,7 +29,6 @@ class FilesFacadeImplTest {
 
     private val fileRepository = mock(FileRepository::class.java)!!
     private val participantRepository = mock(ParticipantRepository::class.java)!!
-    private val accountRepository = mock(AccountRepository::class.java)!!
     private val downloadService = mock(ResourceService::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
@@ -50,8 +47,6 @@ class FilesFacadeImplTest {
                 .thenReturn(fileRepository)
         `when`(repositoryFactory.getParticipantRepository(anyString()))
                 .thenReturn(participantRepository)
-        `when`(repositoryFactory.getAccountRepository(anyString()))
-                .thenReturn(accountRepository)
         `when`(serviceFactory.getDownloadService(anyString()))
                 .thenReturn(downloadService)
         `when`(presenterFactory.getPresenter(ClientType.UI))
@@ -81,24 +76,20 @@ class FilesFacadeImplTest {
         val file = File.builder().originator("any").build()
         val detailsDto = FileDetailsDto.builder().build()
         val participant = Participant.builder().build()
-        val account = Account(null, 0, null)
 
         `when`(fileRepository.findById(any())).thenReturn(file)
 
         `when`(participantRepository.findById(anyString())).thenReturn(participant)
 
-        `when`(accountRepository.findByPartyCode(any())).thenReturn(account)
-
-        `when`(uiPresenter.presentFileDetails(any(), any(), any()))
+        `when`(uiPresenter.presentFileDetails(any(), any()))
                 .thenReturn(detailsDto)
 
         val result = filesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(fileRepository).findById(any())
         verify(participantRepository).findById(any())
-        verify(accountRepository).findByPartyCode(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentFileDetails(any(), any(), any())
+        verify(uiPresenter).presentFileDetails(any(), any())
 
         assertNotNull(result)
     }

@@ -59,16 +59,16 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.Collections
+import java.util.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -286,6 +286,7 @@ class EntityMapperTest {
                 "status",
                 "reasonCode",
                 "cycleId",
+                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
                 "P27"
         )
 
@@ -551,7 +552,7 @@ class EntityMapperTest {
     @Test
     fun `should map BPSResult with BPSFiles if all optional fields are null`() {
         val bpsFile = BPSFile(null, null, null, null, null, null,
-            null, null, null, null, null)
+            null, null, null, null, null, null)
         val dto = BPSResult<BPSFile>(listOf(bpsFile), null)
 
         val result = MAPPER.toEntity(dto, File::class.java)

@@ -28,6 +28,5 @@ public class BPSFileEnquirySearchRequest {
   private final String status;
   private final String reasonCode;
   private final String identifier;
-  @JsonInclude(Include.NON_EMPTY)
   private final List<BPSSortingQuery> sortingOrder;
 }

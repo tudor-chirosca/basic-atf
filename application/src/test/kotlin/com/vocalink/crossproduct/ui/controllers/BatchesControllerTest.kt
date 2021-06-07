@@ -10,6 +10,10 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -21,10 +25,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 class BatchesControllerTest : ControllerTest() {
 
@@ -81,8 +81,7 @@ class BatchesControllerTest : ControllerTest() {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom)
                 .param("date_to", dateTo)
-                .param("send_bic", "HANDSESS")
-                .param("recv_bic", "NDEASESSSX")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "Accepted")
                 .param("id", "2342")
                 .param("limit", "20")
@@ -104,7 +103,7 @@ class BatchesControllerTest : ControllerTest() {
                 .param("cycle_ids", "01")
                 .param("date_from", dateFrom)
                 .param("cycle_ids", "HANDSESS")
-                .param("recv_bic", "NDEASESSSX")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "Accepted")
                 .param("id", "_2342*")
                 .param("limit", "20")
@@ -114,7 +113,7 @@ class BatchesControllerTest : ControllerTest() {
     }
 
     @Test
-    fun `should return 200 when required msg_direction param is specified in request`() {
+    fun `should return 200 when required msg_direction and participant_id param is specified in request`() {
         val batch = BatchDto.builder()
                 .id("D27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800105.gz")
                 .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
@@ -129,7 +128,8 @@ class BatchesControllerTest : ControllerTest() {
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending"))
+                .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
     }
@@ -141,6 +141,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("not_expected_param_name", "some_value")
+                .param("participant_bic", "NDEASESSSX")
                 .param("msg_direction", "Sending"))
                 .andExpect(status().isOk)
 
@@ -153,9 +154,23 @@ class BatchesControllerTest : ControllerTest() {
         mockMvc.perform(get("/enquiry/batches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 when required participant_id is not specified`() {
+        mockMvc.perform(get("/enquiry/batches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("msg_direction", "Sending"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Participant bic in request is empty or missing")))
 
         verifyNoInteractions(auditFacade)
     }
@@ -169,6 +184,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
@@ -183,6 +199,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
@@ -212,6 +229,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("limit", "0"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
@@ -226,6 +244,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("id", "BANK*YY"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
@@ -241,6 +260,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("id", "BANK()[]"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
@@ -257,6 +277,8 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("limit", "20")
                 .param("offset", "0")
+                .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("sort", "-wrong_param"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Wrong sorting parameter")))
@@ -273,6 +295,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "PRE-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
@@ -290,6 +313,7 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "POST-RJCT")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
@@ -327,5 +351,4 @@ class BatchesControllerTest : ControllerTest() {
         verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
         assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.BATCH_DETAILS)
     }
-
 }

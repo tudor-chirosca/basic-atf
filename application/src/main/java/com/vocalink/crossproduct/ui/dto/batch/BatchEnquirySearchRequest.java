@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
+import com.vocalink.crossproduct.ui.validations.ValidParticipantBic;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
 import com.vocalink.crossproduct.ui.validations.ValidSort;
 import com.vocalink.crossproduct.ui.validations.ValidStatus;
@@ -36,6 +37,7 @@ public class BatchEnquirySearchRequest {
   @ValidDirection
   private String messageDirection;
   private String messageType;
+  @ValidParticipantBic
   private String participantBic;
   @Setter
   private String status;

@@ -64,7 +64,6 @@ import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.configuration.ConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -97,7 +96,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -298,25 +296,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(File file, Participant participant, Account account) {
-    final EnquirySenderDetailsDto sender = EnquirySenderDetailsDto.builder()
-        .entityName(participant.getName())
-        .entityBic(participant.getBic())
-        .iban(account.getIban())
-        .fullName(StringUtils.EMPTY)
-        .build();
-
-    return FileDetailsDto.builder()
-        .fileName(file.getFileName())
-        .nrOfBatches(file.getNrOfBatches())
-        .fileSize(file.getFileSize())
-        .settlementCycleId(file.getSettlementCycle())
-        .createdAt(file.getCreatedDate())
-        .status(file.getStatus())
-        .reasonCode(file.getReasonCode())
-        .messageType(file.getMessageType())
-        .sender(sender)
-        .build();
+  public FileDetailsDto presentFileDetails(File file, Participant participant) {
+    return MAPPER.toDto(file, participant);
   }
 
   @Override

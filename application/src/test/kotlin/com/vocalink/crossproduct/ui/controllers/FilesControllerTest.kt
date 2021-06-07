@@ -10,6 +10,9 @@ import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
@@ -25,9 +28,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.togglz.junit5.AllDisabled
 import org.togglz.junit5.AllEnabled
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
 class FilesControllerTest : ControllerTest() {
 
@@ -83,8 +83,7 @@ class FilesControllerTest : ControllerTest() {
                 .param("msg_direction", "Sending")
                 .param("date_from", dateFrom)
                 .param("date_to", dateTo)
-                .param("send_bic", "HANDSESS")
-                .param("recv_bic", "NDEASESSSX")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "ACK")
                 .param("id", "2342")
                 .param("limit", "20")
@@ -107,7 +106,7 @@ class FilesControllerTest : ControllerTest() {
                 .param("cycle_ids", "01")
                 .param("date_from", dateFrom)
                 .param("cycle_ids", "HANDSESS")
-                .param("recv_bic", "NDEASESSSX")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "ACK")
                 .param("id", "*2342.gz")
                 .param("limit", "20")
@@ -117,7 +116,7 @@ class FilesControllerTest : ControllerTest() {
     }
 
     @Test
-    fun `should return 200 when required msg_direction param is specified in request`() {
+    fun `should return 200 when required msg_direction and participant_id param is specified in request`() {
         val file = FileDto.builder()
                 .name("D27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800105.gz")
                 .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
@@ -132,7 +131,8 @@ class FilesControllerTest : ControllerTest() {
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending"))
+                .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
     }
@@ -144,6 +144,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("not_expected_param_name", "some_value")
+                .param("participant_bic", "NDEASESSSX")
                 .param("msg_direction", "Sending"))
                 .andExpect(status().isOk)
 
@@ -157,9 +158,21 @@ class FilesControllerTest : ControllerTest() {
         mockMvc.perform(get("/enquiry/files")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
+    }
+
+    @Test
+    fun `should fail with 400 when participant_bic is not specified`() {
+        mockMvc.perform(get("/enquiry/files")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("msg_direction", "Sending"))
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Participant bic in request is empty or missing")))
     }
 
     @Test
@@ -172,6 +185,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("date_from", dateFrom))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("date_from can not be earlier than DAYS_LIMIT")))
@@ -186,6 +200,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Reason code should not be any of the rejected types")))
@@ -200,6 +215,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("limit", "0"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Limit should be equal or higher than 1")))
@@ -214,6 +230,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "Accepted")
                 .param("reason_code", "F02"))
                 .andExpect(status().is4xxClientError)
@@ -230,6 +247,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("id", "BANK*YY"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
@@ -245,6 +263,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("id", "BANK()[]"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content()
@@ -261,6 +280,8 @@ class FilesControllerTest : ControllerTest() {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("limit", "20")
                 .param("offset", "0")
+                .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("sort", "-wrong_param"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Wrong sorting parameter")))
@@ -277,6 +298,7 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
+                .param("participant_bic", "NDEASESSSX")
                 .param("status", "NAK")
                 .param("reason_code", "F02"))
                 .andExpect(status().isOk)
@@ -348,5 +370,4 @@ class FilesControllerTest : ControllerTest() {
         assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1],
                 EventType.FILE_DETAILS)
     }
-
 }

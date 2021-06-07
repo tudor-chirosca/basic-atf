@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT_FUNDING;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING;
 import static com.vocalink.crossproduct.domain.participant.SuspensionLevel.SELF;
-
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -61,6 +60,7 @@ import com.vocalink.crossproduct.ui.dto.configuration.ConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
+import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
@@ -97,7 +97,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -245,7 +244,18 @@ public interface DTOMapper {
   })
   FileDto toDto(File file);
 
-  @Mapping(target = "id", source = "batchId")
+  @Mappings({
+      @Mapping(target = "status", source = "file.status"),
+      @Mapping(target = "createdAt", source = "file.createdDate"),
+      @Mapping(target = "settlementCycleId", source = "file.settlementCycle"),
+      @Mapping(target = "sender.entityName", source = "participant.name"),
+      @Mapping(target = "sender.entityBic", source = "participant.bic")
+  })
+  FileDetailsDto toDto(File file, Participant participant);
+
+  @Mappings({
+      @Mapping(target = "id", source = "batchId")
+  })
   BatchDto toDto(Batch batch);
 
   @Mappings({

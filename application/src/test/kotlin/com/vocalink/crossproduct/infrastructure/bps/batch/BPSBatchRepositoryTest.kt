@@ -1,8 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.batch
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
@@ -83,8 +83,8 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         mockServer.stubFor(
                 post(urlPathEqualTo("/enquiries/batches/P27-SEK/readAll"))
                         .withRequestBody(equalToJson(VALID_BATCHES_REQUEST))
-                        .withQueryParam("offset", WireMock.equalTo("0"))
-                        .withQueryParam("pageSize", WireMock.equalTo("20"))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("20"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -132,5 +132,57 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         assertThat(result.nrOfTransactions).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
         assertThat(result.status).isEqualTo("Accepted")
+    }
+
+    @Test
+    fun `should return the empty list on 204 NO_CONTENT`() {
+        mockServer.stubFor(
+                post(urlPathEqualTo("/enquiries/batches/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_BATCHES_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("20"))
+                        .willReturn(aResponse()
+                                .withStatus(204)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)))
+
+
+        val request = BatchEnquirySearchCriteria(
+                0, 20,
+                ZonedDateTime.of(LocalDate.of(2021, 1, 3), LocalTime.MIN, ZoneId.of("UTC")),
+                ZonedDateTime.of(2021, Month.JANUARY.value, 4, 23, 59, 59, 0, ZoneId.of("UTC")),
+                null, "Sending", null,  null, null,
+                null, null, listOf())
+
+        val result = batchRepository.findPaginated(request)
+
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should return the empty list on 404 NOT_FOUND`() {
+        mockServer.stubFor(
+                post(urlPathEqualTo("/enquiries/batches/P27-SEK/readAll"))
+                        .withRequestBody(equalToJson(VALID_BATCHES_REQUEST))
+                        .withQueryParam("offset", equalTo("0"))
+                        .withQueryParam("pageSize", equalTo("20"))
+                        .willReturn(aResponse()
+                                .withStatus(404)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)))
+
+
+        val request = BatchEnquirySearchCriteria(
+                0, 20,
+                ZonedDateTime.of(LocalDate.of(2021, 1, 3), LocalTime.MIN, ZoneId.of("UTC")),
+                ZonedDateTime.of(2021, Month.JANUARY.value, 4, 23, 59, 59, 0, ZoneId.of("UTC")),
+                null, "Sending", null,  null, null,
+                null, null, listOf())
+
+        val result = batchRepository.findPaginated(request)
+
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
     }
 }
