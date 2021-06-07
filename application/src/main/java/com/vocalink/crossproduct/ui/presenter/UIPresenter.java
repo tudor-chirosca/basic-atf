@@ -578,6 +578,7 @@ public class UIPresenter implements Presenter {
         .requestDate(request.getTimestamp())
         .response(response.getContents())
         .responseDate(response.getTimestamp())
+        .approvalRequestId(response.getApprovalRequestId())
         .build();
   }
 

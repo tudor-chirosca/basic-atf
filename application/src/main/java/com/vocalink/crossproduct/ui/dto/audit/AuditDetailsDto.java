@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.dto.audit;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +22,6 @@ public class AuditDetailsDto {
   private final ZonedDateTime responseDate;
   private final Object request;
   private final String response;
+  @JsonInclude(Include.NON_EMPTY)
+  private final String approvalRequestId;
 }
