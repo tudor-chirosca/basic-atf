@@ -17,6 +17,7 @@ class TransactionEnquirySearchRequestValidationTest {
 
     companion object {
         const val MSG_DIRECTION_ERROR = "Message direction in request is empty or missing"
+        const val CYCLE_ID_ERROR = "CycleId either both dateFrom and dateTo must not be null"
         const val WILDCARD_ERROR = "wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"
         const val DIFFERENT_BIC_ERROR = "send_bic and recv_bic should not be the same"
         const val OLDER_THEN_DAYS_LIMIT_ERROR = "date_from can not be earlier than DAYS_LIMIT"
@@ -36,7 +37,7 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
-                null,
+                "20190212004",
                 null,
                 null,
                 null,
@@ -56,13 +57,39 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
+    fun `should fail on missing cycle_id`() {
+        request = TransactionEnquirySearchRequest(
+            0, 20,
+            null,
+            null,
+            null,
+            null,
+            "sending",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+        val result = ArrayList(validator.validate(request))
+        assertThat(result).isNotEmpty
+        assertThat(result[0].message).isEqualTo(CYCLE_ID_ERROR)
+    }
+
+    @Test
     fun `should fail on invalid id regex`() {
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
                 null,
                 null,
-                null,
+            "20190212004",
                 "sending",
                 null,
                 null,
@@ -89,7 +116,7 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
-                null,
+                "20190212004",
                 "sending",
                 null,
                 null,
@@ -115,7 +142,7 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
-                null,
+                "20190212004",
                 "sending",
                 null,
                 "123",
@@ -137,12 +164,13 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
-        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong()+1)
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong()+1)
+        val dateTo = ZonedDateTime.now(ZoneId.of("UTC"))
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
-                older,
-                null,
+                dateFrom,
+                dateTo,
                 null,
                 "sending",
                 null,
@@ -165,12 +193,13 @@ class TransactionEnquirySearchRequestValidationTest {
 
     @Test
     fun `should pass if days are equal to DAYS_LIMIT`() {
-        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong())
+        val dateTo = ZonedDateTime.now(ZoneId.of("UTC"))
         request = TransactionEnquirySearchRequest(
                 0, 20,
                 null,
-                older,
-                null,
+                dateFrom,
+                dateTo,
                 null,
                 "sending",
                 null,
@@ -197,7 +226,7 @@ class TransactionEnquirySearchRequestValidationTest {
                 null,
                 null,
                 null,
-                null,
+                "20190212004",
                 "sending",
                 null,
                 null,

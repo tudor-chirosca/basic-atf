@@ -129,7 +129,8 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("participant_bic", "NDEASESSSX"))
+                .param("participant_bic", "NDEASESSSX")
+                .param("cycle_ids", "20190212004"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
     }
@@ -142,7 +143,8 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("not_expected_param_name", "some_value")
                 .param("participant_bic", "NDEASESSSX")
-                .param("msg_direction", "Sending"))
+                .param("msg_direction", "Sending")
+                .param("cycle_ids", "20190212004"))
                 .andExpect(status().isOk)
 
         verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
@@ -155,6 +157,7 @@ class BatchesControllerTest : ControllerTest() {
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .param("cycle_ids", "20190212004")
                 .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
@@ -168,9 +171,24 @@ class BatchesControllerTest : ControllerTest() {
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending"))
+                .param("msg_direction", "Sending")
+                .param("cycle_ids", "20190212004"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Participant bic in request is empty or missing")))
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 when required cicle_id or date_from, date_to are not specified`() {
+        mockMvc.perform(get("/enquiry/batches")
+            .contentType(UTF8_CONTENT_TYPE)
+            .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+            .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+            .param("msg_direction", "Sending")
+            .param("participant_bic", "NDEASESSSX"))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("CycleId either both dateFrom and dateTo must not be null")))
 
         verifyNoInteractions(auditFacade)
     }
@@ -297,7 +315,8 @@ class BatchesControllerTest : ControllerTest() {
                 .param("msg_direction", "Sending")
                 .param("participant_bic", "NDEASESSSX")
                 .param("status", "PRE-RJCT")
-                .param("reason_code", "F02"))
+                .param("reason_code", "F02")
+                .param("cycle_ids", "20190212004"))
                 .andExpect(status().isOk)
 
         verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
@@ -315,7 +334,8 @@ class BatchesControllerTest : ControllerTest() {
                 .param("msg_direction", "Sending")
                 .param("participant_bic", "NDEASESSSX")
                 .param("status", "POST-RJCT")
-                .param("reason_code", "F02"))
+                .param("reason_code", "F02")
+                .param("cycle_ids", "20190212004"))
                 .andExpect(status().isOk)
 
         verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())

@@ -17,6 +17,7 @@ class FileEnquirySearchRequestValidationTest {
 
     companion object {
         const val MSG_DIRECTION_ERROR = "Message direction in request is empty or missing"
+        const val CYCLE_ID_ERROR = "CycleId either both dateFrom and dateTo must not be null"
         const val WILDCARD_ERROR = "wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"
         const val PARTICIPANT_BIC_ERROR = "Participant bic in request is empty or missing"
         const val OLDER_THEN_DAYS_LIMIT_ERROR = "date_from can not be earlier than DAYS_LIMIT"
@@ -31,6 +32,7 @@ class FileEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on missing msg_direction`() {
+        request.setCycle_ids(listOf("20190212004"))
         request.setParticipant_bic("NDEASESSSX")
         val result = ArrayList(validator.validate(request))
 
@@ -39,7 +41,18 @@ class FileEnquirySearchRequestValidationTest {
     }
 
     @Test
+    fun `should fail on missing cicle_id or date_from, date_to `() {
+        request.setMsg_direction("Sending")
+        request.setParticipant_bic("NDEASESSSX")
+        val result = ArrayList(validator.validate(request))
+
+        assertThat(result).isNotEmpty
+        assertThat(result[0].message).isEqualTo(CYCLE_ID_ERROR)
+    }
+
+    @Test
     fun `should fail on missing participant_id`() {
+        request.setCycle_ids(listOf("20190212004"))
         request.setMsg_direction("Sending")
         val result = ArrayList(validator.validate(request))
 
@@ -51,6 +64,7 @@ class FileEnquirySearchRequestValidationTest {
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
+        request.setCycle_ids(listOf("20190212004"))
         request.id = "i*d"
 
         val result = ArrayList(validator.validate(request))
@@ -64,6 +78,7 @@ class FileEnquirySearchRequestValidationTest {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
         request.id = "*blah"
+        request.setCycle_ids(listOf("20190212004"))
 
         val result = ArrayList(validator.validate(request))
 
@@ -73,10 +88,12 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on longer then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
-        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
+        val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString()
-        request.setDate_from(older)
+        val dateTo = ZonedDateTime.now(ZoneId.of("UTC")).toString()
+        request.setParticipant_bic("NDEASESSSX")
+        request.setDate_from(dateFrom)
+        request.setDate_to(dateTo)
 
         val result = ArrayList(validator.validate(request))
 
@@ -88,6 +105,7 @@ class FileEnquirySearchRequestValidationTest {
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
+        request.setCycle_ids(listOf("20190212004"))
         request.limit = 0
 
         val result = ArrayList(validator.validate(request))

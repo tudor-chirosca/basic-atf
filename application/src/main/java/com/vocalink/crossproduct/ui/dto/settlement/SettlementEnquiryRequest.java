@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
+import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import java.time.ZonedDateTime;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 public class SettlementEnquiryRequest {
 
   @Setter

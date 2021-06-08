@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.ui.validations.NotEqual;
+import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -24,6 +25,7 @@ import lombok.Getter;
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 @ValidSort(sort = "sort", sortingKeys =
     {"instructionId", "createdAt", "senderBic", "messageType", "amount", "status"})
+@ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 public class TransactionEnquirySearchRequest {
 
   private final int offset;

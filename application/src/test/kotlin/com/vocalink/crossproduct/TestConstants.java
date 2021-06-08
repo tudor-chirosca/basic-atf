@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct;
 
 import java.time.Clock;
+import java.time.ZonedDateTime;
 
 import static java.time.Clock.fixed;
 import static java.time.LocalDateTime.of;
@@ -10,5 +11,6 @@ public interface TestConstants {
   String CONTEXT = "BPS";
   String SCHEME_CODE = "P27";
   String CLIENT_TYPE = "UI";
-  Clock FIXED_CLOCK = fixed(of(2021, 4, 21, 22, 48, 56).toInstant(UTC), UTC);
+  String DATE_TIME = "2021-04-21T22:48:56+02:00";
+  Clock FIXED_CLOCK = fixed(ZonedDateTime.parse(DATE_TIME).toInstant(), UTC);
 }

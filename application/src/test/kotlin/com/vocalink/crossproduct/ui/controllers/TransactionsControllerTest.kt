@@ -81,13 +81,20 @@ class TransactionsControllerTest : ControllerTest() {
             "offset" : 0,
             "limit" : 20,
             "messageDirection" : "sending",
-            "invalidName" : "xxxxx"
+            "invalidName" : "xxxxx", 
+            "cycleId" : "20190212004"
         }"""
 
         const val VALID_MIN_BODY_REQUEST = """{
             "offset" : 0,
             "limit" : 20,
-            "messageDirection" : "sending"
+            "messageDirection" : "sending",
+            "cycleId" : "20190212004"
+        }"""
+
+        const val INVALID_CYCLE_ID_BODY_REQUEST = """{
+            "messageDirection" : "sending",
+            "limit": "1"
         }"""
 
         const val VALID_REJECTED_BODY_REQUEST = """{
@@ -95,7 +102,8 @@ class TransactionsControllerTest : ControllerTest() {
             "limit" : 20,
             "messageDirection" : "sending",
             "status": "PRE-RJCT",
-            "reasonCode": "F01"
+            "reasonCode": "F01",
+            "cycleId" : "20190212004"
         }"""
 
         const val VALID_BODY_REQUEST = """{
@@ -119,7 +127,8 @@ class TransactionsControllerTest : ControllerTest() {
             "limit": 20,
             "sort": [
               "+createdAt"
-            ]
+            ],
+            "cycleId": "20190212004"
         }"""
 
         const val VALID_PAGE_RESPONSE = """{
@@ -224,6 +233,19 @@ class TransactionsControllerTest : ControllerTest() {
                 .content(INVALID_BODY_REQUEST))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 when required cicle_id or date_from, date_to are not specified`() {
+        mockMvc.perform(post("/enquiry/transactions/searches")
+            .contentType(UTF8_CONTENT_TYPE)
+            .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+            .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+            .content(INVALID_CYCLE_ID_BODY_REQUEST))
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("CycleId either both dateFrom and dateTo must not be null")))
 
         verifyNoInteractions(auditFacade)
     }

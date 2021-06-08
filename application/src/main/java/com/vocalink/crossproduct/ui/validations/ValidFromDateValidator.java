@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import lombok.extern.slf4j.Slf4j;
 
 public class ValidFromDateValidator implements ConstraintValidator<ValidFromDate, Temporal> {
 

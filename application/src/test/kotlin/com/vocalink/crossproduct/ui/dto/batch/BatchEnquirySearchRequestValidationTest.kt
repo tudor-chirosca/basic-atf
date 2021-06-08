@@ -17,6 +17,7 @@ class BatchEnquirySearchRequestValidationTest {
 
     companion object {
         const val MSG_DIRECTION_ERROR = "Message direction in request is empty or missing"
+        const val CYCLE_ID_ERROR = "CycleId either both dateFrom and dateTo must not be null"
         const val WILDCARD_ERROR = "wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"
         const val PARTICIPANT_BIC_ERROR = "Participant bic in request is empty or missing"
         const val OLDER_THEN_DAYS_LIMIT_ERROR = "date_from can not be earlier than DAYS_LIMIT"
@@ -32,6 +33,8 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing msg_direction`() {
         request.setParticipant_bic("NDEASESSSX")
+        request.setCycle_ids(listOf("20190212004"))
+
         val result = ArrayList(validator.validate(request))
 
         assertThat(result).isNotEmpty
@@ -41,6 +44,8 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing participant_id`() {
         request.setMsg_direction("Sending")
+        request.setCycle_ids(listOf("20190212004"))
+
         val result = ArrayList(validator.validate(request))
 
         assertThat(result).isNotEmpty
@@ -48,8 +53,20 @@ class BatchEnquirySearchRequestValidationTest {
     }
 
     @Test
+    fun `should fail on missing cicle_id or date_from, date_to`() {
+        request.setParticipant_bic("NDEASESSSX")
+        request.setMsg_direction("Sending")
+
+        val result = ArrayList(validator.validate(request))
+
+        assertThat(result).isNotEmpty
+        assertThat(result[0].message).isEqualTo(CYCLE_ID_ERROR)
+    }
+
+    @Test
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
+        request.setCycle_ids(listOf("20190212004"))
         request.setParticipant_bic("NDEASESSSX")
         request.id = "i*d"
 
@@ -64,6 +81,7 @@ class BatchEnquirySearchRequestValidationTest {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
         request.id = "*blah"
+        request.setCycle_ids(listOf("20190212004"))
 
         val result = ArrayList(validator.validate(request))
 
@@ -74,9 +92,9 @@ class BatchEnquirySearchRequestValidationTest {
     fun `should fail on earlier then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
-        val older = ZonedDateTime.now(ZoneId.of("UTC")).minusDays((getDefault(DtoProperties.DAYS_LIMIT)
-            .toLong())+1).toString()
-        request.setDate_from(older)
+        request.setDate_from(ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
+            (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString())
+        request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
 
         val result = ArrayList(validator.validate(request))
 
@@ -88,6 +106,7 @@ class BatchEnquirySearchRequestValidationTest {
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
+        request.setCycle_ids(listOf("20190212004"))
         request.limit = 0
 
         val result = ArrayList(validator.validate(request))
