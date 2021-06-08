@@ -30,7 +30,7 @@ class ApprovalChangeRequestTest {
     @Test
     fun `should return eventType according to CONFIG_CHANGE requestType`() {
         val request = ApprovalChangeRequest("CONFIG_CHANGE",
-                mapOf("batchId" to "Q27ISTXBANKSESS"), "some message")
+                mapOf("id" to "Q27ISTXBANKSESS"), "some message")
 
         val result = request.eventType
 

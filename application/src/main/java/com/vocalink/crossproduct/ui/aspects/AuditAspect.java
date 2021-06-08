@@ -84,6 +84,7 @@ public class AuditAspect {
       getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
       return obj;
     } catch (Throwable throwable) {
+      event.setApprovalRequestId(getApprovalRequestId(joinPoint, auditable));
       getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_FAILURE, RESPONSE));
 
       throw throwable;

@@ -4,8 +4,8 @@ import com.vocalink.crossproduct.ui.aspects.EventType;
 
 import static com.vocalink.crossproduct.ui.aspects.EventType.AMEND_PTT_CONFIG;
 import static com.vocalink.crossproduct.ui.aspects.EventType.REQ_BATCH_CANCELLATION;
-import static com.vocalink.crossproduct.ui.aspects.EventType.SUSPEND_PTT;
-import static com.vocalink.crossproduct.ui.aspects.EventType.UNSUSPEND_PTT;
+import static com.vocalink.crossproduct.ui.aspects.EventType.SUSPEND_PARTICIPANT;
+import static com.vocalink.crossproduct.ui.aspects.EventType.UNSUSPEND_PARTICIPANT;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +14,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ApprovalRequestType {
 
-  PARTICIPANT_SUSPEND(SUSPEND_PTT),
-  PARTICIPANT_UNSUSPEND(UNSUSPEND_PTT),
+  PARTICIPANT_SUSPEND(SUSPEND_PARTICIPANT),
+  PARTICIPANT_UNSUSPEND(UNSUSPEND_PARTICIPANT),
   CONFIG_CHANGE(AMEND_PTT_CONFIG),
   BATCH_CANCELLATION(REQ_BATCH_CANCELLATION);
 

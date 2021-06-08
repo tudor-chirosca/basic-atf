@@ -8,18 +8,23 @@ import org.assertj.core.api.Assertions.assertThat
 class ApprovalConfirmationRequestTest {
 
     @Test
-    fun `should return `() {
+    fun `should return APPROVE_REQUEST event type `() {
         val approveRequest = ApprovalConfirmationRequest(ApprovalConfirmationType.APPROVE, "some message")
 
         assertThat(approveRequest.eventType).isEqualTo(EventType.APPROVE_REQUEST)
-        assertThat(approveRequest.message).isEqualTo("some message")
     }
 
     @Test
-    fun `should return 2`() {
+    fun `should return REJECT_REQUEST event type`() {
         val approveRequest = ApprovalConfirmationRequest(ApprovalConfirmationType.REJECT, "some message")
 
         assertThat(approveRequest.eventType).isEqualTo(EventType.REJECT_REQUEST)
-        assertThat(approveRequest.message).isEqualTo("some message")
+    }
+
+    @Test
+    fun `should return auditable content`() {
+        val approveRequest = ApprovalConfirmationRequest(ApprovalConfirmationType.REJECT, "some message")
+
+        assertThat(approveRequest.auditableContent).isEqualTo(mapOf("message" to "some message"))
     }
 }
