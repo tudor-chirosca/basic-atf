@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DatabaseVersionRepositoryJpa extends JpaRepository<DatabaseInfo, String> {
 
-  @Query("select di from DatabaseInfo di where di.releaseDate = (select max(di.releaseDate) from DatabaseInfo)")
+  @Query("select di from DatabaseInfo di where di.releaseDate = (select max(di.releaseDate) from di)")
   DatabaseInfo getLatestInfo();
 }
