@@ -39,6 +39,7 @@ class AuditAspectTest {
         const val IS_POLLING = "true"
         const val PARTICIPANT_ID = "Participant_ID"
         const val REQUEST_URL = "http://hostname"
+        const val RESPONSE_SUCCESS = "OK"
         val CLIENT_TYPE = SYSTEM
         val EVENT_TYPE = SETTL_DETAILS
         val HTTP_REQUEST = mock(HttpServletRequest::class.java)!!
@@ -287,6 +288,7 @@ class AuditAspectTest {
         `when`(auditAspect.getClientType(joinPoint, auditable)).thenReturn(CLIENT_TYPE.name)
         `when`(auditAspect.getHttpRequest(joinPoint, auditable)).thenReturn(Optional.of(request))
         `when`(auditAspect.getEventType(joinPoint, auditable)).thenReturn(EVENT_TYPE)
+        `when`(auditAspect.getResponseContent(EVENT_TYPE)).thenReturn(RESPONSE_SUCCESS)
         return auditFacade
     }
 

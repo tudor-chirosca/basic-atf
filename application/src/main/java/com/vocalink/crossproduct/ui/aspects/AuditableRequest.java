@@ -6,5 +6,5 @@ public interface AuditableRequest {
 
   EventType getEventType();
 
-  Map<String, String> getAuditableContent();
+  Map<String, Object> getAuditableContent();
 }

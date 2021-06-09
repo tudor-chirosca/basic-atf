@@ -29,8 +29,8 @@ public class ApprovalConfirmationRequest implements AuditableRequest {
   }
 
   @Override
-  public Map<String, String> getAuditableContent() {
-    final Map<String, String> content = new HashMap<>();
+  public Map<String, Object> getAuditableContent() {
+    final Map<String, Object> content = new HashMap<>();
     content.put("message", message);
     return content;
   }

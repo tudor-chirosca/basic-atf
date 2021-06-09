@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE;
 import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_DASHBOARD;
 
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
@@ -86,6 +87,10 @@ public class ApprovalController implements ApprovalApi {
         .requestApproval(context, clientType, request);
 
     auditableDetail.setJobId(approvalDetailsDto.getJobId());
+
+    if(CONFIG_CHANGE.toString().equals(request.getRequestType())) {
+      auditableDetail.setPreviousValues(approvalDetailsDto.getOriginalData());
+    }
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
 

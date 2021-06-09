@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.aspects;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vocalink.crossproduct.ui.exceptions.UILayerException;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,14 @@ public class ContentUtils {
       return objectMapper.readValue(content, eventType.getRequestType());
     } catch (JsonProcessingException e) {
       throw new UILayerException(e, "Could not deserialize request message");
+    }
+  }
+
+  public Map toMap(Object content) {
+    try {
+      return objectMapper.convertValue(content, Map.class);
+    } catch (IllegalArgumentException e) {
+      throw new UILayerException(e, "Could not convert to map");
     }
   }
 }

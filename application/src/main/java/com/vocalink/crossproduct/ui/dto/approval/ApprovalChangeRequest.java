@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.dto.approval;
 
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.BATCH_CANCELLATION;
+import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -41,14 +42,26 @@ public class ApprovalChangeRequest implements AuditableRequest {
   }
 
   @Override
-  public Map<String, String> getAuditableContent() {
-    final Map<String, String> content = new HashMap<>();
-    if (requestType.equals(BATCH_CANCELLATION.toString())) {
-      content.put("batchId", requestedChange.getOrDefault("batchId", EMPTY).toString());
-    } else {
-      content.put("id", requestedChange.getOrDefault("id", EMPTY).toString());
-    }
+  public Map<String, Object> getAuditableContent() {
+    final Map<String, Object> content = new HashMap<>();
     content.put("notes", notes);
+    if (CONFIG_CHANGE.toString().equals(requestType)) {
+      Map<String, Object> requestedValues = new HashMap<>();
+      requestedValues.put("id", requestedChange.getOrDefault("id", ""));
+      requestedValues.put("name", requestedChange.getOrDefault("name", ""));
+      requestedValues.put("settlementAccountNo", requestedChange.getOrDefault("settlementAccountNo", ""));
+      requestedValues.put("debitCapLimit", requestedChange.getOrDefault("debitCapLimit", ""));
+      requestedValues.put("debitCapLimitThresholds", requestedChange.getOrDefault("debitCapLimitThresholds", ""));
+      requestedValues.put("outputTxnVolume", requestedChange.getOrDefault("outputTxnVolume", ""));
+      requestedValues.put("outputTxnTimeLimit", requestedChange.getOrDefault("outputTxnTimeLimit", ""));
+      content.put("requestedValues", requestedValues);
+      return content;
+    }
+    if (BATCH_CANCELLATION.toString().equals(requestType)) {
+      content.put("batchId", requestedChange.getOrDefault("batchId", EMPTY).toString());
+      return content;
+    }
+    content.put("id", requestedChange.getOrDefault("id", EMPTY).toString());
     return content;
   }
 }

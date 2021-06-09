@@ -76,7 +76,7 @@ public class AuditDetailsJpa implements Serializable {
   private String correlationId;
   @Column(name = "service_id", updatable = false, insertable = false, unique = true)
   private Long serviceId;
-  @Column(name = "approval_request_id", nullable = false)
+  @Column(name = "approval_request_id")
   private String approvalRequestId;
   @Column(name = "request_or_response_enum", nullable = false)
   private String requestOrResponseEnum;

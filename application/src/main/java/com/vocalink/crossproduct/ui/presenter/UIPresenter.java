@@ -1,6 +1,9 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.SCHEME_OPERATOR;
+import static com.vocalink.crossproduct.ui.aspects.AuditAspect.RESPONSE_FAILURE;
+import static com.vocalink.crossproduct.ui.aspects.AuditAspect.RESPONSE_SUCCESS;
+import static com.vocalink.crossproduct.ui.aspects.EventType.AMEND_PARTICIPANT_CONFIG;
 import static com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -96,6 +99,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -539,8 +543,15 @@ public class UIPresenter implements Presenter {
       Participant participant) {
     final EventType eventType = getEventByDescription(request.getActivityName());
 
-    final Object content = contentUtils
+    Object requestContent = contentUtils
         .toObject(request.getContents(), eventType);
+
+    Object responseContent = response.getContents();
+
+    if (AMEND_PARTICIPANT_CONFIG.equals(eventType) && !RESPONSE_FAILURE.equals(responseContent)) {
+      responseContent = contentUtils.toObject(response.getContents(), eventType);
+      requestContent = getRequestContent(requestContent, responseContent);
+    }
 
     final ParticipantDetailsDto participantDto = new ParticipantDetailsDto(
         participant.getBic(), participant.getName());
@@ -555,9 +566,9 @@ public class UIPresenter implements Presenter {
         .entity(participantDto)
         .user(userDto)
         .customer(request.getCustomer())
-        .request(content)
+        .request(requestContent)
         .requestDate(request.getTimestamp())
-        .response(response.getContents())
+        .response(getResponseContent(responseContent))
         .responseDate(response.getTimestamp())
         .approvalRequestId(response.getApprovalRequestId())
         .build();
@@ -568,6 +579,22 @@ public class UIPresenter implements Presenter {
         .filter(v -> v.name().equalsIgnoreCase(activity))
         .findFirst()
         .orElseThrow(() -> new UILayerException("Event type not found for activity: " + activity));
+  }
+
+  private Object getRequestContent(Object request, Object response) {
+    final Map mapRequest = contentUtils.toMap(request);
+    final Map mapResponse = contentUtils.toMap(response);
+
+    mapResponse.forEach(
+        (key, value) -> mapRequest.merge(
+            key, value, (v1, v2) -> v1.equals(v2) ? v1 : v1 + ", " + v2
+        )
+    );
+    return mapRequest;
+  }
+
+  private Object getResponseContent(Object response) {
+    return RESPONSE_FAILURE.equals(response) ? RESPONSE_FAILURE : RESPONSE_SUCCESS;
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.presenter.mapper;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT_FUNDING;
 import static com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING;
 import static com.vocalink.crossproduct.domain.participant.SuspensionLevel.SELF;
+import static com.vocalink.crossproduct.ui.aspects.AuditAspect.RESPONSE_SUCCESS;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -668,6 +669,8 @@ public interface DTOMapper {
   ConfigurationDto toDto(Configuration configuration, Integer dataRetentionDays, String timeZone);
 
   @Mappings({
+      @Mapping(target = "responseContent", source = "responseContent",
+          qualifiedByName = "getValidResponseContent"),
       @Mapping(target = "createdAt", source = "timestamp"),
       @Mapping(target = "eventType", source = "activityName"),
       @Mapping(target = "user.name", source = "username"),
@@ -678,6 +681,11 @@ public interface DTOMapper {
               + ".concat(auditDetails.getLastName()))"),
   })
   AuditDto toDto(AuditDetails auditDetails);
+
+  @Named("getValidResponseContent")
+  default String getValidResponseContent(String responseContent) {
+    return responseContent.contains(RESPONSE_SUCCESS) ? responseContent : RESPONSE_SUCCESS;
+  }
 
   PageDto<ManagedParticipantDto> toDto(Page<Participant> participants,
       @Context Map<String, Approval> approvals, @Context Map<String, String> fundingParticipants);

@@ -23,8 +23,8 @@ class ApprovalChangeRequestTest {
 
         val result = request.auditableContent
 
-        assertThat(result.get("notes")).isEqualTo(request.notes)
-        assertThat(result.get("batchId")).isEqualTo(request.requestedChange.get("batchId"))
+        assertThat(result["notes"]).isEqualTo(request.notes)
+        assertThat(result["batchId"]).isEqualTo(request.requestedChange["batchId"])
     }
 
     @Test
@@ -34,17 +34,39 @@ class ApprovalChangeRequestTest {
 
         val result = request.eventType
 
-        assertThat(result).isEqualTo(EventType.AMEND_PTT_CONFIG)
+        assertThat(result).isEqualTo(EventType.AMEND_PARTICIPANT_CONFIG)
     }
 
     @Test
-    fun `should return auditable content according to CONFIG_CHANGE requestType`() {
-        val request = ApprovalChangeRequest("CONFIG_CHANGE",
+    fun `should return auditable content according to PARTICIPANT_SUSPEND requestType`() {
+        val request = ApprovalChangeRequest("SUSPEND_PARTICIPANT",
                 mapOf("id" to "Q27ISTXBANKSESS"), "some message")
 
         val result = request.auditableContent
 
-        assertThat(result.get("notes")).isEqualTo(request.notes)
-        assertThat(result.get("id")).isEqualTo(request.requestedChange.get("id"))
+        assertThat(result["notes"]).isEqualTo(request.notes)
+        assertThat(result["id"]).isEqualTo(request.requestedChange["id"])
+    }
+
+    @Test
+    fun `should return auditable content according to CONFIG_CHANGE requestType`() {
+        val participantId = "DABASESXGBG"
+        val requestedValue = mapOf(
+            "id" to participantId,
+            "name" to "DABA Bankkk",
+            "settlementAccountNo" to "1111",
+            "debitCapLimit" to "222",
+            "debitCapLimitThresholds" to "333",
+            "outputTxnVolume" to "444",
+            "outputTxnTimeLimit" to "555"
+        )
+        val request = ApprovalChangeRequest("CONFIG_CHANGE",
+                mapOf("id" to participantId).plus(requestedValue),
+                "some message")
+
+        val result = request.auditableContent
+
+        assertThat(result["notes"]).isEqualTo(request.notes)
+        assertThat(result["requestedValues"]).isEqualTo(requestedValue)
     }
 }

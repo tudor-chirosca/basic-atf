@@ -50,7 +50,7 @@ public enum EventType {
   REQ_BATCH_CANCELLATION(Object.class),
   SUSPEND_PARTICIPANT(Object.class),
   UNSUSPEND_PARTICIPANT(Object.class),
-  AMEND_PTT_CONFIG(Object.class),
+  AMEND_PARTICIPANT_CONFIG(Object.class),
   APPROVE_REQUEST(Object.class),
   REJECT_REQUEST(Object.class),
   UNKNOWN(Object.class);

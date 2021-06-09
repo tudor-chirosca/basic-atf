@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.aspects;
 
+import static com.vocalink.crossproduct.ui.aspects.EventType.AMEND_PARTICIPANT_CONFIG;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.REQUEST;
 import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
 import static com.vocalink.crossproduct.ui.aspects.Positions.POSITION_NOT_SET;
@@ -81,7 +82,8 @@ public class AuditAspect {
     try {
       Object obj = joinPoint.proceed();
       event.setApprovalRequestId(getApprovalRequestId(joinPoint, auditable));
-      getAuditFacade().handleEvent(new OccurringEvent(event, RESPONSE_SUCCESS, RESPONSE));
+      String responseContent = getResponseContent(eventType);
+      getAuditFacade().handleEvent(new OccurringEvent(event, responseContent, RESPONSE));
       return obj;
     } catch (Throwable throwable) {
       event.setApprovalRequestId(getApprovalRequestId(joinPoint, auditable));
@@ -89,6 +91,13 @@ public class AuditAspect {
 
       throw throwable;
     }
+  }
+
+  protected String getResponseContent(EventType eventType) {
+    if(AMEND_PARTICIPANT_CONFIG.equals(eventType)) {
+      return getContentUtils().toJsonString(auditableDetail.getPreviousValues());
+    }
+    return RESPONSE_SUCCESS;
   }
 
   private String getApprovalRequestId(ProceedingJoinPoint joinPoint, Auditable auditable) {

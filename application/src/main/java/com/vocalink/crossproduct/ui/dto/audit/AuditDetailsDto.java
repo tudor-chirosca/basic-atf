@@ -21,7 +21,7 @@ public class AuditDetailsDto {
   private final ZonedDateTime requestDate;
   private final ZonedDateTime responseDate;
   private final Object request;
-  private final String response;
+  private final Object response;
   @JsonInclude(Include.NON_EMPTY)
   private final String approvalRequestId;
 }
