@@ -16,17 +16,16 @@ class ValidCycleOrDateRangeValidatorTest {
     companion object {
         val constraints = mock(ValidCycleOrDateRange::class.java)!!
         val validator = ValidCycleOrDateRangeValidator()
-        val emptyList: List<String> = Collections.emptyList()
 
         @JvmStatic
         fun getData() = Stream.of(
-            Arguments.of(DATE_TIME, DATE_TIME, emptyList, true),
-            Arguments.of(null, null, listOf("20210607_001"), true),
-            Arguments.of(DATE_TIME, null, listOf("20210607_001"), true),
-            Arguments.of(null, DATE_TIME, listOf("20210607_001"), true),
-            Arguments.of(null, DATE_TIME, emptyList, false),
-            Arguments.of(DATE_TIME, null, emptyList, false),
-            Arguments.of(null, null, emptyList, false)
+            Arguments.of(DATE_TIME, DATE_TIME, null, true),
+            Arguments.of(null, null, "20210607_001", true),
+            Arguments.of(DATE_TIME, null, "20210607_001", true),
+            Arguments.of(null, DATE_TIME, "20210607_001", true),
+            Arguments.of(null, DATE_TIME, null, false),
+            Arguments.of(DATE_TIME, null, null, false),
+            Arguments.of(null, null, null, false)
         )
     }
 
@@ -34,14 +33,14 @@ class ValidCycleOrDateRangeValidatorTest {
     @MethodSource("getData")
     fun `should validate FileEnquirySearchRequest cycleId, dateFrom and dateTo`(
         dateFrom: String?, dateTo: String?,
-        cycleIds: List<String>, isValid: Boolean
+        cycleId: String?, isValid: Boolean
     ) {
         `when`(constraints.cycleId).thenReturn("cycleId")
         `when`(constraints.dateFrom).thenReturn("dateFrom")
         `when`(constraints.dateTo).thenReturn("dateTo")
         validator.initialize(constraints)
         val request = FileEnquirySearchRequest()
-        request.setCycle_ids(cycleIds)
+        request.setCycle_id(cycleId)
         if (dateFrom != null) {
             request.setDate_from(dateFrom)
         }

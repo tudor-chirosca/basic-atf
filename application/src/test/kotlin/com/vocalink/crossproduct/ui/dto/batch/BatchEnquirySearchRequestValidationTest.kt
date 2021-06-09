@@ -33,7 +33,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing msg_direction`() {
         request.setParticipant_bic("NDEASESSSX")
-        request.setCycle_ids(listOf("20190212004"))
+        request.setCycle_id("20190212004")
 
         val result = ArrayList(validator.validate(request))
 
@@ -44,7 +44,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing participant_id`() {
         request.setMsg_direction("Sending")
-        request.setCycle_ids(listOf("20190212004"))
+        request.setCycle_id("20190212004")
 
         val result = ArrayList(validator.validate(request))
 
@@ -66,7 +66,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
-        request.setCycle_ids(listOf("20190212004"))
+        request.setCycle_id("20190212004")
         request.setParticipant_bic("NDEASESSSX")
         request.id = "i*d"
 
@@ -81,7 +81,7 @@ class BatchEnquirySearchRequestValidationTest {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
         request.id = "*blah"
-        request.setCycle_ids(listOf("20190212004"))
+        request.setCycle_id("20190212004")
 
         val result = ArrayList(validator.validate(request))
 
@@ -106,7 +106,7 @@ class BatchEnquirySearchRequestValidationTest {
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")
-        request.setCycle_ids(listOf("20190212004"))
+        request.setCycle_id("20190212004")
         request.limit = 0
 
         val result = ArrayList(validator.validate(request))

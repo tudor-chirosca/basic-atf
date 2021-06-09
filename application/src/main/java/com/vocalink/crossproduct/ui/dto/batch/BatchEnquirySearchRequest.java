@@ -56,8 +56,8 @@ public class BatchEnquirySearchRequest {
     this.dateTo = ZonedDateTime.parse(dateTo);
   }
 
-  public void setCycle_ids(List<String> cycleIds) {
-    this.cycleId = cycleIds.stream().findFirst().orElse(null);
+  public void setCycle_id(String cycleId) {
+    this.cycleId = cycleId;
   }
 
   public void setMsg_direction(String messageDirection) {

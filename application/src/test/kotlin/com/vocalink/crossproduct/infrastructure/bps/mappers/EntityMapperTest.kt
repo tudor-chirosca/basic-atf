@@ -636,7 +636,7 @@ class EntityMapperTest {
         request.setMsg_type("msg_type")
         request.setParticipant_bic("participant_bic")
         request.setReason_code("reason_code")
-        request.setCycle_ids(listOf("cycle1"))
+        request.setCycle_id("cycle1")
 
         val entity = MAPPER.toEntity(request)
 
@@ -672,7 +672,7 @@ class EntityMapperTest {
         request.setMsg_type("msg_type")
         request.setParticipant_bic("participant_bic")
         request.setReason_code("reason_code")
-        request.setCycle_ids(listOf("cycle1, cycle2"))
+        request.setCycle_id("cycle1")
 
         val entity = MAPPER.toEntity(request)
         assertThat(entity.offset).isEqualTo(request.offset)
