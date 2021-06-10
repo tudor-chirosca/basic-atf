@@ -316,8 +316,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public BatchDetailsDto presentBatchDetails(Batch batch, File file) {
-    return MAPPER.toDetailsDto(batch, file);
+  public BatchDetailsDto presentBatchDetails(Batch batch) {
+    return MAPPER.toDetailsDto(batch);
   }
 
   @Override

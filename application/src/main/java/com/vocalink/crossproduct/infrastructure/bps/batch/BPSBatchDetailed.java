@@ -24,7 +24,7 @@ public class BPSBatchDetailed {
   private final String senderIban;
 
   public BPSBatchDetailed(@JsonProperty("instructionId") String instructionId,
-      @JsonProperty("batchId") String batchId,
+      @JsonProperty("batchID") String batchId,
       @JsonProperty("numberOfTransactions") Integer numberOfTransactions,
       @JsonProperty("messageType") String messageType,
       @JsonProperty("sentDateAndTime") ZonedDateTime sentDateAndTime,

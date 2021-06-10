@@ -130,7 +130,7 @@ public interface Presenter {
 
   PageDto<TransactionDto> presentTransactions(Integer totalResults, List<Transaction> items);
 
-  BatchDetailsDto presentBatchDetails(Batch batch, File file);
+  BatchDetailsDto presentBatchDetails(Batch batch);
 
   ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant);

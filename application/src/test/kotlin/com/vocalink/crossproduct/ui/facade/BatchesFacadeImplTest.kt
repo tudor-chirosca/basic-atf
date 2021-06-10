@@ -88,14 +88,14 @@ class BatchesFacadeImplTest {
         `when`(fileRepository.findById(any()))
                 .thenReturn(file)
 
-        `when`(uiPresenter.presentBatchDetails(any(), any()))
+        `when`(uiPresenter.presentBatchDetails(any()))
                 .thenReturn(batchDetailsDto)
 
         val result = batchesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(batchRepository).findById(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentBatchDetails(any(), any())
+        verify(uiPresenter).presentBatchDetails(any())
 
         assertNotNull(result)
     }

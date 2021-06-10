@@ -44,8 +44,7 @@ public class BatchesFacadeImpl implements BatchesFacade {
     log.info("Fetching batch details for id: {} from: {}", id, product);
 
     final Batch batch = repositoryFactory.getBatchRepository(product).findById(id);
-    final File file = repositoryFactory.getFileRepository(product).findById(batch.getFileName());
 
-    return presenterFactory.getPresenter(clientType).presentBatchDetails(batch, file);
+    return presenterFactory.getPresenter(clientType).presentBatchDetails(batch);
   }
 }

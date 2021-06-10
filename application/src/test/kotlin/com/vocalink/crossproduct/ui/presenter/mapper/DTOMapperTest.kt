@@ -274,15 +274,12 @@ class DTOMapperTest {
                 .status("status")
                 .build()
 
-        val file = File.builder().fileSize(1).build()
-
-        val result = MAPPER.toDetailsDto(batch, file)
+        val result = MAPPER.toDetailsDto(batch)
 
         assertThat(result).isNotNull
         assertThat(result.batchId).isEqualTo(batch.batchId)
         assertThat(result.fileName).isEqualTo(batch.fileName)
         assertThat(result.nrOfTransactions).isEqualTo(batch.nrOfTransactions)
-        assertThat(result.fileSize).isEqualTo(file.fileSize)
         assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
         assertThat(result.settlementCycleId).isEqualTo(batch.settlementCycleId)
         assertThat(result.createdAt).isEqualTo(batch.createdAt)

@@ -14,7 +14,6 @@ public class Batch {
   private final String batchId;
   private final int nrOfTransactions;
   private final String fileName;
-  private final long fileSize;
   private final LocalDate settlementDate;
   private final String settlementCycleId;
   private final ZonedDateTime createdAt;

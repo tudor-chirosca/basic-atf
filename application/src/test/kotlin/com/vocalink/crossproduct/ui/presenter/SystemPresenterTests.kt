@@ -141,7 +141,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present batch details for System`() {
         val batch = Batch.builder().build()
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentBatchDetails(batch, null)
+            systemPresenter.presentBatchDetails(batch)
         }
     }
 

@@ -180,7 +180,7 @@ public class SystemPresenter implements Presenter {
   }
 
   @Override
-  public BatchDetailsDto presentBatchDetails(Batch batch, File file) {
+  public BatchDetailsDto presentBatchDetails(Batch batch) {
     throw new RuntimeException("System API not implemented yet");
   }
 

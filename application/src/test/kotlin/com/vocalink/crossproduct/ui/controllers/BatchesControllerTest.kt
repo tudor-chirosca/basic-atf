@@ -53,7 +53,6 @@ class BatchesControllerTest : ControllerTest() {
             "batchId": "A27ISTXBANKSESSXXX2",
             "fileName": "A27ISTXBANKSESSXXX2.gz",
             "nrOfTransactions": 12,
-            "fileSize": 3245234523,
             "settlementDate": "2020-11-03",
             "settlementCycleId": "04",
             "createdAt": "2020-10-30T10:10:10Z",
@@ -349,7 +348,6 @@ class BatchesControllerTest : ControllerTest() {
                 .batchId(id)
                 .fileName("$id.gz")
                 .nrOfTransactions(12)
-                .fileSize(3245234523)
                 .settlementDate(LocalDate.of(2020, 11, 3))
                 .settlementCycleId("04")
                 .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
