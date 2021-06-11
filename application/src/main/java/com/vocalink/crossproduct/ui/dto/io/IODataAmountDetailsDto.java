@@ -11,6 +11,6 @@ public class IODataAmountDetailsDto {
   private final Integer accepted;
   private final Integer output;
   private final Double rejected;
-  private final Integer amountAccepted;
-  private final Integer amountOutput;
+  private final Double amountAccepted;
+  private final Double amountOutput;
 }
