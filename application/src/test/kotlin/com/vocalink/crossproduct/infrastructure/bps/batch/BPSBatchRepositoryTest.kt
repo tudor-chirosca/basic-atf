@@ -47,7 +47,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
                         "createdDateTime": "2020-10-23T13:43:00Z",
                         "originator": "NDEASESSXXX",
                         "messageType": "prtp.005-prtp.006",
-                        "nrOfTransactions": 12,
+                        "noOfTransactions": 12,
                         "status": "Accepted"
                     }
                 ],

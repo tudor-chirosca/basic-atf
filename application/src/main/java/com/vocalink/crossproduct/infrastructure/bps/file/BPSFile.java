@@ -29,7 +29,7 @@ public class BPSFile {
       @JsonProperty(value = "createdDate") ZonedDateTime createdDate,
       @JsonProperty(value = "originator") String originator,
       @JsonProperty(value = "messageType") String messageType,
-      @JsonProperty(value = "nrOfBatches") Integer nrOfBatches,
+      @JsonProperty(value = "noOfBatches") Integer nrOfBatches,
       @JsonProperty(value = "status") String status,
       @JsonProperty(value = "reasonCode") String reasonCode,
       @JsonProperty(value = "settlementCycle") String settlementCycle,

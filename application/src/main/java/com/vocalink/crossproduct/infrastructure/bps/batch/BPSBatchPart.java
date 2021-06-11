@@ -22,7 +22,7 @@ public class BPSBatchPart {
       @JsonProperty("createdDateTime") ZonedDateTime createdDateTime,
       @JsonProperty("originator") String originator,
       @JsonProperty("messageType") String messageType,
-      @JsonProperty("nrOfTransactions") Integer nrOfTransactions,
+      @JsonProperty("noOfTransactions") Integer nrOfTransactions,
       @JsonProperty("status") String status) {
     this.instructionId = instructionId;
     this.messageIdentifier = messageIdentifier;

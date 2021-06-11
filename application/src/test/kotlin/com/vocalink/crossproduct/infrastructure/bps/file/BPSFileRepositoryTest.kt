@@ -48,7 +48,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
                   "createdDate": "2021-04-01T17:00:00Z",
                   "originator": "NDEASESSXXX",
                   "messageType": "pacs.008",
-                  "nrOfBatches": "12",
+                  "noOfBatches": "12",
                   "status": "DEBULKED",
                   "reasonCode": "F001",
                   "settlementCycle": "2021040103",
