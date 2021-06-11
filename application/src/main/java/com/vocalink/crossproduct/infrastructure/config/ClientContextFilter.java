@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.config;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
@@ -21,11 +22,11 @@ public class ClientContextFilter extends AppFilter {
   private Set<String> contexts;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-    throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
     log.debug("Applying filter for : {}", request.getRequestURI());
 
-    if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
+    if (!OPTIONS.matches(request.getMethod())) {
       String contextHeader = request.getHeader("context");
 
       if (!contexts.contains(contextHeader)) {

@@ -11,24 +11,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnProperty(value = "app.cors", havingValue = "true")
 public class CorsConfig {
 
+  @Value("${app.cors.hosts}")
+  private String[] hosts;
+  @Value("${app.cors.headers}")
+  private String[] headers;
+
   @Bean
-  public WebMvcConfigurer corsConfigurer(@Value("${app.corsHosts}") String[] corsHosts) {
+  public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedHeaders(
-              "client-type",
-              "context",
-              "access-control-allow-headers",
-              "content-type",
-              "X-COMPANY-ID",
-              "X-PARTICIPANT-ID",
-              "X-ROLES",
-              "X-POLLING-UI",
-              "X-USER-ID"
-            )
-            .allowedOrigins(corsHosts);
+            .allowedHeaders(headers)
+            .allowedOrigins(hosts);
       }
     };
   }
