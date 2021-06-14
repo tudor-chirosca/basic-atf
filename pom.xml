@@ -6,7 +6,7 @@
 
   <groupId>com.vocalink.crossproduct</groupId>
   <artifactId>cp-international-suite-service</artifactId>
-  <version>1.112.12</version>
+  <version>1.112.13</version>
   <packaging>pom</packaging>
   <name>International Suite Service Parent POM</name>
 
