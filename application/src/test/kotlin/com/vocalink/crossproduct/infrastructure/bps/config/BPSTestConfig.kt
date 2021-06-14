@@ -59,7 +59,7 @@ open class BPSTestConfig {
                 Pair("routing-record-path", Detail("MOCK", "/routing/P27-SEK/records")),
                 Pair("reports-path", Detail("MOCK", "/reports")),
                 Pair("settlement-schedule-path", Detail("MOCK", "/enquiries/settlement/schedule/P27-SEK/readAll")),
-                Pair("download-report-path", Detail("MOCK", "/reports/downloadFile/P27-SEK")),
+                Pair("download-report-path", Detail("MOCK", "/reports/downloadReport/P27-SEK")),
                 Pair("approval-request-by-path", Detail("MOCK", "/reference/approvals/requestedBy/P27-SEK/readAll")),
                 Pair("approval-request-type-path", Detail("MOCK", "/reference/approvals/requestTypes/P27-SEK/readAll"))
         )

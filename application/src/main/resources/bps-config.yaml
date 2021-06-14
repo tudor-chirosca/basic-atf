@@ -118,7 +118,7 @@ bps-config:
       path: /reports
       base: MOCK
     download-report-path:
-      path: /reports/downloadFile/{schemeCode}/{id}
+      path: /reports/downloadReport/{schemeCode}/{id}
       base: MOCK
     approval-request-by-path:
       path: /reference/approvals/requestedBy/{schemeCode}/readAll
