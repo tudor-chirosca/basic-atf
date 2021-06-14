@@ -83,13 +83,13 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         {
             "data": [
                 {
-                    "cycleId": "20201209001",
-                    "settlementStartDate": "2020-12-09T14:58:19Z",
+                    "cycleId": "20210509001",
+                    "settlementDate": "2021-05-09T13:00:00Z",
                     "status": "PARTIALLYCOMPLETE",
                     "schemeParticipantIdentifier": "HANDSESS"
                 },
-                {   "cycleId": "20201209002",
-                    "settlementStartDate": "2020-12-09T14:58:19Z",
+                {   "cycleId": "20210509002",
+                    "settlementDate": "2021-05-09T12:00:00Z",
                     "status": "NO_RESPONSE",
                     "schemeParticipantIdentifier": "HANDSESS"
                 }    
@@ -98,6 +98,16 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                 "offset": 0,
                 "pageSize": 20,
                 "totalCount": 2
+            }
+        }
+       """
+
+        const val VALID_NO_DATA_SETTLEMENTS_RESPONSE: String = """
+        {
+            "summary": {
+                "offset": 0,
+                "pageSize": 20,
+                "totalCount": 0
             }
         }
        """
@@ -187,6 +197,14 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result).isNotNull
         assertThat(result.totalResults).isEqualTo(2)
         assertThat(result.items.size).isEqualTo(2)
+        assertThat(result.items[0].cycleId).isEqualTo("20210509001")
+        assertThat(result.items[0].settlementDate).isEqualTo(ZonedDateTime.of(2021,5,9,13,0,0, 0, ZoneId.of("UTC")))
+        assertThat(result.items[0].status).isEqualTo(CycleStatus.PARTIALLY_COMPLETE)
+        assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("HANDSESS")
+        assertThat(result.items[1].cycleId).isEqualTo("20210509002")
+        assertThat(result.items[1].settlementDate).isEqualTo(ZonedDateTime.of(2021,5,9,12,0,0, 0, ZoneId.of("UTC")))
+        assertThat(result.items[1].status).isEqualTo(CycleStatus.NO_RESPONSE)
+        assertThat(result.items[1].schemeParticipantIdentifier).isEqualTo("HANDSESS")
     }
 
     @Test
@@ -205,5 +223,75 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result.scheduleDayDetails[0].cycles[0].startTime).isEqualTo("09:00")
         assertThat(result.scheduleDayDetails[0].cycles[0].cutOffTime).isEqualTo("10:00")
         assertThat(result.scheduleDayDetails[0].cycles[0].settlementStartTime).isEqualTo("9:45")
+    }
+
+    @Test
+    fun `should return the empty list on 204 NO_CONTENT`() {
+        mockServer.stubFor(
+            post(urlPathEqualTo("/enquiries/settlement/enquiry/P27-SEK/readAll"))
+                .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST))
+                .withQueryParam("offset", equalTo("0"))
+                .withQueryParam("pageSize", equalTo("20"))
+                .willReturn(aResponse()
+                    .withStatus(204)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)))
+
+        val criteria = SettlementEnquirySearchCriteria.builder()
+            .offset(0)
+            .limit(20)
+            .participants(listOf("HANDSESS"))
+            .build()
+
+        val result = repository.findPaginated(criteria)
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should return the empty list on 404 NOT_FOUND`() {
+        mockServer.stubFor(
+            post(urlPathEqualTo("/enquiries/settlement/enquiry/P27-SEK/readAll"))
+                .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST))
+                .withQueryParam("offset", equalTo("0"))
+                .withQueryParam("pageSize", equalTo("20"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)))
+
+        val criteria = SettlementEnquirySearchCriteria.builder()
+            .offset(0)
+            .limit(20)
+            .participants(listOf("HANDSESS"))
+            .build()
+
+        val result = repository.findPaginated(criteria)
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should return the empty list on valid no data response`() {
+        mockServer.stubFor(
+            post(urlPathEqualTo("/enquiries/settlement/enquiry/P27-SEK/readAll"))
+                .withRequestBody(equalToJson(VALID_SETTLEMENTS_REQUEST))
+                .withQueryParam("offset", equalTo("0"))
+                .withQueryParam("pageSize", equalTo("20"))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(VALID_NO_DATA_SETTLEMENTS_RESPONSE)))
+
+        val criteria = SettlementEnquirySearchCriteria.builder()
+            .offset(0)
+            .limit(20)
+            .participants(listOf("HANDSESS"))
+            .build()
+
+        val result = repository.findPaginated(criteria)
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
     }
 }

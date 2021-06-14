@@ -275,7 +275,7 @@ public interface DTOMapper {
 
   @Mappings({
       @Mapping(target = "participant", source = "settlement.schemeParticipantIdentifier", qualifiedByName = "findParticipant"),
-      @Mapping(target = "settlementTime", source = "settlement.settlementStartDate")
+      @Mapping(target = "settlementTime", source = "settlement.settlementDate")
   })
   ParticipantSettlementCycleDto toDto(@Context List<Participant> participants,
       ParticipantSettlement settlement);

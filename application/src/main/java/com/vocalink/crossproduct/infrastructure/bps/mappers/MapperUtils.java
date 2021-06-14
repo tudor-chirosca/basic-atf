@@ -59,10 +59,9 @@ abstract class MapperUtils {
 
   private static final Map<String, String> settlementSearchRequestSortParams = new HashMap<String, String>() {{
     put("cycleId", "cycleId");
-    put("settlementTime", "settlementStartDate");
+    put("settlementTime", "settlementDate");
     put("status", "status");
-    put("participantId", "schemeParticipantIdentifier");
-    put("participantName", "participantName");
+    put("participantName", "participant");
   }};
 
   private static final Map<String, String> settlementDetailsSearchRequestSortParams = new HashMap<String, String>() {{

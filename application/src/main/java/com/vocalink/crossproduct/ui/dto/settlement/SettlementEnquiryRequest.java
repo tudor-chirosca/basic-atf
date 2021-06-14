@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
+import com.vocalink.crossproduct.ui.validations.ValidSort;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.Setter;
 
 @Getter
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
+@ValidSort(sort = "sort", sortingKeys = {"cycleId", "settlementTime", "status", "participantName"})
 public class SettlementEnquiryRequest {
 
   @Setter

@@ -12,18 +12,19 @@ import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria
+import com.vocalink.crossproduct.domain.settlement.SettlementEnquirySearchCriteria
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.ASC
 import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.DESC
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertNull
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
 
@@ -424,5 +425,62 @@ class BPSMapperTest {
         assertThat(result.sortingOrder[10].sortOrder).isEqualTo(DESC)
         assertThat(result.sortingOrder[11].sortOrderBy).isEqualTo("fundedParticipantsCount")
         assertThat(result.sortingOrder[11].sortOrder).isEqualTo(ASC)
+    }
+
+    @Test
+    fun `should map from SettlementEnquirySearchCriteria to BPSSettlementEnquiryRequest with null for date id CycleId is present`() {
+        val allSortingFields = listOf(
+            "-cycleId", "+cycleId",
+            "-settlementTime", "+settlementTime",
+            "-status", "+status",
+            "-participantName", "+participantName")
+        val criteria = SettlementEnquirySearchCriteria.builder()
+            .offset(0)
+            .limit(20)
+            .cycleId("cycle_id")
+            .dateFrom(ZonedDateTime.now(ZoneId.of("UTC")))
+            .dateTo(ZonedDateTime.now(ZoneId.of("UTC")))
+            .participants(listOf("participant1, participant2"))
+            .sort(allSortingFields)
+            .build()
+
+        val result = BPSMAPPER.toBps(criteria)
+
+        assertThat(result.sessionInstanceId).isEqualTo(criteria.cycleId)
+        assertThat(result.dateFrom).isNull()
+        assertThat(result.dateTo).isNull()
+        assertThat(result.participants.map { p -> p.participantId }).isEqualTo(criteria.participants)
+        assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("cycleId")
+        assertThat(result.sortingOrder[0].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[1].sortOrderBy).isEqualTo("cycleId")
+        assertThat(result.sortingOrder[1].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[2].sortOrderBy).isEqualTo("settlementDate")
+        assertThat(result.sortingOrder[2].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[3].sortOrderBy).isEqualTo("settlementDate")
+        assertThat(result.sortingOrder[3].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[4].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[4].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[5].sortOrderBy).isEqualTo("status")
+        assertThat(result.sortingOrder[5].sortOrder).isEqualTo(ASC)
+        assertThat(result.sortingOrder[6].sortOrderBy).isEqualTo("participant")
+        assertThat(result.sortingOrder[6].sortOrder).isEqualTo(DESC)
+        assertThat(result.sortingOrder[7].sortOrderBy).isEqualTo("participant")
+        assertThat(result.sortingOrder[7].sortOrder).isEqualTo(ASC)
+    }
+
+    @Test
+    fun `should map from SettlementEnquirySearchCriteria to BPSSettlementEnquiryRequest`() {
+        val criteria = SettlementEnquirySearchCriteria.builder()
+            .offset(0)
+            .limit(20)
+            .dateFrom(ZonedDateTime.now(ZoneId.of("UTC")))
+            .dateTo(ZonedDateTime.now(ZoneId.of("UTC")))
+            .participants(listOf("participant1, participant2"))
+            .build()
+
+        val result = BPSMAPPER.toBps(criteria)
+        assertThat(result.dateTo).isEqualTo(criteria.dateTo)
+        assertThat(result.dateFrom).isEqualTo(criteria.dateFrom)
+        assertThat(result.participants.map { p -> p.participantId }).isEqualTo(criteria.participants)
     }
 }

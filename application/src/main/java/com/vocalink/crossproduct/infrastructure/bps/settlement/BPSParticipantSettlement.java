@@ -10,18 +10,18 @@ import lombok.Getter;
 public class BPSParticipantSettlement {
 
   private final String cycleId;
-  private final ZonedDateTime settlementStartDate;
+  private final ZonedDateTime settlementDate;
   private final BPSCycleStatus status;
   private final String schemeParticipantIdentifier;
 
   @JsonCreator
   public BPSParticipantSettlement(
       @JsonProperty(value = "cycleId") String cycleId,
-      @JsonProperty(value = "settlementStartDate") ZonedDateTime settlementStartDate,
+      @JsonProperty(value = "settlementDate") ZonedDateTime settlementDate,
       @JsonProperty(value = "status") BPSCycleStatus status,
       @JsonProperty(value = "schemeParticipantIdentifier") String schemeParticipantIdentifier) {
     this.cycleId = cycleId;
-    this.settlementStartDate = settlementStartDate;
+    this.settlementDate = settlementDate;
     this.status = status;
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
   }

@@ -19,12 +19,15 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -55,7 +58,10 @@ public class BPSSettlementsRepository implements SettlementsRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(bpsRequest), BPSSettlementDetailsRequest.class))
         .retrieve()
+        .onStatus(s -> s.equals(HttpStatus.NOT_FOUND) || s.equals(HttpStatus.NO_CONTENT), r ->
+            Mono.error(new EntityNotFoundException()))
         .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSSettlementDetails>> () {})
+        .onErrorResume(EntityNotFoundException.class, e -> Mono.just(new BPSResult<>()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(x -> MAPPER.toEntity(x, SettlementDetails.class))
@@ -74,7 +80,10 @@ public class BPSSettlementsRepository implements SettlementsRepository {
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(bpsRequest), BPSSettlementEnquiryRequest.class))
         .retrieve()
+        .onStatus(s -> s.equals(HttpStatus.NOT_FOUND) || s.equals(HttpStatus.NO_CONTENT), r ->
+            Mono.error(new EntityNotFoundException()))
         .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSParticipantSettlement>>() {})
+        .onErrorResume(EntityNotFoundException.class, e -> Mono.just(new BPSResult<>()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(ps -> MAPPER.toEntity(ps, ParticipantSettlement.class))
