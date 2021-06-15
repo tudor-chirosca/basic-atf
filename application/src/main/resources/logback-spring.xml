@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <include resource="org/springframework/boot/logging/logback/base.xml"/>
-  <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
   <springProperty name="logging.file" source="logging.file.name"/>
-  <springProperty name="logging.pattern" source="logging.pattern.file"/>
+  <springProperty name="audit.event.logging.file.name" source="audit.event.logging.file.name"/>
+  <springProperty name="logging.pattern.file" source="logging.pattern.file"/>
+  <springProperty name="logging.pattern.console" source="logging.pattern.console"/>
 
   <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${logging.file}.log</file>
+    <immediateFlush>true</immediateFlush>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${logging.file}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <maxFileSize>10MB</maxFileSize>
@@ -13,19 +15,56 @@
       <maxHistory>30</maxHistory>
     </rollingPolicy>
     <encoder>
-      <pattern>${logging.pattern}</pattern>
+      <pattern>${logging.pattern.file}</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+        <marker>AUDIT-EVENT</marker>
+      </evaluator>
+      <onMismatch>ALLOW</onMismatch>
+      <onMatch>DENY</onMatch>
+    </filter>
+  </appender>
+
+  <appender name="AUDIT-EVENT-FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <immediateFlush>true</immediateFlush>
+    <file>${audit.event.logging.file.name}.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${audit.event.logging.file.name}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxFileSize>10MB</maxFileSize>
+      <totalSizeCap>1GB</totalSizeCap>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="com.vocalink.crossproduct.infrastructure.logging.AuditEventLayout">
+        <delimiter>|</delimiter>
+        <timestampPattern>dd-MM-yyyy HH:mm:ss.SSS</timestampPattern>
+        <auditEventMarker>AUDIT-EVENT</auditEventMarker>
+        <emptyValue>-</emptyValue>
+        <fields>
+          TIMESTAMP,EVENT_TYPE,CUSTOMER,APPLICATION_NAME,CHANNEL,IP_ADDRESS,USERNAME,USER_ROLE_LIST,CORRELATION_ID,APPROVAL_REQUEST_ID,OPERATION_TYPE,REQUEST_URL,CONTENTS,FIRST_NAME,LAST_NAME,PARTICIPANT_ID
+        </fields>
+      </layout>
+    </encoder>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+        <marker>AUDIT-EVENT</marker>
+      </evaluator>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <immediateFlush>true</immediateFlush>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>${logging.pattern.console}</Pattern>
     </encoder>
   </appender>
 
-  <logger name="com.vocalink.crossproduct" level="INFO">
+  <root level="INFO">
     <appender-ref ref="FILE-ROLLING"/>
-  </logger>
+    <appender-ref ref="AUDIT-EVENT-FILE-ROLLING"/>
+    <appender-ref ref="CONSOLE"/>
+  </root>
 
-  <logger name="com.vocalink.crossproduct.adapter.bps" level="INFO">
-    <appender-ref ref="FILE-ROLLING"/>
-  </logger>
-
-  <logger name="com.vocalink.crossproduct.shared" level="INFO">
-    <appender-ref ref="FILE-ROLLING"/>
-  </logger>
 </configuration>

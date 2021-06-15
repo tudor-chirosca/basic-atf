@@ -1,7 +1,9 @@
 package com.vocalink.crossproduct.ui.facade;
 
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
-import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
@@ -22,11 +24,13 @@ import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import java.util.List;
+
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
+import static com.vocalink.crossproduct.infrastructure.logging.EventMarker.AUDIT_EVENT_MARKER;
+import static com.vocalink.crossproduct.ui.aspects.OperationType.RESPONSE;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -86,6 +90,7 @@ public class AuditFacadeImpl implements AuditFacade {
                 + " and "
                 + occurringEvent.getUserId()));
 
+    log.info(AUDIT_EVENT_MARKER, "Log audit event", occurringEvent, userDetails);
     repositoryFactory.getAuditDetailsRepository(event.getProduct())
         .logOperation(event, userDetails);
   }

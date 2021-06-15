@@ -1,20 +1,17 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
-import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static java.time.Clock.systemUTC;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Getter
 @Setter
@@ -42,10 +39,4 @@ public class BPSProperties {
     private String base;
     private String path;
   }
-
-  @Bean
-  public Clock clock() {
-    return systemUTC();
-  }
-
 }
