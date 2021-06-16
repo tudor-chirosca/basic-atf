@@ -293,7 +293,7 @@ class DTOMapperTest {
     @Test
     fun `should map ParticipantSettlementDto fields with no funding Bic`() {
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
                 "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
                 Amount(10.toBigDecimal(), "SEK"))
         val cycle = Cycle.builder()
@@ -365,7 +365,7 @@ class DTOMapperTest {
     @Test
     fun `should map ParticipantSettlementDto fields with funding Bic`() {
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, 2342667, InstructionStatus.CREATED,
+                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
                 "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
                 Amount(10.toBigDecimal(), "SEK"))
 

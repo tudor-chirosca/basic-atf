@@ -15,7 +15,7 @@ public class BPSSettlementDetails {
   private final String cycleId;
   private final ZonedDateTime settlementCycleDate;
   private final BPSCycleStatus status;
-  private final Integer settlementInstructionReference;
+  private final String settlementInstructionReference;
   private final String statusDetail;
   private final String counterParty;
   private final String counterPartySettlement;
@@ -29,7 +29,7 @@ public class BPSSettlementDetails {
       @JsonProperty(value = "cycleId") String cycleId,
       @JsonProperty(value = "settlementCycleDate") ZonedDateTime settlementCycleDate,
       @JsonProperty(value = "status") BPSCycleStatus status,
-      @JsonProperty(value = "settlementInstructionReference") Integer settlementInstructionReference,
+      @JsonProperty(value = "settlementInstructionReference") String settlementInstructionReference,
       @JsonProperty(value = "statusDetail") String statusDetail,
       @JsonProperty(value = "counterParty") String counterParty,
       @JsonProperty(value = "counterPartySettlement") String counterPartySettlement,

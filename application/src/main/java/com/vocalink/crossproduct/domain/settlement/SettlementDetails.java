@@ -15,7 +15,7 @@ public class SettlementDetails {
   private final String cycleId;
   private final ZonedDateTime settlementCycleDate;
   private final CycleStatus status;
-  private final Integer settlementInstructionReference;
+  private final String settlementInstructionReference;
   private final InstructionStatus statusDetail;
   private final String counterParty;
   private final String counterPartySettlement;

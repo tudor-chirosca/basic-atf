@@ -43,36 +43,35 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
   @Override
   public ParticipantSettlementDetailsDto getSettlementDetails(String product, ClientType clientType,
       ParticipantSettlementRequest request) {
-    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}", request.getCycleId(),
-        request.getParticipantId(), product);
+    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}",
+        request.getCycleId(), request.getParticipantId(), product);
 
-    final SettlementDetailsSearchCriteria criteria = MAPPER
-        .toEntity(request);
+    final SettlementDetailsSearchCriteria criteria = MAPPER.toEntity(request);
 
-    final List<Participant> participants = repositoryFactory
-        .getParticipantRepository(product)
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findAll()
         .getItems();
 
-    final Participant participant = participants.stream()
-        .filter(p -> p.getId().equals(request.getParticipantId()))
-        .findFirst()
-        .orElseThrow(() -> new EntityNotFoundException(
-            "No such participant with id: " + request.getParticipantId()));
+    final Participant participant = repositoryFactory.getParticipantRepository(product)
+        .findById(request.getParticipantId());
 
     final Page<SettlementDetails> settlementDetails = repositoryFactory
         .getSettlementsRepository(product)
         .findDetails(criteria);
 
+    if ((settlementDetails.getItems() == null) || settlementDetails.getItems().isEmpty()) {
+      throw new EntityNotFoundException(
+          "No settlement details with cycleId: " + request.getCycleId() +
+              " and participantId: " + request.getParticipantId());
+    }
+
     if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
-      Participant fundingParticipant = participants.stream()
-          .filter(p -> p.getId().equals(participant.getFundingBic()))
-          .findFirst()
-          .orElseThrow(() -> new EntityNotFoundException(
-              "No such fundingParticipant with id: " + participant.getFundingBic()));
+      final Participant fundingParticipant = repositoryFactory.getParticipantRepository(product)
+          .findById(participant.getFundingBic());
 
       return presenterFactory.getPresenter(clientType)
-          .presentSettlementDetails(settlementDetails, participants, participant, fundingParticipant);
+          .presentSettlementDetails(
+              settlementDetails, participants, participant, fundingParticipant);
     }
 
     return presenterFactory.getPresenter(clientType)
@@ -93,7 +92,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);
 
-    List<Participant> participants = request.getParticipants().stream()
+    final List<Participant> participants = request.getParticipants().stream()
         .map(participantRepository::findById)
         .collect(toList());
 
@@ -102,15 +101,18 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
   }
 
   @Override
-  public LatestSettlementCyclesDto getLatestCycles(
-      String product, ClientType clientType) {
-    List<Cycle> latestCycles = repositoryFactory.getCycleRepository(product)
+  public LatestSettlementCyclesDto getLatestCycles(String product, ClientType clientType) {
+    log.info("Fetching latest cycles from: {}", product);
+
+    final List<Cycle> latestCycles = repositoryFactory.getCycleRepository(product)
         .findLatest(NR_OF_LATEST_CYCLES);
+
     if (latestCycles.size() != NR_OF_LATEST_CYCLES) {
-      throw new NonConsistentDataException("Not enough cycles returned based on request parameters");
+      throw new NonConsistentDataException(
+          "Not enough cycles returned based on request parameters");
     }
-    return presenterFactory.getPresenter(clientType)
-      .presentLatestCycles(latestCycles);
+
+    return presenterFactory.getPresenter(clientType).presentLatestCycles(latestCycles);
   }
 
   public SettlementScheduleDto getSettlementsSchedule(String product,

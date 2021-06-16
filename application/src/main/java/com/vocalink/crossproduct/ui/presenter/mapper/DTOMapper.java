@@ -285,13 +285,14 @@ public interface DTOMapper {
       @Mapping(target = "settlementTime", expression = "java(settlementDetailsPage.getItems().get(0).getSettlementCycleDate())"),
       @Mapping(target = "status", expression = "java(settlementDetailsPage.getItems().get(0).getStatus())"),
       @Mapping(target = "participant", source = "participant"),
-      @Mapping(target = "instructions", source = "settlementDetailsPage")
+      @Mapping(target = "instructions.items", source = "settlementDetailsPage.items"),
+      @Mapping(target = "instructions.totalResults", source = "settlementDetailsPage.totalResults")
   })
   ParticipantSettlementDetailsDto toDto(Page<SettlementDetails> settlementDetailsPage,
       @Context List<Participant> participants, Participant participant);
 
   @Mappings({
-      @Mapping(target = "reference", source = "settlementDetails.settlementInstructionReference", qualifiedByName = "fromIntegerToString"),
+      @Mapping(target = "reference", source = "settlementDetails.settlementInstructionReference"),
       @Mapping(target = "status", source = "settlementDetails.statusDetail"),
       @Mapping(target = "counterparty", source = "settlementDetails.counterParty", qualifiedByName = "findParticipant"),
       @Mapping(target = "settlementCounterparty", source = "settlementDetails.counterPartySettlement", qualifiedByName = "findParticipant"),
@@ -310,11 +311,6 @@ public interface DTOMapper {
   })
   ParticipantSettlementDetailsDto toDto(Page<SettlementDetails> settlementDetailsPage,
       @Context List<Participant> participants, Participant participant, Participant settlementBank);
-
-  @Named("fromIntegerToString")
-  default String fromIntegerToString(Integer reference) {
-    return String.valueOf(reference);
-  }
 
   @Named("findParticipant")
   default ParticipantReferenceDto findParticipant(String participantId,

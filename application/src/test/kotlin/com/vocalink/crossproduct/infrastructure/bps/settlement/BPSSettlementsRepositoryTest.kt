@@ -45,7 +45,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
                 "cycleId": "20210322001",
                 "settlementCycleDate": "2021-03-22T14:00:00Z",
                 "status": "PARTIALLYCOMPLETE",
-                "settlementInstructionReference": 2342847,
+                "settlementInstructionReference": "2342847",
                 "statusDetail": "Rejected",
                 "counterParty": "SWEDSESS",
                 "counterPartySettlement": null,
@@ -162,7 +162,7 @@ class BPSSettlementsRepositoryTest @Autowired constructor(var repository: BPSSet
         assertThat(result.items[0].cycleId).isEqualTo("20210322001")
         assertThat(result.items[0].status).isEqualTo(CycleStatus.PARTIALLY_COMPLETE)
         assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("SWEDSES1")
-        assertThat(result.items[0].settlementInstructionReference).isEqualTo(2342847)
+        assertThat(result.items[0].settlementInstructionReference).isEqualTo("2342847")
         assertThat(result.items[0].statusDetail).isEqualTo(InstructionStatus.REJECTED)
         assertThat(result.items[0].counterParty).isEqualTo("SWEDSESS")
         assertThat(result.items[0].counterPartySettlement).isNull()
