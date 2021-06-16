@@ -14,6 +14,7 @@
 
   <properties>
     <maven-assembly.version>3.3.0</maven-assembly.version>
+    <flyway-maven-plugin.version>7.3.0</flyway-maven-plugin.version>
   </properties>
 
   <build>
@@ -91,6 +92,11 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.flywaydb</groupId>
+          <artifactId>flyway-maven-plugin</artifactId>
+          <version>${flyway-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -120,4 +126,42 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>local-env</id>
+      <properties>
+        <flyway.url>jdbc:oracle:thin:@127.0.0.1:1521/PDB112</flyway.url>
+        <flyway.schemas>CPUI_DB_OWNER,CPUI_DB_USER</flyway.schemas>
+        <db.username>sys as SYSDBA</db.username>
+        <db.password>Password123</db.password>
+        <production.mode>false</production.mode>
+      </properties>
+    </profile>
+    <profile>
+      <id>iss-db</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <configuration>
+              <user>${db.username}</user>
+              <password>${db.password}</password>
+              <locations>
+                <location>
+                    filesystem:migrations
+                </location>
+              </locations>
+              <cleanDisabled>false</cleanDisabled>
+              <placeholders>
+                <schemaOwner>CPUI_DB_OWNER</schemaOwner>
+                <schemaUser>CPUI_DB_USER</schemaUser>
+                <project.version>${project.version}</project.version>
+              </placeholders>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

@@ -29,7 +29,6 @@
     <jacoco.version>0.8.5</jacoco.version>
     <javax.cache.version>1.1.1</javax.cache.version>
     <ehcache.version>3.7.1</ehcache.version>
-    <ojdbc8.version>19.3.0.0</ojdbc8.version>
     <guava.version>29.0-jre</guava.version>
     <togglz.version>2.6.1.Final</togglz.version>
   </properties>
@@ -207,12 +206,7 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.oracle.ojdbc</groupId>
-      <artifactId>ojdbc8</artifactId>
-      <version>${ojdbc8.version}</version>
-    </dependency>
-  </dependencies>
+    </dependencies>
 
   <build>
     <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>

@@ -20,12 +20,21 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <ojdbc8.version>19.3.0.0</ojdbc8.version>
   </properties>
 
   <modules>
     <module>application</module>
     <module>database</module>
   </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.oracle.ojdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>${ojdbc8.version}</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <pluginManagement>
