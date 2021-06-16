@@ -147,6 +147,8 @@ class ApprovalFacadeImplTest {
 
         val result = approvalFacadeImpl.getApprovals(TestConstants.CONTEXT, ClientType.UI, request)
 
+        assertThat(request.fromDate).isNull()
+        assertThat(request.toDate).isNull()
         verify(approvalRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentApproval(any(), any())
