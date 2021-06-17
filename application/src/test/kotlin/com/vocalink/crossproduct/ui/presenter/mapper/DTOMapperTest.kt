@@ -79,11 +79,11 @@ class DTOMapperTest {
         val status = CycleStatus.COMPLETED
 
         val cycle = Cycle.builder()
-                .id(id)
-                .cutOffTime(cutoffTime)
-                .settlementTime(settlementTime)
-                .status(status)
-                .build()
+            .id(id)
+            .cutOffTime(cutoffTime)
+            .settlementTime(settlementTime)
+            .status(status)
+            .build()
 
         val dto = MAPPER.toDto(cycle)
 
@@ -100,8 +100,8 @@ class DTOMapperTest {
         val alertType = "alertType1"
         val alertPriority = AlertPriorityData(priorityName, threshold, true)
         val model = AlertReferenceData(
-                listOf(alertPriority),
-                listOf(alertType)
+            listOf(alertPriority),
+            listOf(alertType)
         )
         val result = MAPPER.toDto(model)
 
@@ -132,19 +132,19 @@ class DTOMapperTest {
     fun `should map Alerts fields`() {
         val dateRaised = ZonedDateTime.now(ZoneId.of("UTC"))
         val alert = Alert.builder()
-                .alertId(3141)
-                .priority(AlertPriorityType.HIGH)
-                .dateRaised(dateRaised)
-                .type("rejected-central-bank")
-                .entities(
-                        listOf(Participant.builder()
-                                .id("NDEASESSXXX")
-                                .name("Nordea")
-                                .participantType(DIRECT)
-                                .build()
-                                )
-                        )
-                .build()
+            .alertId(3141)
+            .priority(AlertPriorityType.HIGH)
+            .dateRaised(dateRaised)
+            .type("rejected-central-bank")
+            .entities(
+                listOf(Participant.builder()
+                    .id("NDEASESSXXX")
+                    .name("Nordea")
+                    .participantType(DIRECT)
+                    .build()
+                )
+            )
+            .build()
 
         val alerts = Page<Alert>(1, listOf(alert))
 
@@ -163,14 +163,14 @@ class DTOMapperTest {
     @Test
     fun `should map Participant to ParticipantReference`() {
         val participant = Participant.builder()
-                .id("participantId")
-                .bic("bic")
-                .status(ACTIVE)
-                .name("name")
-                .suspendedTime(null)
-                .fundingBic("fundingBic")
-                .participantType(DIRECT)
-                .build()
+            .id("participantId")
+            .bic("bic")
+            .status(ACTIVE)
+            .name("name")
+            .suspendedTime(null)
+            .fundingBic("fundingBic")
+            .participantType(DIRECT)
+            .build()
         val result = MAPPER.toReferenceDto(participant)
 
         assertThat(result).isNotNull
@@ -185,13 +185,13 @@ class DTOMapperTest {
     fun `should map File fields`() {
         val totalResults = 1
         val file = File.builder()
-                .createdDate( ZonedDateTime.now(clock))
-                .messageType("message_type")
-                .fileName("name")
-                .nrOfBatches(12)
-                .originator("sender_bic")
-                .status("status")
-                .build()
+            .createdDate( ZonedDateTime.now(clock))
+            .messageType("message_type")
+            .fileName("name")
+            .noOfBatches(12)
+            .from("sender_bic")
+            .status("status")
+            .build()
 
         val page = Page<File>(totalResults, listOf(file))
         val result = MAPPER.toDto(page, FileDto::class.java)
@@ -203,8 +203,9 @@ class DTOMapperTest {
         assertThat(resultItem.createdAt).isEqualTo(file.createdDate)
         assertThat(resultItem.messageType).isEqualTo(file.messageType)
         assertThat(resultItem.name).isEqualTo(file.fileName)
-        assertThat(resultItem.nrOfBatches).isEqualTo(file.nrOfBatches)
-        assertThat(resultItem.senderBic).isEqualTo(file.originator)
+        assertThat(resultItem.nrOfBatches).isEqualTo(file.noOfBatches)
+        assertThat(resultItem.senderBic).isEqualTo(file.from)
+        assertThat(resultItem.receiverBic).isEqualTo(file.to)
         assertThat(resultItem.status).isEqualTo(file.status)
     }
 
@@ -212,29 +213,29 @@ class DTOMapperTest {
     fun `should map Batch fields`() {
         val totalResults = 1
         val sender = EnquirySenderDetails.builder()
-                .entityBic("sender_bic")
-                .build()
+            .entityBic("sender_bic")
+            .build()
         val batch = Batch.builder()
-                .fileName("filename")
-                .createdAt(
-                        ZonedDateTime.of(
-                                2020,
-                                Month.AUGUST.value,
-                                12,
-                                12,
-                                12,
-                                0,
-                                0,
-                                ZoneId.of("UTC")
-                        )
+            .fileName("filename")
+            .createdAt(
+                ZonedDateTime.of(
+                    2020,
+                    Month.AUGUST.value,
+                    12,
+                    12,
+                    12,
+                    0,
+                    0,
+                    ZoneId.of("UTC")
                 )
+            )
 
-                .messageType("message_type")
-                .batchId("id")
-                .nrOfTransactions(12)
-                .senderBic(sender.entityBic)
-                .status("status")
-                .build()
+            .messageType("message_type")
+            .batchId("id")
+            .nrOfTransactions(12)
+            .senderBic(sender.entityBic)
+            .status("status")
+            .build()
 
         val page = Page<Batch>(totalResults, listOf(batch))
         val result = MAPPER.toDto(page, BatchDto::class.java)
@@ -254,25 +255,25 @@ class DTOMapperTest {
     @Test
     fun `should map Batch Details fields`() {
         val batch = Batch.builder()
-                .fileName("filename")
-                .createdAt(
-                        ZonedDateTime.of(
-                                2020,
-                                Month.AUGUST.value,
-                                12,
-                                12,
-                                12,
-                                0,
-                                0,
-                                ZoneId.of("UTC")
-                        )
+            .fileName("filename")
+            .createdAt(
+                ZonedDateTime.of(
+                    2020,
+                    Month.AUGUST.value,
+                    12,
+                    12,
+                    12,
+                    0,
+                    0,
+                    ZoneId.of("UTC")
                 )
-                .messageType("message_type")
-                .batchId("id")
-                .nrOfTransactions(12)
-                .senderBic("sender_bic")
-                .status("status")
-                .build()
+            )
+            .messageType("message_type")
+            .batchId("id")
+            .nrOfTransactions(12)
+            .senderBic("sender_bic")
+            .status("status")
+            .build()
 
         val result = MAPPER.toDetailsDto(batch)
 
@@ -293,9 +294,9 @@ class DTOMapperTest {
     @Test
     fun `should map ParticipantSettlementDto fields with no funding Bic`() {
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
-                "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
-                Amount(10.toBigDecimal(), "SEK"))
+            ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
+            "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
+            Amount(10.toBigDecimal(), "SEK"))
         val cycle = Cycle.builder()
             .id("cycleId")
             .settlementTime(ZonedDateTime.now(clock))
@@ -351,23 +352,23 @@ class DTOMapperTest {
         assertThat(instructionResult.counterparty.participantType).isEqualTo(counterparty.participantType.description)
 
         assertThat(instructionResult.settlementCounterparty.participantIdentifier).isEqualTo(
-                settlementCounterparty.bic
+            settlementCounterparty.bic
         )
         assertThat(instructionResult.settlementCounterparty.name).isEqualTo(settlementCounterparty.name)
         assertThat(instructionResult.settlementCounterparty.connectingParticipantId).isEqualTo(
-                settlementCounterparty.fundingBic
+            settlementCounterparty.fundingBic
         )
         assertThat(instructionResult.settlementCounterparty.participantType).isEqualTo(
-                settlementCounterparty.participantType.description
+            settlementCounterparty.participantType.description
         )
     }
 
     @Test
     fun `should map ParticipantSettlementDto fields with funding Bic`() {
         val settlementDetails = SettlementDetails("participantId", "FORXSES1", "20210322001",
-                ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
-                "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
-                Amount(10.toBigDecimal(), "SEK"))
+            ZonedDateTime.now(clock), CycleStatus.NO_RESPONSE, "2342667", InstructionStatus.CREATED,
+            "counterpartyId", "settlementCounterpartyId", Amount(10.toBigDecimal(), "SEK"),
+            Amount(10.toBigDecimal(), "SEK"))
 
         val cycle = Cycle.builder()
             .id("cycleId")
@@ -407,17 +408,17 @@ class DTOMapperTest {
             .build()
         val settlementCounterparty = Participant.builder()
             .id("settlementCounterpartyId")
-           .bic("settlementCounterpartyId")
-           .name("settlementCounterpartyName")
-           .fundingBic("fundingBic")
-           .status(ACTIVE)
-           .participantType(FUNDED)
-           .organizationId("organizationId")
-           .build()
+            .bic("settlementCounterpartyId")
+            .name("settlementCounterpartyName")
+            .fundingBic("fundingBic")
+            .status(ACTIVE)
+            .participantType(FUNDED)
+            .organizationId("organizationId")
+            .build()
 
         val result = MAPPER.toDto(Page(1, listOf(settlementDetails)),
-                listOf(settlementBank, counterparty, settlementCounterparty, fundedParticipant),
-                fundedParticipant, settlementBank)
+            listOf(settlementBank, counterparty, settlementCounterparty, fundedParticipant),
+            fundedParticipant, settlementBank)
 
         assertThat(result).isNotNull
         assertThat(result.cycleId).isEqualTo(settlementDetails.cycleId)
@@ -440,14 +441,14 @@ class DTOMapperTest {
         assertThat(instructionResult.counterparty.participantType).isEqualTo(counterparty.participantType.description)
 
         assertThat(instructionResult.settlementCounterparty.participantIdentifier).isEqualTo(
-                settlementCounterparty.bic
+            settlementCounterparty.bic
         )
         assertThat(instructionResult.settlementCounterparty.name).isEqualTo(settlementCounterparty.name)
         assertThat(instructionResult.settlementCounterparty.connectingParticipantId).isEqualTo(
-                settlementCounterparty.fundingBic
+            settlementCounterparty.fundingBic
         )
         assertThat(instructionResult.settlementCounterparty.participantType).isEqualTo(
-                settlementCounterparty.participantType.description
+            settlementCounterparty.participantType.description
         )
     }
 
@@ -467,24 +468,24 @@ class DTOMapperTest {
             .fullName("Bob Sinclair")
             .build()
         val transaction = Transaction(
-                "instructionId",
-                ZonedDateTime.now(clock),
-                "messageType",
-                amount,
-                "status",
-                "fileName",
-                "batchId",
-                LocalDate.now(clock).plusDays(1),
-                "settlementCycleId",
-                "reasonCode",
-                "senderEntityName",
-                "senderEntityBic",
-                "senderIban",
-                "Mark Twain",
-                "receiverEntityName",
-                "receiverEntityBic",
-                "receiverIban",
-                "Tom Hawk"
+            "instructionId",
+            ZonedDateTime.now(clock),
+            "messageType",
+            amount,
+            "status",
+            "fileName",
+            "batchId",
+            LocalDate.now(clock).plusDays(1),
+            "settlementCycleId",
+            "reasonCode",
+            "senderEntityName",
+            "senderEntityBic",
+            "senderIban",
+            "Mark Twain",
+            "receiverEntityName",
+            "receiverEntityBic",
+            "receiverIban",
+            "Tom Hawk"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -511,24 +512,24 @@ class DTOMapperTest {
             .fullName("fullName")
             .build()
         val transaction = Transaction(
-                "instructionId",
-                ZonedDateTime.now(clock),
-                "messageType",
-                amount,
-                "status",
-                "fileName",
-                "batchId",
-                LocalDate.of(2021, 1, 15),
-                "settlementCycleId",
-                "reasonCode",
-                "senderEntityName",
-                "senderEntityBic",
-                "senderIban",
-                "Mark Twain",
-                "receiverEntityName",
-                "receiverEntityBic",
-                "receiverIban",
-                "Tom Hawk"
+            "instructionId",
+            ZonedDateTime.now(clock),
+            "messageType",
+            amount,
+            "status",
+            "fileName",
+            "batchId",
+            LocalDate.of(2021, 1, 15),
+            "settlementCycleId",
+            "reasonCode",
+            "senderEntityName",
+            "senderEntityBic",
+            "senderIban",
+            "Mark Twain",
+            "receiverEntityName",
+            "receiverEntityBic",
+            "receiverIban",
+            "Tom Hawk"
         )
         val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -640,19 +641,19 @@ class DTOMapperTest {
         val count: Long = 100
         val paymentSentAmount = Amount(BigDecimal(100), "SEK")
         val paymentSent = Payment(
-                count, paymentSentAmount
+            count, paymentSentAmount
         )
         val paymentReceivedAmount = Amount(BigDecimal(500), "SEK")
         val paymentReceived = Payment(
-                count, paymentReceivedAmount
+            count, paymentReceivedAmount
         )
         val returnSentAmount = Amount(BigDecimal(300), "SEK")
         val returnSent = Payment(
-                count, returnSentAmount
+            count, returnSentAmount
         )
         val returnReceivedAmount = Amount(BigDecimal(700), "SEK")
         val returnReceived = Payment(
-                count, returnReceivedAmount
+            count, returnReceivedAmount
         )
         val netPositionAmount = Amount(BigDecimal(5000), "SEK")
         val previousPosition = ParticipantPosition.builder()
@@ -681,9 +682,9 @@ class DTOMapperTest {
         val debitCapAmount = Amount(BigDecimal(1000), "SEK")
         val debitPositionAmount = Amount(BigDecimal(2000), "SEK")
         val intraDay = IntraDayPositionGross(
-                "schemeId",
-                "debitParticipantId",
-                LocalDate.now(), debitCapAmount, debitPositionAmount
+            "schemeId",
+            "debitParticipantId",
+            LocalDate.now(), debitCapAmount, debitPositionAmount
         )
         val participant = Participant.builder()
             .id("participantId")
@@ -695,8 +696,8 @@ class DTOMapperTest {
             .organizationId("organizationId")
             .build()
         val result = MAPPER.toDto(
-                currentCycle, previousCycle, currentPosition, previousPosition,
-                participant, participant, intraDay
+            currentCycle, previousCycle, currentPosition, previousPosition,
+            participant, participant, intraDay
         )
         assertThat(result.participant.bic).isEqualTo(participant.bic)
         assertThat(result.participant.id).isEqualTo(participant.id)
@@ -734,7 +735,7 @@ class DTOMapperTest {
 
         val currentNetCCT = currentCreditCCT.subtract(currentDebitCCT)
         assertThat(result.currentPosition.customerCreditTransfer.netPosition).isEqualTo(
-                currentNetCCT
+            currentNetCCT
         )
 
         // Current Payment Return
@@ -807,11 +808,11 @@ class DTOMapperTest {
         val requestedChange = mapOf("status" to "suspended")
         val originalData = mapOf("data" to "data")
         val participant = Participant.builder()
-                .id("FORXSES1")
-                .name("Forex Bank")
-                .participantType(FUNDING)
-                .schemeCode("P27-SEK")
-                .build()
+            .id("FORXSES1")
+            .name("Forex Bank")
+            .participantType(FUNDING)
+            .schemeCode("P27-SEK")
+            .build()
         val approvalDetails = Approval.builder()
             .approvalId(approvalId)
             .requestType(PARTICIPANT_SUSPEND)
@@ -861,26 +862,26 @@ class DTOMapperTest {
             .build()
 
         val participants = listOf(
-                Participant.builder()
-                        .id("funded1")
-                        .name("aaa")
-                        .participantType(FUNDED)
-                        .build(),
-                Participant.builder()
-                        .id("funded2")
-                        .name("bbb")
-                        .participantType(FUNDED)
-                        .build(),
-                Participant.builder()
-                        .id("funding")
-                        .name("ccc")
-                        .participantType(fundingParticipantType)
-                        .build(),
-                Participant.builder()
-                        .id("funded3")
-                        .name("ddd")
-                        .participantType(FUNDED)
-                        .build())
+            Participant.builder()
+                .id("funded1")
+                .name("aaa")
+                .participantType(FUNDED)
+                .build(),
+            Participant.builder()
+                .id("funded2")
+                .name("bbb")
+                .participantType(FUNDED)
+                .build(),
+            Participant.builder()
+                .id("funding")
+                .name("ccc")
+                .participantType(fundingParticipantType)
+                .build(),
+            Participant.builder()
+                .id("funded3")
+                .name("ddd")
+                .participantType(FUNDED)
+                .build())
 
         val approvalDto = MAPPER.toDto(approval, participants)
 
@@ -936,56 +937,56 @@ class DTOMapperTest {
     fun `should map all fields of Participant to ManagedParticipantDto`() {
         val date = ZonedDateTime.now()
         val fundedParticipant = Participant.builder()
-                .id("ELLFSESS")
-                .bic("ELLFSESS")
-                .fundingBic("FORXSES1")
-                .name("Lansfosakringar Bank")
-                .participantType(FUNDED)
-                .build()
+            .id("ELLFSESS")
+            .bic("ELLFSESS")
+            .fundingBic("FORXSES1")
+            .name("Lansfosakringar Bank")
+            .participantType(FUNDED)
+            .build()
         val participant = Participant.builder()
-                .id("FORXSES1")
-                .bic("FORXSES1")
-                .name("Forex Bank")
-                .fundingBic("NA")
-                .status(ACTIVE)
-                .participantType(FUNDING)
-                .organizationId("00002121")
-                .suspensionLevel(SCHEME)
-                .tpspName("Nordnet Bank")
-                .tpspId("475347837892")
-                .fundedParticipants(listOf(fundedParticipant))
-                .fundedParticipantsCount(1)
-                .build()
+            .id("FORXSES1")
+            .bic("FORXSES1")
+            .name("Forex Bank")
+            .fundingBic("NA")
+            .status(ACTIVE)
+            .participantType(FUNDING)
+            .organizationId("00002121")
+            .suspensionLevel(SCHEME)
+            .tpspName("Nordnet Bank")
+            .tpspId("475347837892")
+            .fundedParticipants(listOf(fundedParticipant))
+            .fundedParticipantsCount(1)
+            .build()
         val participants = Page<Participant>(1, listOf(participant, fundedParticipant))
         val routingRecords = RoutingRecord(
-                "reachableBic",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "currency"
+            "reachableBic",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "currency"
         )
         participant.reachableBics = listOf(routingRecords)
 
         val userDetails = UserDetails.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .build()
+            .firstName("John")
+            .lastName("Doe")
+            .build()
 
         val approval = Approval.builder()
-                .approvalId("1000015")
-                .requestType(PARTICIPANT_SUSPEND)
-                .date(date)
-                .requestedBy(userDetails)
-                .build()
+            .approvalId("1000015")
+            .requestType(PARTICIPANT_SUSPEND)
+            .date(date)
+            .requestedBy(userDetails)
+            .build()
 
         val result = MAPPER.toDto(participants, mapOf("FORXSES1" to approval), mapOf("FORXSES1" to "Forex Bank"))
 
         assertThat(result).isNotNull
 
         val managedParticipant: ManagedParticipantDto =
-                result.items.elementAt(0) as ManagedParticipantDto
+            result.items.elementAt(0) as ManagedParticipantDto
 
         val fundedManagedParticipant: ManagedParticipantDto =
-                result.items.elementAt(1) as ManagedParticipantDto
+            result.items.elementAt(1) as ManagedParticipantDto
 
         assertThat(managedParticipant.bic).isEqualTo(participant.bic)
         assertThat(managedParticipant.name).isEqualTo(participant.name)
@@ -999,11 +1000,11 @@ class DTOMapperTest {
         assertThat(managedParticipant.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
         assertThat(managedParticipant.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
         assertThat(managedParticipant.fundedParticipants[0].connectingParticipantId).isEqualTo(
-                participant.fundedParticipants[0].fundingBic)
+            participant.fundedParticipants[0].fundingBic)
         assertThat(managedParticipant.fundedParticipants[0].participantIdentifier).isEqualTo(
-                participant.fundedParticipants[0].id)
+            participant.fundedParticipants[0].id)
         assertThat(managedParticipant.fundedParticipants[0].participantType).isEqualTo(
-                participant.fundedParticipants[0].participantType.description)
+            participant.fundedParticipants[0].participantType.description)
         assertThat(managedParticipant.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
         assertThat(managedParticipant.reachableBics[0].reachableBic).isEqualTo(participant.reachableBics[0].reachableBic)
         assertThat(managedParticipant.reachableBics[0].validFrom).isEqualTo(participant.reachableBics[0].validFrom)
@@ -1025,10 +1026,10 @@ class DTOMapperTest {
     @Test
     fun `should map RoutingRecordDto fields`() {
         val entity = RoutingRecord(
-                "reachableBic",
-                ZonedDateTime.now(clock),
-                ZonedDateTime.now(clock),
-                "currency"
+            "reachableBic",
+            ZonedDateTime.now(clock),
+            ZonedDateTime.now(clock),
+            "currency"
         )
         val result = MAPPER.toDto(entity)
         assertThat(result.reachableBic).isEqualTo(entity.reachableBic)
@@ -1042,17 +1043,17 @@ class DTOMapperTest {
         val participantId = "FORXSES1"
 
         val participant = Participant.builder()
-                .id(participantId)
-                .bic(participantId)
-                .name("Forex Bank")
-                .status(ACTIVE)
-                .participantType(FUNDED)
-                .organizationId("00002121")
-                .tpspName("Nordnet Bank")
-                .tpspId("475347837892")
-                .fundedParticipants(emptyList())
-                .fundedParticipantsCount(1)
-                .build()
+            .id(participantId)
+            .bic(participantId)
+            .name("Forex Bank")
+            .status(ACTIVE)
+            .participantType(FUNDED)
+            .organizationId("00002121")
+            .tpspName("Nordnet Bank")
+            .tpspId("475347837892")
+            .fundedParticipants(emptyList())
+            .fundedParticipantsCount(1)
+            .build()
 
         val approvalUser = UserDetails.builder()
             .userId("E23423")
@@ -1062,15 +1063,15 @@ class DTOMapperTest {
             .build()
 
         val approval = Approval.builder()
-                .approvalId("approvalId")
-                .requestType(PARTICIPANT_SUSPEND)
-                .participantIds(listOf(participantId))
-                .date(ZonedDateTime.now(ZoneId.of("UTC")))
-                .requestedBy(approvalUser)
-                .status(PENDING)
-                .requestComment("comment")
-                .notes("notes")
-                .build()
+            .approvalId("approvalId")
+            .requestType(PARTICIPANT_SUSPEND)
+            .participantIds(listOf(participantId))
+            .date(ZonedDateTime.now(ZoneId.of("UTC")))
+            .requestedBy(approvalUser)
+            .status(PENDING)
+            .requestComment("comment")
+            .notes("notes")
+            .build()
 
         val approvals = mapOf(participantId to approval)
 
@@ -1119,13 +1120,13 @@ class DTOMapperTest {
         assertThat(result.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
         assertThat(result.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
         assertThat(result.fundedParticipants[0].connectingParticipantId).isEqualTo(
-                participant.fundedParticipants[0].fundingBic
+            participant.fundedParticipants[0].fundingBic
         )
         assertThat(result.fundedParticipants[0].participantIdentifier).isEqualTo(
-                participant.fundedParticipants[0].id
+            participant.fundedParticipants[0].id
         )
         assertThat(result.fundedParticipants[0].participantType).isEqualTo(
-                participant.fundedParticipants[0].participantType.description
+            participant.fundedParticipants[0].participantType.description
         )
 
         assertThat(result.fundingParticipant.connectingParticipantId).isEqualTo(fundingParticipant.fundingBic)
@@ -1154,12 +1155,12 @@ class DTOMapperTest {
     @Test
     fun `should map ReportDto fields`() {
         val report = Report(
-                "10000000006",
-                "PRE-SETTLEMENT_ADVICE",
-                ZonedDateTime.parse("2021-02-14T00:00:00Z"),
-                "20201231002",
-                "IBCASES1",
-                "ICA Banken"
+            "10000000006",
+            "PRE-SETTLEMENT_ADVICE",
+            ZonedDateTime.parse("2021-02-14T00:00:00Z"),
+            "20201231002",
+            "IBCASES1",
+            "ICA Banken"
         )
         val result = MAPPER.toDto(report)
         assertThat(result.reportId).isEqualTo(report.reportId)
@@ -1180,12 +1181,12 @@ class DTOMapperTest {
     @Test
     fun `should map DayCycleDto fields`() {
         val entity = DayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.COMPLETED,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.COMPLETED,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         )
         val result = MAPPER.toDto(entity)
         assertThat(result.id).isEqualTo(entity.sessionInstanceId)
@@ -1211,10 +1212,10 @@ class DTOMapperTest {
     @Test
     fun `should map SettlementCycleScheduleDto fields`() {
         val entity = SettlementCycleSchedule(
-                "cycleName",
-                "startTime",
-                "cutOffTime",
-                "settlementStartTime"
+            "cycleName",
+            "startTime",
+            "cutOffTime",
+            "settlementStartTime"
         )
         val dto = MAPPER.toDto(entity)
         assertThat(dto.cycleName).isEqualTo(entity.cycleName)
@@ -1234,19 +1235,19 @@ class DTOMapperTest {
         val dateTime = ZonedDateTime.now(ZoneId.of("UTC"))
         val permission = "read.alerts-dashboard"
         val participant = Participant.builder()
-                .id(participantId)
-                .bic(participantId)
-                .name(participantName)
-                .fundingBic(fundingBic)
-                .status(SUSPENDED)
-                .suspendedTime(dateTime)
-                .participantType(FUNDED)
-                .build()
+            .id(participantId)
+            .bic(participantId)
+            .name(participantName)
+            .fundingBic(fundingBic)
+            .status(SUSPENDED)
+            .suspendedTime(dateTime)
+            .participantType(FUNDED)
+            .build()
         val auditDetails = AuditDetails.builder()
-                .username(userId)
-                .firstName(userFirstName)
-                .lastName(userLastName)
-                .build()
+            .username(userId)
+            .firstName(userFirstName)
+            .lastName(userLastName)
+            .build()
 
         val entity = MAPPER.toDto(participant, listOf(permission), auditDetails)
 
@@ -1266,41 +1267,41 @@ class DTOMapperTest {
     @Test
     fun `should map all fields from Participant to ManagedParticipantDto`() {
         val userDetail = UserDetails.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .build()
+            .firstName("John")
+            .lastName("Doe")
+            .build()
         val approval = Approval.builder()
-                .requestType(PARTICIPANT_SUSPEND)
-                .requestedBy(userDetail)
-                .date(ZonedDateTime.now())
-                .approvalId("10000000")
-                .build()
+            .requestType(PARTICIPANT_SUSPEND)
+            .requestedBy(userDetail)
+            .date(ZonedDateTime.now())
+            .approvalId("10000000")
+            .build()
         val routingRecord = RoutingRecord(
-                "reachableBic",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "currency")
+            "reachableBic",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "currency")
         val fundedParticipant = Participant.builder()
-                .id("FORXSES1")
-                .bic("FORXSES1")
-                .build()
+            .id("FORXSES1")
+            .bic("FORXSES1")
+            .build()
         val participant = Participant.builder()
-                .id("FORXSES1")
-                .bic("FORXSES1")
-                .name("Forex Bank")
-                .fundingBic("NA")
-                .status(ACTIVE)
-                .suspendedTime(ZonedDateTime.now())
-                .participantType(FUNDING)
-                .schemeCode("P27-SEK")
-                .organizationId("00002121")
-                .suspensionLevel(SCHEME)
-                .tpspName("Nordnet Bank")
-                .tpspId("475347837892")
-                .fundedParticipants(listOf(fundedParticipant))
-                .fundedParticipantsCount(1)
-                .reachableBics(listOf(routingRecord))
-                .build()
+            .id("FORXSES1")
+            .bic("FORXSES1")
+            .name("Forex Bank")
+            .fundingBic("NA")
+            .status(ACTIVE)
+            .suspendedTime(ZonedDateTime.now())
+            .participantType(FUNDING)
+            .schemeCode("P27-SEK")
+            .organizationId("00002121")
+            .suspensionLevel(SCHEME)
+            .tpspName("Nordnet Bank")
+            .tpspId("475347837892")
+            .fundedParticipants(listOf(fundedParticipant))
+            .fundedParticipantsCount(1)
+            .reachableBics(listOf(routingRecord))
+            .build()
 
         val result = MAPPER.toDto(participant, mapOf(participant.id to approval), mapOf("FORXSES1" to "Forex Bank"))
 
@@ -1326,50 +1327,50 @@ class DTOMapperTest {
     @Test
     fun `should map to IODashboardDto, populating with empty if no rows for participant`() {
         val forex = Participant.builder()
-                .id("FORXSES1")
-                .bic("FORXSES1")
-                .name("Forex Bank")
-                .fundingBic("NA")
-                .status(ACTIVE)
-                .suspendedTime(ZonedDateTime.now())
-                .participantType(FUNDING)
-                .schemeCode("P27-SEK")
-                .organizationId("00002121")
-                .suspensionLevel(SCHEME)
-                .build()
+            .id("FORXSES1")
+            .bic("FORXSES1")
+            .name("Forex Bank")
+            .fundingBic("NA")
+            .status(ACTIVE)
+            .suspendedTime(ZonedDateTime.now())
+            .participantType(FUNDING)
+            .schemeCode("P27-SEK")
+            .organizationId("00002121")
+            .suspensionLevel(SCHEME)
+            .build()
         val ndeases = Participant.builder()
-                .id("NDEASESXXX")
-                .bic("NDEASESXXX")
-                .name("NDEA Bank")
-                .fundingBic("NA")
-                .status(ACTIVE)
-                .suspendedTime(ZonedDateTime.now())
-                .participantType(FUNDING)
-                .schemeCode("P27-SEK")
-                .organizationId("00002121")
-                .suspensionLevel(SCHEME)
-                .build()
+            .id("NDEASESXXX")
+            .bic("NDEASESXXX")
+            .name("NDEA Bank")
+            .fundingBic("NA")
+            .status(ACTIVE)
+            .suspendedTime(ZonedDateTime.now())
+            .participantType(FUNDING)
+            .schemeCode("P27-SEK")
+            .organizationId("00002121")
+            .suspensionLevel(SCHEME)
+            .build()
         val ioData = IOData.builder()
-                .submitted(1)
-                .rejected("1.0")
-                .output(100)
-                .build()
+            .submitted(1)
+            .rejected("1.0")
+            .output(100)
+            .build()
         val participantIoData = listOf(
-                ParticipantIOData.builder()
-                        .batches(ioData)
-                        .transactions(ioData)
-                        .files(ioData)
-                        .schemeParticipantIdentifier(forex.bic)
-                        .build(),
-                ParticipantIOData.builder()
-                        .batches(ioData)
-                        .transactions(ioData)
-                        .files(ioData)
-                        .schemeParticipantIdentifier("-")
-                        .build()
+            ParticipantIOData.builder()
+                .batches(ioData)
+                .transactions(ioData)
+                .files(ioData)
+                .schemeParticipantIdentifier(forex.bic)
+                .build(),
+            ParticipantIOData.builder()
+                .batches(ioData)
+                .transactions(ioData)
+                .files(ioData)
+                .schemeParticipantIdentifier("-")
+                .build()
         )
         val ioDashboard = IODashboard(
-                "file_rej", "batch_rej", "transaction_rej", participantIoData
+            "file_rej", "batch_rej", "transaction_rej", participantIoData
         )
 
         val result = MAPPER.toDto(ioDashboard, listOf(forex, ndeases), LocalDate.now())
@@ -1395,35 +1396,35 @@ class DTOMapperTest {
     @Test
     fun `should map all FileDetailsDto fields`() {
         val file = File(
-                "name",
-                "fileName",
-                234234,
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "originator",
-                "msgType",
-                10,
-                "status",
-                "reasonCode",
-                "cycleId",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "P27"
+            "name",
+            "fileName",
+            234234,
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            "from",
+            "to",
+            "msgType",
+            "messageDirection",
+            10,
+            "status",
+            "reasonCode",
+            "cycleId"
         )
         val participant = Participant.builder()
-                .id("participantId")
-                .bic("participantId")
-                .name("name")
-                .fundingBic("fundingBic")
-                .status(ACTIVE)
-                .participantType(FUNDING)
-                .organizationId("organizationId")
-                .build()
+            .id("participantId")
+            .bic("participantId")
+            .name("name")
+            .fundingBic("fundingBic")
+            .status(ACTIVE)
+            .participantType(FUNDING)
+            .organizationId("organizationId")
+            .build()
 
         val dto = MAPPER.toDto(file, participant)
         assertThat(dto.fileSize).isEqualTo(file.fileSize)
         assertThat(dto.createdAt).isEqualTo(file.createdDate)
         assertThat(dto.fileName).isEqualTo(file.fileName)
         assertThat(dto.messageType).isEqualTo(file.messageType)
-        assertThat(dto.nrOfBatches).isEqualTo(file.nrOfBatches)
+        assertThat(dto.nrOfBatches).isEqualTo(file.noOfBatches)
         assertThat(dto.reasonCode).isEqualTo(file.reasonCode)
         assertThat(dto.settlementCycleId).isEqualTo(file.settlementCycle)
         assertThat(dto.status).isEqualTo(file.status)

@@ -73,7 +73,7 @@ class FilesFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on get file details`() {
-        val file = File.builder().originator("any").build()
+        val file = File.builder().from("any").build()
         val detailsDto = FileDetailsDto.builder().build()
         val participant = Participant.builder().build()
 

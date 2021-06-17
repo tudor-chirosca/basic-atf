@@ -12,14 +12,14 @@ public class BPSFile {
   private final String fileName;
   private final long fileSize;
   private final ZonedDateTime createdDate;
-  private final String originator;
+  private final String from;
+  private final String to;
   private final String messageType;
-  private final int nrOfBatches;
+  private final String messageDirection;
+  private final int noOfBatches;
   private final String status;
   private final String reasonCode;
   private final String settlementCycle;
-  private final ZonedDateTime settlementDate;
-  private final String schemeParticipantIdentifier;
 
   @JsonCreator
   public BPSFile(
@@ -27,25 +27,25 @@ public class BPSFile {
       @JsonProperty(value = "fileName") String fileName,
       @JsonProperty(value = "fileSize") Long fileSize,
       @JsonProperty(value = "createdDate") ZonedDateTime createdDate,
-      @JsonProperty(value = "originator") String originator,
+      @JsonProperty(value = "from") String from,
+      @JsonProperty(value = "to") String to,
       @JsonProperty(value = "messageType") String messageType,
-      @JsonProperty(value = "noOfBatches") Integer nrOfBatches,
+      @JsonProperty(value = "messageDirection") String messageDirection,
+      @JsonProperty(value = "noOfBatches") Integer noOfBatches,
       @JsonProperty(value = "status") String status,
       @JsonProperty(value = "reasonCode") String reasonCode,
-      @JsonProperty(value = "settlementCycle") String settlementCycle,
-      @JsonProperty(value = "settlementDate") ZonedDateTime settlementDate,
-      @JsonProperty(value = "schemeParticipantIdentifier") String schemeParticipantIdentifier) {
+      @JsonProperty(value = "settlementCycle") String settlementCycle) {
     this.instructionId = instructionId;
     this.fileName = fileName;
     this.fileSize = fileSize == null ? 0 : fileSize;
     this.createdDate = createdDate;
-    this.originator = originator;
+    this.from = from;
+    this.to = to;
     this.messageType = messageType;
-    this.nrOfBatches = nrOfBatches == null ? 0 : nrOfBatches;
+    this.messageDirection = messageDirection;
+    this.noOfBatches = noOfBatches == null ? 0 : noOfBatches;
     this.status = status;
     this.reasonCode = reasonCode;
     this.settlementCycle = settlementCycle;
-    this.settlementDate = settlementDate;
-    this.schemeParticipantIdentifier = schemeParticipantIdentifier;
   }
 }

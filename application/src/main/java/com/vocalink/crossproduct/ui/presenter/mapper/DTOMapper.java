@@ -241,7 +241,9 @@ public interface DTOMapper {
   @Mappings({
       @Mapping(target = "name", source = "fileName"),
       @Mapping(target = "createdAt", source = "createdDate"),
-      @Mapping(target = "senderBic", source = "originator")
+      @Mapping(target = "senderBic", source = "from"),
+      @Mapping(target = "receiverBic", source = "to"),
+      @Mapping(target = "nrOfBatches", source = "noOfBatches")
   })
   FileDto toDto(File file);
 
@@ -249,6 +251,7 @@ public interface DTOMapper {
       @Mapping(target = "status", source = "file.status"),
       @Mapping(target = "createdAt", source = "file.createdDate"),
       @Mapping(target = "settlementCycleId", source = "file.settlementCycle"),
+      @Mapping(target = "nrOfBatches", source = "file.noOfBatches"),
       @Mapping(target = "sender.entityName", source = "participant.name"),
       @Mapping(target = "sender.entityBic", source = "participant.bic")
   })

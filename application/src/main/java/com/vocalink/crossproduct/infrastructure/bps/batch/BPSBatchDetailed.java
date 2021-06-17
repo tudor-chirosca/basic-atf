@@ -23,7 +23,8 @@ public class BPSBatchDetailed {
   private final String senderBic;
   private final String senderIban;
 
-  public BPSBatchDetailed(@JsonProperty("instructionId") String instructionId,
+  public BPSBatchDetailed(
+      @JsonProperty("instructionId") String instructionId,
       @JsonProperty("batchID") String batchId,
       @JsonProperty("numberOfTransactions") Integer numberOfTransactions,
       @JsonProperty("messageType") String messageType,

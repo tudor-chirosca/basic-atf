@@ -90,7 +90,7 @@ class BPSMapperTest {
 
         val entity = BPSMAPPER.toBps(request)
 
-        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo(request.sort[0])
+        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("noOfBatches")
         assertThat(entity.createdFromDate).isNull()
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
@@ -112,7 +112,7 @@ class BPSMapperTest {
 
         val entity = BPSMAPPER.toBps(request)
 
-        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo(request.sort[0])
+        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("noOfBatches")
         assertThat(entity.createdFromDate).isEqualTo(request.dateFrom)
         assertThat(entity.createdToDate).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)

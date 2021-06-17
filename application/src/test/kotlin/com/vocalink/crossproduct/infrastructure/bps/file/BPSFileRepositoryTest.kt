@@ -44,16 +44,16 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
                 {
                   "instructionId": "2641",
                   "fileName": "P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz",
-                  "fileSize": "20954",
+                  "fileSize": 20954,
                   "createdDate": "2021-04-01T17:00:00Z",
-                  "originator": "NDEASESSXXX",
+                  "from": "NDEASESSXXX",
+                  "to": "DABASESXXXX",
                   "messageType": "pacs.008",
-                  "noOfBatches": "12",
-                  "status": "DEBULKED",
+                  "messageDirection": "INPUT",
+                  "noOfBatches": 12,
+                  "status": "NAK",
                   "reasonCode": "F001",
-                  "settlementCycle": "2021040103",
-                  "settlementDate": "2021-04-01T17:00:00Z",
-                  "schemeParticipantIdentifier": "AABASESSXXX"
+                  "settlementCycle": "2021040103"
                 }
             ],
             "summary": {
@@ -67,16 +67,16 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         {
              "instructionId": "2641",
              "fileName": "P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz",
-             "fileSize": "20954",
+             "fileSize": 20954,
              "createdDate": "2021-04-01T17:00:00Z",
-             "originator": "NDEASESSXXX",
+             "from": "NDEASESSXXX",
+             "to": "DABASESXXXX",
              "messageType": "prtp.005-prtp.006",
-             "nrOfBatches": "12",
-             "status": "Accepted",
+             "messageDirection": "INPUT",
+             "noOfBatches": 12,
+             "status": "ACK",
              "reasonCode": "F001",
-             "settlementCycle": "20201113003",
-             "settlementDate": "2021-04-01T17:00:00Z",
-             "schemeParticipantIdentifier": "AABASESSXXX"
+             "settlementCycle": "20201113003"
         }               
     """
     }
@@ -117,14 +117,14 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         assertThat(result.items[0].fileName).isEqualTo("P27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800102.gz")
         assertThat(result.items[0].fileSize).isEqualTo(20954L)
         assertThat(result.items[0].createdDate).isEqualTo(date)
-        assertThat(result.items[0].settlementDate).isEqualTo(date)
-        assertThat(result.items[0].originator).isEqualTo("NDEASESSXXX")
+        assertThat(result.items[0].from).isEqualTo("NDEASESSXXX")
+        assertThat(result.items[0].to).isEqualTo("DABASESXXXX")
         assertThat(result.items[0].messageType).isEqualTo("pacs.008")
-        assertThat(result.items[0].nrOfBatches).isEqualTo(12)
-        assertThat(result.items[0].status).isEqualTo("DEBULKED")
+        assertThat(result.items[0].messageDirection).isEqualTo("INPUT")
+        assertThat(result.items[0].noOfBatches).isEqualTo(12)
+        assertThat(result.items[0].status).isEqualTo("NAK")
         assertThat(result.items[0].reasonCode).isEqualTo("F001")
         assertThat(result.items[0].settlementCycle).isEqualTo("2021040103")
-        assertThat(result.items[0].schemeParticipantIdentifier).isEqualTo("AABASESSXXX")
     }
 
     @Test
@@ -142,13 +142,14 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
 
         assertThat(result).isNotNull
         assertThat(result.settlementCycle).isEqualTo("20201113003")
-        assertThat(result.originator).isEqualTo("NDEASESSXXX")
+        assertThat(result.from).isEqualTo("NDEASESSXXX")
+        assertThat(result.to).isEqualTo("DABASESXXXX")
         assertThat(result.reasonCode).isEqualTo("F001")
-        assertThat(result.nrOfBatches).isEqualTo(12)
+        assertThat(result.noOfBatches).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
-        assertThat(result.status).isEqualTo("Accepted")
+        assertThat(result.messageDirection).isEqualTo("INPUT")
+        assertThat(result.status).isEqualTo("ACK")
         assertThat(result.createdDate).isEqualTo(date)
-        assertThat(result.settlementDate).isEqualTo(date)
     }
 
     @Test

@@ -16,7 +16,7 @@ abstract class MapperUtils {
     put("createdAt", "createdDate");
     put("senderBic", "originator");
     put("messageType", "messageType");
-    put("nrOfBatches", "nrOfBatches");
+    put("nrOfBatches", "noOfBatches");
     put("status", "status");
   }};
 

@@ -208,20 +208,20 @@ class EntityMapperTest {
     @Test
     fun `should map Participant fields`() {
         val bps = BPSParticipant(
-                "schemeCode",
-                "schemeParticipantIdentifier",
-                "countryCode",
-                "partyCode",
-                "FUNDED",
-                "connectingParty",
-                "SUSPENDED",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "participantName",
-                "rcvngParticipantConnectionId",
-                "participantConnectionId",
-                "SCHEME",
-                "organizationId"
+            "schemeCode",
+            "schemeParticipantIdentifier",
+            "countryCode",
+            "partyCode",
+            "FUNDED",
+            "connectingParty",
+            "SUSPENDED",
+            ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            "participantName",
+            "rcvngParticipantConnectionId",
+            "participantConnectionId",
+            "SCHEME",
+            "organizationId"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.bic).isEqualTo(bps.schemeParticipantIdentifier)
@@ -238,28 +238,28 @@ class EntityMapperTest {
     @Test
     fun `should map Batch fields`() {
         val bpsCycle = BPSCycle(
-                "cycleId",
-                BPSCycleStatus.COMPLETED,
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                true,
-                ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
+            "cycleId",
+            BPSCycleStatus.COMPLETED,
+            ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            true,
+            ZonedDateTime.of(2020, Month.JUNE.value, 12, 12, 12, 0, 0, ZoneId.of("UTC"))
         )
 
         val bps = BPSBatchDetailed(
-                "id",
-                "batchId",
-                10,
-                "messageType",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "status",
-                "reasonCode",
-                bpsCycle.cycleId,
-                bpsCycle.settlementTime,
-                "fileName",
-                "bank",
-                "bic",
-                "iban"
+            "id",
+            "batchId",
+            10,
+            "messageType",
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            "status",
+            "reasonCode",
+            bpsCycle.cycleId,
+            bpsCycle.settlementTime,
+            "fileName",
+            "bank",
+            "bic",
+            "iban"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.batchId).isEqualTo(bps.batchId)
@@ -276,18 +276,18 @@ class EntityMapperTest {
     @Test
     fun `should map File fields`() {
         val bps = BPSFile(
-                "name",
-                "fileName",
-                234234,
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "originator",
-                "msgType",
-                10,
-                "status",
-                "reasonCode",
-                "cycleId",
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "P27"
+            "name",
+            "fileName",
+            234234,
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            "from",
+            "to",
+            "msgType",
+            "messageDirection",
+            10,
+            "status",
+            "reasonCode",
+            "cycleId"
         )
 
         val entity = MAPPER.toEntity(bps)
@@ -296,13 +296,14 @@ class EntityMapperTest {
         assertThat(entity.fileName).isEqualTo(bps.fileName)
         assertThat(entity.fileSize).isEqualTo(bps.fileSize)
         assertThat(entity.createdDate).isEqualTo(bps.createdDate)
-        assertThat(entity.originator).isEqualTo(bps.originator)
+        assertThat(entity.from).isEqualTo(bps.from)
+        assertThat(entity.to).isEqualTo(bps.to)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
-        assertThat(entity.nrOfBatches).isEqualTo(bps.nrOfBatches)
+        assertThat(entity.messageDirection).isEqualTo(bps.messageDirection)
+        assertThat(entity.noOfBatches).isEqualTo(bps.noOfBatches)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.settlementCycle).isEqualTo(bps.settlementCycle)
-        assertThat(entity.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
     }
 
     @Test
@@ -319,23 +320,23 @@ class EntityMapperTest {
     @Test
     fun `should map Alert fields`() {
         val bpsParticipant = BPSParticipant(
-                "schemeCode",
-                "schemeParticipantIdentifier",
-                "countryCode",
-                "partyCode",
-                "DIRECT",
-                "connectingParty",
-                "SUSPENDED",
-                ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
-                "participantName",
-                "rcvngParticipantConnectionId",
-                "participantConnectionId",
-                "SELF",
-                "organizationId"
+            "schemeCode",
+            "schemeParticipantIdentifier",
+            "countryCode",
+            "partyCode",
+            "DIRECT",
+            "connectingParty",
+            "SUSPENDED",
+            ZonedDateTime.of(2020, Month.AUGUST.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
+            "participantName",
+            "rcvngParticipantConnectionId",
+            "participantConnectionId",
+            "SELF",
+            "organizationId"
         )
         val bps = BPSAlert(
-                23423, "high", ZonedDateTime.now(ZoneId.of("UTC")), "type", listOf(bpsParticipant)
+            23423, "high", ZonedDateTime.now(ZoneId.of("UTC")), "type", listOf(bpsParticipant)
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.alertId).isEqualTo(bps.alertId)
@@ -353,10 +354,10 @@ class EntityMapperTest {
     @Test
     fun `should map AlertStats fields`() {
         val alertStatsData = BPSAlertStatsData(
-                "high", 20
+            "high", 20
         )
         val bps = BPSAlertStats(
-                1, listOf(alertStatsData)
+            1, listOf(alertStatsData)
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.total).isEqualTo(1)
@@ -369,7 +370,7 @@ class EntityMapperTest {
     fun `should map AlertReferenceData fields`() {
         val alertPriority = BPSAlertPriority("name", 100, true)
         val alertReferenceData = BPSAlertReferenceData(
-                listOf(alertPriority), listOf("alertType")
+            listOf(alertPriority), listOf("alertType")
         )
         val entity = MAPPER.toEntity(alertReferenceData)
         assertThat(entity.alertTypes.size).isEqualTo(1)
@@ -399,13 +400,13 @@ class EntityMapperTest {
     fun `should map Transaction from BPSTransaction fields`() {
         val amount = BPSAmount(BigDecimal.TEN, "SEK")
         val bps = BPSTransaction(
-                "instructionId",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "senderBic",
-                "receiverBic",
-                "messageType",
-                amount,
-                "status"
+            "instructionId",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "senderBic",
+            "receiverBic",
+            "messageType",
+            amount,
+            "status"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
@@ -422,18 +423,18 @@ class EntityMapperTest {
     fun `should map Transaction from BPSTransactionDetails fields`() {
         val amount = BPSAmount(BigDecimal.TEN, "SEK")
         val bps = BPSTransactionDetails(
-                "txnsInstructionId",
-                "messageType",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "transactionStatus",
-                "reasonCode",
-                "settlementCycle",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "fileName",
-                "batchId",
-                amount,
-                "senderName", "senderBic", "iban", "fullname",
-                "receiverName", "receiverBic", "iban", "fullname"
+            "txnsInstructionId",
+            "messageType",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "transactionStatus",
+            "reasonCode",
+            "settlementCycle",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "fileName",
+            "batchId",
+            amount,
+            "senderName", "senderBic", "iban", "fullname",
+            "receiverName", "receiverBic", "iban", "fullname"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
@@ -494,21 +495,21 @@ class EntityMapperTest {
         val participantId = "NDEASESSXXX"
 
         val bpsApprovalDetails = BPSApproval(
-                approvalId,
-                BPSApprovalRequestType.PARTICIPANT_SUSPEND,
-                listOf(participantId),
-                date, approvalUser,
-                BPSApprovalStatus.APPROVED,
-                approvalUser,
-                date,
-                "This is the reason that I...",
-                approvalUser,
-                date,
-                originalData,
-                requestedChange,
-                "hashed data",
-                "hashed data",
-                "Notes"
+            approvalId,
+            BPSApprovalRequestType.PARTICIPANT_SUSPEND,
+            listOf(participantId),
+            date, approvalUser,
+            BPSApprovalStatus.APPROVED,
+            approvalUser,
+            date,
+            "This is the reason that I...",
+            approvalUser,
+            date,
+            originalData,
+            requestedChange,
+            "hashed data",
+            "hashed data",
+            "Notes"
         )
         val result = MAPPER.toEntity(bpsApprovalDetails)
         assertThat(result.status).isEqualTo(ApprovalStatus.APPROVED)
@@ -560,20 +561,20 @@ class EntityMapperTest {
         assertThat(result.totalResults).isEqualTo(1)
         assertThat(result.items.size).isEqualTo(1)
         assertThat(result.items[0].fileSize).isEqualTo(0)
-        assertThat(result.items[0].nrOfBatches).isEqualTo(0)
+        assertThat(result.items[0].noOfBatches).isEqualTo(0)
         assertThat(result.items[0]).extracting("instructionId", "fileName",
-            "originator", "createdDate", "messageType", "status",
-            "reasonCode", "settlementCycle", "schemeParticipantIdentifier").containsOnlyNulls()
+            "from", "to", "createdDate", "messageType", "messageDirection", "status",
+            "reasonCode", "settlementCycle").containsOnlyNulls()
     }
 
     @Test
     fun `should map RoutingRecord fields`() {
         val entity = BPSRoutingRecord(
-                "schemeId",
-                "reachableBic",
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                "currency"
+            "schemeId",
+            "reachableBic",
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            "currency"
         )
         val result = MAPPER.toEntity(entity)
         assertThat(result.reachableBic).isEqualTo(entity.reachableBic)
@@ -585,24 +586,24 @@ class EntityMapperTest {
     @Test
     fun `should map ParticipantConfiguration fields`() {
         val bpsApprovingUser = BPSUserDetails(
-                "FORXSES1", "John", "E23423", "Doe"
+            "FORXSES1", "John", "E23423", "Doe"
         )
         val entity = BPSParticipantConfiguration(
-                "schemeParticipantIdentifier",
-                10,
-                10,
-                "networkName",
-                "gatewayName",
-                "requestorDN",
-                "responderDN",
-                "preSettlementAckType",
-                "preSettlementActGenerationLevel",
-                "postSettlementAckType",
-                "postSettlementAckGenerationLevel",
-                BigDecimal.ONE,
-                listOf(0.12, 0.25),
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                bpsApprovingUser
+            "schemeParticipantIdentifier",
+            10,
+            10,
+            "networkName",
+            "gatewayName",
+            "requestorDN",
+            "responderDN",
+            "preSettlementAckType",
+            "preSettlementActGenerationLevel",
+            "postSettlementAckType",
+            "postSettlementAckGenerationLevel",
+            BigDecimal.ONE,
+            listOf(0.12, 0.25),
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            bpsApprovingUser
         )
         val result = MAPPER.toEntity(entity)
         assertThat(result.schemeParticipantIdentifier).isEqualTo(entity.schemeParticipantIdentifier)
@@ -720,18 +721,18 @@ class EntityMapperTest {
     fun `should map TransactionEnquirySearchCriteria fields`() {
         val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val request = TransactionEnquirySearchRequest(
-                0, 0, listOf("sortBy"), date, date,
-                "cycleId",
-                "messageDirection",
-                "messageType",
-                "sendingBic",
-                "receivingBic",
-                "status",
-                "reasonCode",
-                "id",
-                "sendingAccount",
-                "receivingAccount",
-                date, BigDecimal.TEN, BigDecimal.ONE
+            0, 0, listOf("sortBy"), date, date,
+            "cycleId",
+            "messageDirection",
+            "messageType",
+            "sendingBic",
+            "receivingBic",
+            "status",
+            "reasonCode",
+            "id",
+            "sendingAccount",
+            "receivingAccount",
+            date, BigDecimal.TEN, BigDecimal.ONE
         )
         val criteria = MAPPER.toEntity(request)
         assertThat(criteria.offset).isEqualTo(request.offset)
@@ -757,10 +758,10 @@ class EntityMapperTest {
     @Test
     fun `should set default date sort to TransactionEnquirySearchRequest if sort is missing`() {
         val request = TransactionEnquirySearchRequest(
-                0, 0, null, null, null,
-                null, null, null, null,
-                null, null, null, null, null,
-                null, null, null, null
+            0, 0, null, null, null,
+            null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null
         )
         val entity = MAPPER.toEntity(request)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
@@ -770,21 +771,21 @@ class EntityMapperTest {
     fun `should map EnquirySenderDetailsDto from Account and Participant`() {
         val account = Account("partyCode", 234234, "iban")
         val participant = Participant(
-                "participantId",
-                "participantId",
-                "name",
-                "fundingBic",
-                ParticipantStatus.ACTIVE,
-                null,
-                ParticipantType.FUNDED,
-                null,
-                "organizationId",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+            "participantId",
+            "participantId",
+            "name",
+            "fundingBic",
+            ParticipantStatus.ACTIVE,
+            null,
+            ParticipantType.FUNDED,
+            null,
+            "organizationId",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
         )
         val result = MAPPER.toEntity(account, participant)
         assertThat(result.entityBic).isEqualTo(account.partyCode)
@@ -823,12 +824,12 @@ class EntityMapperTest {
     @Test
     fun `should map BPSReport to Report fields`() {
         val bpsReport = BPSReport(
-                "10000000006",
-                "PRE-SETTLEMENT_ADVICE",
-                ZonedDateTime.parse("2021-02-14T00:00:00Z"),
-                "20201231002",
-                "IBCASES1",
-                "ICA Banken"
+            "10000000006",
+            "PRE-SETTLEMENT_ADVICE",
+            ZonedDateTime.parse("2021-02-14T00:00:00Z"),
+            "20201231002",
+            "IBCASES1",
+            "ICA Banken"
         )
         val result = MAPPER.toEntity(bpsReport)
         assertThat(result.reportId).isEqualTo(bpsReport.reportId)
@@ -842,7 +843,7 @@ class EntityMapperTest {
     @Test
     fun `should map to ApprovalChangeCriteria fields`() {
         val request = ApprovalChangeRequest(
-                "PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes"
+            "PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes"
         )
         val result = MAPPER.toEntity(request)
         assertThat(result.requestType).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
@@ -861,7 +862,7 @@ class EntityMapperTest {
     fun `should map to ApprovalConfirmationCriteria fields`() {
         val approvalId = "approval_id"
         val request = ApprovalConfirmationRequest(
-                ApprovalConfirmationType.APPROVE, "notes"
+            ApprovalConfirmationType.APPROVE, "notes"
         )
         val result = MAPPER.toEntity(request, approvalId)
         assertThat(result.approvalId).isEqualTo(approvalId)
@@ -872,12 +873,12 @@ class EntityMapperTest {
     @Test
     fun `should map to DayCycle fields`() {
         val bps = BPSDayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.COMPLETED,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.COMPLETED,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         )
         val result = MAPPER.toEntity(bps)
         assertThat(result.cycleCode).isEqualTo(bps.cycleCode)
@@ -891,10 +892,10 @@ class EntityMapperTest {
     @Test
     fun `should map to SettlementCycleSchedule fields`() {
         val bps = BPSSettlementCycleSchedule(
-                "sessionCode",
-                "startTime",
-                "endTime",
-                "settlementTime"
+            "sessionCode",
+            "startTime",
+            "endTime",
+            "settlementTime"
         )
         val result = MAPPER.toEntity(bps)
         assertThat(result.cycleName).isEqualTo(bps.sessionCode)
@@ -924,18 +925,18 @@ class EntityMapperTest {
     @Test
     fun `should map to SettlementSchedule fields`() {
         val bpsCycle = BPSSettlementCycleSchedule(
-                "sessionCode",
-                "startTime",
-                "endTime",
-                "settlementTime"
+            "sessionCode",
+            "startTime",
+            "endTime",
+            "settlementTime"
         )
         val scheduleDayDetails = BPSScheduleDayDetails(
-                "weekDay",
-                listOf(bpsCycle)
+            "weekDay",
+            listOf(bpsCycle)
         )
         val bps = BPSSettlementSchedule(
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                listOf(scheduleDayDetails)
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            listOf(scheduleDayDetails)
         )
         val result = MAPPER.toEntity(bps)
         assertThat(result.updatedAt).isEqualTo(bps.updatedAt)
@@ -975,12 +976,12 @@ class EntityMapperTest {
         request.limit = 20
         request.q = "DABASESXGBG"
         request.sort = listOf(
-                "-name", "+name",
-                "-status", "+status",
-                "-organizationId", "+organizationId",
-                "-participantType", "+participantType",
-                "-tpspName", "+tpspName",
-                "-fundedParticipantsCount", "+fundedParticipantsCount")
+            "-name", "+name",
+            "-status", "+status",
+            "-organizationId", "+organizationId",
+            "-participantType", "+participantType",
+            "-tpspName", "+tpspName",
+            "-fundedParticipantsCount", "+fundedParticipantsCount")
 
         val result = MAPPER.toEntity(request)
 
@@ -997,23 +998,23 @@ class EntityMapperTest {
         val fromDate = ZonedDateTime.now()
         val tillDate = ZonedDateTime.now().plusDays(1L)
         val bpsManagedParticipant = BPSManagedParticipant.builder()
-                .schemeCode("P27-SEK")
-                .schemeParticipantIdentifier("HANDSESSXXX")
-                .countryCode("SWE")
-                .partyCode("HANDSESSXXX")
-                .participantType("DIRECT")
-                .connectingParty("NA")
-                .status("SUSPENDED")
-                .effectiveFromDate(fromDate)
-                .effectiveTillDate(tillDate)
-                .participantName("Svenska Handelsbanken")
-                .rcvngParticipantConnectionId("NA")
-                .participantConnectionId("NA")
-                .suspensionLevel("SELF")
-                .partyExternalIdentifier("34534534")
-                .tpspName("Forex Bank")
-                .tpspId("940404004")
-                .build()
+            .schemeCode("P27-SEK")
+            .schemeParticipantIdentifier("HANDSESSXXX")
+            .countryCode("SWE")
+            .partyCode("HANDSESSXXX")
+            .participantType("DIRECT")
+            .connectingParty("NA")
+            .status("SUSPENDED")
+            .effectiveFromDate(fromDate)
+            .effectiveTillDate(tillDate)
+            .participantName("Svenska Handelsbanken")
+            .rcvngParticipantConnectionId("NA")
+            .participantConnectionId("NA")
+            .suspensionLevel("SELF")
+            .partyExternalIdentifier("34534534")
+            .tpspName("Forex Bank")
+            .tpspId("940404004")
+            .build()
 
         val result = MAPPER.toEntity(bpsManagedParticipant)
 

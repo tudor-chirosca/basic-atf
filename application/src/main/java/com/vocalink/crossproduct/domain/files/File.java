@@ -14,12 +14,12 @@ public class File {
   private final String fileName;
   private final long fileSize;
   private final ZonedDateTime createdDate;
-  private final String originator;
+  private final String from;
+  private final String to;
   private final String messageType;
-  private final int nrOfBatches;
+  private final String messageDirection;
+  private final int noOfBatches;
   private final String status;
   private final String reasonCode;
   private final String settlementCycle;
-  private final ZonedDateTime settlementDate;
-  private final String schemeParticipantIdentifier;
 }

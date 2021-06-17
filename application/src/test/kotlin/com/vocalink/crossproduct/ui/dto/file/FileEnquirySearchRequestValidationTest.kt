@@ -51,16 +51,6 @@ class FileEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should fail on missing participant_id`() {
-        request.setCycle_id("20190212004")
-        request.setMsg_direction("Sending")
-        val result = ArrayList(validator.validate(request))
-
-        assertThat(result).isNotEmpty
-        assertThat(result[0].message).isEqualTo(PARTICIPANT_BIC_ERROR)
-    }
-
-    @Test
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
         request.setParticipant_bic("NDEASESSSX")

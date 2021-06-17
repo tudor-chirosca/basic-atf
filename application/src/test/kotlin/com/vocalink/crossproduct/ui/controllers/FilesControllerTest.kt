@@ -132,7 +132,6 @@ class FilesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("participant_bic", "NDEASESSSX")
                 .param("cycle_id", "01"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
@@ -165,17 +164,6 @@ class FilesControllerTest : ControllerTest() {
                 .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
-    }
-
-    @Test
-    fun `should fail with 400 when participant_bic is not specified`() {
-        mockMvc.perform(get("/enquiry/files")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending"))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Participant bic in request is empty or missing")))
     }
 
     @Test

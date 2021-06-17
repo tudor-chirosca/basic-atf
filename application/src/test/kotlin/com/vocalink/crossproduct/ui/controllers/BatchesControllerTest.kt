@@ -128,7 +128,6 @@ class BatchesControllerTest : ControllerTest() {
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
                 .param("msg_direction", "Sending")
-                .param("participant_bic", "NDEASESSSX")
                 .param("cycle_id", "20190212004"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_PAGE_RESPONSE))
@@ -160,20 +159,6 @@ class BatchesControllerTest : ControllerTest() {
                 .param("participant_bic", "NDEASESSSX"))
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Message direction in request is empty or missing")))
-
-        verifyNoInteractions(auditFacade)
-    }
-
-    @Test
-    fun `should fail with 400 when required participant_id is not specified`() {
-        mockMvc.perform(get("/enquiry/batches")
-                .contentType(UTF8_CONTENT_TYPE)
-                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
-                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .param("msg_direction", "Sending")
-                .param("cycle_id", "20190212004"))
-                .andExpect(status().is4xxClientError)
-                .andExpect(content().string(containsString("Participant bic in request is empty or missing")))
 
         verifyNoInteractions(auditFacade)
     }
