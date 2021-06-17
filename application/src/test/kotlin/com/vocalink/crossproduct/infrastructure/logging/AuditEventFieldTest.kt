@@ -69,22 +69,28 @@ class AuditEventFieldTest {
 
         val actualUserDetails = AuditEventField.getUserDetails(event)
 
-        assertThat(actualUserDetails).usingRecursiveComparison().isEqualTo(expectedUserDetails)
+        assertThat(actualUserDetails.get()).usingRecursiveComparison().isEqualTo(expectedUserDetails)
     }
 
     @Test
-    fun `should throw exception if no user details in log event`() {
+    fun `should return Optional null if no user details in log event`() {
         val event = mock(ILoggingEvent::class.java)!!
+        val occurringEvent = getOccurringEvent()
+        `when`(event.argumentArray).thenReturn(arrayOf(occurringEvent))
 
-        assertThrows(InvalidParameterException::class.java) { AuditEventField.getUserDetails(event) }
+        val userDetails = AuditEventField.getUserDetails(event)
+
+        assertThat(userDetails.isPresent).isFalse()
     }
 
     @Test
-    fun `should throw exception if user details argument in log event has invalid type`() {
+    fun `should return Optional null if user details argument in log event has invalid type`() {
         val event = mock(ILoggingEvent::class.java)!!
         `when`(event.argumentArray).thenReturn(arrayOf(Object(), Object()))
 
-        assertThrows(InvalidParameterException::class.java) { AuditEventField.getUserDetails(event) }
+        val userDetails = AuditEventField.getUserDetails(event)
+
+        assertThat(userDetails.isPresent).isFalse()
     }
 
     private fun getOccurringEvent(): OccurringEvent {

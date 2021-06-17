@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static java.util.Optional.ofNullable;
@@ -55,18 +56,15 @@ public enum AuditEventField {
         OccurringEvent occurringEvent = getOccurringEvent(event);
         return getEmptyIfNull(occurringEvent.getProduct(), layout);
     }),
-    USERNAME((event, layout) -> {
-        UserDetails userDetails = getUserDetails(event);
-        return getEmptyIfNull(userDetails.getUserId(), layout);
-    }),
-    FIRST_NAME((event, layout) -> {
-        UserDetails userDetails = getUserDetails(event);
-        return getEmptyIfNull(userDetails.getFirstName(), layout);
-    }),
-    LAST_NAME((event, layout) -> {
-        UserDetails userDetails = getUserDetails(event);
-        return getEmptyIfNull(userDetails.getLastName(), layout);
-    }),
+    USERNAME((event, layout) -> getEmptyIfNull(getUserDetails(event)
+            .map(UserDetails::getUserId)
+            .orElse(getOccurringEvent(event).getUserId()), layout)),
+    FIRST_NAME((event, layout) -> getEmptyIfNull(getUserDetails(event)
+            .map(UserDetails::getFirstName)
+            .orElse(null), layout)),
+    LAST_NAME((event, layout) -> getEmptyIfNull(getUserDetails(event)
+            .map(UserDetails::getLastName)
+            .orElse(null), layout)),
     TIMESTAMP((event, layout) -> {
         Instant instant = Instant.ofEpochMilli(event.getTimeStamp());
         ZonedDateTime dateTime = ZonedDateTime.ofInstant(instant, ZoneId.of("UTC"));
@@ -90,12 +88,12 @@ public enum AuditEventField {
                 .orElseThrow(() -> new InvalidParameterException("Invalid first log event argument"));
     }
 
-    protected static UserDetails getUserDetails(final ILoggingEvent logEvent) {
-        return (UserDetails) Arrays.stream(ofNullable(logEvent.getArgumentArray()).orElse(new Object[0]))
+    protected static Optional<UserDetails> getUserDetails(final ILoggingEvent logEvent) {
+        return Arrays.stream(ofNullable(logEvent.getArgumentArray()).orElse(new Object[0]))
                 .skip(1)
                 .findFirst()
                 .filter(UserDetails.class::isInstance)
-                .orElseThrow(() -> new InvalidParameterException("Invalid second log event argument"));
+                .map(UserDetails.class::cast);
     }
 
     protected static String getEmptyIfNull(String value, AuditEventLayout layout) {

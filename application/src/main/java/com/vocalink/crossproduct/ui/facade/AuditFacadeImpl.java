@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.facade;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
@@ -24,6 +23,7 @@ import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
+import com.vocalink.crossproduct.ui.util.TransactionHandler;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.logging.EventMarker.AUDIT_EVENT_MARKER;
@@ -37,8 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuditFacadeImpl implements AuditFacade {
 
+  private static final String AUDIT_EVENT_LOG_MESSAGE = "Log audit event: %s type: %s";
+
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
+  private final TransactionHandler transactionHandler;
 
   @Override
   public List<UserDetailsDto> getUserDetails(String product, ClientType clientType,
@@ -75,25 +78,33 @@ public class AuditFacadeImpl implements AuditFacade {
   }
 
   @Override
-  @Transactional
   public void handleEvent(OccurringEvent occurringEvent) {
     Event event = MAPPER.toEntity(occurringEvent);
+    try {
+      UserDetails userDetails = transactionHandler.runInTransaction(() -> getAuditEventUserDetails(occurringEvent));
+      repositoryFactory.getAuditDetailsRepository(event.getProduct()).logOperation(event, userDetails);
+      log.info(AUDIT_EVENT_MARKER, String.format(AUDIT_EVENT_LOG_MESSAGE,
+              occurringEvent.getEventType(),
+              occurringEvent.getOperationType()), occurringEvent, userDetails);
+    } catch (Exception e) {
+      log.info(AUDIT_EVENT_MARKER,  String.format(AUDIT_EVENT_LOG_MESSAGE,
+              occurringEvent.getEventType(),
+              occurringEvent.getOperationType()), occurringEvent);
+      log.error(e.getMessage());
+    }
+  }
 
-    final UserDetails userDetails = repositoryFactory
-        .getAuditDetailsRepository(occurringEvent.getProduct())
-        .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
-        .stream()
-        .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
-        .map(MAPPER::toEntity)
-        .findFirst()
-        .orElseThrow(() -> new EntityNotFoundException(
-            "No user details found matching: " + occurringEvent.getParticipantId()
-                + " and "
-                + occurringEvent.getUserId()));
-
-    log.info(AUDIT_EVENT_MARKER, "Log audit event", occurringEvent, userDetails);
-    repositoryFactory.getAuditDetailsRepository(event.getProduct())
-        .logOperation(event, userDetails);
+  private UserDetails getAuditEventUserDetails(OccurringEvent occurringEvent) {
+    return repositoryFactory.getAuditDetailsRepository(occurringEvent.getProduct())
+            .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
+            .stream()
+            .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
+            .map(MAPPER::toEntity)
+            .findFirst()
+            .orElseThrow(() -> new EntityNotFoundException(
+                    "No user details found matching: " + occurringEvent.getParticipantId()
+                            + " and "
+                            + occurringEvent.getUserId()));
   }
 
   @Override
