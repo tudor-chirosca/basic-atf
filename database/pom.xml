@@ -99,8 +99,31 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-property</id>
+            <phase>package</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireProperty>
+                  <property>scheme</property>
+                  <message>property scheme should not be empty</message>
+                  <regex>p27|sama</regex>
+                </requireProperty>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -116,8 +139,7 @@
               <descriptors>
                 <descriptor>assembly/database-migrations.xml</descriptor>
               </descriptors>
-              <appendAssemblyId>false</appendAssemblyId>
-              <finalName>international-suite-service-db-${project.version}</finalName>
+              <appendAssemblyId>true</appendAssemblyId>
               <tarLongFileMode>posix</tarLongFileMode>
             </configuration>
           </execution>
@@ -127,16 +149,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>local-env</id>
-      <properties>
-        <flyway.url>jdbc:oracle:thin:@127.0.0.1:1521/PDB112</flyway.url>
-        <flyway.schemas>CPUI_DB_OWNER,CPUI_DB_USER</flyway.schemas>
-        <db.username>sys as SYSDBA</db.username>
-        <db.password>Password123</db.password>
-        <production.mode>false</production.mode>
-      </properties>
-    </profile>
     <profile>
       <id>iss-db</id>
       <build>
@@ -149,7 +161,8 @@
               <password>${db.password}</password>
               <locations>
                 <location>
-                    filesystem:migrations
+                    filesystem:migrations/common,
+                    filesystem:migrations/data/${scheme}
                 </location>
               </locations>
               <cleanDisabled>false</cleanDisabled>
@@ -162,6 +175,15 @@
           </plugin>
         </plugins>
       </build>
+      <properties>
+        <flyway.url>jdbc:oracle:thin:@127.0.0.1:1521/PDB112</flyway.url>
+        <flyway.schemas>CPUI_DB_OWNER,CPUI_DB_USER</flyway.schemas>
+        <db.username>sys as SYSDBA</db.username>
+        <db.password>Password123</db.password>
+        <production.mode>false</production.mode>
+        <schemaOwner>CPUI_DB_OWNER</schemaOwner>
+      </properties>
     </profile>
   </profiles>
+
 </project>

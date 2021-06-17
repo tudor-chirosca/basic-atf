@@ -55,21 +55,21 @@ or
 ```
 # migrate goal will run if no parameter specified
 
-./local-migrate.sh <flyway-goal>
+./local-migrate.sh <flyway-goal> <scheme>
 ```
 
 or with mvn for local docker db
 
 ```
 cd database
-./mvnw flyway:info -Piss-db,local-env
+./mvnw flyway:info -Piss-db -Dscheme=p27|sama
 ```
 
 or with mvn with custom parameters
 
 ```
 cd database
-./mvnw flyway:info -Piss-db -Dflyway.url="jdbc:oracle:thin:@localhost:1521/PDB112" -Dflyway.user='SYS as SYSDBA' -Dflyway.password='Password123' -Dflyway.schemas=CPUI_DB_OWNER,CPUI_DB_USER -Dflyway.placeholders.schemaOwner=CPUI_DB_OWNER -Dflyway.placeholders.schemaUser=CPUI_DB_USER
+./mvnw flyway:info -Piss-db -Dscheme=p27|sama -Dflyway.url="jdbc:oracle:thin:@localhost:1521/PDB112" -Dflyway.user='SYS as SYSDBA' -Dflyway.password='Password123' -Dflyway.schemas=CPUI_DB_OWNER,CPUI_DB_USER -Dflyway.placeholders.schemaOwner=CPUI_DB_OWNER -Dflyway.placeholders.schemaUser=CPUI_DB_USER
 ```
 
 ### Release

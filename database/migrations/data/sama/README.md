@@ -1,0 +1,1 @@
+# Folder contains placeholder files, which need to be updated/removed once SAMA provisioning DATA is available

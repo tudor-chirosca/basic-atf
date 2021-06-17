@@ -6,6 +6,7 @@ pipeline {
     tools {
         jdk 'JAVA_8U202'    
         nodejs 'NODEJS_12_21'
+        maven 'MAVEN_3_6_3'
     }
 
     environment {
@@ -64,16 +65,29 @@ pipeline {
                
                 stage("Test DB migrations") {
                     when { not { branch "${RELEASE_BRANCH}" }}
-                    steps {
-                        runDBMigrations(goal: 'PR')
+                    parallel {
+                        stage("Test DB migration P27") {
+                            steps{
+                                runDBMigrations(goal: 'PR')
+                            }
+                        }
+                        stage("Test DB migration SAMA") {
+                            steps {
+                                runDBMigrations(goal: 'PR', scheme: "SAMA")
+                            }
+
+                        }
                     }
+                    
                 }
                 
                 stage("Run Sonar") {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         withSonarQubeEnv('cp-sonar') {
-                            runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
+                            dir("p27") {
+                                runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
+                            }
                         }
                     }
                 }
@@ -88,8 +102,19 @@ pipeline {
                 }
 
                 stage("Package") {
-                    steps {
-                        runMaven(goal: "-B package -Dmaven.test.skip=true")
+                    parallel {
+                        stage("Create P27 package") {
+                            steps{
+                                runMaven(goal: "-B package -Dscheme=p27 -Dmaven.test.skip=true")
+                            }
+                        }
+                        stage("Create DB SAMA package") {
+                            steps {
+                                dir("database") {
+                                    runMaven(goal: "-B package -Dscheme=sama -Dmaven.test.skip=true")
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -130,39 +155,82 @@ pipeline {
                 }
                 stage("Migrate DEV DB") {
                     when { branch "${RELEASE_BRANCH}" }
-                    steps {
-                        runDBMigrations(goal: 'RELEASE')
+                    parallel {
+                        stage("Migrate DEV DB P27") {
+                            steps{
+                                runDBMigrations(goal: 'RELEASE', nameOfEnv: "DEV")
+                            }
+                        }
+                        stage("Migrate DEV_SAMA DB") {
+                            steps {
+                                runDBMigrations(goal: 'RELEASE', nameOfEnv: "DEV_SAMA", scheme: "SAMA")
+                            }
+
+                        }
                     }
                 }       
                 
                 
-                stage("Deploy to DEV") {
+                stage("Deploy to DEV envs") {
                     when { branch "${RELEASE_BRANCH}" }
-                    steps {
-                        script {
-                            echo "Deploying ${env.gitTag} to ${DEV_IP}"
-                            def envVars = "-e BPS_CONFIG.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRING_PROFILES_ACTIVE=preprod -e JAVA_OPTS='-Xmx2g'"
-                            def dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
-                            
-                            deployContainer(
-                                    containerName: projectName,
-                                    deployHost: DEV_IP,
-                                    repoType: repoType,
-                                    dockerArgs: dockerArgs,
-                                    imageTag: env.gitTag
-                            )
-                            
-                            environmentDashboard (
-                                addColumns: false, 
-                                buildJob: '', 
-                                buildNumber: BUILD_NUMBER, 
-                                componentName: projectName, 
-                                data: [], 
-                                nameOfEnv: 'DEV', 
-                                packageName: env.gitTag
-                            ) {}
-                        }
+                    environment {
+                        envVars = "-e BPS_CONFIG.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRING_PROFILES_ACTIVE=preprod -e JAVA_OPTS='-Xmx2g'"
+                        dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
                     }
+                    parallel {
+                        stage("Deply to P27 DEV") {
+                            steps {
+                                script {
+                                    echo "Deploying ${env.gitTag} to ${DEV_IP}"
+                                    
+                                    deployContainer(
+                                            containerName: projectName,
+                                            deployHost: DEV_IP,
+                                            repoType: repoType,
+                                            dockerArgs: dockerArgs,
+                                            imageTag: env.gitTag
+                                    )
+
+                                    environmentDashboard (
+                                        addColumns: false, 
+                                        buildJob: '', 
+                                        buildNumber: BUILD_NUMBER, 
+                                        componentName: projectName, 
+                                        data: [], 
+                                        nameOfEnv: 'DEV', 
+                                        packageName: "${env.gitTag}-P27"
+                                    ) {}
+                                }
+                            }
+                        }
+
+                        stage("Deply to SAMA DEV") {
+                            steps {
+                                script {
+                                    echo "Deploying ${env.gitTag} to ${DEV_SAMA_IP}"
+                                    
+                                    deployContainer(
+                                            containerName: projectName,
+                                            deployHost: DEV_SAMA_IP,
+                                            repoType: repoType,
+                                            dockerArgs: dockerArgs,
+                                            imageTag: env.gitTag
+                                    )
+
+                                    environmentDashboard (
+                                        addColumns: false, 
+                                        buildJob: '', 
+                                        buildNumber: BUILD_NUMBER, 
+                                        componentName: projectName, 
+                                        data: [], 
+                                        nameOfEnv: 'DEV_SAMA', 
+                                        packageName: "${env.gitTag}-SAMA"
+                                    ) {}
+                                }
+                            }
+                        }
+                    }                           
+                    
                 }
             }//stages
         }//stage
