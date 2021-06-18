@@ -6,7 +6,7 @@
   <parent>
     <artifactId>cp-international-suite-service</artifactId>
     <groupId>com.vocalink.crossproduct</groupId>
-    <version>1.113.2</version>
+    <version>1.114.0</version>
   </parent>
 
   <artifactId>international-suite-service-db</artifactId>
