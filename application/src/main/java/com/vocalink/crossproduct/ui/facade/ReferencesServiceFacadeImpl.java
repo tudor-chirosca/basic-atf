@@ -34,7 +34,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String product,
       ClientType clientType) {
-    log.info("Fetching participant references from: {}", product);
+    log.info("Fetching participant references for: {}, from: {}", clientType, product);
 
     final List<Participant> participants = repositoryFactory
         .getParticipantRepository(product)
@@ -48,7 +48,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<MessageDirectionReferenceDto> getMessageDirectionReferences(String product,
       ClientType clientType) {
-    log.info("Fetching message direction references from: {}", product);
+    log.info("Fetching message direction references for: {} from: {}", clientType, product);
 
     final List<MessageDirectionReference> messageDirectionReferences = repositoryFactory
         .getReferencesRepository(product).findMessageDirectionReferences();
@@ -60,7 +60,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<ReasonCodeReferenceDto> getReasonCodeReferences(String product, ClientType clientType,
       String enquiryType) {
-    log.info("Fetching file references with type: {} from: {}", enquiryType, product);
+    log.info("Fetching file references with type: {} for: {} from: {}", enquiryType, clientType, product);
 
     final Validation validation = repositoryFactory
         .getReferencesRepository(product)
@@ -83,7 +83,7 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
   @Override
   public List<DayCycleDto> getDayCyclesByDate(String product, ClientType clientType,
       ZonedDateTime date, boolean settled) {
-    log.info("Fetching cycles by date from: {}", product);
+    log.info("Fetching cycles by date: {} for: {} from: {}", date, clientType, product);
 
     List<DayCycle> cycles = repositoryFactory.getCycleRepository(product)
         .findByDate(date)

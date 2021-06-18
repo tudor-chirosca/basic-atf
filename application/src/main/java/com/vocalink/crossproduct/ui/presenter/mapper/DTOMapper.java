@@ -511,7 +511,7 @@ public interface DTOMapper {
     return participants.stream()
         .filter(p -> p.getId().equals(schemeParticipantIdentifier))
         .map(this::toDto)
-        .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant in list"));
+        .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant with id: " + schemeParticipantIdentifier));
   }
 
   @Named("getRejectedFromString")
@@ -539,7 +539,8 @@ public interface DTOMapper {
     ParticipantReferenceDto fundingParticipantDto = referenceDtoList.get(0);
     Participant fundingParticipant = participants.stream()
             .filter(p -> p.getId().equals(fundingParticipantDto.getParticipantIdentifier()))
-            .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant in list"));
+            .findFirst().orElseThrow(() -> new NoSuchElementException("No such participant with id: "
+                    + fundingParticipantDto.getParticipantIdentifier()));
 
     if (SELF.equals(fundingParticipant.getSuspensionLevel())
             && (FUNDING.equals(fundingParticipant.getParticipantType())

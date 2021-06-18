@@ -28,7 +28,7 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
   @Override
   public PageDto<TransactionDto> getPaginated(String product, ClientType clientType,
       TransactionEnquirySearchRequest requestDto) {
-    log.info("Fetching transactions from: {}", product);
+    log.info("Fetching transactions for: {} from: {}", clientType, product);
 
     final TransactionEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
     final Page<Transaction> page = repositoryFactory.getTransactionRepository(product)
@@ -40,7 +40,7 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
 
   @Override
   public TransactionDetailsDto getDetailsById(String product, ClientType clientType, String id) {
-    log.info("Fetching transaction details for id: {} from: {}", id, product);
+    log.info("Fetching transaction details for id: {} for: {} from: {}", id, clientType, product);
 
     final Transaction transaction = repositoryFactory.getTransactionRepository(product)
         .findById(id);

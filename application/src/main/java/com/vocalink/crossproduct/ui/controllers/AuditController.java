@@ -17,6 +17,8 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class AuditController implements AuditApi {
@@ -61,6 +64,7 @@ public class AuditController implements AuditApi {
       @RequestHeader(CONTEXT_HEADER) final String context,
       final AuditRequestParams parameters,
       final HttpServletRequest httpServletRequest) {
+    log.debug("Request parameters: {}", parameters);
 
     PageDto<AuditDto> auditDetailsDto = auditFacade.getAuditLogs(context, clientType, parameters);
 

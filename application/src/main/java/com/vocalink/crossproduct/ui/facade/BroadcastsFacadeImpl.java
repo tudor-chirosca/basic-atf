@@ -34,7 +34,7 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
   @Override
   public PageDto<BroadcastDto> getPaginated(String product, ClientType clientType,
       BroadcastsSearchParameters parameters) {
-    log.info("Fetching broadcasts from: {}", product);
+    log.info("Fetching broadcasts for: {} from: {}", clientType, product);
 
     BroadcastsSearchCriteria criteria = EntityMapper.MAPPER.toEntity(parameters);
 
@@ -66,6 +66,7 @@ public class BroadcastsFacadeImpl implements BroadcastsFacade {
 
   @Override
   public BroadcastDto create(String product, ClientType clientType, String message, List<String> recipients) {
+    log.info("Create broadcast for: {} from: {} message: {}", clientType, product, message);
 
     final Broadcast broadcast = repositoryFactory.getBroadcastsRepository(product)
         .create(message, recipients);

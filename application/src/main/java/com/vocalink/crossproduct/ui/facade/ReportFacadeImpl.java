@@ -34,7 +34,7 @@ public class ReportFacadeImpl implements ReportFacade {
   @Override
   public PageDto<ReportDto> getPaginated(String product, ClientType clientType,
       ReportsSearchRequest parameters) {
-    log.info("Fetching reports from: {}", product);
+    log.info("Fetching reports for: {} from: {}", clientType, product);
 
     final ReportSearchCriteria criteria = MAPPER.toEntity(parameters);
 
@@ -46,6 +46,7 @@ public class ReportFacadeImpl implements ReportFacade {
 
   @Override
   public void writeReportToOutputStream(String product, ClientType clientType, String reportId, OutputStream outputStream) {
+    log.info("Write to output stream report id: {} for: {} from: {}", reportId, clientType, product);
     try {
       serviceFactory.getDownloadService(product)
             .writeResourceToOutputStream(DOWNLOAD_REPORT_PATH, reportId, outputStream);

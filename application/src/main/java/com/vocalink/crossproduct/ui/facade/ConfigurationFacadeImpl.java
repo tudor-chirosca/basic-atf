@@ -25,7 +25,7 @@ public class ConfigurationFacadeImpl implements ConfigurationFacade {
 
   @Override
   public ConfigurationDto getConfiguration(String product, ClientType clientType) {
-    log.info("Fetching configuration for : {}", product);
+    log.info("Fetching configuration for: {} from: {}", clientType, product);
 
     final Configuration configuration = serviceFactory.getConfigurationService(product)
         .getConfiguration();

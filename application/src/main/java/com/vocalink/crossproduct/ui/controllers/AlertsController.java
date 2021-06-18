@@ -22,7 +22,9 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_ALERTS;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class AlertsController implements AlertsApi {
@@ -53,6 +55,7 @@ public class AlertsController implements AlertsApi {
   public ResponseEntity<PageDto<AlertDto>> getAlerts(
           @RequestHeader("client-type") ClientType clientType, @RequestHeader String context,
           AlertSearchRequest searchRequest, final HttpServletRequest request) {
+    log.debug("Request: {}", searchRequest);
 
     PageDto<AlertDto> alertDataDto = alertsServiceFacade
             .getAlerts(context, clientType, searchRequest);

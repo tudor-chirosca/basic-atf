@@ -51,8 +51,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   @Override
   public PageDto<ManagedParticipantDto> getPaginated(String product, ClientType clientType,
       ManagedParticipantsSearchRequest requestDto, String requestedParticipantId) {
-
-    log.info("Fetching managed participant from: {}", product);
+    log.info("Fetching managed participant id: {} for: {} from: {}", requestedParticipantId, clientType, product);
 
     final ManagedParticipantsSearchCriteria request = MAPPER.toEntity(requestDto);
 
@@ -82,7 +81,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   @Override
   public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
       String bic, String requestedParticipantId) {
-    log.info("Fetching managed participant details for: {}, from: {}", bic, product);
+    log.info("Fetching details of managed participant id: {} bic: {} for: {}, from: {}",
+            requestedParticipantId, bic, clientType, product);
 
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);
@@ -118,6 +118,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   private Map<String, Approval> getApprovals(final int offset, final int limit, final String product,
       final List<String> participantIds, final String requestedParticipantId,
       final List<ApprovalRequestType> requestTypes) {
+    log.info("Fetching approvals for participant id: {}, from: {}", requestedParticipantId, product);
 
     final Map<String, Approval> approvalParticipants = new HashMap<>();
 
@@ -126,7 +127,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .limit(limit)
         .participantIds(participantIds)
         .requestTypes(requestTypes)
-        .statuses(asList(PENDING))
+        .statuses(singletonList(PENDING))
         .build();
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)

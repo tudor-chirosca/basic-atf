@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade {
@@ -31,6 +34,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   @Override
   public SettlementDashboardDto getParticipantSettlement(String product, ClientType clientType,
       SettlementDashboardRequest settlementDashboardRequest) {
+    log.info("Fetching participant settlements for: {}, from: {}", clientType, product);
 
     final List<Cycle> cycles = repositoryFactory.getCycleRepository(product).findAll();
     
@@ -70,6 +74,7 @@ public class SettlementDashboardFacadeImpl implements SettlementDashboardFacade 
   @Override
   public ParticipantDashboardSettlementDetailsDto getParticipantSettlementDetails(String product,
       ClientType clientType, String participantId) {
+    log.info("Fetching settlements details by participant id: {} for: {}, from: {}", participantId, clientType, product);
 
     final Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);

@@ -56,7 +56,7 @@ public class AuditFacadeImpl implements AuditFacade {
   @Override
   public PageDto<AuditDto> getAuditLogs(String product, ClientType clientType,
       AuditRequestParams parameters) {
-    log.info("Fetching audit logs by {}", parameters);
+    log.info("Fetching audit logs by {} for: {} from: {}", parameters, clientType, product);
 
     final AuditSearchRequest auditSearchRequest = MAPPER.toEntity(parameters);
 
@@ -69,6 +69,7 @@ public class AuditFacadeImpl implements AuditFacade {
 
   @Override
   public List<String> getEventTypes(String product, ClientType clientType) {
+    log.info("Get event types for: {} from: {}", clientType, product);
     return presenterFactory.getPresenter(clientType)
         .presentEvents(EventType.getEventsList());
   }
@@ -97,6 +98,7 @@ public class AuditFacadeImpl implements AuditFacade {
 
   @Override
   public AuditDetailsDto getAuditDetails(String product, ClientType clientType, String id) {
+    log.info("Fetching audit log details for id: {} for: {} from: {}", id, clientType, product);
     final AuditDetails request = repositoryFactory.getAuditDetailsRepository(product)
         .getAuditDetailsById(id);
 

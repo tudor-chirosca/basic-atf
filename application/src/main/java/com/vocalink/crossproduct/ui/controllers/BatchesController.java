@@ -14,6 +14,8 @@ import com.vocalink.crossproduct.ui.facade.api.BatchesFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class BatchesController implements BatchesApi {
@@ -34,6 +37,7 @@ public class BatchesController implements BatchesApi {
       final @RequestHeader String context,
       final BatchEnquirySearchRequest searchRequest,
       final HttpServletRequest request) {
+    log.debug("Request: {}", searchRequest);
 
     final PageDto<BatchDto> batchesDto = batchesFacade.getPaginated(context, clientType, searchRequest);
 

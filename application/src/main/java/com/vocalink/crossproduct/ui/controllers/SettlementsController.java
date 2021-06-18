@@ -28,7 +28,9 @@ import static com.vocalink.crossproduct.ui.aspects.EventType.SETTL_DETAILS;
 import static com.vocalink.crossproduct.ui.aspects.EventType.SETTL_ENQUIRY;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class SettlementsController implements SettlementsApi {
@@ -42,6 +44,7 @@ public class SettlementsController implements SettlementsApi {
       final @RequestHeader String context,
       final ParticipantSettlementRequest settlementRequest,
       final HttpServletRequest request) {
+    log.debug("Request: {}", settlementRequest);
 
     ParticipantSettlementDetailsDto settlementDetails = settlementsFacade.getSettlementDetails(context, clientType,
             settlementRequest);
@@ -56,6 +59,7 @@ public class SettlementsController implements SettlementsApi {
       final @RequestHeader String context,
       final SettlementEnquiryRequest enquiryRequest,
       final HttpServletRequest request) {
+    log.debug("Request: {}", enquiryRequest);
 
     if (isNull(enquiryRequest.getParticipants()) || enquiryRequest.getParticipants().isEmpty()) {
       throw new InvalidRequestParameterException("participants is missing in request params");

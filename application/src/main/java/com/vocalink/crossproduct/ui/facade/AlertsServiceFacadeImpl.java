@@ -30,7 +30,7 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
   @Override
   public AlertReferenceDataDto getAlertsReference(String product, ClientType clientType) {
-    log.info("Fetching alert references from: {}", product);
+    log.info("Fetching alert references for: {} from: {}", clientType, product);
 
     final AlertReferenceData alertReferenceData = repositoryFactory.getAlertsRepository(product)
         .findAlertsReferenceData();
@@ -41,7 +41,7 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
 
   @Override
   public AlertStatsDto getAlertStats(String product, ClientType clientType) {
-    log.info("Fetching alert stats from: {}", product);
+    log.info("Fetching alert stats for: {} from: {}", clientType, product);
 
     final AlertStats alertStats = repositoryFactory.getAlertsRepository(product).findAlertStats();
 
@@ -52,7 +52,7 @@ public class AlertsServiceFacadeImpl implements AlertsServiceFacade {
   @Override
   public PageDto<AlertDto> getAlerts(String product, ClientType clientType,
       AlertSearchRequest requestDto) {
-    log.info("Fetching alerts from: {}", product);
+    log.info("Fetching alerts for: {} from: {}", clientType, product);
 
     final AlertSearchCriteria request = MAPPER.toEntity(requestDto);
     final Page<Alert> alerts = repositoryFactory.getAlertsRepository(product).findPaginated(request);

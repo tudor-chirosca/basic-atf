@@ -14,6 +14,8 @@ import com.vocalink.crossproduct.ui.facade.api.TransactionsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class TransactionsController implements TransactionsApi {
@@ -36,6 +39,7 @@ public class TransactionsController implements TransactionsApi {
       final @RequestHeader String context,
       final @RequestBody TransactionEnquirySearchRequest searchRequest,
       final HttpServletRequest request) {
+    log.debug("Request: {}", searchRequest);
 
     final PageDto<TransactionDto> transactionsDto = transactionsFacade
         .getPaginated(context, clientType, searchRequest);

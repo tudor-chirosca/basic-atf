@@ -43,8 +43,8 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
   @Override
   public ParticipantSettlementDetailsDto getSettlementDetails(String product, ClientType clientType,
       ParticipantSettlementRequest request) {
-    log.info("Fetching settlement for cycleId: {}, participantId: {}, from: {}",
-        request.getCycleId(), request.getParticipantId(), product);
+    log.info("Fetching settlement for cycleId: {}, participantId: {}, for: {} from: {}",
+            clientType, request.getCycleId(), request.getParticipantId(), product);
 
     final SettlementDetailsSearchCriteria criteria = MAPPER.toEntity(request);
 
@@ -81,7 +81,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
   @Override
   public PageDto<ParticipantSettlementCycleDto> getSettlements(String product,
       ClientType clientType, SettlementEnquiryRequest requestDto) {
-    log.info("Fetching settlements from: {}", product);
+    log.info("Fetching settlements for: {} from: {}", clientType, product);
 
     final SettlementEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
 
@@ -102,7 +102,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
   @Override
   public LatestSettlementCyclesDto getLatestCycles(String product, ClientType clientType) {
-    log.info("Fetching latest cycles from: {}", product);
+    log.info("Fetching latest cycles for: {} from: {}", clientType, product);
 
     final List<Cycle> latestCycles = repositoryFactory.getCycleRepository(product)
         .findLatest(NR_OF_LATEST_CYCLES);
@@ -117,7 +117,7 @@ public class SettlementsFacadeImpl implements SettlementsFacade {
 
   public SettlementScheduleDto getSettlementsSchedule(String product,
       ClientType clientType) {
-    log.info("Fetching settlements schedule from: {}", product);
+    log.info("Fetching settlements schedule for: {} from: {}", clientType, product);
 
     final SettlementSchedule schedule = repositoryFactory.getSettlementsRepository(product)
         .findSchedule();

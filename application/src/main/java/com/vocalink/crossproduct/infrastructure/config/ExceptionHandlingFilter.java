@@ -20,7 +20,7 @@ public class ExceptionHandlingFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
-    log.debug("Applying filter for : {}", request.getRequestURI());
+    log.debug("Applying filter for: {}", request.getRequestURI());
 
     try {
       chain.doFilter(request, response);

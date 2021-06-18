@@ -13,6 +13,8 @@ import com.vocalink.crossproduct.ui.facade.api.SettlementDashboardFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class SettlementDashboardController implements SettlementDashboardApi {
@@ -33,6 +36,7 @@ public class SettlementDashboardController implements SettlementDashboardApi {
       final @RequestHeader String context,
       final SettlementDashboardRequest settlementDashboardRequest,
       final HttpServletRequest httpServletRequest) {
+    log.debug("Request: {}", settlementDashboardRequest);
 
     final SettlementDashboardDto settlementDashboardDto = settlementDashboardFacade
         .getParticipantSettlement(context.toUpperCase(), clientType, settlementDashboardRequest);

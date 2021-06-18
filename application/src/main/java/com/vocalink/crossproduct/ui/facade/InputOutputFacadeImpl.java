@@ -30,7 +30,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODashboardDto getInputOutputDashboard(String product, ClientType clientType,
       LocalDate date) {
-    log.info("Fetching IO Dashboard from: {}", product);
+    log.info("Fetching IO Dashboard date: {} for: {} from: {}", date, clientType, product);
 
     Predicate<Participant> scheme = p -> p.getParticipantType() != ParticipantType.SCHEME_OPERATOR;
     Predicate<Participant> tpsp = p -> p.getParticipantType() != ParticipantType.TPSP;
@@ -51,7 +51,7 @@ public class InputOutputFacadeImpl implements InputOutputFacade {
   @Override
   public IODetailsDto getInputOutputDetails(String product, ClientType clientType,
       String participantId, LocalDate date) {
-    log.info("Fetching IO Details for participantId: {} from: {}", participantId, product);
+    log.info("Fetching IO Details for participantId: {} date: {} for: {} from: {}", participantId, date, clientType, product);
 
     Participant participant = repositoryFactory.getParticipantRepository(product)
         .findById(participantId);

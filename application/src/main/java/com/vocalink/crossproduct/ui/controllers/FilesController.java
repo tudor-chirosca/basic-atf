@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class FilesController implements FilesApi {
@@ -46,6 +49,7 @@ public class FilesController implements FilesApi {
       final @RequestHeader("client-type") ClientType clientType,
       final @RequestHeader String context,
       final FileEnquirySearchRequest request, HttpServletRequest servletRequest) {
+    log.debug("Request: {}", request);
 
     final PageDto<FileDto> fileDto = filesFacade.getPaginated(context, clientType, request);
 

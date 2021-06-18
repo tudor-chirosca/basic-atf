@@ -6,7 +6,6 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.batch.Batch;
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
-import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto;
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto;
@@ -29,7 +28,7 @@ public class BatchesFacadeImpl implements BatchesFacade {
   @Override
   public PageDto<BatchDto> getPaginated(String product, ClientType clientType,
       BatchEnquirySearchRequest requestDto) {
-    log.info("Fetching batches from: {}", product);
+    log.info("Fetching batches for: {} from: {}", clientType, product);
 
     final BatchEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
     final Page<Batch> page = repositoryFactory.getBatchRepository(product)
@@ -41,7 +40,7 @@ public class BatchesFacadeImpl implements BatchesFacade {
 
   @Override
   public BatchDetailsDto getDetailsById(String product, ClientType clientType, String id) {
-    log.info("Fetching batch details for id: {} from: {}", id, product);
+    log.info("Fetching batch details for id: {} for: {} from: {}", id, clientType, product);
 
     final Batch batch = repositoryFactory.getBatchRepository(product).findById(id);
 

@@ -40,7 +40,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   @Override
   public ApprovalDetailsDto getApprovalDetailsById(String product, ClientType clientType,
       String id) {
-    log.info("Fetching approval details from: {}", product);
+    log.info("Fetching approval details by id: {} for: {} from: {}", id, clientType, product);
 
     final Approval approval = repositoryFactory.getApprovalRepository(product).findByJobId(id);
 
@@ -53,7 +53,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   @Override
   public PageDto<ApprovalDetailsDto> getApprovals(String product, ClientType clientType,
       ApprovalSearchRequest requestDto) {
-    log.info("Fetching approvals from: {}", product);
+    log.info("Fetching approvals for: {} from: {}", clientType, product);
 
     final ApprovalSearchCriteria request = MAPPER.toEntity(requestDto);
 
@@ -70,7 +70,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   public ApprovalDetailsDto requestApproval(String product, ClientType clientType,
       ApprovalChangeRequest requestDto) {
 
-    log.info("Creating approval for: {} in: {}", requestDto.getRequestType(), product);
+    log.info("Creating approval by type: {} for: {} from: {}", requestDto.getRequestType(), clientType, product);
 
     final ApprovalChangeCriteria request = MAPPER.toEntity(requestDto);
 
@@ -86,7 +86,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   @Override
   public ApprovalConfirmationResponseDto submitApprovalConfirmation(String product, ClientType clientType,
       ApprovalConfirmationRequest requestDto, String id) {
-    log.info("Sending confirmation on approval id: {} in: {}", id, product);
+    log.info("Sending confirmation on approval id: {} for: {} from: {}", id, clientType, product);
 
     final ApprovalConfirmation request = MAPPER.toEntity(requestDto, id);
 
@@ -98,6 +98,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
   @Override
   public List<ApprovalUserDto> findRequestedDetails(String product, ClientType clientType) {
+    log.info("Fetching user details of requested approvals for: {} from: {}", clientType, product);
     final List<UserDetails> userDetails = repositoryFactory.getApprovalRepository(product)
         .findRequestedDetails();
     return presenterFactory.getPresenter(clientType).presentRequestedDetails(userDetails);
@@ -105,6 +106,7 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
   @Override
   public List<ApprovalRequestType> findApprovalRequestTypes(String product, ClientType clientType) {
+    log.info("Fetching approvals request types for: {} from: {}", clientType, product);
     return repositoryFactory.getApprovalRepository(product)
         .findApprovalRequestTypes();
   }

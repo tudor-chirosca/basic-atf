@@ -22,7 +22,7 @@ public class ClientTypeFilter extends AppFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain chain)
       throws ServletException, IOException {
-    log.debug("Applying filter for : {}", request.getRequestURI());
+    log.debug("Applying filter for: {}", request.getRequestURI());
 
     if (!OPTIONS.matches(request.getMethod())) {
       String clientType = request.getHeader("client-type");

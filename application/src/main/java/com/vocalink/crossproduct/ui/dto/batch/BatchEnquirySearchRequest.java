@@ -17,7 +17,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Getter
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 @ValidSort(sort = "sort", sortingKeys =

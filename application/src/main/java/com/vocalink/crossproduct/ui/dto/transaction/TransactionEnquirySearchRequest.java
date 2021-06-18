@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
@@ -26,6 +27,7 @@ import lombok.Getter;
 @ValidSort(sort = "sort", sortingKeys =
     {"instructionId", "createdAt", "senderBic", "messageType", "amount", "status"})
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
+@ToString
 public class TransactionEnquirySearchRequest {
 
   private final int offset;

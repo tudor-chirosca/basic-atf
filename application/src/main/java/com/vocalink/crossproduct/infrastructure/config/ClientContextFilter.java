@@ -24,7 +24,7 @@ public class ClientContextFilter extends AppFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain chain) throws ServletException, IOException {
-    log.debug("Applying filter for : {}", request.getRequestURI());
+    log.debug("Applying filter for: {}", request.getRequestURI());
 
     if (!OPTIONS.matches(request.getMethod())) {
       String contextHeader = request.getHeader("context");

@@ -13,10 +13,12 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 @ValidSort(sort = "sort", sortingKeys = {"cycleId", "settlementTime", "status", "participantName"})
+@ToString
 public class SettlementEnquiryRequest {
 
   @Setter

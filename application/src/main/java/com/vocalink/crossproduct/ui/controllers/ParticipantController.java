@@ -14,6 +14,8 @@ import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class ParticipantController implements ParticipantApi {
@@ -36,6 +39,7 @@ public class ParticipantController implements ParticipantApi {
       @RequestHeader final String context,
       final ManagedParticipantsSearchRequest request,
       final HttpServletRequest httpServletRequest) {
+    log.debug("Request: {}", request);
 
     final String requestedParticipant = httpServletRequest.getHeader(X_PARTICIPANT_ID_HEADER);
 

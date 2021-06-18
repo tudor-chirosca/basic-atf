@@ -35,7 +35,7 @@ public class FilesFacadeImpl implements FilesFacade {
   @Override
   public PageDto<FileDto> getPaginated(String product, ClientType clientType,
       FileEnquirySearchRequest requestDto) {
-    log.info("Fetching files from: {}", product);
+    log.info("Fetching files for: {} from: {}", clientType, product);
 
     final FileEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
 
@@ -47,8 +47,7 @@ public class FilesFacadeImpl implements FilesFacade {
 
   @Override
   public FileDetailsDto getDetailsById(String product, ClientType clientType, String id) {
-    log.info("Fetching file details for id: {} from: {}", id, product);
-
+    log.info("Fetching details for file id: {} for: {} from: {}", id, clientType, product);
     final File file = repositoryFactory.getFileRepository(product)
         .findById(id);
     final Participant sender = repositoryFactory.getParticipantRepository(product)
@@ -59,6 +58,7 @@ public class FilesFacadeImpl implements FilesFacade {
 
   @Override
   public void writeFileToOutputStream(String product, ClientType clientType, String fileId, OutputStream outputStream) {
+    log.info("Write to output stream file id: {} for: {} from: {}", fileId, clientType, product);
     try {
       serviceFactory.getDownloadService(product)
           .writeResourceToOutputStream(DOWNLOAD_FILE_PATH, fileId, outputStream);

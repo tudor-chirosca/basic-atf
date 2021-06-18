@@ -8,9 +8,11 @@ import static java.lang.Integer.parseInt;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 public class RoutingRecordRequest {
 
   private int offset = parseInt(getDefault(OFFSET));
