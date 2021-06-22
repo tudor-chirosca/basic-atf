@@ -13,7 +13,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 abstract class AppFilter extends OncePerRequestFilter {
 
   @Value("${app.infra-endpoints}")
-  private String[] whitelistedEndpoints;
+  protected String[] whitelistedEndpoints;
+
+  @Value("${server.servlet.context-path}")
+  protected String contextPath;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -23,7 +26,9 @@ abstract class AppFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
+    final String requestPath = request.getRequestURI().replace(contextPath, "");
+
     return Arrays.stream(whitelistedEndpoints)
-        .anyMatch(e -> new AntPathMatcher().match(e, request.getServletPath()));
+        .anyMatch(e -> new AntPathMatcher().match(e, requestPath));
   }
 }
