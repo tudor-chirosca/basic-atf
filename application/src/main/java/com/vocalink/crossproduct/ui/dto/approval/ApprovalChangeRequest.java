@@ -49,6 +49,7 @@ public class ApprovalChangeRequest implements AuditableRequest {
     content.put("notes", notes);
     if (CONFIG_CHANGE.toString().equals(requestType)) {
       Map<String, Object> requestedValues = new HashMap<>();
+
       requestedValues.put("id", requestedChange.get("id"));
       requestedValues.put("name", requestedChange.get("name"));
       requestedValues.put("settlementAccountNo", requestedChange.get("settlementAccountNo"));
