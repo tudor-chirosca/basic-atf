@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -25,19 +26,44 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
                 "messageType": "camt.029.001.08",
                 "description": "ResponseInquiry",
                 "formatName": "camt.029.08",
-                "messageDirection": "Input"
+                "messageDirection": [
+                    "Input",
+                    "Output"
+                ],
+                "level": [
+                    "File"
+                ],
+                "type": [
+                    "Payment"
+                ]
             },
             {
                 "messageType": "camt.087.001.05",
                 "description": "ValueCorrection",
                 "formatName": "camt.087",
-                "messageDirection": "Output"
+                "messageDirection": [
+                    "Output"
+                ],
+                "level": [
+                    "File"
+                ],
+                "type": [
+                    "Payment"
+                ]
             },
             {
                 "messageType": "camt.027.001.06",
                 "description": "ClaimNonReceipt",
                 "formatName": "camt.027",
-                "messageDirection": "Input / Output"
+                "messageDirection": [
+                    "Input"
+                ],
+                "level": [
+                    "File"
+                ],
+                "type": [
+                    "Payment"
+                ]
             }
         ]
         """
@@ -81,9 +107,9 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
 
         assertThat(result.size).isEqualTo(3)
 
-        assertThat(result[0].messageDirection).isEqualTo("sending")
-        assertThat(result[1].messageDirection).isEqualTo("receiving")
-        assertThat(result[2].messageDirection).isEqualTo("sending / receiving")
+        assertThat(result[0].direction).isEqualTo(listOf(SENDING, RECEIVING))
+        assertThat(result[1].direction).isEqualTo(listOf(RECEIVING))
+        assertThat(result[2].direction).isEqualTo(listOf(SENDING))
     }
 
     @Test

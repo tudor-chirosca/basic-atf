@@ -36,6 +36,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
 import com.vocalink.crossproduct.domain.settlement.ParticipantSettlement;
@@ -78,6 +79,7 @@ import com.vocalink.crossproduct.ui.dto.position.ParticipantPositionDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.position.PositionDetailsTotalsDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
+import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordDto;
@@ -642,6 +644,8 @@ public interface DTOMapper {
       @Mapping(target = "user.name", expression = "java(auditDetails.getFirstName() + \" \" + auditDetails.getLastName())")
   })
   CurrentUserInfoDto toDto(Participant participant, List<String> permissions, AuditDetails auditDetails);
+
+  MessageDirectionReferenceDto toDto(MessageDirectionReference messageDirectionReference);
 
   default <T> PageDto<T> toDto(Page<?> page, Class<T> targetType) {
     List<?> sourceItems = page.getItems();

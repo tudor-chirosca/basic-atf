@@ -90,13 +90,6 @@ final class MapperUtils {
     managedParticipantSearchRequestSortParams.put("fundedParticipantsCount", "fundedParticipantsCount");
   }
 
-  private static final Map<String, String> messageType = new HashMap<>();
-  static {
-    messageType.put("input", "sending");
-    messageType.put("output", "receiving");
-    messageType.put("input / output", "sending / receiving");
-  }
-
   private static final Map<String, String> reportsSearchRequestSortParams = new HashMap<>();
   static {
     reportsSearchRequestSortParams.put("reportId", "reportId");
@@ -137,9 +130,4 @@ final class MapperUtils {
   static String getNameByType(String type) {
     return nameType.getOrDefault(type, "N/A");
   }
-
-  static String getMessageType(String type) {
-    return messageType.get(type);
-  }
-
 }

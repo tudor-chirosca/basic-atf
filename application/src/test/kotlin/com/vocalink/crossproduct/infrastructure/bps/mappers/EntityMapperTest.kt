@@ -12,6 +12,9 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult
@@ -41,6 +44,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
@@ -1091,5 +1095,37 @@ class EntityMapperTest {
 
         assertThat(result.items).isEmpty()
         assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should map from BPSMessageDirectionReference to MessageDirectionReference`() {
+        val messageType = "camt.029.001.08"
+        val description = "ResponseInquiry"
+        val formatName = "camt.029.08"
+        val bpsMessageReference = BPSMessageDirectionReference.builder()
+            .messageType(messageType)
+            .description(description)
+            .formatName(formatName)
+            .messageDirection(listOf("Input", "Output"))
+            .level(listOf("File", "Batch", "Transaction"))
+            .type(listOf("Payment", "Non-Payment", "Inquiry", "Non-inquiry", "Message Status Report", "ADMI"))
+            .build()
+
+        val result = MAPPER.toEntity(bpsMessageReference)
+
+        assertThat(result.messageType).isEqualTo(messageType)
+        assertThat(result.formatName).isEqualTo(formatName)
+        assertThat(result.messageType).isEqualTo(messageType)
+        assertThat(result.direction[0]).isEqualTo(MessageReferenceDirection.SENDING)
+        assertThat(result.direction[1]).isEqualTo(MessageReferenceDirection.RECEIVING)
+        assertThat(result.level[0]).isEqualTo(MessageReferenceLevel.FILE)
+        assertThat(result.level[1]).isEqualTo(MessageReferenceLevel.BATCH)
+        assertThat(result.level[2]).isEqualTo(MessageReferenceLevel.TRANSACTION)
+        assertThat(result.subType[0]).isEqualTo(MessageReferenceType.PAYMENT)
+        assertThat(result.subType[1]).isEqualTo(MessageReferenceType.NON_PAYMENT)
+        assertThat(result.subType[2]).isEqualTo(MessageReferenceType.INQUIRY)
+        assertThat(result.subType[3]).isEqualTo(MessageReferenceType.NON_INQUIRY)
+        assertThat(result.subType[4]).isEqualTo(MessageReferenceType.MESSAGE_STATUS_REPORT)
+        assertThat(result.subType[5]).isEqualTo(MessageReferenceType.ADMI)
     }
 }

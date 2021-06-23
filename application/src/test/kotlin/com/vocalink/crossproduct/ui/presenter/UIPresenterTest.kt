@@ -17,6 +17,9 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.*
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfig
 import com.vocalink.crossproduct.mocks.MockIOData
@@ -501,23 +504,40 @@ class UIPresenterTest {
     }
 
     @Test
-    fun `should map all Message references fields and set isDefault true for sending`() {
-        val sending = "sending"
-        val receiving = "receiving"
+    fun `should present all Message references`() {
+        val messageType = "camt.029.001.08"
+        val formatName = "camt.029.08"
+        val sending = SENDING
+        val receiving = RECEIVING
         val model = listOf(
-                MessageDirectionReference.builder()
-                        .messageDirection(sending)
-                        .messageType("")
-                        .build(),
-                MessageDirectionReference.builder()
-                        .messageDirection(receiving)
-                        .messageType("")
-                        .build()
+            MessageDirectionReference.builder()
+                .messageType(messageType)
+                .formatName(formatName)
+                .direction(listOf(sending))
+                .level(listOf(FILE))
+                .subType(listOf(PAYMENT))
+                .build(),
+            MessageDirectionReference.builder()
+                .messageType(messageType)
+                .formatName(formatName)
+                .direction(listOf(receiving))
+                .level(listOf(TRANSACTION))
+                .subType(listOf(NON_PAYMENT))
+                .build()
         )
         val result = uiPresenter.presentMessageDirectionReferences(model)
 
-        assertThat(result.map { e -> e.name }).containsExactly(sending, receiving)
-        assertThat(result.map { e -> e.isDefault }).containsExactly(true, false)
+        assertThat(result.size).isNotNull()
+        assertThat(result[0].messageType).isEqualTo(messageType)
+        assertThat(result[0].formatName).isEqualTo(formatName)
+
+        assertThat(result[0].direction).isEqualTo(listOf(sending))
+        assertThat(result[0].level).isEqualTo(listOf(FILE))
+        assertThat(result[0].subType).isEqualTo(listOf(PAYMENT))
+
+        assertThat(result[1].direction).isEqualTo(listOf(receiving))
+        assertThat(result[1].level).isEqualTo(listOf(TRANSACTION))
+        assertThat(result[1].subType).isEqualTo(listOf(NON_PAYMENT))
     }
 
     @Test

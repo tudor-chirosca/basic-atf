@@ -1,10 +1,12 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getMessageType;
+import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING;
+import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
@@ -56,6 +58,9 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
 import com.vocalink.crossproduct.domain.report.Report;
@@ -250,13 +255,43 @@ public interface EntityMapper {
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
 
   @Mappings({
-      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "mapMessageDirection"),
+      @Mapping(target = "direction", source = "messageDirection", qualifiedByName = "toMessageDirectionList"),
+      @Mapping(target = "level", source = "level", qualifiedByName = "toMessageLevel"),
+      @Mapping(target = "subType", source = "type", qualifiedByName = "toMessageType")
+
   })
   MessageDirectionReference toEntity(BPSMessageDirectionReference messageDirectionReference);
 
-  @Named("mapMessageDirection")
-  default String mapMessageDirection(String messageDirection) {
-    return getMessageType(messageDirection.toLowerCase());
+  @Named("convertToMessageDirection")
+  default MessageReferenceDirection convertToMessageDirection(String messageDirection) {
+    if (nonNull(messageDirection) && messageDirection.equalsIgnoreCase("input")) {
+      return SENDING;
+    }
+    if (nonNull(messageDirection) && messageDirection.equalsIgnoreCase("output")) {
+      return RECEIVING;
+    }
+    return null;
+  }
+
+  @Named("toMessageDirectionList")
+  default List<MessageReferenceDirection> toMessageDirectionList(List<String> messageDirections) {
+    return messageDirections.stream()
+        .map(this::convertToMessageDirection)
+        .collect(toList());
+  }
+
+  @Named("toMessageLevel")
+  default List<MessageReferenceLevel> toMessageLevel(List<String> levels) {
+    return levels.stream()
+        .map(level -> MessageReferenceLevel.valueOf(level.toUpperCase()))
+        .collect(toList());
+  }
+
+  @Named("toMessageType")
+  default List<MessageReferenceType> toMessageType(List<String> types) {
+    return types.stream()
+        .map(type -> MessageReferenceType.valueOf(type.toUpperCase().replaceAll("[ _+-]", "_")))
+        .collect(toList());
   }
 
   @Mappings({

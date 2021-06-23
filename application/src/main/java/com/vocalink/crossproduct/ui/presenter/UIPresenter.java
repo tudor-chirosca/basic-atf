@@ -99,7 +99,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -110,12 +109,6 @@ import org.springframework.stereotype.Component;
 public class UIPresenter implements Presenter {
 
   public static final String HYPHEN_DELIMITER = "-";
-  public static final String SENDING_MESSAGE_DIRECTION = "sending";
-  public static final String RECEIVING_MESSAGE_DIRECTION = "receiving";
-  public static final String SENDING_AND_RECEIVING = "sending / receiving";
-
-  @Value("${app.ui.config.default.message.reference.name}")
-  private String defaultMessageReferenceName;
 
   @Value("${app.audit.service-id.prefix}")
   private String serviceIdPrefix;
@@ -259,29 +252,9 @@ public class UIPresenter implements Presenter {
   @Override
   public List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences) {
-    final List<String> sendingTypes = messageDirectionReferences.stream()
-        .filter(f -> f.getMessageDirection().equals(SENDING_MESSAGE_DIRECTION) ||
-            f.getMessageDirection().equals(SENDING_AND_RECEIVING))
-        .map(MessageDirectionReference::getMessageType)
+    return messageDirectionReferences.stream()
+        .map(MAPPER::toDto)
         .collect(toList());
-
-    final MessageDirectionReferenceDto sending = MessageDirectionReferenceDto.builder()
-        .name(SENDING_MESSAGE_DIRECTION)
-        .types(sendingTypes)
-        .build();
-
-    final List<String> receivingTypes = messageDirectionReferences.stream()
-        .filter(f -> f.getMessageDirection().equals(RECEIVING_MESSAGE_DIRECTION) ||
-            f.getMessageDirection().equals(SENDING_AND_RECEIVING))
-        .map(MessageDirectionReference::getMessageType)
-        .collect(toList());
-
-    final MessageDirectionReferenceDto receiving = MessageDirectionReferenceDto.builder()
-        .name(RECEIVING_MESSAGE_DIRECTION)
-        .types(receivingTypes)
-        .build();
-
-    return setDefaultDirection(asList(sending, receiving));
   }
 
   @Override
@@ -358,17 +331,6 @@ public class UIPresenter implements Presenter {
         .previousCycle(localCycles.get(1))
         .currentCycle(localCycles.get(0))
         .build();
-  }
-
-  private List<MessageDirectionReferenceDto> setDefaultDirection(
-      List<MessageDirectionReferenceDto> messages) {
-    return messages.stream()
-        .peek(message -> {
-          if (message.getName() != null && message.getName().equals(defaultMessageReferenceName)) {
-            message.setDefault(true);
-          }
-        })
-        .collect(toList());
   }
 
   @Override
