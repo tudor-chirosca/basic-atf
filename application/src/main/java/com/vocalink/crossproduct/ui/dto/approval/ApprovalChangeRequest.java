@@ -6,6 +6,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.ui.aspects.AuditableRequest;
 import com.vocalink.crossproduct.ui.aspects.EventType;
@@ -47,13 +49,15 @@ public class ApprovalChangeRequest implements AuditableRequest {
     content.put("notes", notes);
     if (CONFIG_CHANGE.toString().equals(requestType)) {
       Map<String, Object> requestedValues = new HashMap<>();
-      requestedValues.put("id", requestedChange.getOrDefault("id", ""));
-      requestedValues.put("name", requestedChange.getOrDefault("name", ""));
-      requestedValues.put("settlementAccountNo", requestedChange.getOrDefault("settlementAccountNo", ""));
-      requestedValues.put("debitCapLimit", requestedChange.getOrDefault("debitCapLimit", ""));
-      requestedValues.put("debitCapLimitThresholds", requestedChange.getOrDefault("debitCapLimitThresholds", ""));
-      requestedValues.put("outputTxnVolume", requestedChange.getOrDefault("outputTxnVolume", ""));
-      requestedValues.put("outputTxnTimeLimit", requestedChange.getOrDefault("outputTxnTimeLimit", ""));
+      requestedValues.put("id", requestedChange.get("id"));
+      requestedValues.put("name", requestedChange.get("name"));
+      requestedValues.put("settlementAccountNo", requestedChange.get("settlementAccountNo"));
+      requestedValues.put("debitCapLimit", requestedChange.get("debitCapLimit"));
+      requestedValues.put("debitCapLimitThresholds", requestedChange.get("debitCapLimitThresholds"));
+      requestedValues.put("outputTxnVolume", requestedChange.get("outputTxnVolume"));
+      requestedValues.put("outputTxnTimeLimit", requestedChange.get("outputTxnTimeLimit"));
+
+      Iterables.removeIf(requestedValues.values(), Predicates.isNull());
       content.put("requestedValues", requestedValues);
       return content;
     }
