@@ -9,84 +9,102 @@ import lombok.RequiredArgsConstructor;
 
 //Bindings used to match sort parameters, key for UI, value for BPS
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-abstract class MapperUtils {
+final class MapperUtils {
 
-  private static final Map<String, String> fileSearchRequestSortParams = new HashMap<String, String>() {{
-    put("name", "fileName");
-    put("createdAt", "createdDate");
-    put("senderBic", "originator");
-    put("messageType", "messageType");
-    put("nrOfBatches", "noOfBatches");
-    put("status", "status");
-  }};
+  private static final Map<String, String> fileSearchRequestSortParams = new HashMap<>();
+  static {
+    fileSearchRequestSortParams.put("name", "fileName");
+    fileSearchRequestSortParams.put("createdAt", "createdDate");
+    fileSearchRequestSortParams.put("senderBic", "originator");
+    fileSearchRequestSortParams.put("messageType", "messageType");
+    fileSearchRequestSortParams.put("nrOfBatches", "noOfBatches");
+    fileSearchRequestSortParams.put("status", "status");
+  }
 
-  private static final Map<String, String> approvalSearchRequestSortParams = new HashMap<String, String>() {{
-    put("participants", "participantName");
-    put("requestType", "requestType");
-    put("jobId", "approvalId");
-    put("createdAt", "date");
-    put("requestedBy","requestedBy");
-    put("status", "status");
-  }};
+  private static final Map<String, String> approvalSearchRequestSortParams = new HashMap<>();
+  static {
+    approvalSearchRequestSortParams.put("participants", "participantName");
+    approvalSearchRequestSortParams.put("requestType", "requestType");
+    approvalSearchRequestSortParams.put("jobId", "approvalId");
+    approvalSearchRequestSortParams.put("createdAt", "date");
+    approvalSearchRequestSortParams.put("requestedBy","requestedBy");
+    approvalSearchRequestSortParams.put("status", "status");
+  }
 
-  private static final Map<String, String> batchSearchRequestSortParams = new HashMap<String, String>() {{
-    put("id", "messageIdentifier");
-    put("createdAt", "createdDateTime");
-    put("senderBic", "originator");
-    put("messageType","messageType");
-    put("nrOfTransactions","nrOfTransactions");
-    put("status", "status");
-  }};
+  private static final Map<String, String> batchSearchRequestSortParams = new HashMap<>();
+  static {
+    batchSearchRequestSortParams.put("id", "messageIdentifier");
+    batchSearchRequestSortParams.put("createdAt", "createdDateTime");
+    batchSearchRequestSortParams.put("senderBic", "originator");
+    batchSearchRequestSortParams.put("messageType","messageType");
+    batchSearchRequestSortParams.put("nrOfTransactions","nrOfTransactions");
+    batchSearchRequestSortParams.put("status", "status");
+  }
 
-  private static final Map<String, String> transactionSearchRequestSortParams = new HashMap<String, String>() {{
-    put("instructionId", "instructionId");
-    put("createdAt", "createdDateTime");
-    put("senderBic", "originator");
-    put("messageType","messageType");
-    put("amount", "amount");
-    put("status", "status");
-  }};
+  private static final Map<String, String> transactionSearchRequestSortParams = new HashMap<>();
+  static {
+    transactionSearchRequestSortParams.put("instructionId", "instructionId");
+    transactionSearchRequestSortParams.put("createdAt", "createdDateTime");
+    transactionSearchRequestSortParams.put("senderBic", "originator");
+    transactionSearchRequestSortParams.put("messageType","messageType");
+    transactionSearchRequestSortParams.put("amount", "amount");
+    transactionSearchRequestSortParams.put("status", "status");
+  }
 
-  private static final Map<String, String> nameType = new HashMap<String, String>() {{
-    put("pacs.008", "Credit Transfer");
-    put("pacs.004", "Payment Return or Positive Response to Recall of Payment");
-    put("camt.056", "Cancellation / Recall of Credit Transfer");
-    put("camt.029 v3", "Negative Response to Request for Recall");
-    put("camt.029 v8", "Resolution of Investigation");
-    put("camt.087", "Claim for Value Date Correction");
-    put("camt.027", "Claim Non-Receipt");
-  }};
+  private static final Map<String, String> nameType = new HashMap<>();
+  static {
+    nameType.put("pacs.008", "Credit Transfer");
+    nameType.put("pacs.004", "Payment Return or Positive Response to Recall of Payment");
+    nameType.put("camt.056", "Cancellation / Recall of Credit Transfer");
+    nameType.put("camt.029 v3", "Negative Response to Request for Recall");
+    nameType.put("camt.029 v8", "Resolution of Investigation");
+    nameType.put("camt.087", "Claim for Value Date Correction");
+    nameType.put("camt.027", "Claim Non-Receipt");
+  }
 
-  private static final Map<String, String> settlementSearchRequestSortParams = new HashMap<String, String>() {{
-    put("cycleId", "cycleId");
-    put("settlementTime", "settlementDate");
-    put("status", "status");
-    put("participantName", "participant");
-  }};
+  private static final Map<String, String> settlementSearchRequestSortParams = new HashMap<>();
+  static {
+    settlementSearchRequestSortParams.put("cycleId", "cycleId");
+    settlementSearchRequestSortParams.put("settlementTime", "settlementDate");
+    settlementSearchRequestSortParams.put("status", "status");
+    settlementSearchRequestSortParams.put("participantName", "participant");
+  }
 
-  private static final Map<String, String> settlementDetailsSearchRequestSortParams = new HashMap<String, String>() {{
-    put("reference", "settlementInstructionReference");
-    put("status", "statusDetail");
-    put("counterparty", "counterParty");
-    put("settlementCounterparty", "counterPartySettlement");
-    put("totalDebit", "totalAmountDebited");
-    put("totalCredit", "totalAmountCredited");
-  }};
+  private static final Map<String, String> settlementDetailsSearchRequestSortParams = new HashMap<>();
+  static {
+    settlementDetailsSearchRequestSortParams.put("reference", "settlementInstructionReference");
+    settlementDetailsSearchRequestSortParams.put("status", "statusDetail");
+    settlementDetailsSearchRequestSortParams.put("counterparty", "counterParty");
+    settlementDetailsSearchRequestSortParams.put("settlementCounterparty", "counterPartySettlement");
+    settlementDetailsSearchRequestSortParams.put("totalDebit", "totalAmountDebited");
+    settlementDetailsSearchRequestSortParams.put("totalCredit", "totalAmountCredited");
+  }
 
-  private static final Map<String, String> managedParticipantSearchRequestSortParams = new HashMap<String, String>() {{
-    put("name", "name");
-    put("status", "status");
-    put("organizationId", "partyExternalIdentifier");
-    put("participantType", "participantType");
-    put("tpspName", "tpspName");
-    put("fundedParticipantsCount", "fundedParticipantsCount");
-  }};
+  private static final Map<String, String> managedParticipantSearchRequestSortParams = new HashMap<>();
+  static {
+    managedParticipantSearchRequestSortParams.put("name", "name");
+    managedParticipantSearchRequestSortParams.put("status", "status");
+    managedParticipantSearchRequestSortParams.put("organizationId", "partyExternalIdentifier");
+    managedParticipantSearchRequestSortParams.put("participantType", "participantType");
+    managedParticipantSearchRequestSortParams.put("tpspName", "tpspName");
+    managedParticipantSearchRequestSortParams.put("fundedParticipantsCount", "fundedParticipantsCount");
+  }
 
-  private static final Map<String, String> messageType = new HashMap<String, String>() {{
-    put("input", "sending");
-    put("output", "receiving");
-    put("input / output", "sending / receiving");
-  }};
+  private static final Map<String, String> messageType = new HashMap<>();
+  static {
+    messageType.put("input", "sending");
+    messageType.put("output", "receiving");
+    messageType.put("input / output", "sending / receiving");
+  }
+
+  private static final Map<String, String> reportsSearchRequestSortParams = new HashMap<>();
+  static {
+    reportsSearchRequestSortParams.put("reportId", "reportId");
+    reportsSearchRequestSortParams.put("reportType", "reportType");
+    reportsSearchRequestSortParams.put("createdAt", "createdAt");
+    reportsSearchRequestSortParams.put("cycleId", "cycleId");
+    reportsSearchRequestSortParams.put("participantName", "participantName");
+  }
 
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
@@ -110,6 +128,10 @@ abstract class MapperUtils {
 
   static Map<String, String> getManagedParticipantSearchRequestSortParams(){
     return unmodifiableMap(managedParticipantSearchRequestSortParams);
+  }
+
+  static Map<String, String> getReportsSearchRequestSortParams(){
+    return unmodifiableMap(reportsSearchRequestSortParams);
   }
 
   static String getNameByType(String type) {

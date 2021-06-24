@@ -28,12 +28,12 @@ class BPSReportRepositoryTest @Autowired constructor(
             {
             "offset": 0,
             "limit": 20,
-            "sort": ["reportId"],
-            "reportTypes": null,
+            "sortingOrder": [{"sortOrderBy": "reportId", "sortOrder": "ASC"}],
+            "reportTypes": ["PRE_SETTLEMENT_ADVICE"],
             "participants": null,
-            "id": null,
-            "date_from": "2021-01-03T00:00:00Z",
-            "date_to": null
+            "reportId": null,
+            "createdFromDate": "2021-01-03T00:00:00Z",
+            "createdToDate": null
             }
         """
 
@@ -57,7 +57,7 @@ class BPSReportRepositoryTest @Autowired constructor(
     @Test
     fun `should map full request body and full response and return 200`() {
         val request = ReportSearchCriteria(
-            0, 20, listOf("reportId"), null, null,
+            0, 20, listOf("reportId"), listOf("PRE_SETTLEMENT_ADVICE"), null,
             null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null
         )
         mockServer.stubFor(

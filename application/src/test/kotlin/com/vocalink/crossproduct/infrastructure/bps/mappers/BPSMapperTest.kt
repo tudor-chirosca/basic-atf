@@ -339,7 +339,7 @@ class BPSMapperTest {
         val criteria = ReportSearchCriteria(
                 0,
                 20,
-                listOf("sort"),
+                listOf("reportId", "-createdAt", "participantName"),
                 listOf("DAILY_SETTLEMENT_REPORT"),
                 listOf("Resursbank"),
                 "10000000305",
@@ -350,11 +350,16 @@ class BPSMapperTest {
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.offset).isEqualTo(criteria.offset)
         assertThat(request.limit).isEqualTo(criteria.limit)
-        assertThat(request.sort).isEqualTo(criteria.sort)
+        assertThat(request.sortingOrder[0].sortOrderBy).isEqualTo("reportId")
+        assertThat(request.sortingOrder[0].sortOrder).isEqualTo(ASC)
+        assertThat(request.sortingOrder[1].sortOrderBy).isEqualTo("createdAt")
+        assertThat(request.sortingOrder[1].sortOrder).isEqualTo(DESC)
+        assertThat(request.sortingOrder[2].sortOrderBy).isEqualTo("participantName")
+        assertThat(request.sortingOrder[2].sortOrder).isEqualTo(ASC)
         assertThat(request.participants).isEqualTo(criteria.participants)
-        assertThat(request.dateFrom).isEqualTo(criteria.dateFrom)
-        assertThat(request.id).isEqualTo(criteria.id)
-        assertThat(request.dateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.createdFromDate).isEqualTo(criteria.dateFrom)
+        assertThat(request.reportId).isEqualTo(criteria.id)
+        assertThat(request.createdToDate).isEqualTo(criteria.dateTo)
         assertThat(request.reportTypes).isEqualTo(criteria.reportTypes)
     }
 

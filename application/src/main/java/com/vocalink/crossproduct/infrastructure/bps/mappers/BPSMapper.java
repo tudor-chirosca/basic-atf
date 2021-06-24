@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.g
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getManagedParticipantSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getReportsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementDetailsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
@@ -203,6 +204,11 @@ public interface BPSMapper {
     return map(sortParams, getSettlementSearchRequestSortParams());
   }
 
+  @Named("mapReportsSortParams")
+  default List<BPSSortingQuery> mapReportsSortParams(List<String> sortParams) {
+    return map(sortParams, getReportsSearchRequestSortParams());
+  }
+
   @AfterMapping
   default void updateRequest(@MappingTarget BPSSettlementEnquiryRequest request) {
     if(request.getSessionInstanceId() != null && !request.getSessionInstanceId().isEmpty()) {
@@ -225,6 +231,12 @@ public interface BPSMapper {
 
   BPSRoutingRecordRequest toBps(RoutingRecordCriteria criteria);
 
+  @Mappings({
+      @Mapping(target = "reportId", source = "id"),
+      @Mapping(target = "createdFromDate", source = "dateFrom"),
+      @Mapping(target = "createdToDate", source = "dateTo"),
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapReportsSortParams")
+  })
   BPSReportSearchRequest toBps(ReportSearchCriteria criteria);
 
   @Mappings({

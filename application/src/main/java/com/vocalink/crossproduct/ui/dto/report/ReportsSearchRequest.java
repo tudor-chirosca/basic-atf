@@ -19,6 +19,7 @@ public class ReportsSearchRequest {
   private int offset = parseInt(getDefault(OFFSET));
   private int limit = parseInt(getDefault(LIMIT));
   private List<String> sort;
+  @Setter(AccessLevel.PRIVATE)
   private List<String> reportTypes;
   private List<String> participants;
   private String id;
@@ -34,5 +35,9 @@ public class ReportsSearchRequest {
 
   public void setDate_to(String dateTo) {
     this.dateTo = ZonedDateTime.parse(dateTo);
+  }
+
+  public void setReport_types(List<String> reportTypes) {
+    this.reportTypes = reportTypes;
   }
 }

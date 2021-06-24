@@ -115,7 +115,7 @@ bps-config:
       path: /routing/{schemeCode}/records
       base: MOCK
     reports-path:
-      path: /reports
+      path: /reports/{schemeCode}/readAll
       base: MOCK
     download-report-path:
       path: /reports/downloadReport/{schemeCode}/{id}
