@@ -40,7 +40,7 @@ They are versioned according to the following format: V<datetime>__<migration_na
 
 The resulting artifact will be generated in /target folder. Deploy it to an external application server.
 
-### Docker Database preparation
+### Docker Database preparation 
 
 - [Docker steps find here](https://github.com/vocalink/cp-jenkins-jobs/tree/docker/oracle)
 
