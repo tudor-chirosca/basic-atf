@@ -85,9 +85,7 @@ pipeline {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
                         withSonarQubeEnv('cp-sonar') {
-                            dir("p27") {
-                                runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
-                            }
+                            runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
                         }
                     }
                 }
