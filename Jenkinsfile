@@ -99,20 +99,9 @@ pipeline {
                     }
                 }
 
-                stage("Package") {
-                    parallel {
-                        stage("Create P27 package") {
-                            steps{
-                                runMaven(goal: "-B package -Dscheme=p27 -Dmaven.test.skip=true")
-                            }
-                        }
-                        stage("Create DB SAMA package") {
-                            steps {
-                                dir("database") {
-                                    runMaven(goal: "-B package -Dscheme=sama -Dmaven.test.skip=true")
-                                }
-                            }
-                        }
+                stage("Create package") {
+                    steps{
+                        runMaven(goal: "-B package -Dmaven.test.skip=true")
                     }
                 }
 
@@ -125,10 +114,7 @@ pipeline {
                     }
                     steps {
                         println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                        runMaven(goal: "-B deploy -Dmaven.test.skip=true -Dscheme=p27")
-                        dir("database") {
-                            runMaven(goal: "-B deploy -Dmaven.test.skip=true -Dscheme=sama")
-                        }
+                        runMaven(goal: "-B deploy -Dmaven.test.skip=true")
                     }
                 }
             }//stages

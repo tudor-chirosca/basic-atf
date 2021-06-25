@@ -102,30 +102,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <id>enforce-property</id>
-            <phase>package</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireProperty>
-                  <property>scheme</property>
-                  <message>property scheme should not be empty</message>
-                  <regex>p27|sama</regex>
-                </requireProperty>
-              </rules>
-              <fail>true</fail>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>${maven-assembly.version}</version>
         <executions>
@@ -137,7 +113,8 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>assembly/database-migrations.xml</descriptor>
+                <descriptor>assembly/database-migrations-p27.xml</descriptor>
+                <descriptor>assembly/database-migrations-sama.xml</descriptor>
               </descriptors>
               <appendAssemblyId>true</appendAssemblyId>
               <tarLongFileMode>posix</tarLongFileMode>
