@@ -125,7 +125,7 @@ pipeline {
                     }
                     steps {
                         println("New commit hash appeared ${currentGitCommitHash} insted of ${gitCommitPr}. Publishing artifact...")
-                        runMaven(goal: "-B deploy -Dmaven.test.skip=true")
+                        runMaven(goal: "-B deploy -Dmaven.test.skip=true -Dscheme=p27")
                     }
                 }
             }//stages
