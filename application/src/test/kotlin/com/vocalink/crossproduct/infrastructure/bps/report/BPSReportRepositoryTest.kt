@@ -1,10 +1,12 @@
 package com.vocalink.crossproduct.infrastructure.bps.report
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
@@ -26,8 +28,6 @@ class BPSReportRepositoryTest @Autowired constructor(
     companion object {
         var VALID_REQUEST = """
             {
-            "offset": 0,
-            "limit": 20,
             "sortingOrder": [{"sortOrderBy": "reportId", "sortOrder": "ASC"}],
             "reportTypes": ["PRE_SETTLEMENT_ADVICE"],
             "participants": null,
@@ -61,7 +61,9 @@ class BPSReportRepositoryTest @Autowired constructor(
             null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null
         )
         mockServer.stubFor(
-            post(urlEqualTo("/reports"))
+            post(urlPathEqualTo("/reports"))
+                .withQueryParam("offset", WireMock.equalTo("0"))
+                .withQueryParam("pageSize", WireMock.equalTo("20"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)

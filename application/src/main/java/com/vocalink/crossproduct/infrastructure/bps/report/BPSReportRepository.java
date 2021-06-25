@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.report;
 
+import java.net.URI;
+
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.REPORTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
@@ -21,11 +23,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
 public class BPSReportRepository implements ReportRepository {
+
+  private static final String OFFSET = "offset";
+  private static final String PAGE_SIZE = "pageSize";
 
   private final BPSProperties bpsProperties;
   private final BPSRetryWebClientConfig retryWebClientConfig;
@@ -34,8 +41,12 @@ public class BPSReportRepository implements ReportRepository {
   @Override
   public Page<Report> findPaginated(ReportSearchCriteria criteria) {
     final BPSReportSearchRequest request = BPSMAPPER.toBps(criteria);
+    final URI uri = UriComponentsBuilder.fromUri(resolve(REPORTS_PATH, bpsProperties))
+        .queryParam(OFFSET, criteria.getOffset())
+        .queryParam(PAGE_SIZE, criteria.getLimit())
+        .build().toUri();
     return webClient.post()
-        .uri(resolve(REPORTS_PATH, bpsProperties))
+        .uri(uri)
         .header(ACCEPT, APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSReportSearchRequest.class))
         .retrieve()

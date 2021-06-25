@@ -12,8 +12,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BPSReportSearchRequest {
 
-  private final int offset;
-  private final int limit;
   private final List<BPSSortingQuery> sortingOrder;
   private final List<String> reportTypes;
   private final List<String> participants;
