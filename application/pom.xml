@@ -31,6 +31,7 @@
     <ehcache.version>3.7.1</ehcache.version>
     <guava.version>29.0-jre</guava.version>
     <togglz.version>2.6.1.Final</togglz.version>
+    <mc-dn-filter.version>1.1.0-RELEASE</mc-dn-filter.version>
   </properties>
 
   <dependencyManagement>
@@ -138,6 +139,14 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+    </dependency>
+
+    <!--    MC DN Filter -->
+
+    <dependency>
+      <groupId>com.vocalink.bps</groupId>
+      <artifactId>dn-validation-toggle</artifactId>
+      <version>${mc-dn-filter.version}</version>
     </dependency>
 
     <!--    Validation-->
