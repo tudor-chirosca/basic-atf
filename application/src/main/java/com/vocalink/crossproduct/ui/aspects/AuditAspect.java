@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuditAspect {
 
-  public static final String EMPTY_CONTENT = "EMPTY";
+  public static final String EMPTY_CONTENT = "{}";
   public static final String RESPONSE_SUCCESS = "OK";
   public static final String RESPONSE_FAILURE = "NOK";
   public static final String X_USER_ID_HEADER = "x-user-id";

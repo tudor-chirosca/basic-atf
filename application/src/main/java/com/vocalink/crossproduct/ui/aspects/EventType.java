@@ -53,7 +53,10 @@ public enum EventType {
   AMEND_PARTICIPANT_CONFIG(Object.class),
   APPROVE_REQUEST(Object.class),
   REJECT_REQUEST(Object.class),
-  UNKNOWN(Object.class);
+  UNKNOWN(Object.class),
+  USER_SESSION_TIMEOUT(Object.class),
+  USER_SESSION_START(Object.class),
+  USER_SESSION_END(Object.class);
 
   private final Class<?> requestType;
 
