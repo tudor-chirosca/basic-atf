@@ -139,6 +139,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -314,9 +315,28 @@ public interface EntityMapper {
   SettlementCycleSchedule toEntity(BPSSettlementCycleSchedule cycleSchedule);
 
   @Mappings({
-      @Mapping(source = "sort", target = "sort", qualifiedByName = "setDefaultDateSort")
+      @Mapping(target = "offset", source = "request.offset"),
+      @Mapping(target = "limit", source = "request.limit"),
+      @Mapping(target = "sort", source = "request.sort", qualifiedByName = "setDefaultDateSort"),
+      @Mapping(target = "dateFrom", source = "request.dateFrom"),
+      @Mapping(target = "dateTo", source = "request.dateTo"),
+      @Mapping(target = "cycleId", source = "request.cycleId"),
+      @Mapping(target = "messageType", source = "request.messageType"),
+      @Mapping(target = "sendingBic", source = "request.sendingBic"),
+      @Mapping(target = "receivingBic", source = "request.receivingBic"),
+      @Mapping(target = "debtor", source = "request.debtor"),
+      @Mapping(target = "creditor", source = "request.creditor"),
+      @Mapping(target = "status", source = "request.status"),
+      @Mapping(target = "reasonCode", source = "request.reasonCode"),
+      @Mapping(target = "id", source = "request.id"),
+      @Mapping(target = "sendingAccount", source = "request.sendingAccount"),
+      @Mapping(target = "receivingAccount", source = "request.receivingAccount"),
+      @Mapping(target = "txnFrom", source = "request.txnFrom"),
+      @Mapping(target = "txnTo", source = "request.txnTo"),
+      @Mapping(target = "valueDate", source = "valueDate")
   })
-  TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
+  TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request,
+      ZonedDateTime valueDate);
 
   @Mappings({
       @Mapping(target = "createdAt", source = "createdDateTime"),

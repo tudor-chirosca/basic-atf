@@ -59,6 +59,9 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -66,9 +69,6 @@ import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -741,7 +741,7 @@ class EntityMapperTest {
             "receivingAccount",
             date, BigDecimal.TEN, BigDecimal.ONE
         )
-        val criteria = MAPPER.toEntity(request)
+        val criteria = MAPPER.toEntity(request, date)
         assertThat(criteria.offset).isEqualTo(request.offset)
         assertThat(criteria.limit).isEqualTo(request.limit)
         assertThat(criteria.sort).isEqualTo(request.sort)
@@ -771,7 +771,7 @@ class EntityMapperTest {
             null, null, null, null, null,
             null, null, null, null, null
         )
-        val entity = MAPPER.toEntity(request)
+        val entity = MAPPER.toEntity(request, null)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
     }
 

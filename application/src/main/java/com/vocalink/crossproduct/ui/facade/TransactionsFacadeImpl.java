@@ -13,24 +13,43 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequ
 import com.vocalink.crossproduct.ui.facade.api.TransactionsFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import lombok.RequiredArgsConstructor;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class TransactionsFacadeImpl implements TransactionsFacade {
 
   private final PresenterFactory presenterFactory;
   private final RepositoryFactory repositoryFactory;
+  private final Clock clock;
+  private final String zoneId;
+
+  @Autowired
+  public TransactionsFacadeImpl(
+      PresenterFactory presenterFactory,
+      RepositoryFactory repositoryFactory,
+      Clock clock,
+      @Value("${app.ui.config.default.timeZone}") String zoneId) {
+    this.presenterFactory = presenterFactory;
+    this.repositoryFactory = repositoryFactory;
+    this.clock = clock;
+    this.zoneId = zoneId;
+  }
 
   @Override
   public PageDto<TransactionDto> getPaginated(String product, ClientType clientType,
       TransactionEnquirySearchRequest requestDto) {
     log.info("Fetching transactions for: {} from: {}", clientType, product);
 
-    final TransactionEnquirySearchCriteria request = MAPPER.toEntity(requestDto);
+    final ZonedDateTime valueDateUTC = convertToUTC(requestDto.getValueDate());
+    final TransactionEnquirySearchCriteria request = MAPPER.toEntity(requestDto, valueDateUTC);
+
     final Page<Transaction> page = repositoryFactory.getTransactionRepository(product)
         .findPaginated(request);
 
@@ -46,5 +65,10 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
         .findById(id);
 
     return presenterFactory.getPresenter(clientType).presentTransactionDetails(transaction);
+  }
+
+  protected ZonedDateTime convertToUTC(ZonedDateTime valueDate) {
+    final ZonedDateTime pseudo = ZonedDateTime.of(valueDate.toLocalDateTime(), ZoneId.of(zoneId));
+    return pseudo.withZoneSameInstant(clock.getZone());
   }
 }
