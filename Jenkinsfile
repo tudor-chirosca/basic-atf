@@ -13,6 +13,7 @@ pipeline {
         RELEASE_BRANCH = "master"
         // when RELEASE_BRANCH != master, update sonar projet key to avoid overwriting current sonar project
         repoType = "staging"
+        sonarProjectKey = "international-suite-service"
     }
 
     options {
@@ -82,13 +83,29 @@ pipeline {
                 }
                 
                 stage("Run Sonar") {
-                    when { branch "${RELEASE_BRANCH}" }
                     steps {
-                        withSonarQubeEnv('cp-sonar') {
-                            runMaven(goal: "sonar:sonar -Dsonar.projectKey=cp-international-suite-service")
+                        script {
+                            def sonarProjectName = projectName
+                            if ( BRANCH_NAME != RELEASE_BRANCH) {
+                                sonarProjectKey += "-${BRANCH_NAME}"
+                                sonarProjectName += " ${BRANCH_NAME}"
+                            }
+                            withSonarQubeEnv('cp-sonar') {
+                                runMaven(goal: "sonar:sonar -Dsonar.projectKey=${sonarProjectKey} -Dsonar.projectName='${sonarProjectName}'")
+                            }
+
+                            def qg = waitForQualityGate()
+                            println qg
+                            if (qg.status == "ERROR") {
+                                // error "Pipeline aborted due to quality gate status: ${qg.status}"
+                            } else if (qg.status == "WARN") {
+                                // currentBuild.result='UNSTABLE'
+                                println "Pipeline unstable due to quality gate status: ${qg.status}"
+                            }
                         }
                     }
                 }
+
                 stage('Create release') {
                     when { branch "${RELEASE_BRANCH}" }
                     steps {
@@ -227,6 +244,14 @@ pipeline {
             script {
                 setGithubStatus("success")
             }
+        }
+        success {
+            script {
+                if (BRANCH_NAME != RELEASE_BRANCH) {
+                    cleanupSonarPr()
+                }
+            }
+ 
         }
     }
 
