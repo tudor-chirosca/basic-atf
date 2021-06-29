@@ -26,6 +26,10 @@ public class BPSTransactionDetails {
   private final String receiverBic;
   private final String receiverIBAN;
   private final String receiverFullName;
+  private final String debtorName;
+  private final String debtorBic;
+  private final String creditorName;
+  private final String creditorBic;
 
   public BPSTransactionDetails(
       @JsonProperty(value = "txnsInstructionId") String txnsInstructionId,
@@ -45,7 +49,11 @@ public class BPSTransactionDetails {
       @JsonProperty(value = "receiverBank") String receiverBank,
       @JsonProperty(value = "receiverBic") String receiverBic,
       @JsonProperty(value = "receiverIBAN") String receiverIBAN,
-      @JsonProperty(value = "receiverFullName") String receiverFullName) {
+      @JsonProperty(value = "receiverFullName") String receiverFullName,
+      @JsonProperty(value = "debtorName") String debtorName,
+      @JsonProperty(value = "debtorBic") String debtorBic,
+      @JsonProperty(value = "creditorName") String creditorName,
+      @JsonProperty(value = "creditorBic") String creditorBic) {
     this.txnsInstructionId = txnsInstructionId;
     this.messageType = messageType;
     this.sentDateTime = sentDateTime;
@@ -64,5 +72,9 @@ public class BPSTransactionDetails {
     this.receiverBic = receiverBic;
     this.receiverIBAN = receiverIBAN;
     this.receiverFullName = receiverFullName;
+    this.debtorName = debtorName;
+    this.debtorBic = debtorBic;
+    this.creditorName = creditorName;
+    this.creditorBic = creditorBic;
   }
 }

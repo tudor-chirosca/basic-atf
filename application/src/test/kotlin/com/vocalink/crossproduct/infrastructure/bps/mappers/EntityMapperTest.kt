@@ -414,8 +414,8 @@ class EntityMapperTest {
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
         assertThat(entity.createdAt).isEqualTo(bps.createdDateTime)
         assertThat(entity.status).isEqualTo(bps.status)
-        assertThat(entity.senderBic).isEqualTo(bps.senderBic)
-        assertThat(entity.receiverBic).isEqualTo(bps.receiverBic)
+        assertThat(entity.debtorBic).isEqualTo(bps.debtor)
+        assertThat(entity.creditorBic).isEqualTo(bps.creditor)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
     }
 
@@ -434,7 +434,8 @@ class EntityMapperTest {
             "batchId",
             amount,
             "senderName", "senderBic", "iban", "fullname",
-            "receiverName", "receiverBic", "iban", "fullname"
+            "receiverName", "receiverBic", "iban", "fullname",
+            "debtorName", "debtorBic", "creditorName", "creditorBic"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
@@ -458,6 +459,11 @@ class EntityMapperTest {
         assertThat(entity.receiverBank).isEqualTo(bps.receiverBank)
         assertThat(entity.receiverIBAN).isEqualTo(bps.receiverIBAN)
         assertThat(entity.receiverFullName).isEqualTo(bps.receiverFullName)
+
+        assertThat(entity.debtorBic).isEqualTo(bps.debtorBic)
+        assertThat(entity.debtorName).isEqualTo(bps.debtorName)
+        assertThat(entity.creditorBic).isEqualTo(bps.creditorBic)
+        assertThat(entity.creditorName).isEqualTo(bps.creditorName)
     }
 
     @Test
@@ -723,10 +729,11 @@ class EntityMapperTest {
         val request = TransactionEnquirySearchRequest(
             0, 0, listOf("sortBy"), date, date,
             "cycleId",
-            "messageDirection",
             "messageType",
             "sendingBic",
             "receivingBic",
+            "debtor",
+            "creditor",
             "status",
             "reasonCode",
             "id",
@@ -741,10 +748,11 @@ class EntityMapperTest {
         assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
         assertThat(criteria.dateTo).isEqualTo(request.dateTo)
         assertThat(criteria.cycleId).isEqualTo(request.cycleId)
-        assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
         assertThat(criteria.messageType).isEqualTo(request.messageType)
         assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
         assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(criteria.creditor).isEqualTo(request.creditor)
+        assertThat(criteria.debtor).isEqualTo(request.debtor)
         assertThat(criteria.status).isEqualTo(request.status)
         assertThat(criteria.reasonCode).isEqualTo(request.reasonCode)
         assertThat(criteria.id).isEqualTo(request.id)
@@ -761,7 +769,7 @@ class EntityMapperTest {
             0, 0, null, null, null,
             null, null, null, null,
             null, null, null, null, null,
-            null, null, null, null
+            null, null, null, null, null
         )
         val entity = MAPPER.toEntity(request)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))

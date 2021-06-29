@@ -41,10 +41,11 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields and null dates if cycle present`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
-                "cycle1", "sending", "msg_type",
-                "participant_bic", "status", "reasonCode",
-                null, listOf("id"))
+            0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
+            "cycle1", "sending", "msg_type",
+            "participant_bic", "status", "reasonCode",
+            null, listOf("id")
+        )
 
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
@@ -62,10 +63,11 @@ class BPSMapperTest {
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields with dates if cycle id missing`() {
         val request = BatchEnquirySearchCriteria(
-                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
-                null, "receiving", "msg_type",
-                "participant_bic", "status", "reasonCode",
-                null, listOf("id"))
+            0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
+            null, "receiving", "msg_type",
+            "participant_bic", "status", "reasonCode",
+            null, listOf("id")
+        )
 
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
@@ -83,10 +85,11 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields having cycle id`() {
         val request = FileEnquirySearchCriteria(
-                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
-                "cycle1", "sending", "msg_type",
-                "participant_bic",  "status", "reasonCode",
-                "id", listOf("nrOfBatches"))
+            0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
+            "cycle1", "sending", "msg_type",
+            "participant_bic", "status", "reasonCode",
+            "id", listOf("nrOfBatches")
+        )
 
         val entity = BPSMAPPER.toBps(request)
 
@@ -105,10 +108,11 @@ class BPSMapperTest {
     @Test
     fun `should map BPSFileEnquirySearchRequest fields not having cycle id`() {
         val request = FileEnquirySearchCriteria(
-                0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
-                null, "receiving", "msg_type",
-                "participant_bic", "status", "reasonCode",
-                "id", listOf("nrOfBatches"))
+            0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
+            null, "receiving", "msg_type",
+            "participant_bic", "status", "reasonCode",
+            "id", listOf("nrOfBatches")
+        )
 
         val entity = BPSMAPPER.toBps(request)
 
@@ -127,8 +131,8 @@ class BPSMapperTest {
     @Test
     fun `should map BPSAlertSearchRequest fields`() {
         val criteria = AlertSearchCriteria(
-                0, 20, listOf("priority"), ZonedDateTime.now(ZoneId.of("UTC")), null,
-                listOf("types"), listOf("entities"), "alertId", listOf("sort")
+            0, 20, listOf("priority"), ZonedDateTime.now(ZoneId.of("UTC")), null,
+            listOf("types"), listOf("entities"), "alertId", listOf("sort")
         )
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.offset).isEqualTo(criteria.offset)
@@ -147,35 +151,37 @@ class BPSMapperTest {
         val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val currency = "SEK"
         val sorting = listOf(
-                "-instructionId", "+instructionId",
-                "-createdAt", "createdAt",
-                "-senderBic", "+senderBic",
-                "-messageType", "messageType",
-                "-amount", "+amount",
-                "-status", "+status"
+            "-instructionId", "+instructionId",
+            "-createdAt", "createdAt",
+            "-senderBic", "+senderBic",
+            "-messageType", "messageType",
+            "-amount", "+amount",
+            "-status", "+status"
         )
         val criteria = TransactionEnquirySearchCriteria(
-                0, 0, sorting, null, null,
-                "20210601001",
-                "messageDirection",
-                "messageType",
-                "sendingBic",
-                "receivingBic",
-                "status",
-                "reasonCode",
-                "id",
-                "sendingAccount",
-                "receivingAccount",
-                date, BigDecimal.TEN, BigDecimal.ONE
+            0, 0, sorting, null, null,
+            "20210601001",
+            "messageType",
+            "sendingBic",
+            "debtor",
+            "creditor",
+            "receivingBic",
+            "status",
+            "reasonCode",
+            "id",
+            "sendingAccount",
+            "receivingAccount",
+            date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria, currency)
         assertNull(request.createdDateFrom)
         assertNull(request.createdDateTo)
         assertThat(request.sessionInstanceId).isEqualTo(criteria.cycleId)
-        assertThat(request.messageDirection).isEqualTo(criteria.messageDirection)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
         assertThat(request.sendingParticipant).isEqualTo(criteria.sendingBic)
         assertThat(request.receivingParticipant).isEqualTo(criteria.receivingBic)
+        assertThat(request.creditor).isEqualTo(criteria.creditor)
+        assertThat(request.debtor).isEqualTo(criteria.debtor)
         assertThat(request.status).isEqualTo(criteria.status)
         assertThat(request.reasonCode).isEqualTo(criteria.reasonCode)
         assertThat(request.instructionIdentifier).isEqualTo(criteria.id)
@@ -223,18 +229,19 @@ class BPSMapperTest {
         val date = ZonedDateTime.now(ZoneId.of("UTC"))
         val currency = "SEK"
         val criteria = TransactionEnquirySearchCriteria(
-                0, 0, null, date, date,
-                null,
-                "messageDirection",
-                "messageType",
-                "sendingBic",
-                "receivingBic",
-                "status",
-                "reasonCode",
-                "id",
-                "sendingAccount",
-                "receivingAccount",
-                date, BigDecimal.TEN, BigDecimal.ONE
+            0, 0, null, date, date,
+            null,
+            "messageType",
+            "sendingBic",
+            "receivingBic",
+            "debtor",
+            "creditor",
+            "status",
+            "reasonCode",
+            "id",
+            "sendingAccount",
+            "receivingAccount",
+            date, BigDecimal.TEN, BigDecimal.ONE
         )
         val request = BPSMAPPER.toBps(criteria, currency)
         assertThat(request.createdDateFrom).isEqualTo(criteria.dateFrom)
@@ -245,7 +252,7 @@ class BPSMapperTest {
     fun `should map RoutingRecordCriteria fields`() {
         val bic = "bic"
         val entity = RoutingRecordCriteria(
-                0, 10, listOf("someValue1", "someValue2"), bic
+            0, 10, listOf("someValue1", "someValue2"), bic
         )
         val result = BPSMAPPER.toBps(entity)
         assertThat(result.bic).isEqualTo(bic)
@@ -257,7 +264,7 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalChangeRequest fields`() {
         val criteria = ApprovalChangeCriteria(
-                PARTICIPANT_SUSPEND, mapOf("status" to "suspended"), "notes"
+            PARTICIPANT_SUSPEND, mapOf("status" to "suspended"), "notes"
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.requestType).isEqualTo(BPSApprovalRequestType.PARTICIPANT_SUSPEND)
@@ -268,16 +275,16 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalSearchRequest fields`() {
         val criteria = ApprovalSearchCriteria(
-                0, 20,null, null,
-                null, null, null, null, null,
-                listOf(
-                        "-participants", "+participants",
-                        "-requestType", "requestType",
-                        "-jobId", "+jobId",
-                        "-createdAt", "createdAt",
-                        "-requestedBy", "+requestedBy",
-                        "-status", "+status"
-                )
+            0, 20, null, null,
+            null, null, null, null, null,
+            listOf(
+                "-participants", "+participants",
+                "-requestType", "requestType",
+                "-jobId", "+jobId",
+                "-createdAt", "createdAt",
+                "-requestedBy", "+requestedBy",
+                "-status", "+status"
+            )
         )
         val result = BPSMAPPER.toBps(criteria)
         assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo("participantName")
@@ -317,9 +324,9 @@ class BPSMapperTest {
         val toDate = ZonedDateTime.of(2020, 2, 20, 12, 10, 0, 0, ZoneId.of("UTC"))
 
         val criteria = ApprovalSearchCriteria(
-                0, 20,"10000000", fromDate,
-                toDate, listOf("NDEASESSXXX"), listOf(PARTICIPANT_SUSPEND),
-                listOf("23451sdf"), listOf(PENDING), listOf("+status")
+            0, 20, "10000000", fromDate,
+            toDate, listOf("NDEASESSXXX"), listOf(PARTICIPANT_SUSPEND),
+            listOf("23451sdf"), listOf(PENDING), listOf("+status")
         )
         val result = BPSMAPPER.toBps(criteria)
 
@@ -337,14 +344,14 @@ class BPSMapperTest {
     @Test
     fun `should map BPSReportsSearchRequest fields`() {
         val criteria = ReportSearchCriteria(
-                0,
-                20,
-                listOf("reportId", "-createdAt", "participantName"),
-                listOf("DAILY_SETTLEMENT_REPORT"),
-                listOf("Resursbank"),
-                "10000000305",
-                ZonedDateTime.parse("2021-02-15T00:00:00Z"),
-                ZonedDateTime.parse("2021-02-16T00:00:00Z")
+            0,
+            20,
+            listOf("reportId", "-createdAt", "participantName"),
+            listOf("DAILY_SETTLEMENT_REPORT"),
+            listOf("Resursbank"),
+            "10000000305",
+            ZonedDateTime.parse("2021-02-15T00:00:00Z"),
+            ZonedDateTime.parse("2021-02-16T00:00:00Z")
         )
 
         val request = BPSMAPPER.toBps(criteria)
@@ -364,7 +371,7 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalConfirmationRequest fields with APPROVED status`() {
         val approvalConfirmation = ApprovalConfirmation(
-                "approval_id", ApprovalConfirmationType.APPROVE, "some_note"
+            "approval_id", ApprovalConfirmationType.APPROVE, "some_note"
         )
         val request = BPSMAPPER.toBps(approvalConfirmation)
         assertThat(request.approvalId).isEqualTo(approvalConfirmation.approvalId)
@@ -375,7 +382,7 @@ class BPSMapperTest {
     @Test
     fun `should map to BPSApprovalConfirmationRequest fields with REJECTED status`() {
         val approvalConfirmation = ApprovalConfirmation(
-                "approval_id", ApprovalConfirmationType.REJECT, "some_note"
+            "approval_id", ApprovalConfirmationType.REJECT, "some_note"
         )
         val request = BPSMAPPER.toBps(approvalConfirmation)
         assertThat(request.approvalId).isEqualTo(approvalConfirmation.approvalId)
@@ -386,18 +393,19 @@ class BPSMapperTest {
     @Test
     fun `should map from ManagedParticipantsSearchCriteria to BPSManagedParticipantsSearchRequest`() {
         val allSortingFields = listOf(
-                "-name", "+name",
-                "-status", "+status",
-                "-organizationId", "+organizationId",
-                "-participantType", "+participantType",
-                "-tpspName", "+tpspName",
-                "-fundedParticipantsCount", "+fundedParticipantsCount")
+            "-name", "+name",
+            "-status", "+status",
+            "-organizationId", "+organizationId",
+            "-participantType", "+participantType",
+            "-tpspName", "+tpspName",
+            "-fundedParticipantsCount", "+fundedParticipantsCount"
+        )
         val criteria = ManagedParticipantsSearchCriteria.builder()
-                .offset(0)
-                .limit(20)
-                .q("DABASESXGBG")
-                .sort(allSortingFields)
-                .build()
+            .offset(0)
+            .limit(20)
+            .q("DABASESXGBG")
+            .sort(allSortingFields)
+            .build()
 
         val result = BPSMAPPER.toBps(criteria)
 
@@ -436,7 +444,8 @@ class BPSMapperTest {
             "-cycleId", "+cycleId",
             "-settlementTime", "+settlementTime",
             "-status", "+status",
-            "-participantName", "+participantName")
+            "-participantName", "+participantName"
+        )
         val criteria = SettlementEnquirySearchCriteria.builder()
             .offset(0)
             .limit(20)

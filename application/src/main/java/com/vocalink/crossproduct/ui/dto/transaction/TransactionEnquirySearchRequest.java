@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.ui.validations.NotEqual;
 import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
-import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import com.vocalink.crossproduct.ui.validations.ValidRegexSearch;
@@ -38,11 +37,11 @@ public class TransactionEnquirySearchRequest {
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;
   private final String cycleId;
-  @ValidDirection
-  private final String messageDirection;
   private final String messageType;
   private final String sendingBic;
   private final String receivingBic;
+  private final String debtor;
+  private final String creditor;
   private final String status;
   private final String reasonCode;
   @ValidRegexSearch(regExp = "^(\\*?)[a-zA-Z0-9_.]+(\\*?)$")
@@ -61,10 +60,11 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "dateFrom") ZonedDateTime dateFrom,
       @JsonProperty(value = "dateTo") ZonedDateTime dateTo,
       @JsonProperty(value = "cycleId") String cycleId,
-      @JsonProperty(value = "messageDirection") String messageDirection,
       @JsonProperty(value = "messageType") String messageType,
       @JsonProperty(value = "sendingBic") String sendingBic,
       @JsonProperty(value = "receivingBic") String receivingBic,
+      @JsonProperty(value = "debtor") String debtor,
+      @JsonProperty(value = "creditor") String creditor,
       @JsonProperty(value = "status") String status,
       @JsonProperty(value = "reasonCode") String reasonCode,
       @JsonProperty(value = "id") String id,
@@ -79,7 +79,8 @@ public class TransactionEnquirySearchRequest {
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
     this.cycleId = cycleId;
-    this.messageDirection = messageDirection;
+    this.debtor = debtor;
+    this.creditor = creditor;
     this.messageType = messageType;
     this.sendingBic = sendingBic;
     this.receivingBic = receivingBic;

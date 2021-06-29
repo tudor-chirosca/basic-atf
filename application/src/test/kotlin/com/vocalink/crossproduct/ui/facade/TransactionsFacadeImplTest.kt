@@ -35,51 +35,62 @@ class TransactionsFacadeImplTest {
     private val repositoryFactory = Mockito.mock(RepositoryFactory::class.java)
 
     private val transactionsServiceFacadeImpl = TransactionsFacadeImpl(
-            presenterFactory,
-            repositoryFactory
+        presenterFactory,
+        repositoryFactory
     )
 
     @BeforeEach
     fun init() {
         `when`(repositoryFactory.getTransactionRepository(anyString()))
-                .thenReturn(transactionRepository)
+            .thenReturn(transactionRepository)
         `when`(repositoryFactory.getAccountRepository(anyString()))
-                .thenReturn(accountRepository)
+            .thenReturn(accountRepository)
         `when`(repositoryFactory.getParticipantRepository(anyString()))
-                .thenReturn(participantRepository)
+            .thenReturn(participantRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
-                .thenReturn(uiPresenter)
+            .thenReturn(uiPresenter)
     }
 
     @Test
     fun `should invoke presenter and repository on get transactions`() {
-        val page = Page(1, listOf(
-                Transaction(null, null, null, null,
-                        null, null, null, null,
-                        null, null, null, null,
-                        null, null, null, null,
-                        null, null
+        val page = Page(
+            1, listOf(
+                Transaction(
+                    null, null, null, null,
+                    null, null, null, null,
+                    null, null, null, null,
+                    null, null, null, null,
+                    null, null, null, null,
+                    null, null
                 )
-        ))
-        val pageDto = PageDto<TransactionDto>(1, listOf(
-                TransactionDto(null, null, null, null,
-                        null, null
+            )
+        )
+        val pageDto = PageDto<TransactionDto>(
+            1, listOf(
+                TransactionDto(
+                    null, null, null, null,
+                    null, null, null
                 )
-        ))
+            )
+        )
         val request = TransactionEnquirySearchRequest(
-                0, 20, null, null, null, null,
-                "sending", null, null, null, null,
-                null, null, null, null, null,
-                null, null
+            0, 20, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, null
         )
 
         `when`(transactionRepository.findPaginated(any()))
-                .thenReturn(page)
+            .thenReturn(page)
 
         `when`(uiPresenter.presentTransactions(any(), any()))
-                .thenReturn(pageDto)
+            .thenReturn(pageDto)
 
-        val result = transactionsServiceFacadeImpl.getPaginated(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = transactionsServiceFacadeImpl.getPaginated(
+            TestConstants.CONTEXT,
+            ClientType.UI,
+            request
+        )
 
         verify(transactionRepository).findPaginated(any())
         verify(presenterFactory).getPresenter(any())
@@ -91,36 +102,40 @@ class TransactionsFacadeImplTest {
     @Test
     fun `should invoke presenter and repository on get transaction details`() {
         val transaction = Transaction(
-                null, null, null, null, null,
-                null, null, null, null,
-                null, null, null, null, null, null, null,
-                null, null
+            null, null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null, null,
+            null, null, null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
-                null, null, null, null, null, null,
-                null, null, null, null, null,
-                null, null
+            null, null, null, null, null, null,
+            null, null, null, null, null,
+            null, null
         )
         val account = Account(null, null, null)
 
-        val participant = Participant(null, null, null, null, null,
-                null, null, null, null,
-                null, null, null, null,
-                null, null)
+        val participant = Participant(
+            null, null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null
+        )
 
         `when`(transactionRepository.findById(any()))
-                .thenReturn(transaction)
+            .thenReturn(transaction)
 
         `when`(accountRepository.findByPartyCode(any()))
-                .thenReturn(account)
+            .thenReturn(account)
 
         `when`(participantRepository.findById(any()))
-                .thenReturn(participant)
+            .thenReturn(participant)
 
         `when`(uiPresenter.presentTransactionDetails(any()))
-                .thenReturn(batchDetailsDto)
+            .thenReturn(batchDetailsDto)
 
-        val result = transactionsServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
+        val result =
+            transactionsServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(transactionRepository).findById(any())
         verify(presenterFactory).getPresenter(any())

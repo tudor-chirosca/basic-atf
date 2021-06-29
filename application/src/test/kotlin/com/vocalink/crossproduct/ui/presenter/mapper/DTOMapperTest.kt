@@ -455,18 +455,6 @@ class DTOMapperTest {
     @Test
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("Mark Twain")
-            .build()
-        val receiver = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("Bob Sinclair")
-            .build()
         val transaction = Transaction(
             "instructionId",
             ZonedDateTime.now(clock),
@@ -481,36 +469,29 @@ class DTOMapperTest {
             "senderEntityName",
             "senderEntityBic",
             "senderIban",
-            "Mark Twain",
+            "senderFullName",
             "receiverEntityName",
             "receiverEntityBic",
             "receiverIban",
-            "Tom Hawk"
+            "receiverFullName",
+            "debtorName",
+            "debtorBic",
+            "creditorName",
+            "credtiorBic"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
-        assertThat(result.senderBic).isEqualTo(transaction.senderBic)
+        assertThat(result.senderBic).isEqualTo(transaction.debtorBic)
+        assertThat(result.receiverBic).isEqualTo(transaction.creditorBic)
         assertThat(result.status).isEqualTo(transaction.status)
     }
 
     @Test
     fun `should map TransactionDetailsDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("fullName")
-            .build()
-        val receiver = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("fullName")
-            .build()
         val transaction = Transaction(
             "instructionId",
             ZonedDateTime.now(clock),
@@ -525,11 +506,15 @@ class DTOMapperTest {
             "senderEntityName",
             "senderEntityBic",
             "senderIban",
-            "Mark Twain",
+            "senderFullName",
             "receiverEntityName",
             "receiverEntityBic",
             "receiverIban",
-            "Tom Hawk"
+            "receiverFullName",
+            "debtorName",
+            "debtorBic",
+            "creditorName",
+            "credtiorBic"
         )
         val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -548,11 +533,14 @@ class DTOMapperTest {
         assertThat(result.sender.entityBic).isEqualTo(transaction.senderBic)
         assertThat(result.sender.iban).isEqualTo(transaction.senderIBAN)
         assertThat(result.sender.fullName).isEqualTo(transaction.senderFullName)
+        assertThat(result.sender.debtorBic).isEqualTo(transaction.debtorBic)
+        assertThat(result.sender.debtorName).isEqualTo(transaction.debtorName)
 
         assertThat(result.receiver.entityName).isEqualTo(transaction.receiverBank)
         assertThat(result.receiver.entityBic).isEqualTo(transaction.receiverBic)
         assertThat(result.receiver.iban).isEqualTo(transaction.receiverIBAN)
-        assertThat(result.receiver.fullName).isEqualTo(transaction.receiverFullName)
+        assertThat(result.receiver.creditorBic).isEqualTo(transaction.creditorBic)
+        assertThat(result.receiver.creditorName).isEqualTo(transaction.creditorName)
     }
 
     @Test

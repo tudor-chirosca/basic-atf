@@ -319,7 +319,9 @@ public interface EntityMapper {
   TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
 
   @Mappings({
-      @Mapping(target = "createdAt", source = "createdDateTime")
+      @Mapping(target = "createdAt", source = "createdDateTime"),
+      @Mapping(target = "creditorBic", source = "creditor"),
+      @Mapping(target = "debtorBic", source = "debtor")
   })
   Transaction toEntity(BPSTransaction transaction);
 
