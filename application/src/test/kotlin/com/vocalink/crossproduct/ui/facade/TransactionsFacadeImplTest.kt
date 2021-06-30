@@ -157,4 +157,10 @@ class TransactionsFacadeImplTest {
 
         assertThat(pseudoUTC).isAfter(UTC)
     }
+
+    @Test
+    fun `should return null value if no value date`() {
+        val UTC = transactionsServiceFacadeImpl.convertToUTC(null)
+        assertThat(UTC).isNull()
+    }
 }

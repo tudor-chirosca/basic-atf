@@ -68,7 +68,10 @@ public class TransactionsFacadeImpl implements TransactionsFacade {
   }
 
   protected ZonedDateTime convertToUTC(ZonedDateTime valueDate) {
-    final ZonedDateTime pseudo = ZonedDateTime.of(valueDate.toLocalDateTime(), ZoneId.of(zoneId));
-    return pseudo.withZoneSameInstant(clock.getZone());
+    if (valueDate != null) {
+      final ZonedDateTime pseudo = ZonedDateTime.of(valueDate.toLocalDateTime(), ZoneId.of(zoneId));
+      return pseudo.withZoneSameInstant(clock.getZone());
+    }
+    return null;
   }
 }
