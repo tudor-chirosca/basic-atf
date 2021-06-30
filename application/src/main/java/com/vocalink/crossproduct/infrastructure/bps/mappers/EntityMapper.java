@@ -526,7 +526,10 @@ public interface EntityMapper {
   })
   ApprovalConfirmation toEntity(ApprovalConfirmationRequest request, String id);
 
-  ReportSearchCriteria toEntity(ReportsSearchRequest parameters);
+  @Mappings({
+      @Mapping(target = "participants", source = "participants")
+  })
+  ReportSearchCriteria toEntity(ReportsSearchRequest parameters, List<Participant> participants);
 
   Report toEntity(BPSReport bpsReportBPSPage);
 

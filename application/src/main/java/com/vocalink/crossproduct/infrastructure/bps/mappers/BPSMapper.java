@@ -9,7 +9,10 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.g
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementDetailsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getTransactionSearchRequestSortParams;
+
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria;
@@ -23,6 +26,8 @@ import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
+import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.domain.routing.RoutingRecordCriteria;
 import com.vocalink.crossproduct.domain.settlement.SettlementDetailsSearchCriteria;
@@ -41,7 +46,9 @@ import com.vocalink.crossproduct.infrastructure.bps.cycle.BPSAmount;
 import com.vocalink.crossproduct.infrastructure.bps.file.BPSFileEnquirySearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantsSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportSearchParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportSearchRequest;
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportType;
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecordRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementDetailsRequest;
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnquiryRequest;
@@ -49,8 +56,11 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnqu
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -235,9 +245,23 @@ public interface BPSMapper {
       @Mapping(target = "reportId", source = "id"),
       @Mapping(target = "createdFromDate", source = "dateFrom"),
       @Mapping(target = "createdToDate", source = "dateTo"),
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapReportsSortParams")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapReportsSortParams"),
+      @Mapping(target = "reportTypes", source = "reportTypes", qualifiedByName = "toBPSReportTypes")
   })
   BPSReportSearchRequest toBps(ReportSearchCriteria criteria);
+
+  @Mappings({
+      @Mapping(target = "schemeParticipantIdentifier", source = "id"),
+      @Mapping(target = "effectiveTillDate", source = "suspendedTime"),
+      @Mapping(target = "participantName", source = "name"),
+      @Mapping(target = "connectingParty", source = "fundingBic")
+  })
+  BPSReportSearchParticipant toBPS(Participant participant);
+
+  @Mappings({
+          @Mapping(target = "reportType", source = "reportType"),
+  })
+  BPSReportType toBPS(String reportType);
 
   @Mappings({
       @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapApprovalSortParams"),
@@ -289,4 +313,12 @@ public interface BPSMapper {
         .filter(s -> nonNull(s.getSortOrderBy()))
         .collect(toList());
   }
+
+  @Named("toBPSReportTypes")
+  default List<BPSReportType> toBPSReportTypes(List<String> reportTypes) {
+    return ofNullable(reportTypes).orElse(emptyList()).stream()
+            .map(BPSReportType::new)
+            .collect(toList());
+  }
+
 }

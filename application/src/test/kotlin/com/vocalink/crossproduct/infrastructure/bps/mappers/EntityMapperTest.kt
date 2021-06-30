@@ -789,6 +789,7 @@ class EntityMapperTest {
             "fundingBic",
             ParticipantStatus.ACTIVE,
             null,
+            null,
             ParticipantType.FUNDED,
             null,
             "organizationId",
@@ -826,11 +827,13 @@ class EntityMapperTest {
         request.limit = 20
         request.offset = 0
         request.sort = listOf("someValue1", "someValue2")
+        val participants = listOf(Participant.builder().bic("Resursbank").build())
 
-        val result = MAPPER.toEntity(request)
+        val result = MAPPER.toEntity(request, participants)
         assertThat(result.limit).isEqualTo(request.limit)
         assertThat(result.offset).isEqualTo(request.offset)
         assertThat(result.sort).isEqualTo(request.sort)
+        assertThat(result.participants).isEqualTo(participants)
     }
 
     @Test

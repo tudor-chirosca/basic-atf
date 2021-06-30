@@ -20,6 +20,7 @@ public class Participant implements Serializable {
   private final String fundingBic;
   private final ParticipantStatus status;
   private final ZonedDateTime suspendedTime;
+  private final ZonedDateTime effectiveFromDate;
   private final ParticipantType participantType;
   private final String schemeCode;
   private final String organizationId;

@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers
 
+import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.alert.AlertSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation
@@ -19,6 +20,10 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSSortOrder.DESC
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus
 import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportType
 import java.math.BigDecimal
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -27,6 +32,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class BPSMapperTest {
+
+    companion object {
+        val clock = FIXED_CLOCK;
+    }
 
     @Test
     fun `should map BPSParticipantsSearchRequest fields`() {
@@ -343,12 +352,21 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSReportsSearchRequest fields`() {
+        val participant = Participant.builder()
+            .id("NDEASESSXXX")
+            .name("Resursbank")
+            .participantType(ParticipantType.FUNDED)
+            .status(ParticipantStatus.ACTIVE)
+            .schemeCode("P27")
+            .effectiveFromDate(ZonedDateTime.now(clock))
+            .suspendedTime(ZonedDateTime.now(clock))
+            .build()
         val criteria = ReportSearchCriteria(
             0,
             20,
             listOf("reportId", "-createdAt", "participantName"),
             listOf("DAILY_SETTLEMENT_REPORT"),
-            listOf("Resursbank"),
+            listOf(participant),
             "10000000305",
             ZonedDateTime.parse("2021-02-15T00:00:00Z"),
             ZonedDateTime.parse("2021-02-16T00:00:00Z")
@@ -361,11 +379,16 @@ class BPSMapperTest {
         assertThat(request.sortingOrder[1].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[2].sortOrderBy).isEqualTo("participantName")
         assertThat(request.sortingOrder[2].sortOrder).isEqualTo(ASC)
-        assertThat(request.participants).isEqualTo(criteria.participants)
+        assertThat(request.participants[0].schemeParticipantIdentifier).isEqualTo(criteria.participants[0].id)
+        assertThat(request.participants[0].participantName).isEqualTo(criteria.participants[0].name)
+        assertThat(request.participants[0].schemeCode).isEqualTo(criteria.participants[0].schemeCode)
+        assertThat(request.participants[0].participantType).isEqualTo(criteria.participants[0].participantType)
+        assertThat(request.participants[0].status).isEqualTo(criteria.participants[0].status)
+        assertThat(request.participants[0].effectiveFromDate).isEqualTo(criteria.participants[0].effectiveFromDate)
         assertThat(request.createdFromDate).isEqualTo(criteria.dateFrom)
         assertThat(request.reportId).isEqualTo(criteria.id)
         assertThat(request.createdToDate).isEqualTo(criteria.dateTo)
-        assertThat(request.reportTypes).isEqualTo(criteria.reportTypes)
+        assertThat(request.reportTypes[0].reportType).isEqualTo(criteria.reportTypes[0])
     }
 
     @Test
@@ -494,5 +517,44 @@ class BPSMapperTest {
         assertThat(result.dateTo).isEqualTo(criteria.dateTo)
         assertThat(result.dateFrom).isEqualTo(criteria.dateFrom)
         assertThat(result.participants.map { p -> p.participantId }).isEqualTo(criteria.participants)
+    }
+
+    @Test
+    fun `should map from ReportSearchCriteria to BPSReportSearchRequest`() {
+        val participant = Participant.builder()
+            .id("DABASESXGBG")
+            .bic("DABASESXGBG")
+            .name("Forex Bank")
+            .status(ParticipantStatus.ACTIVE)
+            .participantType(ParticipantType.FUNDED)
+            .organizationId("00002121")
+            .tpspName("Nordnet Bank")
+            .tpspId("475347837892")
+            .fundedParticipants(emptyList())
+            .fundedParticipantsCount(1)
+            .build()
+        val criteria = ReportSearchCriteria(0,
+            20,
+            listOf("participantName"),
+            listOf("reportType"),
+            listOf(participant),
+            "reportId",
+            ZonedDateTime.now(clock).minusMonths(1),
+            ZonedDateTime.now(clock))
+
+        val result = BPSMAPPER.toBps(criteria)
+
+        assertThat(result.createdToDate).isEqualTo(criteria.dateTo)
+        assertThat(result.createdFromDate).isEqualTo(criteria.dateFrom)
+        assertThat(result.reportId).isEqualTo(criteria.id)
+        assertThat(result.sortingOrder[0].sortOrderBy).isEqualTo(criteria.sort[0])
+        assertThat(result.participants[0].participantName).isEqualTo(criteria.participants[0].name)
+        assertThat(result.participants[0].schemeParticipantIdentifier).isEqualTo(criteria.participants[0].id)
+        assertThat(result.participants[0].effectiveFromDate).isEqualTo(criteria.participants[0].effectiveFromDate)
+        assertThat(result.participants[0].status).isEqualTo(criteria.participants[0].status)
+        assertThat(result.participants[0].schemeCode).isEqualTo(criteria.participants[0].schemeCode)
+        assertThat(result.participants[0].participantType).isEqualTo(criteria.participants[0].participantType)
+        assertThat(result.participants[0].connectingParty).isEqualTo(criteria.participants[0].fundingBic)
+        assertThat(result.reportTypes[0].reportType).isEqualTo(criteria.reportTypes[0])
     }
 }

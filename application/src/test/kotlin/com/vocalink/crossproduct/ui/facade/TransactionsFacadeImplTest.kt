@@ -124,7 +124,7 @@ class TransactionsFacadeImplTest {
                 null, null, null, null, null,
                 null, null, null, null,
                 null, null, null, null,
-                null, null
+                null, null, null
         )
 
         `when`(transactionRepository.findById(any()))
