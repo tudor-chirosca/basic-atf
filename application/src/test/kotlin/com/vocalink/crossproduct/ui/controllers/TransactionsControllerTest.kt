@@ -54,6 +54,18 @@ class TransactionsControllerTest : ControllerTest() {
             "id": "BANK()[]"
         }"""
 
+        const val INVALID_CREDITOR_REGEX_BODY_REQUEST = """{
+            "creditor": "374593847"
+        }"""
+
+        const val INVALID_DEBTOR_REGEX_BODY_REQUEST = """{
+            "debtor": "AANKX"
+        }"""
+
+        const val INVALID_TOO_LONG_CREDITOR_REGEX_BODY_REQUEST = """{
+            "creditor": "AABDJAIDUESKSIFJSBSK"
+        }"""
+
         const val INVALID_REASON_CODE_WITH_NO_STATUS_DAYS_BODY_REQUEST = """{
             "reasonCode": "F01"
         }"""
@@ -313,9 +325,8 @@ class TransactionsControllerTest : ControllerTest() {
                 .content(INVALID_WILDCARD_IN_MIDDLE_BODY_REQUEST)
         )
             .andExpect(status().is4xxClientError)
-            .andExpect(
-                content()
-                    .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"))
+            .andExpect(content().string(containsString("wildcard '*' can not be in " +
+                    "the middle and id should not contain special symbols beside '.' and '_'"))
             )
 
         verifyNoInteractions(auditFacade)
@@ -331,10 +342,54 @@ class TransactionsControllerTest : ControllerTest() {
                 .content(INVALID_WILDCARD_SPECIAL_CHARACTERS_BODY_REQUEST)
         )
             .andExpect(status().is4xxClientError)
-            .andExpect(
-                content()
-                    .string(containsString("wildcard '*' can not be in the middle and id should not contain special symbols beside '.' and '_'"))
+            .andExpect(content().string(containsString("wildcard '*' can not be in the" +
+                    " middle and id should not contain special symbols beside '.' and '_'"))
             )
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 on invalid creditor regex`() {
+        mockMvc.perform(
+            post("/enquiry/transactions/searches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_CREDITOR_REGEX_BODY_REQUEST)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Invalid creditor regex!")))
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 on invalid debtor regex`() {
+        mockMvc.perform(
+            post("/enquiry/transactions/searches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_DEBTOR_REGEX_BODY_REQUEST)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Invalid debtor regex!")))
+
+        verifyNoInteractions(auditFacade)
+    }
+
+    @Test
+    fun `should fail with 400 on invalid too long creditor regex`() {
+        mockMvc.perform(
+            post("/enquiry/transactions/searches")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_TOO_LONG_CREDITOR_REGEX_BODY_REQUEST)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Invalid creditor regex!")))
 
         verifyNoInteractions(auditFacade)
     }

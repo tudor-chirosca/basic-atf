@@ -92,7 +92,7 @@ class BPSMapperTest {
     }
 
     @Test
-    fun `should map BPSFileEnquirySearchRequest fields having cycle id`() {
+    fun `should map BPSFileEnquirySearchRequest fields having cycle id with sending`() {
         val request = FileEnquirySearchCriteria(
             0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
             "cycle1", "sending", "msg_type",
@@ -105,7 +105,7 @@ class BPSMapperTest {
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("noOfBatches")
         assertThat(entity.createdFromDate).isNull()
         assertThat(entity.createdToDate).isNull()
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageDirection).isEqualTo("input")
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingParticipant).isEqualTo(request.participantBic)
         assertThat(entity.receivingParticipant).isNull()
@@ -128,7 +128,7 @@ class BPSMapperTest {
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("noOfBatches")
         assertThat(entity.createdFromDate).isEqualTo(request.dateFrom)
         assertThat(entity.createdToDate).isEqualTo(request.dateTo)
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageDirection).isEqualTo("output")
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingParticipant).isNull()
         assertThat(entity.receivingParticipant).isEqualTo(request.participantBic)

@@ -99,6 +99,12 @@ final class MapperUtils {
     reportsSearchRequestSortParams.put("participantName", "participantName");
   }
 
+  private static final Map<String, String> messageDirections = new HashMap<>();
+  static {
+    messageDirections.put("sending", "input");
+    messageDirections.put("receiving", "output");
+  }
+
   static Map<String, String> getFileSearchRequestSortParams() {
     return unmodifiableMap(fileSearchRequestSortParams);
   }
@@ -129,5 +135,9 @@ final class MapperUtils {
 
   static String getNameByType(String type) {
     return nameType.getOrDefault(type, "N/A");
+  }
+
+  static String getMessageDirection(String messageDirection) {
+    return messageDirections.get(messageDirection);
   }
 }

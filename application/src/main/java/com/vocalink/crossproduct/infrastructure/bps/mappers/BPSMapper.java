@@ -5,6 +5,7 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.g
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getManagedParticipantSearchRequestSortParams;
+import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getMessageDirection;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getReportsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementDetailsSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getSettlementSearchRequestSortParams;
@@ -120,7 +121,8 @@ public interface BPSMapper {
       @Mapping(target = "createdToDate", source = "dateTo"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "identifier", source = "id"),
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapFileSortParams")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapFileSortParams"),
+      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "mapMessageDirections")
   })
   BPSFileEnquirySearchRequest toBps(FileEnquirySearchCriteria criteria);
 
@@ -142,6 +144,11 @@ public interface BPSMapper {
       request.setCreatedFromDate(null);
       request.setCreatedToDate(null);
     }
+  }
+
+  @Named("mapMessageDirections")
+  default String mapMessageDirections(String messageDirection) {
+    return getMessageDirection(messageDirection.toLowerCase());
   }
 
   @Named("mapFileSortParams")

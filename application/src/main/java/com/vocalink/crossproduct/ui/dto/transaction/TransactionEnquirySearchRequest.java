@@ -17,6 +17,7 @@ import com.vocalink.crossproduct.ui.validations.ValidStatus;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -40,7 +41,9 @@ public class TransactionEnquirySearchRequest {
   private final String messageType;
   private final String sendingBic;
   private final String receivingBic;
+  @Pattern(regexp="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3})?", message= "Invalid debtor regex!")
   private final String debtor;
+  @Pattern(regexp="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3})?", message= "Invalid creditor regex!")
   private final String creditor;
   private final String status;
   private final String reasonCode;
