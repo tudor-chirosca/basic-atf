@@ -87,7 +87,8 @@ public interface BPSMapper {
       @Mapping(target = "createdToDate", source = "dateTo"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "identifier", source = "id"),
-      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapBatchSortParams")
+      @Mapping(target = "sortingOrder", source = "sort", qualifiedByName = "mapBatchSortParams"),
+      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "mapMessageDirections")
   })
   BPSBatchEnquirySearchRequest toBps(BatchEnquirySearchCriteria criteria);
 
@@ -97,9 +98,9 @@ public interface BPSMapper {
       return;
     }
     if (criteria.getMessageDirection().equalsIgnoreCase("sending")) {
-      request.setSendingParticipant(criteria.getParticipantBic());
+      request.setInstructingAgent(criteria.getParticipantBic());
     } else {
-      request.setReceivingParticipant(criteria.getParticipantBic());
+      request.setInstructedAgent(criteria.getParticipantBic());
     }
   }
 

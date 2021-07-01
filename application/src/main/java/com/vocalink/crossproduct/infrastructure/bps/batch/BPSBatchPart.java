@@ -12,15 +12,18 @@ public class BPSBatchPart {
   private final String instructionId;
   private final String messageIdentifier;
   private final ZonedDateTime createdDateTime;
-  private final String originator;
+  private final String instructingAgent;
+  private final String instructedAgent;
   private final String messageType;
   private final Integer nrOfTransactions;
   private final String status;
 
-  public BPSBatchPart(@JsonProperty("instructionId") String instructionId,
+  public BPSBatchPart(
+      @JsonProperty("instructionId") String instructionId,
       @JsonProperty("messageIdentifier") String messageIdentifier,
       @JsonProperty("createdDateTime") ZonedDateTime createdDateTime,
-      @JsonProperty("originator") String originator,
+      @JsonProperty("instructingAgent") String instructingAgent,
+      @JsonProperty("instructedAgent") String instructedAgent,
       @JsonProperty("messageType") String messageType,
       @JsonProperty("noOfTransactions") Integer nrOfTransactions,
       @JsonProperty("status") String status) {
@@ -30,6 +33,7 @@ public class BPSBatchPart {
     this.messageType = messageType;
     this.createdDateTime = createdDateTime;
     this.status = status;
-    this.originator = originator;
+    this.instructingAgent = instructingAgent;
+    this.instructedAgent = instructedAgent;
   }
 }

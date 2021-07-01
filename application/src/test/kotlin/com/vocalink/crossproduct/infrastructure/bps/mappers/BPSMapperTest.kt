@@ -49,24 +49,68 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSBatchEnquirySearchRequest fields and null dates if cycle present`() {
+        val sorting = listOf(
+            "-id", "+id",
+            "-createdAt", "createdAt",
+            "-senderBic", "+senderBic",
+            "-receiverBic", "receiverBic",
+            "-messageType", "messageType",
+            "-nrOfTransactions", "+nrOfTransactions",
+            "-status", "+status"
+        )
         val request = BatchEnquirySearchCriteria(
             0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
             "cycle1", "sending", "msg_type",
             "participant_bic", "status", "reasonCode",
-            null, listOf("id")
+            null, sorting
         )
 
         val entity = BPSMAPPER.toBps(request)
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
         assertThat(entity.createdFromDate).isNull()
         assertThat(entity.createdToDate).isNull()
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageDirection).isEqualTo("input")
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.participantBic)
-        assertThat(entity.receivingParticipant).isNull()
+        assertThat(entity.instructingAgent).isEqualTo(request.participantBic)
+        assertThat(entity.instructedAgent).isNull()
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
+
+        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
+        assertThat(entity.sortingOrder[0].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[1].sortOrderBy).isEqualTo("messageIdentifier")
+        assertThat(entity.sortingOrder[1].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[2].sortOrderBy).isEqualTo("createdDateTime")
+        assertThat(entity.sortingOrder[2].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[3].sortOrderBy).isEqualTo("createdDateTime")
+        assertThat(entity.sortingOrder[3].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[4].sortOrderBy).isEqualTo("instructingAgent")
+        assertThat(entity.sortingOrder[4].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[5].sortOrderBy).isEqualTo("instructingAgent")
+        assertThat(entity.sortingOrder[5].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[6].sortOrderBy).isEqualTo("instructedAgent")
+        assertThat(entity.sortingOrder[6].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[7].sortOrderBy).isEqualTo("instructedAgent")
+        assertThat(entity.sortingOrder[7].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[8].sortOrderBy).isEqualTo("messageType")
+        assertThat(entity.sortingOrder[8].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[9].sortOrderBy).isEqualTo("messageType")
+        assertThat(entity.sortingOrder[9].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[10].sortOrderBy).isEqualTo("nrOfTransactions")
+        assertThat(entity.sortingOrder[10].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[11].sortOrderBy).isEqualTo("nrOfTransactions")
+        assertThat(entity.sortingOrder[11].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[12].sortOrderBy).isEqualTo("status")
+        assertThat(entity.sortingOrder[12].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[13].sortOrderBy).isEqualTo("status")
+        assertThat(entity.sortingOrder[13].sortOrder).isEqualTo(ASC)
     }
 
     @Test
@@ -82,10 +126,10 @@ class BPSMapperTest {
         assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("messageIdentifier")
         assertThat(entity.createdFromDate).isEqualTo(request.dateFrom)
         assertThat(entity.createdToDate).isEqualTo(request.dateTo)
-        assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
+        assertThat(entity.messageDirection).isEqualTo("output")
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isNull()
-        assertThat(entity.receivingParticipant).isEqualTo(request.participantBic)
+        assertThat(entity.instructingAgent).isNull()
+        assertThat(entity.instructedAgent).isEqualTo(request.participantBic)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -93,16 +137,24 @@ class BPSMapperTest {
 
     @Test
     fun `should map BPSFileEnquirySearchRequest fields having cycle id with sending`() {
+        val sorting = listOf(
+            "-name", "+name",
+            "-createdAt", "createdAt",
+            "-senderBic", "+senderBic",
+            "-receiverBic", "receiverBic",
+            "-messageType", "messageType",
+            "-nrOfBatches", "+nrOfBatches",
+            "-status", "+status"
+        )
         val request = FileEnquirySearchCriteria(
             0, 20, ZonedDateTime.now(ZoneId.of("UTC")), ZonedDateTime.now(ZoneId.of("UTC")),
             "cycle1", "sending", "msg_type",
             "participant_bic", "status", "reasonCode",
-            "id", listOf("nrOfBatches")
+            "id", sorting
         )
 
         val entity = BPSMAPPER.toBps(request)
 
-        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("noOfBatches")
         assertThat(entity.createdFromDate).isNull()
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo("input")
@@ -112,6 +164,41 @@ class BPSMapperTest {
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
+
+        assertThat(entity.sortingOrder[0].sortOrderBy).isEqualTo("fileName")
+        assertThat(entity.sortingOrder[0].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[1].sortOrderBy).isEqualTo("fileName")
+        assertThat(entity.sortingOrder[1].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[2].sortOrderBy).isEqualTo("createdDate")
+        assertThat(entity.sortingOrder[2].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[3].sortOrderBy).isEqualTo("createdDate")
+        assertThat(entity.sortingOrder[3].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[4].sortOrderBy).isEqualTo("from")
+        assertThat(entity.sortingOrder[4].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[5].sortOrderBy).isEqualTo("from")
+        assertThat(entity.sortingOrder[5].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[6].sortOrderBy).isEqualTo("to")
+        assertThat(entity.sortingOrder[6].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[7].sortOrderBy).isEqualTo("to")
+        assertThat(entity.sortingOrder[7].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[8].sortOrderBy).isEqualTo("messageType")
+        assertThat(entity.sortingOrder[8].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[9].sortOrderBy).isEqualTo("messageType")
+        assertThat(entity.sortingOrder[9].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[10].sortOrderBy).isEqualTo("noOfBatches")
+        assertThat(entity.sortingOrder[10].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[11].sortOrderBy).isEqualTo("noOfBatches")
+        assertThat(entity.sortingOrder[11].sortOrder).isEqualTo(ASC)
+
+        assertThat(entity.sortingOrder[12].sortOrderBy).isEqualTo("status")
+        assertThat(entity.sortingOrder[12].sortOrder).isEqualTo(DESC)
+        assertThat(entity.sortingOrder[13].sortOrderBy).isEqualTo("status")
+        assertThat(entity.sortingOrder[13].sortOrder).isEqualTo(ASC)
     }
 
     @Test

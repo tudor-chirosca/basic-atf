@@ -568,7 +568,9 @@ public interface EntityMapper {
   @Mappings({
       @Mapping(target = "batchId", source = "messageIdentifier"),
       @Mapping(target = "createdAt", source = "createdDateTime"),
-      @Mapping(target = "senderBic", source = "originator")
+      @Mapping(target = "senderBic", source = "instructingAgent"),
+      @Mapping(target = "receiverBic", source = "instructedAgent")
+
   })
   Batch toEntity(BPSBatchPart partialBatch);
 

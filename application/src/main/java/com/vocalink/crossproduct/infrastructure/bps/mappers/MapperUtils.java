@@ -15,7 +15,8 @@ final class MapperUtils {
   static {
     fileSearchRequestSortParams.put("name", "fileName");
     fileSearchRequestSortParams.put("createdAt", "createdDate");
-    fileSearchRequestSortParams.put("senderBic", "originator");
+    fileSearchRequestSortParams.put("senderBic", "from");
+    fileSearchRequestSortParams.put("receiverBic", "to");
     fileSearchRequestSortParams.put("messageType", "messageType");
     fileSearchRequestSortParams.put("nrOfBatches", "noOfBatches");
     fileSearchRequestSortParams.put("status", "status");
@@ -35,7 +36,8 @@ final class MapperUtils {
   static {
     batchSearchRequestSortParams.put("id", "messageIdentifier");
     batchSearchRequestSortParams.put("createdAt", "createdDateTime");
-    batchSearchRequestSortParams.put("senderBic", "originator");
+    batchSearchRequestSortParams.put("senderBic", "instructingAgent");
+    batchSearchRequestSortParams.put("receiverBic", "instructedAgent");
     batchSearchRequestSortParams.put("messageType","messageType");
     batchSearchRequestSortParams.put("nrOfTransactions","nrOfTransactions");
     batchSearchRequestSortParams.put("status", "status");

@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"NAK"})
 @ValidSort(sort = "sort", sortingKeys =
-    {"name", "createdAt", "senderBic", "messageType", "nrOfBatches", "status"})
+    {"name", "createdAt", "senderBic", "receiverBic", "messageType", "nrOfBatches", "status"})
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 @ToString
 public class FileEnquirySearchRequest {

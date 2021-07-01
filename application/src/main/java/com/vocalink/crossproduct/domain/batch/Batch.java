@@ -23,4 +23,5 @@ public class Batch {
   private final String senderBank;
   private final String senderBic;
   private final String senderIban;
+  private final String receiverBic;
 }

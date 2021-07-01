@@ -22,9 +22,9 @@ public class BPSBatchEnquirySearchRequest {
   private final String messageDirection;
   private final String messageType;
   @Setter
-  private String sendingParticipant;
+  private String instructingAgent;
   @Setter
-  private String receivingParticipant;
+  private String instructedAgent;
   private final String status;
   private final String reasonCode;
   private final String identifier;

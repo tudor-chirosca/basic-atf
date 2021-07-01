@@ -554,6 +554,7 @@ class DTOMapperTest {
         assertThat(result.receiver.iban).isEqualTo(transaction.receiverIBAN)
         assertThat(result.receiver.creditorBic).isEqualTo(transaction.creditorBic)
         assertThat(result.receiver.creditorName).isEqualTo(transaction.creditorName)
+        assertThat(result.receiver.fullName).isEqualTo(transaction.receiverFullName)
     }
 
     @Test

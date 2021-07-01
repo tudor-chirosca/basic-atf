@@ -30,7 +30,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         {
           "createdFromDate": "2021-01-03T00:00:00Z",
           "createdToDate": "2021-01-04T23:59:59Z",
-          "messageDirection" : "Sending"
+          "messageDirection" : "input"
         }"""
 
         const val VALID_BATCH_REQUEST: String = """ 
@@ -45,7 +45,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
                         "instructionId": "003",
                         "messageIdentifier": "C27ISTXBANKSESS",
                         "createdDateTime": "2020-10-23T13:43:00Z",
-                        "originator": "NDEASESSXXX",
+                        "instructingAgent": "NDEASESSXXX",
                         "messageType": "prtp.005-prtp.006",
                         "noOfTransactions": 12,
                         "status": "Accepted"

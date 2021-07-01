@@ -22,7 +22,7 @@ import lombok.ToString;
 @Getter
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 @ValidSort(sort = "sort", sortingKeys =
-    {"id", "createdAt", "senderBic", "messageType", "nrOfTransactions", "status"})
+    {"id", "createdAt", "senderBic", "receiverBic", "messageType", "nrOfTransactions", "status"})
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 public class BatchEnquirySearchRequest {
 

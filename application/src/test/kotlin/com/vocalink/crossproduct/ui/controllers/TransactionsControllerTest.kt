@@ -448,7 +448,7 @@ class TransactionsControllerTest : ControllerTest() {
         val date = LocalDate.of(2021, 1, 14)
         val receiver = TransactionReceiverDetailsDto(
             "Meetoo", "MEEOSES1", "SE23 9999 9999 9999 9999 2193",
-            "creditorName", "creditorBic"
+            "fullname", "creditorName", "creditorBic"
         )
         val sender = TransactionSenderDetailsDto(
             "Scandem", "SCADSE21", "SE23 9999 9999 9999 9999 2194",

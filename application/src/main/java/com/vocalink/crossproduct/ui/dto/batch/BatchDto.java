@@ -13,6 +13,7 @@ public class BatchDto {
   private final String id;
   private final ZonedDateTime createdAt;
   private final String senderBic;
+  private final String receiverBic;
   private final String messageType;
   private final int nrOfTransactions;
   private final String status;

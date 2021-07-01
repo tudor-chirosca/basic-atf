@@ -349,6 +349,7 @@ public interface DTOMapper {
       @Mapping(target = "receiver.entityName", source = "transaction.receiverBank"),
       @Mapping(target = "receiver.entityBic", source = "transaction.receiverBic"),
       @Mapping(target = "receiver.iban", source = "transaction.receiverIBAN"),
+      @Mapping(target = "receiver.fullName", source = "transaction.receiverFullName"),
       @Mapping(target = "receiver.creditorName", source = "transaction.creditorName"),
       @Mapping(target = "receiver.creditorBic", source = "transaction.creditorBic")
   })
