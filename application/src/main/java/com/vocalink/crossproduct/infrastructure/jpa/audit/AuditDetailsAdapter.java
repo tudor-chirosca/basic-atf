@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
@@ -73,6 +74,7 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
         (int) allByParameters.getTotalElements(), auditDetails);
   }
 
+  @Transactional
   public void logOperation(Event event, UserDetails userDetails) {
 
     final AuditDetailsJpa detailsJpa = AuditDetailsJpa.builder()

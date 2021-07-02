@@ -23,7 +23,6 @@ import com.vocalink.crossproduct.ui.dto.audit.UserDetailsDto;
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
-import com.vocalink.crossproduct.ui.util.TransactionHandler;
 
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static com.vocalink.crossproduct.infrastructure.logging.EventMarker.AUDIT_EVENT_MARKER;
@@ -41,7 +40,6 @@ public class AuditFacadeImpl implements AuditFacade {
 
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
-  private final TransactionHandler transactionHandler;
 
   @Override
   public List<UserDetailsDto> getUserDetails(String product, ClientType clientType,
@@ -81,30 +79,28 @@ public class AuditFacadeImpl implements AuditFacade {
   public void handleEvent(OccurringEvent occurringEvent) {
     Event event = MAPPER.toEntity(occurringEvent);
     try {
-      UserDetails userDetails = transactionHandler.runInTransaction(() -> getAuditEventUserDetails(occurringEvent));
+      UserDetails userDetails = getUserDetails(occurringEvent);
       repositoryFactory.getAuditDetailsRepository(event.getProduct()).logOperation(event, userDetails);
-      log.info(AUDIT_EVENT_MARKER, String.format(AUDIT_EVENT_LOG_MESSAGE,
-              occurringEvent.getEventType(),
-              occurringEvent.getOperationType()), occurringEvent, userDetails);
+      log.info(AUDIT_EVENT_MARKER, String.format(AUDIT_EVENT_LOG_MESSAGE, occurringEvent.getEventType(),
+        occurringEvent.getOperationType()), occurringEvent, userDetails);
     } catch (Exception e) {
-      log.info(AUDIT_EVENT_MARKER,  String.format(AUDIT_EVENT_LOG_MESSAGE,
-              occurringEvent.getEventType(),
-              occurringEvent.getOperationType()), occurringEvent);
-      log.error(e.getMessage());
+      log.info(AUDIT_EVENT_MARKER, String.format(AUDIT_EVENT_LOG_MESSAGE,
+        occurringEvent.getEventType(),
+        occurringEvent.getOperationType()), occurringEvent);
     }
   }
 
-  private UserDetails getAuditEventUserDetails(OccurringEvent occurringEvent) {
-    return repositoryFactory.getAuditDetailsRepository(occurringEvent.getProduct())
-            .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
-            .stream()
-            .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
-            .map(MAPPER::toEntity)
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException(
-                    "No user details found matching: " + occurringEvent.getParticipantId()
-                            + " and "
-                            + occurringEvent.getUserId()));
+  private UserDetails getUserDetails(OccurringEvent occurringEvent) {
+    return repositoryFactory
+        .getAuditDetailsRepository(occurringEvent.getProduct())
+        .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
+        .stream()
+        .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
+        .map(MAPPER::toEntity)
+        .findFirst().orElseThrow(() -> new EntityNotFoundException(
+                String.format("No user details found matching for participantId: %s and userId: %s",
+                        occurringEvent.getParticipantId(), occurringEvent.getUserId())
+        ));
   }
 
   @Override

@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
-import com.vocalink.crossproduct.ui.util.TransactionHandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
@@ -25,9 +24,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import java.util.*
-import java.util.function.Supplier
 import org.mockito.Mockito.never
-import org.springframework.transaction.CannotCreateTransactionException
+import org.mockito.Mockito.times
 
 class AuditFacadeImplTest {
 
@@ -36,12 +34,11 @@ class AuditFacadeImplTest {
     private val auditDetailsRepository = mock(AuditDetailsRepository::class.java)
     private val participantRepository = mock(ParticipantRepository::class.java)
     private val contentUtils = mock(ContentUtils::class.java)
-    private val transactionHandler = mock(TransactionHandler::class.java)
     private val clock = FIXED_CLOCK
 
     private val uiPresenter = UIPresenter(contentUtils, clock)
 
-    private var auditFacadeImpl = AuditFacadeImpl(repositoryFactory, presenterFactory, transactionHandler)
+    private var auditFacadeImpl = AuditFacadeImpl(repositoryFactory, presenterFactory)
 
     companion object {
         private const val PRODUCT = "BPS"
@@ -96,17 +93,13 @@ class AuditFacadeImplTest {
 
         auditFacadeImpl.handleEvent(occurringEvent)
 
-        verify(transactionHandler).runInTransaction(any(Supplier::class.java))
-        verify(auditDetailsRepository, atLeastOnce()).logOperation(any(), any())
+        verify(auditDetailsRepository, times(1)).logOperation(any(), any())
     }
 
     @Test
     fun `audit details repository should never log event in database if user or participant is not found`() {
         `when`(repositoryFactory.getAuditDetailsRepository(anyString())).thenReturn(auditDetailsRepository)
         `when`(auditDetailsRepository.getAuditDetailsByParticipantId(PARTICIPANT_ID)).thenReturn(AUDIT_DETAILS_LIST)
-        `when`(transactionHandler.runInTransaction(any(Supplier::class.java)))
-            .thenThrow(CannotCreateTransactionException("Cannot create connection"))
-
         val occurringEvent = OccurringEvent.builder()
                 .product(PRODUCT)
                 .participantId(PARTICIPANT_ID)
