@@ -182,7 +182,7 @@ pipeline {
                         dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
                     }
                     parallel {
-                        stage("Deply to P27 DEV") {
+                        stage("Deploy to P27 DEV") {
                             steps {
                                 script {
                                     echo "Deploying ${env.gitTag} to ${DEV_IP}"
@@ -208,7 +208,7 @@ pipeline {
                             }
                         }
 
-                        stage("Deply to SAMA DEV") {
+                        stage("Deploy to SAMA DEV") {
                             steps {
                                 script {
                                     echo "Deploying ${env.gitTag} to ${DEV_SAMA_IP}"
