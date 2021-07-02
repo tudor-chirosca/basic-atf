@@ -88,6 +88,10 @@ INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.download-report-ROUTING_TABLE_REPORT'), 'SCHEME_OPERATOR');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.suspend-unsupend-multiple-participants'), 'SCHEME_OPERATOR');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.files-batches-instruction-filter'), 'SCHEME_OPERATOR');
+INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
+VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals-filters-participants-section'), 'SCHEME_OPERATOR');
 
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'CLEARING'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.participant-io-dashboard'), 'DIRECT');
@@ -109,8 +113,6 @@ INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.files-batches-transactions'), 'DIRECT');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals'), 'DIRECT');
-INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
-VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals-filters-participants-section'), 'DIRECT');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.participant-routing-table'), 'DIRECT');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
@@ -196,8 +198,6 @@ INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'update.participant-config'), 'FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals'), 'FUNDING');
-INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
-VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals-filters-participants-section'), 'FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.participant-routing-table'), 'FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
@@ -292,8 +292,6 @@ VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals'), 'FUNDED');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
-VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals-filters-participants-section'), 'FUNDED');
-INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.participant-routing-table'), 'FUNDED');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.suspend-unsuspend-self-participant'), 'FUNDED');
@@ -346,8 +344,6 @@ INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'update.participant-config'), 'DIRECT_FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals'), 'DIRECT_FUNDING');
-INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
-VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.approvals-filters-participants-section'), 'DIRECT_FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)
 VALUES ((SELECT id FROM ROLE WHERE function = 'MANAGEMENT'), (SELECT id FROM UI_PERMISSION WHERE key = 'read.participant-routing-table'), 'DIRECT_FUNDING');
 INSERT INTO ROLE_UI_PERMISSION(role_id, ui_permission_id, participant_type)

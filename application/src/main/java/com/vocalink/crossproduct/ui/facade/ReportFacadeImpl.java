@@ -6,6 +6,8 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.ServiceFactory;
 import com.vocalink.crossproduct.domain.Page;
+import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
 import com.vocalink.crossproduct.ui.dto.PageDto;
@@ -17,6 +19,11 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +43,14 @@ public class ReportFacadeImpl implements ReportFacade {
       ReportsSearchRequest parameters) {
     log.info("Fetching reports for: {} from: {}", clientType, product);
 
-    final ReportSearchCriteria criteria = MAPPER.toEntity(parameters);
+    final ParticipantRepository participantRepository = repositoryFactory
+            .getParticipantRepository(product);
+
+    final List<Participant> participants = ofNullable(parameters.getParticipants()).orElse(emptyList()).stream()
+            .map(participantRepository::findById)
+            .collect(toList());
+
+    final ReportSearchCriteria criteria = MAPPER.toEntity(parameters, participants);
 
     final Page<Report> pagedReports = repositoryFactory.getReportRepository(product)
         .findPaginated(criteria);

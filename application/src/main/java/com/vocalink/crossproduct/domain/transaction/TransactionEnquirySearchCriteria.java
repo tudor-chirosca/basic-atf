@@ -16,10 +16,11 @@ public class TransactionEnquirySearchCriteria {
   private final ZonedDateTime dateFrom;
   private final ZonedDateTime dateTo;
   private final String cycleId;
-  private final String messageDirection;
   private final String messageType;
   private final String sendingBic;
   private final String receivingBic;
+  private final String debtor;
+  private final String creditor;
   private final String status;
   private final String reasonCode;
   private final String id;

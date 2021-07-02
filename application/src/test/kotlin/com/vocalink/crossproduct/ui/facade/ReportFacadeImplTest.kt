@@ -5,6 +5,8 @@ import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.ResourceService
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.report.ReportRepository
 import com.vocalink.crossproduct.ui.dto.PageDto
@@ -26,6 +28,7 @@ class ReportFacadeImplTest {
 
     private val downloadService = mock(ResourceService::class.java)!!
     private val reportRepository = mock(ReportRepository::class.java)!!
+    private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)
@@ -41,6 +44,8 @@ class ReportFacadeImplTest {
     fun init() {
         `when`(repositoryFactory.getReportRepository(anyString()))
             .thenReturn(reportRepository)
+        `when`(repositoryFactory.getParticipantRepository(anyString()))
+            .thenReturn(participantRepository)
         `when`(serviceFactory.getDownloadService(anyString()))
                 .thenReturn(downloadService)
         `when`(presenterFactory.getPresenter(ClientType.UI))
@@ -56,6 +61,7 @@ class ReportFacadeImplTest {
         val request = ReportsSearchRequest()
 
         `when`(reportRepository.findPaginated(any())).thenReturn(page)
+        `when`(participantRepository.findById(any())).thenReturn(Participant.builder().build())
 
         `when`(uiPresenter.presentReports(any())).thenReturn(pageDto)
 

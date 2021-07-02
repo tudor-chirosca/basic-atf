@@ -1,10 +1,12 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getMessageType;
+import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING;
+import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
@@ -56,6 +58,9 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.position.Payment;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
 import com.vocalink.crossproduct.domain.report.Report;
@@ -139,6 +144,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -249,13 +255,43 @@ public interface EntityMapper {
   ParticipantIOData toEntity(BPSParticipantIOData participantIOData);
 
   @Mappings({
-      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "mapMessageDirection"),
+      @Mapping(target = "direction", source = "messageDirection", qualifiedByName = "toMessageDirectionList"),
+      @Mapping(target = "level", source = "level", qualifiedByName = "toMessageLevel"),
+      @Mapping(target = "subType", source = "type", qualifiedByName = "toMessageType")
+
   })
   MessageDirectionReference toEntity(BPSMessageDirectionReference messageDirectionReference);
 
-  @Named("mapMessageDirection")
-  default String mapMessageDirection(String messageDirection) {
-    return getMessageType(messageDirection.toLowerCase());
+  @Named("convertToMessageDirection")
+  default MessageReferenceDirection convertToMessageDirection(String messageDirection) {
+    if (nonNull(messageDirection) && messageDirection.equalsIgnoreCase("input")) {
+      return SENDING;
+    }
+    if (nonNull(messageDirection) && messageDirection.equalsIgnoreCase("output")) {
+      return RECEIVING;
+    }
+    return null;
+  }
+
+  @Named("toMessageDirectionList")
+  default List<MessageReferenceDirection> toMessageDirectionList(List<String> messageDirections) {
+    return messageDirections.stream()
+        .map(this::convertToMessageDirection)
+        .collect(toList());
+  }
+
+  @Named("toMessageLevel")
+  default List<MessageReferenceLevel> toMessageLevel(List<String> levels) {
+    return levels.stream()
+        .map(level -> MessageReferenceLevel.valueOf(level.toUpperCase()))
+        .collect(toList());
+  }
+
+  @Named("toMessageType")
+  default List<MessageReferenceType> toMessageType(List<String> types) {
+    return types.stream()
+        .map(type -> MessageReferenceType.valueOf(type.toUpperCase().replaceAll("[ _+-]", "_")))
+        .collect(toList());
   }
 
   @Mappings({
@@ -314,12 +350,33 @@ public interface EntityMapper {
   SettlementCycleSchedule toEntity(BPSSettlementCycleSchedule cycleSchedule);
 
   @Mappings({
-      @Mapping(source = "sort", target = "sort", qualifiedByName = "setDefaultDateSort")
+      @Mapping(target = "offset", source = "request.offset"),
+      @Mapping(target = "limit", source = "request.limit"),
+      @Mapping(target = "sort", source = "request.sort", qualifiedByName = "setDefaultDateSort"),
+      @Mapping(target = "dateFrom", source = "request.dateFrom"),
+      @Mapping(target = "dateTo", source = "request.dateTo"),
+      @Mapping(target = "cycleId", source = "request.cycleId"),
+      @Mapping(target = "messageType", source = "request.messageType"),
+      @Mapping(target = "sendingBic", source = "request.sendingBic"),
+      @Mapping(target = "receivingBic", source = "request.receivingBic"),
+      @Mapping(target = "debtor", source = "request.debtor"),
+      @Mapping(target = "creditor", source = "request.creditor"),
+      @Mapping(target = "status", source = "request.status"),
+      @Mapping(target = "reasonCode", source = "request.reasonCode"),
+      @Mapping(target = "id", source = "request.id"),
+      @Mapping(target = "sendingAccount", source = "request.sendingAccount"),
+      @Mapping(target = "receivingAccount", source = "request.receivingAccount"),
+      @Mapping(target = "txnFrom", source = "request.txnFrom"),
+      @Mapping(target = "txnTo", source = "request.txnTo"),
+      @Mapping(target = "valueDate", source = "valueDate")
   })
-  TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request);
+  TransactionEnquirySearchCriteria toEntity(TransactionEnquirySearchRequest request,
+      ZonedDateTime valueDate);
 
   @Mappings({
-      @Mapping(target = "createdAt", source = "createdDateTime")
+      @Mapping(target = "createdAt", source = "createdDateTime"),
+      @Mapping(target = "creditorBic", source = "creditor"),
+      @Mapping(target = "debtorBic", source = "debtor")
   })
   Transaction toEntity(BPSTransaction transaction);
 
@@ -469,7 +526,10 @@ public interface EntityMapper {
   })
   ApprovalConfirmation toEntity(ApprovalConfirmationRequest request, String id);
 
-  ReportSearchCriteria toEntity(ReportsSearchRequest parameters);
+  @Mappings({
+      @Mapping(target = "participants", source = "participants")
+  })
+  ReportSearchCriteria toEntity(ReportsSearchRequest parameters, List<Participant> participants);
 
   Report toEntity(BPSReport bpsReportBPSPage);
 

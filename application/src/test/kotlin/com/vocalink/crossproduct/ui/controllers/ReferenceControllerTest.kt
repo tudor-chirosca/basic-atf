@@ -6,6 +6,9 @@ import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.*
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
@@ -196,30 +199,35 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
     @Test
     fun `should get all message direction references`() {
-        val sending = "sending"
-        val receiving = "receiving"
-        val type = "some_type"
+        val messageType = "camt.029.001.08"
+        val formatName = "camt.029.08"
+        val sending = SENDING
+        val receiving = RECEIVING
         val messages = listOf(
-                MessageDirectionReferenceDto.builder()
-                        .name(sending)
-                        .isDefault(true)
-                        .types(listOf(type))
-                        .build(),
-                MessageDirectionReferenceDto.builder()
-                        .name(receiving)
-                        .isDefault(false)
-                        .types(listOf(type))
-                        .build()
+            MessageDirectionReferenceDto.builder()
+                .messageType(messageType)
+                .formatName(formatName)
+                .direction(listOf(sending, receiving))
+                .level(listOf(FILE))
+                .subType(listOf(PAYMENT))
+                .build()
         )
+
         `when`(referencesServiceFacade.getMessageDirectionReferences(CONTEXT, ClientType.UI))
-                .thenReturn(messages)
-        mockMvc.perform(get("/reference/messages")
+            .thenReturn(messages)
+
+        mockMvc.perform(
+            get("/reference/messages")
                 .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
-                .andExpect(status().isOk)
-                .andExpect(content().string(containsString(sending)))
-                .andExpect(content().string(containsString(receiving)))
-                .andExpect(content().string(containsString(type)))
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string(containsString(messageType)))
+            .andExpect(content().string(containsString(formatName)))
+            .andExpect(content().string(containsString(FILE.toString())))
+            .andExpect(content().string(containsString(sending.description)))
+            .andExpect(content().string(containsString(receiving.description)))
+            .andExpect(content().string(containsString(messageType)))
     }
 
     @Test

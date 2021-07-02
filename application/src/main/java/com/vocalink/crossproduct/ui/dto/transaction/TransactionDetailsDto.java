@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.ui.dto.transaction;
 
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -16,12 +15,13 @@ public class TransactionDetailsDto {
   private final String currency;
   private final String fileName;
   private final String batchId;
-  private final EnquirySenderDetailsDto receiver;
   private final LocalDate settlementDate;
   private final String settlementCycleId;
   private final ZonedDateTime createdAt;
   private final String status;
   private final String reasonCode;
   private final String messageType;
-  private final EnquirySenderDetailsDto sender;
+  private final TransactionSenderDetailsDto sender;
+  private final TransactionReceiverDetailsDto receiver;
+
 }

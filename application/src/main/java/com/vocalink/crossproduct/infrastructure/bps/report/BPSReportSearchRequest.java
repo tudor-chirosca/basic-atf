@@ -13,8 +13,8 @@ import lombok.Getter;
 public class BPSReportSearchRequest {
 
   private final List<BPSSortingQuery> sortingOrder;
-  private final List<String> reportTypes;
-  private final List<String> participants;
+  private final List<BPSReportType> reportTypes;
+  private final List<BPSReportSearchParticipant> participants;
   private final String reportId;
   private final ZonedDateTime createdFromDate;
   private final ZonedDateTime createdToDate;

@@ -40,6 +40,19 @@ import com.vocalink.crossproduct.domain.participant.SuspensionLevel.SELF
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
+import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.BATCH
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.FILE
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.REPORT
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.TRANSACTION
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.ADMI
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.INQUIRY
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.MESSAGE_STATUS_REPORT
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.NON_INQUIRY
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.NON_PAYMENT
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.PAYMENT
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
@@ -52,17 +65,17 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
 
 class DTOMapperTest {
 
@@ -455,18 +468,6 @@ class DTOMapperTest {
     @Test
     fun `should map TransactionDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("Mark Twain")
-            .build()
-        val receiver = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("Bob Sinclair")
-            .build()
         val transaction = Transaction(
             "instructionId",
             ZonedDateTime.now(clock),
@@ -481,36 +482,29 @@ class DTOMapperTest {
             "senderEntityName",
             "senderEntityBic",
             "senderIban",
-            "Mark Twain",
+            "senderFullName",
             "receiverEntityName",
             "receiverEntityBic",
             "receiverIban",
-            "Tom Hawk"
+            "receiverFullName",
+            "debtorName",
+            "debtorBic",
+            "creditorName",
+            "credtiorBic"
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
         assertThat(result.amount).isEqualTo(transaction.amount.amount)
         assertThat(result.createdAt).isEqualTo(transaction.createdAt)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
-        assertThat(result.senderBic).isEqualTo(transaction.senderBic)
+        assertThat(result.senderBic).isEqualTo(transaction.debtorBic)
+        assertThat(result.receiverBic).isEqualTo(transaction.creditorBic)
         assertThat(result.status).isEqualTo(transaction.status)
     }
 
     @Test
     fun `should map TransactionDetailsDto fields`() {
         val amount = Amount(BigDecimal.TEN, "SEK")
-        val sender = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("fullName")
-            .build()
-        val receiver = EnquirySenderDetails.builder()
-            .entityName("entityName")
-            .entityBic("entityBic")
-            .iban("iban")
-            .fullName("fullName")
-            .build()
         val transaction = Transaction(
             "instructionId",
             ZonedDateTime.now(clock),
@@ -525,11 +519,15 @@ class DTOMapperTest {
             "senderEntityName",
             "senderEntityBic",
             "senderIban",
-            "Mark Twain",
+            "senderFullName",
             "receiverEntityName",
             "receiverEntityBic",
             "receiverIban",
-            "Tom Hawk"
+            "receiverFullName",
+            "debtorName",
+            "debtorBic",
+            "creditorName",
+            "credtiorBic"
         )
         val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -548,11 +546,14 @@ class DTOMapperTest {
         assertThat(result.sender.entityBic).isEqualTo(transaction.senderBic)
         assertThat(result.sender.iban).isEqualTo(transaction.senderIBAN)
         assertThat(result.sender.fullName).isEqualTo(transaction.senderFullName)
+        assertThat(result.sender.debtorBic).isEqualTo(transaction.debtorBic)
+        assertThat(result.sender.debtorName).isEqualTo(transaction.debtorName)
 
         assertThat(result.receiver.entityName).isEqualTo(transaction.receiverBank)
         assertThat(result.receiver.entityBic).isEqualTo(transaction.receiverBic)
         assertThat(result.receiver.iban).isEqualTo(transaction.receiverIBAN)
-        assertThat(result.receiver.fullName).isEqualTo(transaction.receiverFullName)
+        assertThat(result.receiver.creditorBic).isEqualTo(transaction.creditorBic)
+        assertThat(result.receiver.creditorName).isEqualTo(transaction.creditorName)
     }
 
     @Test
@@ -1431,5 +1432,34 @@ class DTOMapperTest {
         assertThat(dto.sender.entityName).isEqualTo(participant.name)
         assertThat(dto.sender.entityBic).isEqualTo(participant.bic)
     }
-}
 
+    @Test
+    fun `should map from MessageDirectionReference to BPSMessageDirectionReference`() {
+        val messageType = "camt.029.001.08"
+        val formatName = "camt.029.08"
+        val messageReference = MessageDirectionReference.builder()
+            .messageType(messageType)
+            .formatName(formatName)
+            .direction(listOf(SENDING, RECEIVING))
+            .level(listOf(FILE, BATCH, TRANSACTION, REPORT))
+            .subType(listOf(PAYMENT, NON_PAYMENT, INQUIRY, NON_INQUIRY, MESSAGE_STATUS_REPORT, ADMI))
+            .build()
+
+        val result = MAPPER.toDto(messageReference)
+
+        assertThat(result.messageType).isEqualTo(messageType)
+        assertThat(result.formatName).isEqualTo(formatName)
+        assertThat(result.direction[0]).isEqualTo(SENDING)
+        assertThat(result.direction[1]).isEqualTo(RECEIVING)
+        assertThat(result.level[0]).isEqualTo(FILE)
+        assertThat(result.level[1]).isEqualTo(BATCH)
+        assertThat(result.level[2]).isEqualTo(TRANSACTION)
+        assertThat(result.level[3]).isEqualTo(REPORT)
+        assertThat(result.subType[0]).isEqualTo(PAYMENT)
+        assertThat(result.subType[1]).isEqualTo(NON_PAYMENT)
+        assertThat(result.subType[2]).isEqualTo(INQUIRY)
+        assertThat(result.subType[3]).isEqualTo(NON_INQUIRY)
+        assertThat(result.subType[4]).isEqualTo(MESSAGE_STATUS_REPORT)
+        assertThat(result.subType[5]).isEqualTo(ADMI)
+    }
+}

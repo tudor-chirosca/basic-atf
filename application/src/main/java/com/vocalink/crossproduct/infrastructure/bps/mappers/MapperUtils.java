@@ -90,13 +90,6 @@ final class MapperUtils {
     managedParticipantSearchRequestSortParams.put("fundedParticipantsCount", "fundedParticipantsCount");
   }
 
-  private static final Map<String, String> messageType = new HashMap<>();
-  static {
-    messageType.put("input", "sending");
-    messageType.put("output", "receiving");
-    messageType.put("input / output", "sending / receiving");
-  }
-
   private static final Map<String, String> reportsSearchRequestSortParams = new HashMap<>();
   static {
     reportsSearchRequestSortParams.put("reportId", "reportId");
@@ -104,6 +97,12 @@ final class MapperUtils {
     reportsSearchRequestSortParams.put("createdAt", "createdAt");
     reportsSearchRequestSortParams.put("cycleId", "cycleId");
     reportsSearchRequestSortParams.put("participantName", "participantName");
+  }
+
+  private static final Map<String, String> messageDirections = new HashMap<>();
+  static {
+    messageDirections.put("sending", "input");
+    messageDirections.put("receiving", "output");
   }
 
   static Map<String, String> getFileSearchRequestSortParams() {
@@ -138,8 +137,7 @@ final class MapperUtils {
     return nameType.getOrDefault(type, "N/A");
   }
 
-  static String getMessageType(String type) {
-    return messageType.get(type);
+  static String getMessageDirection(String messageDirection) {
+    return messageDirections.get(messageDirection);
   }
-
 }

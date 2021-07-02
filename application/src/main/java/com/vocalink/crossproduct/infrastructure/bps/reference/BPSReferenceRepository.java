@@ -13,7 +13,6 @@ import com.vocalink.crossproduct.domain.reference.ReferencesRepository;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.bps.position.BPSPositionsRequest;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import com.vocalink.crossproduct.ui.dto.EmptyBody;
 import java.util.List;

@@ -12,6 +12,9 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult
@@ -41,6 +44,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
@@ -59,6 +63,9 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -66,9 +73,6 @@ import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -414,8 +418,8 @@ class EntityMapperTest {
         assertThat(entity.amount.currency).isEqualTo(bps.amount.currency)
         assertThat(entity.createdAt).isEqualTo(bps.createdDateTime)
         assertThat(entity.status).isEqualTo(bps.status)
-        assertThat(entity.senderBic).isEqualTo(bps.senderBic)
-        assertThat(entity.receiverBic).isEqualTo(bps.receiverBic)
+        assertThat(entity.debtorBic).isEqualTo(bps.debtor)
+        assertThat(entity.creditorBic).isEqualTo(bps.creditor)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
     }
 
@@ -434,7 +438,8 @@ class EntityMapperTest {
             "batchId",
             amount,
             "senderName", "senderBic", "iban", "fullname",
-            "receiverName", "receiverBic", "iban", "fullname"
+            "receiverName", "receiverBic", "iban", "fullname",
+            "debtorName", "debtorBic", "creditorName", "creditorBic"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
@@ -458,6 +463,11 @@ class EntityMapperTest {
         assertThat(entity.receiverBank).isEqualTo(bps.receiverBank)
         assertThat(entity.receiverIBAN).isEqualTo(bps.receiverIBAN)
         assertThat(entity.receiverFullName).isEqualTo(bps.receiverFullName)
+
+        assertThat(entity.debtorBic).isEqualTo(bps.debtorBic)
+        assertThat(entity.debtorName).isEqualTo(bps.debtorName)
+        assertThat(entity.creditorBic).isEqualTo(bps.creditorBic)
+        assertThat(entity.creditorName).isEqualTo(bps.creditorName)
     }
 
     @Test
@@ -723,10 +733,11 @@ class EntityMapperTest {
         val request = TransactionEnquirySearchRequest(
             0, 0, listOf("sortBy"), date, date,
             "cycleId",
-            "messageDirection",
             "messageType",
             "sendingBic",
             "receivingBic",
+            "debtor",
+            "creditor",
             "status",
             "reasonCode",
             "id",
@@ -734,17 +745,18 @@ class EntityMapperTest {
             "receivingAccount",
             date, BigDecimal.TEN, BigDecimal.ONE
         )
-        val criteria = MAPPER.toEntity(request)
+        val criteria = MAPPER.toEntity(request, date)
         assertThat(criteria.offset).isEqualTo(request.offset)
         assertThat(criteria.limit).isEqualTo(request.limit)
         assertThat(criteria.sort).isEqualTo(request.sort)
         assertThat(criteria.dateFrom).isEqualTo(request.dateFrom)
         assertThat(criteria.dateTo).isEqualTo(request.dateTo)
         assertThat(criteria.cycleId).isEqualTo(request.cycleId)
-        assertThat(criteria.messageDirection).isEqualTo(request.messageDirection)
         assertThat(criteria.messageType).isEqualTo(request.messageType)
         assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
         assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(criteria.creditor).isEqualTo(request.creditor)
+        assertThat(criteria.debtor).isEqualTo(request.debtor)
         assertThat(criteria.status).isEqualTo(request.status)
         assertThat(criteria.reasonCode).isEqualTo(request.reasonCode)
         assertThat(criteria.id).isEqualTo(request.id)
@@ -761,9 +773,9 @@ class EntityMapperTest {
             0, 0, null, null, null,
             null, null, null, null,
             null, null, null, null, null,
-            null, null, null, null
+            null, null, null, null, null
         )
-        val entity = MAPPER.toEntity(request)
+        val entity = MAPPER.toEntity(request, null)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
     }
 
@@ -776,6 +788,7 @@ class EntityMapperTest {
             "name",
             "fundingBic",
             ParticipantStatus.ACTIVE,
+            null,
             null,
             ParticipantType.FUNDED,
             null,
@@ -814,11 +827,13 @@ class EntityMapperTest {
         request.limit = 20
         request.offset = 0
         request.sort = listOf("someValue1", "someValue2")
+        val participants = listOf(Participant.builder().bic("Resursbank").build())
 
-        val result = MAPPER.toEntity(request)
+        val result = MAPPER.toEntity(request, participants)
         assertThat(result.limit).isEqualTo(request.limit)
         assertThat(result.offset).isEqualTo(request.offset)
         assertThat(result.sort).isEqualTo(request.sort)
+        assertThat(result.participants).isEqualTo(participants)
     }
 
     @Test
@@ -1083,5 +1098,37 @@ class EntityMapperTest {
 
         assertThat(result.items).isEmpty()
         assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should map from BPSMessageDirectionReference to MessageDirectionReference`() {
+        val messageType = "camt.029.001.08"
+        val description = "ResponseInquiry"
+        val formatName = "camt.029.08"
+        val bpsMessageReference = BPSMessageDirectionReference.builder()
+            .messageType(messageType)
+            .description(description)
+            .formatName(formatName)
+            .messageDirection(listOf("Input", "Output"))
+            .level(listOf("File", "Batch", "Transaction"))
+            .type(listOf("Payment", "Non-Payment", "Inquiry", "Non-inquiry", "Message Status Report", "ADMI"))
+            .build()
+
+        val result = MAPPER.toEntity(bpsMessageReference)
+
+        assertThat(result.messageType).isEqualTo(messageType)
+        assertThat(result.formatName).isEqualTo(formatName)
+        assertThat(result.messageType).isEqualTo(messageType)
+        assertThat(result.direction[0]).isEqualTo(MessageReferenceDirection.SENDING)
+        assertThat(result.direction[1]).isEqualTo(MessageReferenceDirection.RECEIVING)
+        assertThat(result.level[0]).isEqualTo(MessageReferenceLevel.FILE)
+        assertThat(result.level[1]).isEqualTo(MessageReferenceLevel.BATCH)
+        assertThat(result.level[2]).isEqualTo(MessageReferenceLevel.TRANSACTION)
+        assertThat(result.subType[0]).isEqualTo(MessageReferenceType.PAYMENT)
+        assertThat(result.subType[1]).isEqualTo(MessageReferenceType.NON_PAYMENT)
+        assertThat(result.subType[2]).isEqualTo(MessageReferenceType.INQUIRY)
+        assertThat(result.subType[3]).isEqualTo(MessageReferenceType.NON_INQUIRY)
+        assertThat(result.subType[4]).isEqualTo(MessageReferenceType.MESSAGE_STATUS_REPORT)
+        assertThat(result.subType[5]).isEqualTo(MessageReferenceType.ADMI)
     }
 }

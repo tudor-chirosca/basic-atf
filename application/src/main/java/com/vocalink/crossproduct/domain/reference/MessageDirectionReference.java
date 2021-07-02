@@ -1,9 +1,9 @@
 package com.vocalink.crossproduct.domain.reference;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Builder
@@ -11,5 +11,8 @@ import lombok.Setter;
 public class MessageDirectionReference {
 
   private final String messageType;
-  private final String messageDirection;
+  private final String formatName;
+  private final List<MessageReferenceDirection> direction;
+  private final List<MessageReferenceLevel> level;
+  private final List<MessageReferenceType> subType;
 }

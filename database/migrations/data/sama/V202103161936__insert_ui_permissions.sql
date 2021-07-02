@@ -92,3 +92,5 @@ INSERT INTO UI_PERMISSION(id, key)
 VALUES ('600e9a80-1591-483e-8818-11369134ea2c', 'read.suspend-unsupend-multiple-participants');
 INSERT INTO UI_PERMISSION(id, key)
 VALUES ('6d7b9dca-33dc-4af1-a992-deeeca4ba13e', 'read.audit-log');
+INSERT INTO UI_PERMISSION(id, key)
+VALUES ('4b0a6274-10b0-495c-a8b4-c6232eac1a45', 'read.files-batches-instruction-filter');

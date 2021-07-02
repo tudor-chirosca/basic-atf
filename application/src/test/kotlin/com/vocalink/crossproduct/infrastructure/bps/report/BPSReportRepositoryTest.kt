@@ -7,6 +7,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.vocalink.crossproduct.domain.participant.Participant
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
+import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
@@ -28,9 +31,22 @@ class BPSReportRepositoryTest @Autowired constructor(
     companion object {
         var VALID_REQUEST = """
             {
-            "sortingOrder": [{"sortOrderBy": "reportId", "sortOrder": "ASC"}],
-            "reportTypes": ["PRE_SETTLEMENT_ADVICE"],
-            "participants": null,
+            "sortingOrder": [
+                {"sortOrderBy": "reportId", "sortOrder": "ASC"}
+            ],
+            "reportTypes": [
+                {"reportType": "PRE_SETTLEMENT_ADVICE"}
+            ],
+            "participants": [
+                {
+                   "schemeCode": "P27-SEK",
+                   "schemeParticipantIdentifier": "SWEDSESS",
+                   "participantType" : "DIRECT",
+                   "status": "ACTIVE",
+                   "effectiveFromDate": "2020-03-25T00:00:00Z",
+                   "participantName": "Swedbank"
+                }
+            ],
             "reportId": null,
             "createdFromDate": "2021-01-03T00:00:00Z",
             "createdToDate": null
@@ -57,7 +73,15 @@ class BPSReportRepositoryTest @Autowired constructor(
     @Test
     fun `should map full request body and full response and return 200`() {
         val request = ReportSearchCriteria(
-            0, 20, listOf("reportId"), listOf("PRE_SETTLEMENT_ADVICE"), null,
+            0, 20, listOf("reportId"), listOf("PRE_SETTLEMENT_ADVICE"),
+            listOf(Participant.builder()
+                .schemeCode("P27-SEK")
+                .id("SWEDSESS")
+                .participantType(ParticipantType.DIRECT)
+                .status(ParticipantStatus.ACTIVE)
+                .effectiveFromDate(ZonedDateTime.parse("2020-03-25T00:00:00Z"))
+                .name("Swedbank")
+                .build()),
             null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null
         )
         mockServer.stubFor(

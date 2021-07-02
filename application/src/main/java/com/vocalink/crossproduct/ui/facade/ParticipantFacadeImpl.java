@@ -7,7 +7,6 @@ import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
@@ -51,7 +50,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   @Override
   public PageDto<ManagedParticipantDto> getPaginated(String product, ClientType clientType,
       ManagedParticipantsSearchRequest requestDto, String requestedParticipantId) {
-    log.info("Fetching managed participant id: {} for: {} from: {}", requestedParticipantId, clientType, product);
+    log.info("Fetching managed participant id: {} for: {} from: {}", requestedParticipantId,
+        clientType, product);
 
     final ManagedParticipantsSearchCriteria request = MAPPER.toEntity(requestDto);
 
@@ -59,10 +59,12 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         .findPaginated(request);
 
     participants.getItems()
-        .forEach(participant -> {
-          setFundedParticipants(participant, product);
-          setRoutingRecords(participant, product, requestDto.getQ());
-        });
+        .forEach(p -> setFundedParticipants(p, product));
+
+    if (requestDto.getQ() != null) {
+      participants.getItems()
+          .forEach(p -> setRoutingRecords(p, product, requestDto.getQ()));
+    }
 
     final List<String> managedParticipantIds = participants.getItems().stream()
         .map(Participant::getBic)
@@ -155,12 +157,15 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   }
 
   private void setRoutingRecords(Participant participant, String product, String searchString) {
-    if (nonNull(searchString)) {
-      List<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
-          .findAllByBic(participant.getBic())
-          .stream().filter(f -> containsIgnoreCase(f.getReachableBic(), searchString))
-          .collect(toList());
-      participant.setReachableBics(routingRecords);
+    if (participant.getBic() != null && participant.getBic().contains(searchString)) {
+      return;
     }
+    List<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
+        .findAllByBic(participant.getBic())
+        .stream()
+        .filter(f -> containsIgnoreCase(f.getReachableBic(), searchString))
+        .collect(toList());
+
+    participant.setReachableBics(routingRecords);
   }
 }

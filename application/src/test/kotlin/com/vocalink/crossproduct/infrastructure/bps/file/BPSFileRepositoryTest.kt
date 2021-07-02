@@ -32,7 +32,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         {
             "createdFromDate": "2021-01-03T00:00:00Z",
             "createdToDate": "2021-01-04T23:59:59Z",
-            "messageDirection": "Sending"
+            "messageDirection": "input"
         }"""
         const val VALID_FILE_REQUEST: String = """ 
         {

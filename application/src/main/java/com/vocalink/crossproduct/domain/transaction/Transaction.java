@@ -28,4 +28,8 @@ public class Transaction {
   private final String receiverBic;
   private final String receiverIBAN;
   private final String receiverFullName;
+  private final String debtorName;
+  private final String debtorBic;
+  private final String creditorName;
+  private final String creditorBic;
 }
