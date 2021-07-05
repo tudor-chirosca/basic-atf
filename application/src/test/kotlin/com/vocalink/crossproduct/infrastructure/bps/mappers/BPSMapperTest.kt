@@ -462,7 +462,7 @@ class BPSMapperTest {
         val request = BPSMAPPER.toBps(criteria)
         assertThat(request.sortingOrder[0].sortOrderBy).isEqualTo("reportId")
         assertThat(request.sortingOrder[0].sortOrder).isEqualTo(ASC)
-        assertThat(request.sortingOrder[1].sortOrderBy).isEqualTo("createdAt")
+        assertThat(request.sortingOrder[1].sortOrderBy).isEqualTo("reportDate")
         assertThat(request.sortingOrder[1].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[2].sortOrderBy).isEqualTo("participantName")
         assertThat(request.sortingOrder[2].sortOrder).isEqualTo(ASC)

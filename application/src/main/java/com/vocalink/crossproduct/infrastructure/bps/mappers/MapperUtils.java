@@ -96,7 +96,8 @@ final class MapperUtils {
   static {
     reportsSearchRequestSortParams.put("reportId", "reportId");
     reportsSearchRequestSortParams.put("reportType", "reportType");
-    reportsSearchRequestSortParams.put("createdAt", "createdAt");
+    reportsSearchRequestSortParams.put("createdAt", "reportDate");
+    reportsSearchRequestSortParams.put("participantIdentifier", "partyCode");
     reportsSearchRequestSortParams.put("cycleId", "cycleId");
     reportsSearchRequestSortParams.put("participantName", "participantName");
   }

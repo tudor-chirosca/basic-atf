@@ -17,5 +17,4 @@ public class ReportDto {
   private final String cycleId;
   private final String participantIdentifier;
   private final String participantName;
-
 }

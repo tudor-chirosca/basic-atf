@@ -11,24 +11,27 @@ public class BPSReport {
 
   private final String reportId;
   private final String reportType;
-  private final ZonedDateTime createdAt;
+  private final String reportName;
+  private final ZonedDateTime reportDate;
+  private final String participantName;
+  private final String partyCode;
   @JsonInclude(Include.NON_EMPTY)
   private final String cycleId;
-  private final String participantIdentifier;
-  private final String participantName;
 
   public BPSReport(
-      @JsonProperty(value = "reportId") String reportId,
-      @JsonProperty(value = "reportType") String reportType,
-      @JsonProperty(value = "createdAt") ZonedDateTime createdAt,
-      @JsonProperty(value = "cycleId") String cycleId,
-      @JsonProperty(value = "participantIdentifier") String participantIdentifier,
-      @JsonProperty(value = "participantName") String participantName) {
+      @JsonProperty(value = "reportId", required = true) String reportId,
+      @JsonProperty(value = "reportType", required = true) String reportType,
+      @JsonProperty(value = "reportName") String reportName,
+      @JsonProperty(value = "reportDate", required = true) ZonedDateTime reportDate,
+      @JsonProperty(value = "participantName", required = true) String participantName,
+      @JsonProperty(value = "partyCode", required = true) String partyCode,
+      @JsonProperty(value = "cycleId") String cycleId) {
     this.reportId = reportId;
     this.reportType = reportType;
-    this.createdAt = createdAt;
-    this.cycleId = cycleId;
-    this.participantIdentifier = participantIdentifier;
+    this.reportName = reportName;
+    this.reportDate = reportDate;
     this.participantName = participantName;
+    this.partyCode = partyCode;
+    this.cycleId = cycleId;
   }
 }

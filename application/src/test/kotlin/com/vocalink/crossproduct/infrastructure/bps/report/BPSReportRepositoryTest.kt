@@ -5,15 +5,13 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
@@ -55,19 +53,24 @@ class BPSReportRepositoryTest @Autowired constructor(
 
         var VALID_RESPONSE = """
             {
-            "totalResults": 1,
-            "items": [
-                {
-                    "reportId": "10000000004",
-                    "reportType": "CYCLE_SETTLEMENT_REPORT",
-                    "createdAt": "2021-01-24T00:00:00Z",
-                    "cycleId": "20201231001",
-                    "participantIdentifier": "SWEDSESS",
-                    "participantName": "Swedbank"
-                }
-            ]
-        }
-        """
+             "data": [
+                      {
+                       "reportId": "10000001109",
+                       "reportType": "DAILY_SUMMARY_REPORT_SCHEME_OPERATOR_M",
+                       "reportName": "Cycle Settlement Report ",
+                       "reportDate": "2021-06-03T00:00:00Z",
+                       "participantName": "AABA Bank",
+                       "partyCode": "AABASESSXXX",
+                       "cycleId": "20210529004"
+                      }
+                      ],
+                       "summary": {
+                       "offset": 0,
+                       "pageSize": 1,
+                       "totalCount": 1
+                       }
+            }
+            """
     }
 
     @Test
@@ -100,7 +103,7 @@ class BPSReportRepositoryTest @Autowired constructor(
     @Test
     fun `should fail if 404 returned and throw ClientException`() {
         mockServer.stubFor(
-            post(urlEqualTo("/reports"))
+            post(urlPathEqualTo("/reports"))
                 .willReturn(
                     aResponse()
                         .withStatus(404)
@@ -110,12 +113,22 @@ class BPSReportRepositoryTest @Autowired constructor(
                 .withRequestBody(equalToJson(VALID_REQUEST))
         )
 
-        assertThatExceptionOfType(InfrastructureException::class.java).isThrownBy {
-            reportRepository.findPaginated(
-                ReportSearchCriteria(
-                    0, 20, listOf("reportId"), null, null,
-                    null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null)
-            )
-        }.withMessageContaining("Timeout!")
+        val request = ReportSearchCriteria(
+            0, 20, listOf("reportId"), listOf("PRE_SETTLEMENT_ADVICE"),
+            listOf(Participant.builder()
+                .schemeCode("P27-SEK")
+                .id("SWEDSESS")
+                .participantType(ParticipantType.DIRECT)
+                .status(ParticipantStatus.ACTIVE)
+                .effectiveFromDate(ZonedDateTime.parse("2020-03-25T00:00:00Z"))
+                .name("Swedbank")
+                .build()),
+            null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null)
+
+        val result = reportRepository.findPaginated(request)
+
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
     }
 }

@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.report;
 
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import java.net.URI;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
@@ -7,6 +9,8 @@ import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.R
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
@@ -50,8 +54,10 @@ public class BPSReportRepository implements ReportRepository {
         .header(ACCEPT, APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(request), BPSReportSearchRequest.class))
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<BPSPage<BPSReport>>() {
-        })
+        .onStatus(s -> s.equals(NOT_FOUND) || s.equals(NO_CONTENT), r ->
+            Mono.error(new EntityNotFoundException()))
+        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSReport>>() {})
+        .onErrorResume(EntityNotFoundException.class, e -> Mono.just(new BPSResult<>()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(r -> MAPPER.toEntity(r, Report.class))

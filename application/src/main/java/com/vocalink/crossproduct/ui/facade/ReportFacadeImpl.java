@@ -46,9 +46,10 @@ public class ReportFacadeImpl implements ReportFacade {
     final ParticipantRepository participantRepository = repositoryFactory
             .getParticipantRepository(product);
 
-    final List<Participant> participants = ofNullable(parameters.getParticipants()).orElse(emptyList()).stream()
-            .map(participantRepository::findById)
-            .collect(toList());
+    final List<Participant> participants = ofNullable(parameters.getParticipants())
+        .orElse(emptyList()).stream()
+        .map(participantRepository::findById)
+        .collect(toList());
 
     final ReportSearchCriteria criteria = MAPPER.toEntity(parameters, participants);
 

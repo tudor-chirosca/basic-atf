@@ -841,6 +841,7 @@ class EntityMapperTest {
         val bpsReport = BPSReport(
             "10000000006",
             "PRE-SETTLEMENT_ADVICE",
+            "Cycle Settlement Report",
             ZonedDateTime.parse("2021-02-14T00:00:00Z"),
             "20201231002",
             "IBCASES1",
@@ -849,9 +850,9 @@ class EntityMapperTest {
         val result = MAPPER.toEntity(bpsReport)
         assertThat(result.reportId).isEqualTo(bpsReport.reportId)
         assertThat(result.reportType).isEqualTo(bpsReport.reportType)
-        assertThat(result.createdAt).isEqualTo(bpsReport.createdAt)
+        assertThat(result.createdAt).isEqualTo(bpsReport.reportDate)
         assertThat(result.cycleId).isEqualTo(bpsReport.cycleId)
-        assertThat(result.participantIdentifier).isEqualTo(bpsReport.participantIdentifier)
+        assertThat(result.participantIdentifier).isEqualTo(bpsReport.partyCode)
         assertThat(result.participantName).isEqualTo(bpsReport.participantName)
     }
 

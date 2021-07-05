@@ -531,7 +531,11 @@ public interface EntityMapper {
   })
   ReportSearchCriteria toEntity(ReportsSearchRequest parameters, List<Participant> participants);
 
-  Report toEntity(BPSReport bpsReportBPSPage);
+  @Mappings({
+      @Mapping(target = "createdAt", source = "reportDate"),
+      @Mapping(target = "participantIdentifier", source = "partyCode")
+  })
+  Report toEntity(BPSReport bpsReport);
 
   default <T> Page<T> toEntity(BPSPage<?> page, Class<T> targetType) {
     List<?> sourceItems = page.getItems();
