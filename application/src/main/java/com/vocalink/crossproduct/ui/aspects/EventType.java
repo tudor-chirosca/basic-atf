@@ -48,6 +48,7 @@ public enum EventType {
   VIEW_SCHEME_IO_DASHBOARD(String.class),
   VIEW_PTT_IO_DASHBOARD(String.class),
   REQ_BATCH_CANCELLATION(Object.class),
+  REQ_TRANSACTION_CANCELLATION(Object.class),
   SUSPEND_PARTICIPANT(Object.class),
   UNSUSPEND_PARTICIPANT(Object.class),
   AMEND_PARTICIPANT_CONFIG(Object.class),

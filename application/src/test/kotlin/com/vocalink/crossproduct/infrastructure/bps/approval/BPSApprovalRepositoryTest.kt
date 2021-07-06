@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.BATCH_CANCELLATION
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.TRANSACTION_CANCELLATION
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
@@ -35,6 +36,15 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
            "requestType" : "BATCHCANCELLATION",
            "requestedChange" : {
                 "batchId": "some_batch_id",
+                "status": "some_new_status"
+              },
+           "notes" : "notes"
+        }"""
+
+        const val VALID_TRANSACTION_CANCELLATION_REQUEST = """ {
+           "requestType" : "TRANSACTIONCANCELLATION",
+           "requestedChange" : {
+                "transactionId": "some_transaction_id",
                 "status": "some_new_status"
               },
            "notes" : "notes"
@@ -75,6 +85,7 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         const val VALID_APPROVAL_REQUEST_TYPE_RESPONSE: String = """
                 [
                     "BATCHCANCELLATION",
+                    "TRANSACTIONCANCELLATION",
                     "PARTICIPANTCONF",
                     "PARTICIPANT_SUSPEND",
                     "PARTICIPANT_UNSUSPEND"
@@ -126,6 +137,29 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                             "firstName": "John",
                             "userId": "12a514",
                             "lastName": "Doe"
+                        },
+                        "status": "WAITING-FORAPPROVAL",
+                        "requestComment": "This is the reason...",
+                        "originalData": {
+                            "data": "some original data"
+                        },
+                        "requestedChange": {
+                            "status": "suspended"
+                        },
+                        "oldData": "hashed data",
+                        "newData": "hashed data",
+                        "notes": "Notes"
+                },
+                {
+                        "approvalId": "10000001",
+                        "requestType": "TRANSACTIONCANCELLATION",
+                        "participantIds": ["P27"],
+                        "date": "2021-02-03T14:55:00Z",
+                        "requestedBy": {
+                            "schemeParticipantIdentifier": "P27-SEK",
+                            "firstName": "Robert",
+                            "userId": "E19723341",
+                            "lastName": "Green"
                         },
                         "status": "WAITING-FORAPPROVAL",
                         "requestComment": "This is the reason...",
@@ -194,6 +228,16 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(item.status).isEqualTo(PENDING)
         assertThat(item.requestComment).isEqualTo("This is the reason...")
         assertThat(item.requestedChange["status"]).isEqualTo("suspended")
+
+        val item1 = result.items[1]
+        assertThat(item1.approvalId).isEqualTo("10000001")
+        assertThat(item1.requestType).isEqualTo(TRANSACTION_CANCELLATION)
+        assertThat(item1.participantIds[0]).isEqualTo("P27")
+        assertThat(item1.requestedBy.firstName).isEqualTo("Robert")
+        assertThat(item1.requestedBy.lastName).isEqualTo("Green")
+        assertThat(item1.status).isEqualTo(PENDING)
+        assertThat(item1.requestComment).isEqualTo("This is the reason...")
+        assertThat(item1.requestedChange["status"]).isEqualTo("suspended")
     }
 
     @Test
@@ -260,6 +304,35 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
     }
 
     @Test
+    fun `should return approval on create approval request transaction cancellation`() {
+        val date = ZonedDateTime.of(LocalDateTime.of(2021, 2, 3, 14, 55,0),  ZoneId.of("UTC"))
+        mockServer.stubFor(
+                post(urlEqualTo("/approvals/P27-SEK"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(VALID_APPROVAL_DETAILS_RESPONSE))
+                        .withRequestBody(equalToJson(VALID_TRANSACTION_CANCELLATION_REQUEST)))
+        val criteria = ApprovalChangeCriteria(
+                TRANSACTION_CANCELLATION,
+                mapOf("transactionId" to "some_transaction_id",
+                        "status" to "some_new_status"),
+                "notes"
+        )
+        val result = approvalRepository.requestApproval(criteria)
+
+        assertThat(result.approvalId).isEqualTo("10000004")
+        assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
+        assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
+        assertThat(result.date).isEqualTo(date)
+        assertThat(result.requestedBy.firstName).isEqualTo("John")
+        assertThat(result.requestedBy.lastName).isEqualTo("Doe")
+        assertThat(result.status).isEqualTo(REJECTED)
+        assertThat(result.requestComment).isEqualTo("This is the reason...")
+        assertThat(result.requestedChange["status"]).isEqualTo("suspended")
+    }
+
+    @Test
     fun `should return approval request type list`() {
         mockServer.stubFor(
                 post(urlEqualTo("/reference/approvals/requestTypes/P27-SEK/readAll"))
@@ -270,11 +343,12 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
         val result = approvalRepository.findApprovalRequestTypes()
 
-        assertThat(result.size).isEqualTo(4)
+        assertThat(result.size).isEqualTo(5)
         assertThat(result[0]).isEqualTo(ApprovalRequestType.BATCH_CANCELLATION)
-        assertThat(result[1]).isEqualTo(ApprovalRequestType.CONFIG_CHANGE)
-        assertThat(result[2]).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
-        assertThat(result[3]).isEqualTo(ApprovalRequestType.PARTICIPANT_UNSUSPEND)
+        assertThat(result[1]).isEqualTo(ApprovalRequestType.TRANSACTION_CANCELLATION)
+        assertThat(result[2]).isEqualTo(ApprovalRequestType.CONFIG_CHANGE)
+        assertThat(result[3]).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
+        assertThat(result[4]).isEqualTo(ApprovalRequestType.PARTICIPANT_UNSUSPEND)
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.dto.approval;
 
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.BATCH_CANCELLATION;
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE;
+import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.TRANSACTION_CANCELLATION;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -19,7 +20,7 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
-@ValidNote(notes = "notes", requestType = "requestType", requestTypes = {"BATCH_CANCELLATION"})
+@ValidNote(notes = "notes", requestType = "requestType", requestTypes = {"BATCH_CANCELLATION", "TRANSACTION_CANCELLATION"})
 public class ApprovalChangeRequest implements AuditableRequest {
 
   @ValidEnum(enumClass = ApprovalRequestType.class)
@@ -64,6 +65,10 @@ public class ApprovalChangeRequest implements AuditableRequest {
     }
     if (BATCH_CANCELLATION.toString().equals(requestType)) {
       content.put("batchId", requestedChange.getOrDefault("batchId", EMPTY).toString());
+      return content;
+    }
+    if (TRANSACTION_CANCELLATION.toString().equals(requestType)) {
+      content.put("transactionId", requestedChange.getOrDefault("transactionId", EMPTY).toString());
       return content;
     }
     content.put("id", requestedChange.getOrDefault("id", EMPTY).toString());

@@ -21,7 +21,7 @@ public @interface ValidNote {
 
   String[] requestTypes();
 
-  String message() default "Notes parameter is mandatory on a BATCH_CANCELLATION";
+  String message() default "Notes parameter is mandatory on a CANCELLATION";
 
   Class<?>[] groups() default {};
 

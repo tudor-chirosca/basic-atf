@@ -115,6 +115,14 @@ class ApprovalControllerTest : ControllerTest() {
               }
         }"""
 
+        const val INVALID_CREATE_APPROVAL_REQUEST_BODY_TRANSACTION_CANCELLATION = """ {
+           "requestType" : "TRANSACTION_CANCELLATION",
+           "requestedChange" : {
+                "batchId": "some_batch_id",
+                "status": "some_new_status"
+              }
+        }"""
+
         const val INVALID_MISSING_REQUEST_TYPE_REQUEST_BODY = """ {
            "requestedChange" : {
                 "status": "some_new_status"
@@ -204,6 +212,7 @@ class ApprovalControllerTest : ControllerTest() {
         const val VALID_APPROVAL_REQUEST_TYPE_RESPONSE: String = """
         [
             "BATCH_CANCELLATION",
+            "TRANSACTION_CANCELLATION",
             "CONFIG_CHANGE",
             "PARTICIPANT_SUSPEND",
             "PARTICIPANT_UNSUSPEND"
@@ -356,7 +365,20 @@ class ApprovalControllerTest : ControllerTest() {
                 .content(INVALID_CREATE_APPROVAL_REQUEST_BODY)
         )
             .andExpect(status().is4xxClientError)
-            .andExpect(content().string(containsString("Notes parameter is mandatory on a BATCH_CANCELLATION")))
+            .andExpect(content().string(containsString("Notes parameter is mandatory on a CANCELLATION")))
+    }
+
+    @Test
+    fun `should fail with 400 when required notes for TRANSACTION_CANCELLATION is missing`() {
+        mockMvc.perform(
+                post("/approvals")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_CREATE_APPROVAL_REQUEST_BODY_TRANSACTION_CANCELLATION)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Notes parameter is mandatory on a CANCELLATION")))
     }
 
     @Test
@@ -575,6 +597,7 @@ class ApprovalControllerTest : ControllerTest() {
     fun `should return 200 on Approval request types references`() {
         val requestTypes = listOf(
                 ApprovalRequestType.BATCH_CANCELLATION,
+                ApprovalRequestType.TRANSACTION_CANCELLATION,
                 ApprovalRequestType.CONFIG_CHANGE,
                 ApprovalRequestType.PARTICIPANT_SUSPEND,
                 ApprovalRequestType.PARTICIPANT_UNSUSPEND
