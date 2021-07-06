@@ -75,7 +75,8 @@ class TransactionsControllerTest : ControllerTest() {
             "status": "accepted"
         }"""
 
-        const val INVALID_SAME_SENDING_AND_RECEIVING_BIC_BODY_REQUEST = """{
+        const val VALID_SAME_SENDING_AND_RECEIVING_BIC_BODY_REQUEST = """{
+            "cycleId" : "20190212004",
             "sendingBic": "AVANSESX",
             "receivingBic": "AVANSESX"
         }"""
@@ -256,18 +257,15 @@ class TransactionsControllerTest : ControllerTest() {
     }
 
     @Test
-    fun `should fail with 400 when send_bic and recv_bic are with same values`() {
+    fun `should succeed with 200 when send_bic and recv_bic are with same values`() {
         mockMvc.perform(
             post("/enquiry/transactions/searches")
                 .contentType(UTF8_CONTENT_TYPE)
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
-                .content(INVALID_SAME_SENDING_AND_RECEIVING_BIC_BODY_REQUEST)
+                .content(VALID_SAME_SENDING_AND_RECEIVING_BIC_BODY_REQUEST)
         )
-            .andExpect(status().is4xxClientError)
-            .andExpect(content().string(containsString("send_bic and recv_bic should not be the same")))
-
-        verifyNoInteractions(auditFacade)
+            .andExpect(status().isOk)
     }
 
     @Test

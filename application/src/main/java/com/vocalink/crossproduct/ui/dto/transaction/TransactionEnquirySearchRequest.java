@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@NotEqual(first = "sendingBic", second = "receivingBic", message = "send_bic and recv_bic should not be the same")
 @ValidStatus(status = "status", reasonCode = "reasonCode", statuses = {"PRE-RJCT", "POST-RJCT"})
 @ValidSort(sort = "sort", sortingKeys =
     {"instructionId", "createdAt", "senderBic", "messageType", "amount", "status"})

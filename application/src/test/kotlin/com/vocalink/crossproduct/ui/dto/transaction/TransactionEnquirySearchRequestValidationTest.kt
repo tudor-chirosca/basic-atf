@@ -113,34 +113,6 @@ class TransactionEnquirySearchRequestValidationTest {
     }
 
     @Test
-    fun `should fail on same sending and receiving bic`() {
-        request = TransactionEnquirySearchRequest(
-            0, 20,
-            null,
-            null,
-            null,
-            "20190212004",
-            null,
-            "123",
-            "123",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-        val result = ArrayList(validator.validate(request))
-
-        assertThat(result).isNotEmpty
-        assertThat(result[0].message).isEqualTo(DIFFERENT_BIC_ERROR)
-    }
-
-    @Test
     fun `should fail on longer then DAYS_LIMIT`() {
         val dateFrom = ZonedDateTime.now(ZoneId.of("UTC"))
             .minusDays(getDefault(DtoProperties.DAYS_LIMIT).toLong() + 1)
