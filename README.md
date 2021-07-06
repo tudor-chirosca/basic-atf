@@ -46,8 +46,14 @@ The resulting artifact will be generated in /target folder. Deploy it to an exte
 
 ### Database Migration
 
+####P27
 ```
-docker run --rm --network host -v /${PWD}/database:/flyway/sql flyway/flyway -url=jdbc:oracle:thin:@127.0.0.1:1521/PDB112 -user='SYS as SYSDBA' -password=Password123 -schemas=CPUI_DB_OWNER -placeholders.schemaOwner=CPUI_DB_OWNER  -placeholders.schemaUser=CPUI_DB_USER -placeholders.project.version=local-version migrate
+docker run --rm --network=host -v $(pwd)/database/migrations/common:/flyway/sql/common -v $(pwd)/database/migrations/data/p27:/flyway/sql/data flyway/flyway -url=jdbc:oracle:thin:@127.0.0.1:1521/PDB112 -user='SYS as SYSDBA' -password=Password123 -schemas=CPUI_DB_OWNER -placeholders.schemaOwner=CPUI_DB_OWNER -placeholders.schemaUser=CPUI_DB_USER -placeholders.project.version=local migrate
+```
+
+####SAMA
+```
+docker run --rm --network=host -v $(pwd)/database/migrations/common:/flyway/sql/common -v $(pwd)/database/migrations/data/sama:/flyway/sql/data flyway/flyway -url=jdbc:oracle:thin:@127.0.0.1:1521/PDB112 -user='SYS as SYSDBA' -password=Password123 -schemas=CPUI_DB_OWNER -placeholders.schemaOwner=CPUI_DB_OWNER -placeholders.schemaUser=CPUI_DB_USER -placeholders.project.version=local migrate
 ```
 
 or
