@@ -1,6 +1,5 @@
 package com.vocalink.crossproduct.domain.batch;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,7 @@ public class Batch {
   private final String batchId;
   private final int nrOfTransactions;
   private final String fileName;
-  private final LocalDate settlementDate;
+  private final ZonedDateTime settlementDate;
   private final String settlementCycleId;
   private final ZonedDateTime createdAt;
   private final String status;

@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.domain.transaction;
 
 import com.vocalink.crossproduct.domain.Amount;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ public class Transaction {
   private final String status;
   private final String fileName;
   private final String batchId;
-  private final LocalDate settlementDate;
+  private final ZonedDateTime settlementDate;
   private final String settlementCycleId;
   private final String reasonCode;
   private final String senderBank;

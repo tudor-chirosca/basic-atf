@@ -249,10 +249,11 @@ class BPSMapperTest {
         val sorting = listOf(
             "-instructionId", "+instructionId",
             "-createdAt", "createdAt",
-            "-senderBic", "+senderBic",
+            "-creditor", "+creditor",
             "-messageType", "messageType",
             "-amount", "+amount",
-            "-status", "+status"
+            "-status", "+status",
+            "-debtor", "+debtor"
         )
         val criteria = TransactionEnquirySearchCriteria(
             0, 0, sorting, null, null,
@@ -299,9 +300,9 @@ class BPSMapperTest {
         assertThat(request.sortingOrder[3].sortOrderBy).isEqualTo("createdDateTime")
         assertThat(request.sortingOrder[3].sortOrder).isEqualTo(ASC)
 
-        assertThat(request.sortingOrder[4].sortOrderBy).isEqualTo("originator")
+        assertThat(request.sortingOrder[4].sortOrderBy).isEqualTo("creditor")
         assertThat(request.sortingOrder[4].sortOrder).isEqualTo(DESC)
-        assertThat(request.sortingOrder[5].sortOrderBy).isEqualTo("originator")
+        assertThat(request.sortingOrder[5].sortOrderBy).isEqualTo("creditor")
         assertThat(request.sortingOrder[5].sortOrder).isEqualTo(ASC)
 
         assertThat(request.sortingOrder[6].sortOrderBy).isEqualTo("messageType")
@@ -318,6 +319,11 @@ class BPSMapperTest {
         assertThat(request.sortingOrder[10].sortOrder).isEqualTo(DESC)
         assertThat(request.sortingOrder[11].sortOrderBy).isEqualTo("status")
         assertThat(request.sortingOrder[11].sortOrder).isEqualTo(ASC)
+
+        assertThat(request.sortingOrder[12].sortOrderBy).isEqualTo("debtor")
+        assertThat(request.sortingOrder[12].sortOrder).isEqualTo(DESC)
+        assertThat(request.sortingOrder[13].sortOrderBy).isEqualTo("debtor")
+        assertThat(request.sortingOrder[13].sortOrder).isEqualTo(ASC)
     }
 
     @Test

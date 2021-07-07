@@ -65,17 +65,17 @@ import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantInstructionDto
 import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper.MAPPER
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 
 class DTOMapperTest {
 
@@ -476,7 +476,7 @@ class DTOMapperTest {
             "status",
             "fileName",
             "batchId",
-            LocalDate.now(clock).plusDays(1),
+            ZonedDateTime.now(clock).plusDays(1),
             "settlementCycleId",
             "reasonCode",
             "senderEntityName",
@@ -513,7 +513,7 @@ class DTOMapperTest {
             "status",
             "fileName",
             "batchId",
-            LocalDate.of(2021, 1, 15),
+            ZonedDateTime.now(clock),
             "settlementCycleId",
             "reasonCode",
             "senderEntityName",

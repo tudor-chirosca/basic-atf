@@ -10,7 +10,6 @@ import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
 import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -53,7 +52,7 @@ class BatchesControllerTest : ControllerTest() {
             "batchId": "A27ISTXBANKSESSXXX2",
             "fileName": "A27ISTXBANKSESSXXX2.gz",
             "nrOfTransactions": 12,
-            "settlementDate": "2020-11-03",
+            "settlementDate": "2020-10-30T10:10:10Z",
             "settlementCycleId": "04",
             "createdAt": "2020-10-30T10:10:10Z",
             "status": "Accepted",
@@ -328,14 +327,16 @@ class BatchesControllerTest : ControllerTest() {
 
     @Test
     fun `should return 200 on get batch by Id`() {
+        val dateTime = ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC"))
+
         val id = "A27ISTXBANKSESSXXX2"
         val details = BatchDetailsDto.builder()
                 .batchId(id)
                 .fileName("$id.gz")
                 .nrOfTransactions(12)
-                .settlementDate(LocalDate.of(2020, 11, 3))
+                .settlementDate(dateTime)
                 .settlementCycleId("04")
-                .createdAt(ZonedDateTime.of(2020, 10, 30, 10, 10, 10, 0, ZoneId.of("UTC")))
+                .createdAt(dateTime)
                 .status("Accepted")
                 .messageType("prtp.001SO")
                 .sender(EnquirySenderDetailsDto.builder()

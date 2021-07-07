@@ -75,7 +75,7 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                 "transactionStatus": "ACSC",
                 "reasonCode": null,
                 "settlementCycle": "20210218002",
-                "settlementDate": "2021-02-18T14:00:00Z",
+                "settlementDate": "2021-02-18T18:00:00Z",
                 "fileName": "E27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800101.gz",
                 "batchId": "F27ISTXBANKSESS",
                 "transactionAmount": {
@@ -144,14 +144,15 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                                 .withBody(VALID_TRANSACTION_DETAILS_RESPONSE))
                         .withRequestBody(equalToJson(VALID_TRANSACTION_REQUEST)))
 
+        val date = ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 18, 0, 0, 0, ZoneId.of("UTC"))
         val result = transactionRepository.findById("20210115SVEASES1B2215")
         assertThat(result.instructionId).isEqualTo("20210115IKANSE21B2167")
         assertThat(result.messageType).isEqualTo("pacs.002")
-        assertThat(result.createdAt).isEqualTo(ZonedDateTime.of(2021, Month.FEBRUARY.value, 18, 18, 0, 0, 0, ZoneId.of("UTC")))
+        assertThat(result.createdAt).isEqualTo(date)
         assertThat(result.status).isEqualTo("ACSC")
         assertThat(result.reasonCode).isEqualTo(null)
         assertThat(result.settlementCycleId).isEqualTo("20210218002")
-        assertThat(result.settlementDate).isEqualTo(LocalDate.of(2021, Month.FEBRUARY.value, 18))
+        assertThat(result.settlementDate).isEqualTo(date)
         assertThat(result.fileName).isEqualTo("E27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800101.gz")
         assertThat(result.batchId).isEqualTo("F27ISTXBANKSESS")
         assertThat(result.amount.amount).isEqualTo(BigDecimal.valueOf(777777.77))

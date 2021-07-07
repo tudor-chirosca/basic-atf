@@ -9,7 +9,6 @@ import com.vocalink.crossproduct.ui.dto.transaction.TransactionReceiverDetailsDt
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionSenderDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.TransactionsFacade
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.hamcrest.CoreMatchers.containsString
@@ -156,7 +155,7 @@ class TransactionsControllerTest : ControllerTest() {
                 "entityBic": "MEEOSES1",
                 "iban": "SE23 9999 9999 9999 9999 2193"
             },
-            "settlementDate": "2021-01-14",
+            "settlementDate": "2021-01-14T15:02:14Z",
             "settlementCycleId": "20201209001",
             "createdAt": "2021-01-14T15:02:14Z",
             "status": "rejected",
@@ -443,7 +442,8 @@ class TransactionsControllerTest : ControllerTest() {
     @Test
     fun `should return 200 with valid response on fetch with id`() {
         val id = "20210115SVEASES1B2215"
-        val date = LocalDate.of(2021, 1, 14)
+        val date = ZonedDateTime.of(2021, 1, 14, 15, 2, 14, 0, ZoneId.of("UTC"))
+
         val receiver = TransactionReceiverDetailsDto(
             "Meetoo", "MEEOSES1", "SE23 9999 9999 9999 9999 2193",
             "fullname", "creditorName", "creditorBic"
@@ -457,8 +457,7 @@ class TransactionsControllerTest : ControllerTest() {
             BigDecimal.valueOf(11112222.33), "SEK",
             "P27ISTXSCADSE21201911320191113135321990NCTSEK_PACS0082192",
             "P27ISTXBANKSESS", date,
-            "20201209001",
-            ZonedDateTime.of(2021, 1, 14, 15, 2, 14, 0, ZoneId.of("UTC")),
+            "20201209001", date,
             "rejected",
             "004",
             "pacs.002",

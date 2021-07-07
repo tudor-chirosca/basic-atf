@@ -47,7 +47,8 @@ final class MapperUtils {
   static {
     transactionSearchRequestSortParams.put("instructionId", "instructionId");
     transactionSearchRequestSortParams.put("createdAt", "createdDateTime");
-    transactionSearchRequestSortParams.put("senderBic", "originator");
+    transactionSearchRequestSortParams.put("creditor", "creditor");
+    transactionSearchRequestSortParams.put("debtor", "debtor");
     transactionSearchRequestSortParams.put("messageType","messageType");
     transactionSearchRequestSortParams.put("amount", "amount");
     transactionSearchRequestSortParams.put("status", "status");
