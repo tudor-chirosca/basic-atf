@@ -16,6 +16,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.permission.UIPermission
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
 import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.*
@@ -628,5 +629,48 @@ class UIPresenterTest {
         assertThat(userDetails[0].username).isEqualTo(auditDetails[0].username)
         assertThat(userDetails[0].fullName).contains(auditDetails[0].firstName)
         assertThat(userDetails[0].fullName).contains(auditDetails[0].lastName)
+    }
+
+    @Test
+    fun `should present current user info`() {
+        val participantId = "HANDSESS"
+        val participantName = "Svenska Handelsbanken"
+        val permissionId = "11111"
+        val permission = "read.participant-config"
+        val userId = "12a543"
+        val userFirstName = "John"
+        val userLastName = "Doe"
+
+        val participant = Participant.builder()
+            .id(participantId)
+            .bic(participantId)
+            .name(participantName)
+            .build()
+        val uiPermission = UIPermission.builder()
+            .id(permissionId)
+            .key(permission)
+            .build()
+        val auditDetails =  AuditDetails.builder()
+            .username(userId)
+            .firstName(userFirstName)
+            .lastName(userLastName)
+            .build()
+
+        val userInfo = uiPresenter.presentCurrentUserInfo(participant, listOf(uiPermission), auditDetails)
+
+        assertThat(userInfo).isNotNull
+        assertThat(userInfo.permissions).isNotEmpty
+        assertThat(userInfo.participation).isNotNull
+        assertThat(userInfo.user).isNotNull
+
+        assertThat(userInfo.permissions.size).isEqualTo(1)
+        assertThat(userInfo.permissions[0]).isEqualTo(permission)
+
+        assertThat(userInfo.participation.id).isEqualTo(participantId)
+        assertThat(userInfo.participation.bic).isEqualTo(participantId)
+        assertThat(userInfo.participation.name).isEqualTo(participantName)
+
+        assertThat(userInfo.user.userId).isEqualTo(userId)
+        assertThat(userInfo.user.name).isEqualTo(userFirstName.plus(" ").plus(userLastName))
     }
 }

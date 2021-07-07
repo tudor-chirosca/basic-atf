@@ -568,8 +568,7 @@ public class UIPresenter implements Presenter {
 
   @Override
   public CurrentUserInfoDto presentCurrentUserInfo(Participant participant,
-      List<UIPermission> uiPermissions,
-      AuditDetails auditDetails) {
+      List<UIPermission> uiPermissions, AuditDetails auditDetails) {
     final List<String> permissions = uiPermissions.stream()
         .map(UIPermission::getKey)
         .collect(toList());

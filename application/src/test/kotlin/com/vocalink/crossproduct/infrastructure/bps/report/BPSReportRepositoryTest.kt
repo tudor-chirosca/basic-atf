@@ -101,12 +101,44 @@ class BPSReportRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `should fail if 404 returned and throw ClientException`() {
+    fun `should return the empty list on 404 NOT_FOUND`() {
         mockServer.stubFor(
             post(urlPathEqualTo("/reports"))
                 .willReturn(
                     aResponse()
                         .withStatus(404)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .withBody(VALID_RESPONSE)
+                )
+                .withRequestBody(equalToJson(VALID_REQUEST))
+        )
+
+        val request = ReportSearchCriteria(
+            0, 20, listOf("reportId"), listOf("PRE_SETTLEMENT_ADVICE"),
+            listOf(Participant.builder()
+                .schemeCode("P27-SEK")
+                .id("SWEDSESS")
+                .participantType(ParticipantType.DIRECT)
+                .status(ParticipantStatus.ACTIVE)
+                .effectiveFromDate(ZonedDateTime.parse("2020-03-25T00:00:00Z"))
+                .name("Swedbank")
+                .build()),
+            null, ZonedDateTime.parse("2021-01-03T00:00:00Z"), null)
+
+        val result = reportRepository.findPaginated(request)
+
+        assertThat(result).isNotNull
+        assertThat(result.items).isEmpty()
+        assertThat(result.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `should return the empty list on 204 NO_CONTENT`() {
+        mockServer.stubFor(
+            post(urlPathEqualTo("/reports"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(204)
                         .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(VALID_RESPONSE)
                 )

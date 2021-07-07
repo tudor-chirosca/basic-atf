@@ -52,7 +52,6 @@ public class UserController implements UserApi {
     return ResponseEntity.ok(currentUserInfoDto);
   }
 
-
   @Auditable(type = USER_SESSION_END, params = @Positions(clientType = 0, context = 1, request = 2))
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @GetMapping(value = "/logout")

@@ -3,8 +3,9 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConfig
 import com.vocalink.crossproduct.TestConstants.CLIENT_TYPE
 import com.vocalink.crossproduct.TestConstants.CONTEXT
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus.*
+import com.vocalink.crossproduct.domain.participant.ParticipantType.*
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel.*
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto
 import com.vocalink.crossproduct.ui.dto.permission.UserInfoDto
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto
@@ -26,7 +27,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
-
 
 @WebMvcTest(UserController::class)
 @ContextConfiguration(classes = [TestConfig::class])
@@ -57,7 +57,8 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
               "name": "Svenska Handelsbanken",
               "status": "SUSPENDED",
               "suspendedTime": "2020-09-15T13:00:00Z",
-              "participantType": "FUNDED"
+              "participantType": "FUNDED",
+              "suspensionLevel": "SCHEME"
             },
             "user": {
               "userId": "12a511",
@@ -71,20 +72,22 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
     fun `should return 200 with valid headers and return user details and permissions`() {
         val userId = "12a511"
         val userName = "John Doe"
+        val roles = listOf("MANAGEMENT")
         val participantId = "HANDSESS"
         val fundingBic = "NDEASESSXXX"
         val participantName = "Svenska Handelsbanken"
         val permission = "read.alerts-dashboard"
         val dateTime = ZonedDateTime.of(2020, 9, 15, 13, 0, 0, 0, ZoneId.of("UTC"))
         val participant = ParticipantDto.builder()
-                .id(participantId)
-                .bic(participantId)
-                .name(participantName)
-                .fundingBic(fundingBic)
-                .status(ParticipantStatus.SUSPENDED)
-                .suspendedTime(dateTime)
-                .participantType(ParticipantType.FUNDED)
-                .build()
+            .id(participantId)
+            .bic(participantId)
+            .name(participantName)
+            .fundingBic(fundingBic)
+            .status(SUSPENDED)
+            .suspendedTime(dateTime)
+            .participantType(FUNDED)
+            .suspensionLevel(SCHEME)
+            .build()
 
         `when`(userFacade.getCurrentUserInfo(anyString(), any(), anyString(), anyString(), anyList()))
                 .thenReturn(CurrentUserInfoDto(listOf(permission), participant,
@@ -96,8 +99,24 @@ class UserControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
                 .header(X_USER_ID_HEADER, userId)
                 .header(X_PARTICIPANT_ID_HEADER, participantId)
-                .header(X_ROLES_HEADER, "MANAGEMENT"))
+                .header(X_ROLES_HEADER, roles))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_USER_PERMISSIONS_RESPONSE))
+    }
+
+    @Test
+    fun `should return 204 with valid headers and return no content`() {
+        val userId = "12a511"
+        val participantId = "HANDSESS"
+        val roles = listOf("MANAGEMENT")
+
+        mockMvc.perform(get("/logout")
+            .contentType(UTF8_CONTENT_TYPE)
+            .header(CONTEXT_HEADER, CONTEXT)
+            .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+            .header(X_USER_ID_HEADER, userId)
+            .header(X_PARTICIPANT_ID_HEADER, participantId)
+            .header(X_ROLES_HEADER, roles))
+            .andExpect(status().isNoContent)
     }
 }

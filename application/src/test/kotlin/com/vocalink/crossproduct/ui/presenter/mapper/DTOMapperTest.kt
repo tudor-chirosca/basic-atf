@@ -35,6 +35,7 @@ import com.vocalink.crossproduct.domain.participant.ParticipantType
 import com.vocalink.crossproduct.domain.participant.ParticipantType.DIRECT
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType.FUNDING
+import com.vocalink.crossproduct.domain.participant.SuspensionLevel
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel.SCHEME
 import com.vocalink.crossproduct.domain.participant.SuspensionLevel.SELF
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
@@ -1245,6 +1246,7 @@ class DTOMapperTest {
             .status(SUSPENDED)
             .suspendedTime(dateTime)
             .participantType(FUNDED)
+            .suspensionLevel(SuspensionLevel.FUNDING)
             .build()
         val auditDetails = AuditDetails.builder()
             .username(userId)
@@ -1263,6 +1265,7 @@ class DTOMapperTest {
         assertThat(entity.participation.fundingBic).isEqualTo(fundingBic)
         assertThat(entity.participation.status).isEqualTo(SUSPENDED)
         assertThat(entity.participation.suspendedTime).isEqualTo(dateTime)
+        assertThat(entity.participation.suspensionLevel).isEqualTo(SuspensionLevel.FUNDING)
         assertThat(entity.user.userId).isEqualTo(userId)
         assertThat(entity.user.name).isEqualTo("$userFirstName $userLastName")
     }
@@ -1447,7 +1450,7 @@ class DTOMapperTest {
     }
 
     @Test
-    fun `should map from MessageDirectionReference to BPSMessageDirectionReference`() {
+    fun `should map from MessageDirectionReference to MessageDirectionReferenceDto`() {
         val messageType = "camt.029.001.08"
         val formatName = "camt.029.08"
         val messageReference = MessageDirectionReference.builder()
