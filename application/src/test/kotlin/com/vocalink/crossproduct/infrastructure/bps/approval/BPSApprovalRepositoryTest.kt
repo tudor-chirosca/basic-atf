@@ -8,23 +8,22 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.BATCH_CANCELLATION
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.TRANSACTION_CANCELLATION
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType.TRANSACTION_CANCELLATION
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.PENDING
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus.REJECTED
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @BPSTestConfiguration
 @Import(BPSApprovalRepository::class)
@@ -330,25 +329,6 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
         assertThat(result.status).isEqualTo(REJECTED)
         assertThat(result.requestComment).isEqualTo("This is the reason...")
         assertThat(result.requestedChange["status"]).isEqualTo("suspended")
-    }
-
-    @Test
-    fun `should return approval request type list`() {
-        mockServer.stubFor(
-                post(urlEqualTo("/reference/approvals/requestTypes/P27-SEK/readAll"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(VALID_APPROVAL_REQUEST_TYPE_RESPONSE)))
-
-        val result = approvalRepository.findApprovalRequestTypes()
-
-        assertThat(result.size).isEqualTo(5)
-        assertThat(result[0]).isEqualTo(ApprovalRequestType.BATCH_CANCELLATION)
-        assertThat(result[1]).isEqualTo(ApprovalRequestType.TRANSACTION_CANCELLATION)
-        assertThat(result[2]).isEqualTo(ApprovalRequestType.CONFIG_CHANGE)
-        assertThat(result[3]).isEqualTo(ApprovalRequestType.PARTICIPANT_SUSPEND)
-        assertThat(result[4]).isEqualTo(ApprovalRequestType.PARTICIPANT_UNSUSPEND)
     }
 
     @Test

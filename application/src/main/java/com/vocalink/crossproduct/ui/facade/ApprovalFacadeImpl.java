@@ -70,7 +70,8 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   public ApprovalDetailsDto requestApproval(String product, ClientType clientType,
       ApprovalChangeRequest requestDto) {
 
-    log.info("Creating approval by type: {} for: {} from: {}", requestDto.getRequestType(), clientType, product);
+    log.info("Creating approval by type: {} for: {} from: {}", requestDto.getRequestType(),
+        clientType, product);
 
     final ApprovalChangeCriteria request = MAPPER.toEntity(requestDto);
 
@@ -84,8 +85,8 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
   }
 
   @Override
-  public ApprovalConfirmationResponseDto submitApprovalConfirmation(String product, ClientType clientType,
-      ApprovalConfirmationRequest requestDto, String id) {
+  public ApprovalConfirmationResponseDto submitApprovalConfirmation(String product,
+      ClientType clientType, ApprovalConfirmationRequest requestDto, String id) {
     log.info("Sending confirmation on approval id: {} for: {} from: {}", id, clientType, product);
 
     final ApprovalConfirmation request = MAPPER.toEntity(requestDto, id);
@@ -106,8 +107,8 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
   @Override
   public List<ApprovalRequestType> findApprovalRequestTypes(String product, ClientType clientType) {
-    log.info("Fetching approvals request types for: {} from: {}", clientType, product);
-    return repositoryFactory.getApprovalRepository(product)
-        .findApprovalRequestTypes();
+    log.info("Fetching approvals request types for: {}, from: {}", clientType, product);
+
+    return serviceFactory.getApprovalService(product).getRequestTypes();
   }
 }

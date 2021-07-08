@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.put
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
+import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -48,5 +49,13 @@ class BPSApprovalServiceTest @Autowired constructor(var approvalService: BPSAppr
         )
         val result = approvalService.submitApprovalConfirmation(approvalConfirmation)
         assertThat(result.responseMessage).isEqualTo("response_msg")
+    }
+
+    @Test
+    fun `should get request types`() {
+        val requestTypes = approvalService.requestTypes
+
+        assertThat(requestTypes).isNotEmpty
+        assertThat(requestTypes[0]).isInstanceOf(ApprovalRequestType::class.java)
     }
 }

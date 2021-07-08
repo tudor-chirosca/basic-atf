@@ -5,8 +5,8 @@ import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_DASHB
 
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.ui.aspects.Auditable;
-import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.aspects.AuditableDetail;
+import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.ApprovalApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
 import com.vocalink.crossproduct.ui.dto.approval.ApprovalChangeRequest;
