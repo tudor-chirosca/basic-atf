@@ -167,6 +167,9 @@ public interface EntityMapper {
   })
   Batch toEntity(BPSBatchDetailed batch);
 
+  @Mappings({
+      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "convertToMessageDirection")
+  })
   File toEntity(BPSFile file);
 
   ReasonCode toEntity(BPSReasonCode reasonCode);
@@ -319,6 +322,9 @@ public interface EntityMapper {
 
   @Named("toInstructionStatus")
   default InstructionStatus convertInstructionStatusType(String status) {
+    if (status == null) {
+      return null;
+    }
     return InstructionStatus.valueOf(status.toUpperCase().replaceAll("[_+-]", "_"));
   }
 

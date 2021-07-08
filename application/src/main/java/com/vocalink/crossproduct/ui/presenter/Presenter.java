@@ -124,7 +124,7 @@ public interface Presenter {
 
   List<DayCycleDto> presentCycleDateReferences(List<DayCycle> dayCycles);
 
-  FileDetailsDto presentFileDetails(File file, Participant participant);
+  FileDetailsDto presentFileDetails(File file, Participant sender, Participant receiver);
 
   PageDto<BatchDto> presentBatches(Integer totalResults, List<Batch> items);
 

@@ -63,9 +63,6 @@ import com.vocalink.crossproduct.ui.dto.report.ReportsSearchRequest
 import com.vocalink.crossproduct.ui.dto.routing.RoutingRecordRequest
 import com.vocalink.crossproduct.ui.dto.settlement.ParticipantSettlementRequest
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -73,6 +70,9 @@ import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 class EntityMapperTest {
 
@@ -287,7 +287,7 @@ class EntityMapperTest {
             "from",
             "to",
             "msgType",
-            "messageDirection",
+            "input",
             10,
             "status",
             "reasonCode",
@@ -303,7 +303,7 @@ class EntityMapperTest {
         assertThat(entity.from).isEqualTo(bps.from)
         assertThat(entity.to).isEqualTo(bps.to)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
-        assertThat(entity.messageDirection).isEqualTo(bps.messageDirection)
+        assertThat(entity.messageDirection).isEqualTo(MessageReferenceDirection.SENDING)
         assertThat(entity.noOfBatches).isEqualTo(bps.noOfBatches)
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)

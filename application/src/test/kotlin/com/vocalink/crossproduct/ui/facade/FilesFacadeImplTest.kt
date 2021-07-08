@@ -23,6 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 
 class FilesFacadeImplTest {
@@ -75,21 +76,23 @@ class FilesFacadeImplTest {
     fun `should invoke presenter and repository on get file details`() {
         val file = File.builder().from("any").build()
         val detailsDto = FileDetailsDto.builder().build()
-        val participant = Participant.builder().build()
+        val sender = Participant.builder().build()
+        val receiver = Participant.builder().build()
 
         `when`(fileRepository.findById(any())).thenReturn(file)
 
-        `when`(participantRepository.findById(anyString())).thenReturn(participant)
+        `when`(participantRepository.findById(anyString())).thenReturn(sender)
+        `when`(participantRepository.findById(anyString())).thenReturn(receiver)
 
-        `when`(uiPresenter.presentFileDetails(any(), any()))
+        `when`(uiPresenter.presentFileDetails(any(), any(), any()))
                 .thenReturn(detailsDto)
 
         val result = filesServiceFacadeImpl.getDetailsById(TestConstants.CONTEXT, ClientType.UI, "")
 
         verify(fileRepository).findById(any())
-        verify(participantRepository).findById(any())
+        verify(participantRepository, times(2)).findById(any())
         verify(presenterFactory).getPresenter(any())
-        verify(uiPresenter).presentFileDetails(any(), any())
+        verify(uiPresenter).presentFileDetails(any(), any(), any())
 
         assertNotNull(result)
     }

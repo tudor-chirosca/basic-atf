@@ -111,7 +111,7 @@ class SystemPresenterTests {
     fun `should throw RuntimeException on present file details for System`() {
         val file = File.builder().build()
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentFileDetails(file, null)
+            systemPresenter.presentFileDetails(file, null, null)
         }
     }
 

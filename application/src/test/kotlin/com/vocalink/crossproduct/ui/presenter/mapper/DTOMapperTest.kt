@@ -41,6 +41,7 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING
 import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.BATCH
@@ -1405,23 +1406,32 @@ class DTOMapperTest {
             "from",
             "to",
             "msgType",
-            "messageDirection",
+            SENDING,
             10,
             "status",
             "reasonCode",
             "cycleId"
         )
-        val participant = Participant.builder()
-            .id("participantId")
-            .bic("participantId")
-            .name("name")
-            .fundingBic("fundingBic")
+        val sender = Participant.builder()
+            .id("senderId")
+            .bic("senderBic")
+            .name("senderName")
+            .fundingBic("senderFundingBic")
             .status(ACTIVE)
             .participantType(FUNDING)
-            .organizationId("organizationId")
+            .organizationId("senderOrganizationId")
+            .build()
+        val receiver = Participant.builder()
+            .id("receiverId")
+            .bic("receiverBic")
+            .name("receiverName")
+            .fundingBic("receiverFundingBic")
+            .status(ACTIVE)
+            .participantType(FUNDING)
+            .organizationId("receiverOrganizationId")
             .build()
 
-        val dto = MAPPER.toDto(file, participant)
+        val dto = MAPPER.toDto(file, sender, receiver)
         assertThat(dto.fileSize).isEqualTo(file.fileSize)
         assertThat(dto.createdAt).isEqualTo(file.createdDate)
         assertThat(dto.fileName).isEqualTo(file.fileName)
@@ -1430,8 +1440,10 @@ class DTOMapperTest {
         assertThat(dto.reasonCode).isEqualTo(file.reasonCode)
         assertThat(dto.settlementCycleId).isEqualTo(file.settlementCycle)
         assertThat(dto.status).isEqualTo(file.status)
-        assertThat(dto.sender.entityName).isEqualTo(participant.name)
-        assertThat(dto.sender.entityBic).isEqualTo(participant.bic)
+        assertThat(dto.sender.entityName).isEqualTo(sender.name)
+        assertThat(dto.sender.entityBic).isEqualTo(sender.bic)
+        assertThat(dto.receiver.entityName).isEqualTo(receiver.name)
+        assertThat(dto.receiver.entityBic).isEqualTo(receiver.bic)
     }
 
     @Test

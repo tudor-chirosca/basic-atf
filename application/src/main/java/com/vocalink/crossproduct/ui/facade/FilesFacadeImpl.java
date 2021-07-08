@@ -52,8 +52,10 @@ public class FilesFacadeImpl implements FilesFacade {
         .findById(id);
     final Participant sender = repositoryFactory.getParticipantRepository(product)
         .findById(file.getFrom());
+    final Participant receiver = repositoryFactory.getParticipantRepository(product)
+        .findById(file.getTo());
 
-    return presenterFactory.getPresenter(clientType).presentFileDetails(file, sender);
+    return presenterFactory.getPresenter(clientType).presentFileDetails(file, sender, receiver);
   }
 
   @Override

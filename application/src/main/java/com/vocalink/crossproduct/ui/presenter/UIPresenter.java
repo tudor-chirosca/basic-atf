@@ -273,8 +273,8 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public FileDetailsDto presentFileDetails(File file, Participant participant) {
-    return MAPPER.toDto(file, participant);
+  public FileDetailsDto presentFileDetails(File file, Participant sender, Participant receiver) {
+    return MAPPER.toDto(file, sender, receiver);
   }
 
   @Override

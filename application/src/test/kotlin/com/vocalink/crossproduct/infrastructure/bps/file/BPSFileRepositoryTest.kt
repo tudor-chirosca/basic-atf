@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -120,7 +121,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         assertThat(result.items[0].from).isEqualTo("NDEASESSXXX")
         assertThat(result.items[0].to).isEqualTo("DABASESXXXX")
         assertThat(result.items[0].messageType).isEqualTo("pacs.008")
-        assertThat(result.items[0].messageDirection).isEqualTo("INPUT")
+        assertThat(result.items[0].messageDirection).isEqualTo(MessageReferenceDirection.SENDING)
         assertThat(result.items[0].noOfBatches).isEqualTo(12)
         assertThat(result.items[0].status).isEqualTo("NAK")
         assertThat(result.items[0].reasonCode).isEqualTo("F001")
@@ -147,7 +148,7 @@ class BPSFileRepositoryTest @Autowired constructor(var fileRepository: BPSFileRe
         assertThat(result.reasonCode).isEqualTo("F001")
         assertThat(result.noOfBatches).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
-        assertThat(result.messageDirection).isEqualTo("INPUT")
+        assertThat(result.messageDirection).isEqualTo(MessageReferenceDirection.SENDING)
         assertThat(result.status).isEqualTo("ACK")
         assertThat(result.createdDate).isEqualTo(date)
     }

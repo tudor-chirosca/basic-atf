@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.dto.file;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,8 @@ public class FileDetailsDto {
   @JsonInclude(Include.NON_EMPTY)
   private final String reasonCode;
   private final String messageType;
+  private final MessageReferenceDirection messageDirection;
   private final EnquirySenderDetailsDto sender;
+  private final EnquirySenderDetailsDto receiver;
+
 }

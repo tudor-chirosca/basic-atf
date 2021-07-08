@@ -254,10 +254,12 @@ public interface DTOMapper {
       @Mapping(target = "createdAt", source = "file.createdDate"),
       @Mapping(target = "settlementCycleId", source = "file.settlementCycle"),
       @Mapping(target = "nrOfBatches", source = "file.noOfBatches"),
-      @Mapping(target = "sender.entityName", source = "participant.name"),
-      @Mapping(target = "sender.entityBic", source = "participant.bic")
+      @Mapping(target = "sender.entityName", source = "sender.name"),
+      @Mapping(target = "sender.entityBic", source = "sender.bic"),
+      @Mapping(target = "receiver.entityName", source = "receiver.name"),
+      @Mapping(target = "receiver.entityBic", source = "receiver.bic")
   })
-  FileDetailsDto toDto(File file, Participant participant);
+  FileDetailsDto toDto(File file, Participant sender, Participant receiver);
 
   @Mappings({
       @Mapping(target = "id", source = "batchId")
