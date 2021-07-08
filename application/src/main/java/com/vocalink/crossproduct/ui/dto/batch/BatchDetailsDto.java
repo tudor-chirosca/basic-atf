@@ -2,8 +2,10 @@ package com.vocalink.crossproduct.ui.dto.batch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
+import com.vocalink.crossproduct.ui.dto.file.EnquiryUserDetailsDto;
 import java.time.ZonedDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,5 +25,7 @@ public class BatchDetailsDto {
   @JsonInclude(Include.NON_EMPTY)
   private final String reasonCode;
   private final String messageType;
-  private final EnquirySenderDetailsDto sender;
+  private final MessageReferenceDirection messageDirection;
+  private final EnquiryUserDetailsDto sender;
+  private final EnquiryUserDetailsDto receiver;
 }

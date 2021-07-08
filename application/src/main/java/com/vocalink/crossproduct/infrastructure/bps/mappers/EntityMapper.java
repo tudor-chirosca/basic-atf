@@ -164,6 +164,11 @@ public interface EntityMapper {
       @Mapping(target = "settlementCycleId", source = "settlementCycle"),
       @Mapping(target = "nrOfTransactions", source = "numberOfTransactions"),
       @Mapping(target = "createdAt", source = "sentDateAndTime"),
+      @Mapping(target = "senderBank", source = "instructingAgentName"),
+      @Mapping(target = "senderBic", source = "instructingAgent"),
+      @Mapping(target = "receiverBank", source = "instructedAgentName"),
+      @Mapping(target = "receiverBic", source = "instructedAgent"),
+      @Mapping(target = "messageDirection", source = "messageDirection", qualifiedByName = "convertToMessageDirection")
   })
   Batch toEntity(BPSBatchDetailed batch);
 

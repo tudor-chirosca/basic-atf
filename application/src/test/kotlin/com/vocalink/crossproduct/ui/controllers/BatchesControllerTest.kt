@@ -2,13 +2,14 @@ package com.vocalink.crossproduct.ui.controllers
 
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
 import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDetailsDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
+import com.vocalink.crossproduct.ui.dto.file.EnquiryUserDetailsDto
 import com.vocalink.crossproduct.ui.facade.api.BatchesFacade
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -57,9 +58,14 @@ class BatchesControllerTest : ControllerTest() {
             "createdAt": "2020-10-30T10:10:10Z",
             "status": "Accepted",
             "messageType": "prtp.001SO",
+            "messageDirection": "Sending",
             "sender": {
                 "entityName": "Nordea Bank",
                 "entityBic": "NDEASESSXXX"
+            },
+            "receiver": {
+                "entityName": "SWEDBB Bank",
+                "entityBic": "SWEDENBB"
             }
         }"""
     }
@@ -339,10 +345,18 @@ class BatchesControllerTest : ControllerTest() {
                 .createdAt(dateTime)
                 .status("Accepted")
                 .messageType("prtp.001SO")
-                .sender(EnquirySenderDetailsDto.builder()
+                .messageDirection(MessageReferenceDirection.SENDING)
+                .sender(
+                    EnquiryUserDetailsDto.builder()
                         .entityName("Nordea Bank")
                         .entityBic("NDEASESSXXX")
                         .build())
+                .receiver(
+                    EnquiryUserDetailsDto.builder()
+                        .entityName("SWEDBB Bank")
+                        .entityBic("SWEDENBB")
+                        .build()
+                )
                 .build()
         `when`(batchesFacade.getDetailsById(any(), any(), any())).thenReturn(details)
         mockMvc.perform(get("/enquiry/batches/$id")

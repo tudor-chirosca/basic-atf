@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.domain.batch;
 
 import java.time.ZonedDateTime;
+
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +21,9 @@ public class Batch {
   private final String status;
   private final String reasonCode;
   private final String messageType;
+  private final MessageReferenceDirection messageDirection;
   private final String senderBank;
   private final String senderBic;
-  private final String senderIban;
+  private final String receiverBank;
   private final String receiverBic;
 }

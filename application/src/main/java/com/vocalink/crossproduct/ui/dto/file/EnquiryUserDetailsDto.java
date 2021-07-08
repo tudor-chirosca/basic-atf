@@ -11,7 +11,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString
-public class EnquirySenderDetailsDto {
+public class EnquiryUserDetailsDto {
 
   private final String entityName;
   private final String entityBic;

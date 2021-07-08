@@ -255,6 +255,7 @@ class EntityMapperTest {
             "batchId",
             10,
             "messageType",
+            "output",
             ZonedDateTime.of(2020, Month.JULY.value, 12, 12, 12, 0, 0, ZoneId.of("UTC")),
             "status",
             "reasonCode",
@@ -263,7 +264,8 @@ class EntityMapperTest {
             "fileName",
             "bank",
             "bic",
-            "iban"
+            "bank1",
+            "bic1"
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.batchId).isEqualTo(bps.batchId)
@@ -275,6 +277,12 @@ class EntityMapperTest {
         assertThat(entity.status).isEqualTo(bps.status)
         assertThat(entity.reasonCode).isEqualTo(bps.reasonCode)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.messageDirection).isEqualTo(MessageReferenceDirection.RECEIVING)
+        assertThat(entity.senderBank).isEqualTo(bps.instructingAgentName)
+        assertThat(entity.senderBic).isEqualTo(bps.instructingAgent)
+        assertThat(entity.receiverBank).isEqualTo(bps.instructedAgentName)
+        assertThat(entity.receiverBic).isEqualTo(bps.instructedAgent)
+
     }
 
     @Test

@@ -61,7 +61,7 @@ import com.vocalink.crossproduct.ui.dto.broadcasts.BroadcastDto;
 import com.vocalink.crossproduct.ui.dto.configuration.ConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto;
+import com.vocalink.crossproduct.ui.dto.file.EnquiryUserDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODataDto;
@@ -274,7 +274,8 @@ public interface DTOMapper {
       @Mapping(target = "settlementDate", source = "batch.settlementDate"),
       @Mapping(target = "sender.entityName", source = "batch.senderBank"),
       @Mapping(target = "sender.entityBic", source = "batch.senderBic"),
-      @Mapping(target = "sender.iban", source = "batch.senderIban")
+      @Mapping(target = "receiver.entityName", source = "batch.receiverBank"),
+      @Mapping(target = "receiver.entityBic", source = "batch.receiverBic"),
   })
   BatchDetailsDto toDetailsDto(Batch batch);
 
@@ -357,7 +358,7 @@ public interface DTOMapper {
   })
   TransactionDetailsDto toDetailsDto(Transaction transaction);
 
-  EnquirySenderDetailsDto toDto(EnquirySenderDetails senderDetails);
+  EnquiryUserDetailsDto toDto(EnquirySenderDetails senderDetails);
 
   AlertPriorityDataDto toDto(AlertPriorityData priorityData);
 

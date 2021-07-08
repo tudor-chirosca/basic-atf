@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.ui.config.ControllerFeatures
 import com.vocalink.crossproduct.ui.dto.DefaultDtoConfiguration.getDefault
 import com.vocalink.crossproduct.ui.dto.DtoProperties
 import com.vocalink.crossproduct.ui.dto.PageDto
-import com.vocalink.crossproduct.ui.dto.file.EnquirySenderDetailsDto
+import com.vocalink.crossproduct.ui.dto.file.EnquiryUserDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto
 import com.vocalink.crossproduct.ui.dto.file.FileDto
 import com.vocalink.crossproduct.ui.facade.api.FilesFacade
@@ -322,11 +322,11 @@ class FilesControllerTest : ControllerTest() {
     @Test
     fun `should return 200 on get file by Id`() {
         val id = "A27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800103.gz"
-        val sender = EnquirySenderDetailsDto.builder()
+        val sender = EnquiryUserDetailsDto.builder()
             .entityName("Nordea Bank")
             .entityBic("NDEASESSXXX")
             .build()
-        val receiver = EnquirySenderDetailsDto.builder()
+        val receiver = EnquiryUserDetailsDto.builder()
             .entityName("AABA Bank")
             .entityBic("AABASESSXXX")
             .build()

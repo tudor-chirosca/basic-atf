@@ -284,6 +284,7 @@ class DTOMapperTest {
                 )
             )
             .messageType("message_type")
+            .messageDirection(SENDING)
             .batchId("id")
             .nrOfTransactions(12)
             .senderBic("sender_bic")
@@ -303,6 +304,7 @@ class DTOMapperTest {
         assertThat(result.reasonCode).isEqualTo(batch.reasonCode)
         assertThat(result.settlementDate).isEqualTo(batch.settlementDate)
         assertThat(result.messageType).isEqualTo(batch.messageType)
+        assertThat(result.messageDirection).isEqualTo(batch.messageDirection)
         assertThat(result.sender.entityBic).isEqualTo(batch.senderBic)
     }
 

@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.batch.BatchEnquirySearchCriteria
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -67,13 +68,13 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
             "fileName": "G27ISTXBANKSESSXXX201911320191113135321990.NCTSEK_PACS00800107.gz",
             "sentDateAndTime": "2020-10-23T13:43:00Z",
             "messageType": "prtp.005-prtp.006",
+            "messageDirection": "input",
             "status": "Accepted",
             "reasonCode": null,
             "settlementCycle": "02",
             "settlementDate": "2020-11-03T16:58:19Z",
-            "senderBank": "Nordea Bank",
-            "senderBic": "NDEASESSXXX",
-            "senderIban": "SE91 9500 0099 6042 0638 7369"
+            "instructingAgentName": "Nordea Bank",
+            "instructingAgent": "NDEASESSXXX"
        }
     """
     }
@@ -131,6 +132,7 @@ class BPSBatchRepositoryTest @Autowired constructor(var batchRepository: BPSBatc
         assertThat(result.reasonCode).isNull()
         assertThat(result.nrOfTransactions).isEqualTo(12)
         assertThat(result.messageType).isEqualTo("prtp.005-prtp.006")
+        assertThat(result.messageDirection).isEqualTo(MessageReferenceDirection.SENDING)
         assertThat(result.status).isEqualTo("Accepted")
     }
 

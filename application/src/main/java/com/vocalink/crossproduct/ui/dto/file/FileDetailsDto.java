@@ -25,7 +25,7 @@ public class FileDetailsDto {
   private final String reasonCode;
   private final String messageType;
   private final MessageReferenceDirection messageDirection;
-  private final EnquirySenderDetailsDto sender;
-  private final EnquirySenderDetailsDto receiver;
+  private final EnquiryUserDetailsDto sender;
+  private final EnquiryUserDetailsDto receiver;
 
 }
