@@ -1,17 +1,19 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
+import static org.apache.commons.lang3.EnumUtils.getEnumIgnoreCase;
+
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
+import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Getter
 @Setter
@@ -38,5 +40,14 @@ public class BPSProperties {
 
     private String base;
     private String path;
+  }
+
+  @PostConstruct
+  protected void validateLoadedSchemeCode() {
+    final String stringEnum = schemeCode.replace("-", "_");
+
+    if (getEnumIgnoreCase(BPSSchema.class, stringEnum) == null) {
+      throw new InfrastructureException("Invalid scheme name provided: " + stringEnum);
+    }
   }
 }

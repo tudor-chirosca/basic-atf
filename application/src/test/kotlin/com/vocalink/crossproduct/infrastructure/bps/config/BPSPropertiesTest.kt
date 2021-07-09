@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
+import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -24,4 +26,13 @@ class BPSPropertiesTest @Autowired constructor(private var props: BPSProperties)
         assertThat(props.currencies).isInstanceOf(Map::class.java)
     }
 
+    @Test
+    fun `should throw exception with wrong schema values`() {
+        val invalidSchemeName = "INVALID_SCHEMA"
+        props.schemeCode = invalidSchemeName
+
+        assertThatExceptionOfType(InfrastructureException::class.java)
+                .isThrownBy { props.validateLoadedSchemeCode() }
+                .withMessage("Invalid scheme name provided: $invalidSchemeName")
+    }
 }
