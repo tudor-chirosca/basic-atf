@@ -19,6 +19,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
@@ -153,7 +154,7 @@ public class SystemPresenter implements Presenter {
 
   @Override
   public List<ParticipantReferenceDto> presentParticipantReferences(
-      List<Participant> participants) {
+      List<Participant> participants, List<ParticipantType> participantTypes) {
     throw new RuntimeException("System API not implemented yet");
   }
 

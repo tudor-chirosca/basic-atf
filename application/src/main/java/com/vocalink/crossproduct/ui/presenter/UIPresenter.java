@@ -32,6 +32,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
@@ -94,9 +95,11 @@ import com.vocalink.crossproduct.ui.presenter.mapper.DTOMapper;
 import java.io.InputStream;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -335,8 +338,16 @@ public class UIPresenter implements Presenter {
 
   @Override
   public List<ParticipantReferenceDto> presentParticipantReferences(
-      List<Participant> participants) {
+      List<Participant> participants, List<ParticipantType> participantTypes) {
+    final List<Predicate<Participant>> filterByParticipantTypes = new ArrayList<>();
+
+    if(!participantTypes.isEmpty()) {
+      filterByParticipantTypes.add(participant -> participantTypes
+          .contains(participant.getParticipantType()));
+    }
+
     return participants.stream()
+        .filter(filterByParticipantTypes.stream().reduce(x -> true, Predicate::and))
         .map(MAPPER::toReferenceDto)
         .sorted(comparing((ParticipantReferenceDto p) -> !p.getParticipantType()
             .equals(SCHEME_OPERATOR.getDescription()))

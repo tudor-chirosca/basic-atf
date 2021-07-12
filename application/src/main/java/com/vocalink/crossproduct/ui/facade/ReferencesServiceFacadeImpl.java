@@ -6,10 +6,12 @@ import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
+import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
@@ -17,10 +19,13 @@ import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -30,19 +35,32 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
+  private final Environment environment;
 
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String product,
-      ClientType clientType) {
-    log.info("Fetching participant references for: {}, from: {}", clientType, product);
+      ClientType clientType, String destination) {
+    log.info("Fetching participant references for: {}, from: {}, with: {} destination", clientType,
+        product, destination);
 
-    final List<Participant> participants = repositoryFactory
-        .getParticipantRepository(product)
-        .findAll()
-        .getItems();
+    final String participantTypeCsv = destination == null ? null :
+        environment.getProperty(DestinationType.valueOf(destination).getPropertyKey());
+
+    final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
+        .findAll().getItems();
 
     return presenterFactory.getPresenter(clientType)
-        .presentParticipantReferences(participants);
+        .presentParticipantReferences(participants, getParticipantTypes(participantTypeCsv));
+  }
+
+  private List<ParticipantType> getParticipantTypes(String participantTypeCsv) {
+    if(participantTypeCsv != null) {
+      return Arrays
+          .stream(participantTypeCsv.split(","))
+          .map(ParticipantType::valueOf)
+          .collect(toList());
+    }
+    return Collections.emptyList();
   }
 
   @Override

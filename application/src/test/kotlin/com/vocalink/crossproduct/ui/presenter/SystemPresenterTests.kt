@@ -7,6 +7,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats
 import com.vocalink.crossproduct.domain.batch.Batch
 import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.io.IODashboard
+import com.vocalink.crossproduct.domain.participant.ParticipantType.*
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.mocks.MockParticipants
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -74,7 +75,7 @@ class SystemPresenterTests {
     @Test
     fun `should throw RuntimeException on present participant references for System`() {
         assertThrows(RuntimeException::class.java) {
-            systemPresenter.presentParticipantReferences(emptyList())
+            systemPresenter.presentParticipantReferences(emptyList(), listOf(DIRECT))
         }
     }
 

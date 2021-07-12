@@ -129,3 +129,14 @@ bps-config:
   eod-period:
     start: "18:00"
     end: "19:00"
+
+  destination:
+    alerts-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING,SCHEME_OPERATOR
+    file-enquiries-participant-types: DIRECT,FUNDED,DIRECT_FUNDING,TPSP
+    batch-enquiries-participant-types: DIRECT,FUNDED,DIRECT_FUNDING
+    transaction-enquiries-participant-types: DIRECT,FUNDED,DIRECT_FUNDING
+    settlement-enquiry-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING
+    audit-log-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING,SCHEME_OPERATOR
+    reports-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING,SCHEME_OPERATOR
+    approvals-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING,SCHEME_OPERATOR
+    broadcasts-participant-types: DIRECT,FUNDING,FUNDED,DIRECT_FUNDING,SCHEME_OPERATOR

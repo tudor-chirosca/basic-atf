@@ -15,7 +15,7 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
-import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.participant.ParticipantType.*
 import com.vocalink.crossproduct.domain.permission.UIPermission
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
@@ -327,7 +327,7 @@ class UIPresenterTest {
                         .name("Svenska Handelsbanken")
                         .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
                         .status(ParticipantStatus.SUSPENDED)
-                        .participantType(ParticipantType.DIRECT)
+                        .participantType(DIRECT)
                         .build(),
                 Participant.builder()
                         .id("NDEASESSXXX")
@@ -336,7 +336,7 @@ class UIPresenterTest {
                         .name("Nordea")
                         .suspendedTime(null)
                         .status(ParticipantStatus.ACTIVE)
-                        .participantType(ParticipantType.DIRECT)
+                        .participantType(DIRECT)
                         .build()
         )
 
@@ -435,12 +435,13 @@ class UIPresenterTest {
     }
 
     @Test
-    fun `should get participant references sorted by name`() {
+    fun `should get participant references sorted by name and filtered by participant types`() {
         val name0 = "Aaa"
         val name1 = "Bbb"
         val name2 = "Ccc"
         val id = "id"
-        val participantType = ParticipantType.DIRECT
+        val participantTypes = listOf(DIRECT, FUNDING)
+        val participantType = DIRECT
         val model = listOf(
                 Participant.builder()
                         .id(id)
@@ -459,21 +460,21 @@ class UIPresenterTest {
                         .build()
         )
 
-        val result = uiPresenter.presentParticipantReferences(model)
+        val result = uiPresenter.presentParticipantReferences(model, participantTypes)
 
         assertThat(result.map { e -> e.name }).containsExactly(name0, name1, name2)
     }
 
     @Test
-    fun `should get P27 as first participant references sorted by name`() {
+    fun `should get P27 as first participant references sorted by name and filtered by participant types`() {
         val name1 = "Aaa"
         val name2 = "Bbb"
         val name0 = "P27"
         val id = "id"
-
-        val pTypeDirect = ParticipantType.DIRECT
-        val pTypeFunding = ParticipantType.FUNDING
-        val pTypeScheme = ParticipantType.SCHEME_OPERATOR
+        val participantTypes = listOf(DIRECT, FUNDING)
+        val pTypeDirect = DIRECT
+        val pTypeFunding = FUNDING
+        val pTypeScheme = SCHEME_OPERATOR
 
         val model = listOf(
                 Participant.builder()
@@ -493,9 +494,9 @@ class UIPresenterTest {
                         .build()
         )
 
-        val result = uiPresenter.presentParticipantReferences(model)
+        val result = uiPresenter.presentParticipantReferences(model, participantTypes)
 
-        assertThat(result.map { e -> e.name }).containsExactly(name0, name1, name2)
+        assertThat(result.map { e -> e.name }).containsExactly(name1, name2)
     }
 
     @Test
@@ -546,7 +547,7 @@ class UIPresenterTest {
         val id = "NDEASESSXXX"
         val nordea = "Nordea"
         val seb = "SEB Bank"
-        val participantType = ParticipantType.DIRECT
+        val participantType = DIRECT
         val alerts = listOf(
                 Alert.builder()
                         .alertId(3141)

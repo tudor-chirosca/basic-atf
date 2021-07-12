@@ -1,7 +1,11 @@
 package com.vocalink.crossproduct.ui.controllers;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import com.vocalink.crossproduct.ui.controllers.api.ReferenceApi;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
+import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
@@ -10,6 +14,7 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +31,16 @@ public class ReferenceController implements ReferenceApi {
   @GetMapping(value = "/reference/participants", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
       final @RequestHeader("client-type") ClientType clientType,
-      final @RequestHeader String context) {
+      final @RequestHeader String context,
+      final @RequestParam(value="destination", required = false) String destination) {
+
+    if(EnumUtils.getEnum(DestinationType.class, destination) == null && destination != null){
+      throw new ClientRequestException(BAD_REQUEST,
+          "Invalid destination value: " + destination);
+    }
 
     final List<ParticipantReferenceDto> participantReferenceDto = referencesServiceFacade
-        .getParticipantReferences(context.toUpperCase(), clientType);
+        .getParticipantReferences(context.toUpperCase(), clientType, destination);
 
     return ResponseEntity.ok().body(participantReferenceDto);
   }

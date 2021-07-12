@@ -14,6 +14,7 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
+import com.vocalink.crossproduct.domain.reference.DestinationType
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -35,6 +36,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.core.env.Environment
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -46,12 +48,14 @@ class ReferencesServiceFacadeImplTest {
     private val referencesRepository = mock(ReferencesRepository::class.java)!!
     private val repositoryFactory = mock(RepositoryFactory::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
+    private val environment = mock(Environment::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
     private val cycleRepository = mock(CycleRepository::class.java)
 
     private var referenceServiceFacadeImpl = ReferencesServiceFacadeImpl(
             repositoryFactory,
-            presenterFactory
+            presenterFactory,
+            environment
     )
 
     @BeforeEach
@@ -103,7 +107,7 @@ class ReferencesServiceFacadeImplTest {
         `when`(participantRepository.findAll())
                 .thenReturn(Page(3, participants))
 
-        referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI)
+        referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI, DestinationType.ALERTS.toString())
 
         verify(participantRepository, atLeastOnce()).findAll()
         verify(presenterFactory, atLeastOnce()).getPresenter(any())

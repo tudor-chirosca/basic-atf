@@ -46,6 +46,7 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         const val CLIENT_TYPE_HEADER = "client-type"
         const val REQUIRED_TYPE_PARAM = "type"
         const val REQUIRED_DATE_PARAM = "day"
+        const val NOT_REQUIRED_DESTINATION_PARAM = "destination"
 
         const val VALID_REF_RESPONSE = """[{
         "status": "Rejected",
@@ -130,11 +131,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, active, "P27")
         )
 
-        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI, "ALERTS"))
                 .thenReturn(participants)
+
         mockMvc.perform(get("/reference/participants")
                 .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .param(NOT_REQUIRED_DESTINATION_PARAM, "ALERTS"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_RESPONSE_WITH_PARTICIPANT_TYPE, true))
     }
@@ -151,11 +154,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val participants = listOf(participantReferenceDto, participantReferenceDto2)
 
-        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI, "ALERTS"))
                 .thenReturn(participants)
+
         mockMvc.perform(get("/reference/participants")
                 .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .param(NOT_REQUIRED_DESTINATION_PARAM, "ALERTS"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_RESPONSE_WITH_CON_PARTICIPANT, true))
     }
@@ -172,11 +177,13 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
 
         val participants = listOf(participantReferenceDto, participantReferenceDto2)
 
-        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI, "ALERTS"))
                 .thenReturn(participants)
+
         mockMvc.perform(get("/reference/participants")
                 .header(CONTEXT_HEADER, CONTEXT)
-                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+                .header(CLIENT_TYPE_HEADER, CLIENT_TYPE)
+                .param(NOT_REQUIRED_DESTINATION_PARAM, "ALERTS"))
                 .andExpect(status().isOk)
                 .andExpect(content().json(VALID_RESPONSE_WITH_SCHEME_CODE, true))
 
@@ -191,8 +198,9 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 ParticipantReferenceDto("HANDSESS", "Svenska Handelsbanken", directOnly, active,"P27")
         )
 
-        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI))
+        `when`(referencesServiceFacade.getParticipantReferences(CONTEXT, ClientType.UI, "ALERTS"))
                 .thenReturn(participants)
+
         mockMvc.perform(get("/reference/participants"))
                 .andExpect(status().is4xxClientError)
     }

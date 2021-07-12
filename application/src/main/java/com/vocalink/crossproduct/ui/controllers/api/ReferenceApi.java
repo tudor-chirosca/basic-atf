@@ -20,7 +20,7 @@ public interface ReferenceApi {
       @ApiResponse(code = 400, message = "Invalid context")
   })
   ResponseEntity<List<ParticipantReferenceDto>> getReferenceParticipants(
-      ClientType clientType, String context);
+      ClientType clientType, String context, String destination);
 
   @ApiOperation("Get statuses for an enquiry type")
   @ApiResponses({

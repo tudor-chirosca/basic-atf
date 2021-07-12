@@ -19,6 +19,7 @@ import com.vocalink.crossproduct.domain.io.IODashboard;
 import com.vocalink.crossproduct.domain.io.IODetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
+import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
@@ -111,7 +112,7 @@ public interface Presenter {
   PageDto<AlertDto> presentAlert(Page<Alert> alerts);
 
   List<ParticipantReferenceDto> presentParticipantReferences(
-      List<Participant> participants);
+      List<Participant> participants, List<ParticipantType> participantTypes);
 
   List<ReasonCodeReferenceDto> presentReasonCodeReferences(
       Validation reasonCodeReference,
