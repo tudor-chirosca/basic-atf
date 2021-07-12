@@ -180,8 +180,8 @@ pipeline {
                     environment {
                         envVars = "-e BPS_CONFIG.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e BPS.BASE_URLS.MOCK=http://positions-mock-server:8080/positions-mock-server -e SPRING_PROFILES_ACTIVE=preprod -e JAVA_OPTS='-Xmx2g'"
                         dockerArgs = "--network cpp-network -d -p 8080:8080 -v /root/tomcat/context.xml:/usr/local/tomcat/conf/context.xml ${envVars}"
-                        dockerArgsP27 += " -e BPS_CONFIG_SCHEMECODE=P27-SEK ${dockerArgs}"
-                        dockerArgsSAMA += " -e BPS_CONFIG_SCHEMECODE=SAMA-SAR ${dockerArgs}"
+                        dockerArgsP27 = " -e BPS_CONFIG_SCHEMECODE=P27-SEK ${dockerArgs}"
+                        dockerArgsSAMA = " -e BPS_CONFIG_SCHEMECODE=SAMA-SAR ${dockerArgs}"
                     }
                     parallel {
                         stage("Deploy to P27 DEV") {
