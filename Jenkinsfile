@@ -186,13 +186,14 @@ pipeline {
                             steps {
                                 script {
                                     echo "Deploying ${env.gitTag} to ${DEV_IP}"
-                                    
+                                    dockerArgsP27 += " -e BPS_CONFIG_SCHEMECODE=P27-SEK ${dockerArgs}"
+
                                     deployContainer(
                                             containerName: projectName,
                                             deployHost: DEV_IP,
                                             repoType: repoType,
-                                            dockerArgs: dockerArgs,
-                                            imageTag: env.gitTag
+                                            dockerArgs: dockerArgsP27,
+                                            imageTag: env.gitTag                                            
                                     )
 
                                     environmentDashboard (
@@ -212,12 +213,13 @@ pipeline {
                             steps {
                                 script {
                                     echo "Deploying ${env.gitTag} to ${DEV_SAMA_IP}"
-                                    
+                                    dockerArgsSAMA += " -e BPS_CONFIG_SCHEMECODE=SAMA-SAR ${dockerArgs}"
+
                                     deployContainer(
                                             containerName: projectName,
                                             deployHost: DEV_SAMA_IP,
                                             repoType: repoType,
-                                            dockerArgs: dockerArgs,
+                                            dockerArgs: dockerArgsSAMA,
                                             imageTag: env.gitTag
                                     )
 
