@@ -27,10 +27,10 @@ public class RoutingRecordFacadeImpl implements RoutingRecordFacade {
 
   @Override
   public PageDto<RoutingRecordDto> getPaginated(String product, ClientType clientType,
-      RoutingRecordRequest requestDto, String bic) {
-    log.info("Fetching routing records bic: {} for: {}, from: {}", bic, clientType, product);
+      RoutingRecordRequest requestDto, String participantId) {
+    log.info("Fetching routing records bic: {} for: {}, from: {}", participantId, clientType, product);
 
-    final RoutingRecordCriteria request = MAPPER.toEntity(requestDto, bic);
+    final RoutingRecordCriteria request = MAPPER.toEntity(requestDto, participantId);
 
     final Page<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
         .findPaginated(request);

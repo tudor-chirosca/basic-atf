@@ -32,7 +32,7 @@ class BatchEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on missing msg_direction`() {
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setCycle_id("20190212004")
 
         val result = ArrayList(validator.validate(request))
@@ -43,7 +43,7 @@ class BatchEnquirySearchRequestValidationTest {
 
     @Test
     fun `should fail on missing cicle_id or date_from, date_to`() {
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setMsg_direction("Sending")
 
         val result = ArrayList(validator.validate(request))
@@ -56,7 +56,7 @@ class BatchEnquirySearchRequestValidationTest {
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
         request.setCycle_id("20190212004")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.id = "i*d"
 
         val result = ArrayList(validator.validate(request))
@@ -68,7 +68,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should pass on good id regex`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.id = "*blah"
         request.setCycle_id("20190212004")
 
@@ -80,7 +80,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on earlier then DAYS_LIMIT`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setDate_from(ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString())
         request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
@@ -94,7 +94,7 @@ class BatchEnquirySearchRequestValidationTest {
     @Test
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setCycle_id("20190212004")
         request.limit = 0
 

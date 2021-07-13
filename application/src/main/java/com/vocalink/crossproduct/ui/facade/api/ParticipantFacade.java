@@ -11,6 +11,6 @@ public interface ParticipantFacade {
   PageDto<ManagedParticipantDto> getPaginated(String product, ClientType clientType,
       ManagedParticipantsSearchRequest requestDto, String requestedParticipantId);
 
-  ManagedParticipantDetailsDto getById(String product, ClientType clientType, String bic,
+  ManagedParticipantDetailsDto getById(String product, ClientType clientType, String participantId,
       String requestedParticipantId);
 }

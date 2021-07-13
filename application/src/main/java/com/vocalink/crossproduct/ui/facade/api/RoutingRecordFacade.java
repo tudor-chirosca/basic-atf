@@ -8,5 +8,5 @@ import com.vocalink.crossproduct.ui.presenter.ClientType;
 public interface RoutingRecordFacade {
 
   PageDto<RoutingRecordDto> getPaginated(String product, ClientType clientType,
-      RoutingRecordRequest requestDto, String bic);
+      RoutingRecordRequest requestDto, String participantId);
 }

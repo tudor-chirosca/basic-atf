@@ -368,8 +368,8 @@ public interface EntityMapper {
       @Mapping(target = "dateTo", source = "request.dateTo"),
       @Mapping(target = "cycleId", source = "request.cycleId"),
       @Mapping(target = "messageType", source = "request.messageType"),
-      @Mapping(target = "sendingBic", source = "request.sendingBic"),
-      @Mapping(target = "receivingBic", source = "request.receivingBic"),
+      @Mapping(target = "sendingParticipant", source = "request.sendingParticipant"),
+      @Mapping(target = "receivingParticipant", source = "request.receivingParticipant"),
       @Mapping(target = "debtor", source = "request.debtor"),
       @Mapping(target = "creditor", source = "request.creditor"),
       @Mapping(target = "status", source = "request.status"),
@@ -518,9 +518,9 @@ public interface EntityMapper {
   RoutingRecord toEntity(BPSRoutingRecord routingRecord);
 
   @Mappings({
-      @Mapping(target = "bic", source = "bic")
+      @Mapping(target = "participantId", source = "participantId")
   })
-  RoutingRecordCriteria toEntity(RoutingRecordRequest request, String bic);
+  RoutingRecordCriteria toEntity(RoutingRecordRequest request, String participantId);
 
   @Mappings({
       @Mapping(target = "requestType", source = "requestType", qualifiedByName = "convertApprovalRequestType")

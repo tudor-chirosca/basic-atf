@@ -38,8 +38,8 @@ public class TransactionEnquirySearchRequest {
   private final ZonedDateTime dateTo;
   private final String cycleId;
   private final String messageType;
-  private final String sendingBic;
-  private final String receivingBic;
+  private final String sendingParticipant;
+  private final String receivingParticipant;
   @Pattern(regexp="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3})?", message= "Invalid debtor regex!")
   private final String debtor;
   @Pattern(regexp="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3})?", message= "Invalid creditor regex!")
@@ -63,8 +63,8 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "dateTo") ZonedDateTime dateTo,
       @JsonProperty(value = "cycleId") String cycleId,
       @JsonProperty(value = "messageType") String messageType,
-      @JsonProperty(value = "sendingBic") String sendingBic,
-      @JsonProperty(value = "receivingBic") String receivingBic,
+      @JsonProperty(value = "sendingParticipant") String sendingParticipant,
+      @JsonProperty(value = "receivingParticipant") String receivingParticipant,
       @JsonProperty(value = "debtor") String debtor,
       @JsonProperty(value = "creditor") String creditor,
       @JsonProperty(value = "status") String status,
@@ -84,8 +84,8 @@ public class TransactionEnquirySearchRequest {
     this.debtor = debtor;
     this.creditor = creditor;
     this.messageType = messageType;
-    this.sendingBic = sendingBic;
-    this.receivingBic = receivingBic;
+    this.sendingParticipant = sendingParticipant;
+    this.receivingParticipant = receivingParticipant;
     this.status = status;
     this.reasonCode = reasonCode;
     this.id = id;

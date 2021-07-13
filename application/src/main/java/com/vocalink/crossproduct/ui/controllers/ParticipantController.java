@@ -50,17 +50,17 @@ public class ParticipantController implements ParticipantApi {
   }
 
   @Auditable(type = VIEW_PARTICIPANT_MNG_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
-  @GetMapping(value = "/participants/{bic}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/participants/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ManagedParticipantDetailsDto> getManagedParticipantDetails(
       @RequestHeader("client-type") ClientType clientType,
       @RequestHeader String context,
-      @PathVariable String bic,
+      @PathVariable String participantId,
       final HttpServletRequest httpServletRequest) {
 
     final String requestedParticipant = httpServletRequest.getHeader(X_PARTICIPANT_ID_HEADER);
 
     final ManagedParticipantDetailsDto managedParticipantDetailsDto = participantFacade
-        .getById(context, clientType, bic, requestedParticipant);
+        .getById(context, clientType, participantId, requestedParticipant);
 
     return ResponseEntity.ok().body(managedParticipantDetailsDto);
   }

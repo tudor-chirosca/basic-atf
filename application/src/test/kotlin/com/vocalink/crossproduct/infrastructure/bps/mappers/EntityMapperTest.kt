@@ -657,7 +657,7 @@ class EntityMapperTest {
         request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
         request.setMsg_direction("sending")
         request.setMsg_type("msg_type")
-        request.setParticipant_bic("participant_bic")
+        request.setParticipant_id("participant_bic")
         request.setReason_code("reason_code")
         request.setCycle_id("cycle1")
 
@@ -671,7 +671,7 @@ class EntityMapperTest {
         assertThat(entity.cycleId).isEqualTo(request.cycleId)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.participantBic).isEqualTo(request.participantBic)
+        assertThat(entity.participantId).isEqualTo(request.participantId)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
@@ -693,7 +693,7 @@ class EntityMapperTest {
         request.setDate_to(ZonedDateTime.now(ZoneId.of("UTC")).toString())
         request.setMsg_direction("msg_direction")
         request.setMsg_type("msg_type")
-        request.setParticipant_bic("participant_bic")
+        request.setParticipant_id("participant_bic")
         request.setReason_code("reason_code")
         request.setCycle_id("cycle1")
 
@@ -705,7 +705,7 @@ class EntityMapperTest {
         assertThat(entity.dateTo).isEqualTo(request.dateTo)
         assertThat(entity.messageDirection).isEqualTo(request.messageDirection)
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.participantBic).isEqualTo(request.participantBic)
+        assertThat(entity.participantId).isEqualTo(request.participantId)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.id).isEqualTo(request.id)
@@ -746,8 +746,8 @@ class EntityMapperTest {
             0, 0, listOf("sortBy"), date, date,
             "cycleId",
             "messageType",
-            "sendingBic",
-            "receivingBic",
+            "sendingParticipant",
+            "receivingParticipant",
             "debtor",
             "creditor",
             "status",
@@ -765,8 +765,8 @@ class EntityMapperTest {
         assertThat(criteria.dateTo).isEqualTo(request.dateTo)
         assertThat(criteria.cycleId).isEqualTo(request.cycleId)
         assertThat(criteria.messageType).isEqualTo(request.messageType)
-        assertThat(criteria.sendingBic).isEqualTo(request.sendingBic)
-        assertThat(criteria.receivingBic).isEqualTo(request.receivingBic)
+        assertThat(criteria.sendingParticipant).isEqualTo(request.sendingParticipant)
+        assertThat(criteria.receivingParticipant).isEqualTo(request.receivingParticipant)
         assertThat(criteria.creditor).isEqualTo(request.creditor)
         assertThat(criteria.debtor).isEqualTo(request.debtor)
         assertThat(criteria.status).isEqualTo(request.status)
@@ -824,13 +824,13 @@ class EntityMapperTest {
         request.limit = 20
         request.offset = 0
         request.sort = listOf("someValue1", "someValue2")
-        val bic = "bic"
+        val participantId = "bic"
 
-        val result = MAPPER.toEntity(request, bic)
+        val result = MAPPER.toEntity(request, participantId)
         assertThat(result.limit).isEqualTo(request.limit)
         assertThat(result.offset).isEqualTo(request.offset)
         assertThat(result.sort).isEqualTo(request.sort)
-        assertThat(result.bic).isEqualTo(bic)
+        assertThat(result.participantId).isEqualTo(participantId)
     }
 
     @Test

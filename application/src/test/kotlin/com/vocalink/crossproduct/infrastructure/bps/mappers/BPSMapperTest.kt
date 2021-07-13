@@ -71,7 +71,7 @@ class BPSMapperTest {
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo("input")
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.instructingAgent).isEqualTo(request.participantBic)
+        assertThat(entity.instructingAgent).isEqualTo(request.participantId)
         assertThat(entity.instructedAgent).isNull()
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
@@ -129,7 +129,7 @@ class BPSMapperTest {
         assertThat(entity.messageDirection).isEqualTo("output")
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.instructingAgent).isNull()
-        assertThat(entity.instructedAgent).isEqualTo(request.participantBic)
+        assertThat(entity.instructedAgent).isEqualTo(request.participantId)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -159,7 +159,7 @@ class BPSMapperTest {
         assertThat(entity.createdToDate).isNull()
         assertThat(entity.messageDirection).isEqualTo("input")
         assertThat(entity.messageType).isEqualTo(request.messageType)
-        assertThat(entity.sendingParticipant).isEqualTo(request.participantBic)
+        assertThat(entity.sendingParticipant).isEqualTo(request.participantId)
         assertThat(entity.receivingParticipant).isNull()
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
@@ -218,7 +218,7 @@ class BPSMapperTest {
         assertThat(entity.messageDirection).isEqualTo("output")
         assertThat(entity.messageType).isEqualTo(request.messageType)
         assertThat(entity.sendingParticipant).isNull()
-        assertThat(entity.receivingParticipant).isEqualTo(request.participantBic)
+        assertThat(entity.receivingParticipant).isEqualTo(request.participantId)
         assertThat(entity.status).isEqualTo(request.status)
         assertThat(entity.reasonCode).isEqualTo(request.reasonCode)
         assertThat(entity.identifier).isEqualTo(request.id)
@@ -275,8 +275,8 @@ class BPSMapperTest {
         assertNull(request.createdDateTo)
         assertThat(request.sessionInstanceId).isEqualTo(criteria.cycleId)
         assertThat(request.messageType).isEqualTo(criteria.messageType)
-        assertThat(request.sendingParticipant).isEqualTo(criteria.sendingBic)
-        assertThat(request.receivingParticipant).isEqualTo(criteria.receivingBic)
+        assertThat(request.sendingParticipant).isEqualTo(criteria.sendingParticipant)
+        assertThat(request.receivingParticipant).isEqualTo(criteria.receivingParticipant)
         assertThat(request.creditor).isEqualTo(criteria.creditor)
         assertThat(request.debtor).isEqualTo(criteria.debtor)
         assertThat(request.status).isEqualTo(criteria.status)
@@ -352,12 +352,12 @@ class BPSMapperTest {
 
     @Test
     fun `should map RoutingRecordCriteria fields`() {
-        val bic = "bic"
+        val participantId = "bic"
         val entity = RoutingRecordCriteria(
-            0, 10, listOf("someValue1", "someValue2"), bic
+            0, 10, listOf("someValue1", "someValue2"), participantId
         )
         val result = BPSMAPPER.toBps(entity)
-        assertThat(result.bic).isEqualTo(bic)
+        assertThat(result.participantId).isEqualTo(participantId)
         assertThat(result.limit).isEqualTo(entity.limit)
         assertThat(result.offset).isEqualTo(entity.offset)
         assertThat(result.sort).isEqualTo(entity.sort)

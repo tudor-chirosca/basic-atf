@@ -33,7 +33,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing msg_direction`() {
         request.setCycle_id("20190212004")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         val result = ArrayList(validator.validate(request))
 
         assertThat(result).isNotEmpty
@@ -43,7 +43,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on missing cicle_id or date_from, date_to `() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         val result = ArrayList(validator.validate(request))
 
         assertThat(result).isNotEmpty
@@ -53,7 +53,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail on bad id regex`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setCycle_id("20190212004")
         request.id = "i*d"
 
@@ -66,7 +66,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should pass on good id regex`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.id = "*blah"
         request.setCycle_id("20190212004")
 
@@ -81,7 +81,7 @@ class FileEnquirySearchRequestValidationTest {
         val dateFrom = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(
             (getDefault(DtoProperties.DAYS_LIMIT).toLong())+1).toString()
         val dateTo = ZonedDateTime.now(ZoneId.of("UTC")).toString()
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setDate_from(dateFrom)
         request.setDate_to(dateTo)
 
@@ -94,7 +94,7 @@ class FileEnquirySearchRequestValidationTest {
     @Test
     fun `should fail if limit less than 1`() {
         request.setMsg_direction("Sending")
-        request.setParticipant_bic("NDEASESSSX")
+        request.setParticipant_id("NDEASESSSX")
         request.setCycle_id("20190212004")
         request.limit = 0
 

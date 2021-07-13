@@ -22,16 +22,16 @@ public class RoutingRecordsController {
 
   private final RoutingRecordFacade routingRecordFacade;
 
-  @GetMapping(value = "/participants/{bic}/routing", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/participants/{participantId}/routing", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PageDto<RoutingRecordDto>> getRoutingRecords(
       @RequestHeader("client-type") ClientType clientType,
       @RequestHeader String context,
-      @PathVariable String bic,
+      @PathVariable String participantId,
       RoutingRecordRequest request) {
     log.debug("Request: {}", request);
 
     final PageDto<RoutingRecordDto> routingRecordsDto = routingRecordFacade
-        .getPaginated(context, clientType, request, bic);
+        .getPaginated(context, clientType, request, participantId);
 
     return ResponseEntity.ok().body(routingRecordsDto);
   }

@@ -23,13 +23,13 @@ import org.springframework.http.MediaType
 class BPSRoutingRepositoryTest @Autowired constructor(var routingRepository: BPSRoutingRepository,
                                                       var mockServer: WireMockServer) {
     companion object {
-        const val VALID_ROUTING_RECORDS_REQUEST: String = """ 
+        const val VALID_ROUTING_RECORDS_REQUEST: String = """
         {
             "offset": 0,
             "limit": 20,
             "sort": null,
-            "bic": "HANDSESS"
-        } 
+            "participantId": "HANDSESS"
+        }
         """
 
         const val VALID_ROUTING_RECORDS_RESULT_LIST_RESPONSE: String = """

@@ -18,7 +18,7 @@ public class BatchEnquirySearchCriteria {
   private final String cycleId;
   private final String messageDirection;
   private final String messageType;
-  private final String participantBic;
+  private final String participantId;
   private final String status;
   private final String reasonCode;
   private final String id;

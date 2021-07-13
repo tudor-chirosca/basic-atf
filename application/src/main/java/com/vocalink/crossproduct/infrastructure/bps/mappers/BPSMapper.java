@@ -94,13 +94,13 @@ public interface BPSMapper {
 
   @AfterMapping
   default void updateRequest(BatchEnquirySearchCriteria criteria, @MappingTarget BPSBatchEnquirySearchRequest request) {
-    if (criteria.getParticipantBic() == null || criteria.getParticipantBic().isEmpty()) {
+    if (criteria.getParticipantId() == null || criteria.getParticipantId().isEmpty()) {
       return;
     }
     if (criteria.getMessageDirection().equalsIgnoreCase("sending")) {
-      request.setInstructingAgent(criteria.getParticipantBic());
+      request.setInstructingAgent(criteria.getParticipantId());
     } else {
-      request.setInstructedAgent(criteria.getParticipantBic());
+      request.setInstructedAgent(criteria.getParticipantId());
     }
   }
 
@@ -129,13 +129,13 @@ public interface BPSMapper {
 
   @AfterMapping
   default void updateRequest(FileEnquirySearchCriteria criteria, @MappingTarget BPSFileEnquirySearchRequest request) {
-    if (criteria.getParticipantBic() == null || criteria.getParticipantBic().isEmpty()) {
+    if (criteria.getParticipantId() == null || criteria.getParticipantId().isEmpty()) {
       return;
     }
     if (criteria.getMessageDirection().equalsIgnoreCase("sending")) {
-      request.setSendingParticipant(criteria.getParticipantBic());
+      request.setSendingParticipant(criteria.getParticipantId());
     } else {
-      request.setReceivingParticipant(criteria.getParticipantBic());
+      request.setReceivingParticipant(criteria.getParticipantId());
     }
   }
 
@@ -160,8 +160,8 @@ public interface BPSMapper {
   @Mappings({
       @Mapping(target = "createdDateFrom", source = "dateFrom"),
       @Mapping(target = "createdDateTo", source = "dateTo"),
-      @Mapping(target = "sendingParticipant", source = "sendingBic"),
-      @Mapping(target = "receivingParticipant", source = "receivingBic"),
+      @Mapping(target = "sendingParticipant", source = "sendingParticipant"),
+      @Mapping(target = "receivingParticipant", source = "receivingParticipant"),
       @Mapping(target = "sessionInstanceId", source = "cycleId"),
       @Mapping(target = "instructionIdentifier", source = "id"),
       @Mapping(target = "transactionRangeFrom", source = "txnFrom", qualifiedByName = "mapToBpsAmount"),

@@ -82,14 +82,14 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
   @Override
   public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
-      String bic, String requestedParticipantId) {
-    log.info("Fetching details of managed participant id: {} bic: {} for: {}, from: {}",
-            requestedParticipantId, bic, clientType, product);
+      String participantId, String requestedParticipantId) {
+    log.info("Fetching details of managed participant id: {} participantId: {} for: {}, from: {}",
+        requestedParticipantId, participantId, clientType, product);
 
     final ParticipantRepository participantRepository = repositoryFactory
         .getParticipantRepository(product);
 
-    final Participant participant = participantRepository.findById(bic);
+    final Participant participant = participantRepository.findById(participantId);
 
     setFundedParticipants(participant, product);
 
@@ -97,16 +97,25 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         ? PARTICIPANT_SUSPEND
         : PARTICIPANT_UNSUSPEND;
 
-    Map<String, Approval> approvals = getApprovals(0, 1, product, singletonList(bic),
+    Map<String, Approval> approvals = getApprovals(0, 1, product, singletonList(participantId),
         requestedParticipantId, singletonList(requestType));
 
+    /**
+     * TODO In new contract updates - this will no longer be needed as BPS will
+     * return this in the aggregate calls
+     */
     final Account account = repositoryFactory.getAccountRepository(product)
-        .findByPartyCode(bic);
+        .findByPartyCode(participantId);
 
-    final ParticipantConfiguration configuration = participantRepository.findConfigurationById(bic);
+    final ParticipantConfiguration configuration = participantRepository.findConfigurationById(participantId);
 
     final Presenter presenter = presenterFactory.getPresenter(clientType);
     if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
+      /**
+       * TODO when porting to SAMA make sure to retrieve the participant by BIC and then pass
+       * the retrieved participantId to the repository. We can no longer rely on equality
+       * of BIC and participantId
+       */
       Participant fundingParticipant = participantRepository.findById(participant.getFundingBic());
 
       return presenter.presentManagedParticipantDetails(
@@ -117,10 +126,12 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
         participant, configuration, account, approvals);
   }
 
-  private Map<String, Approval> getApprovals(final int offset, final int limit, final String product,
+  private Map<String, Approval> getApprovals(final int offset, final int limit,
+      final String product,
       final List<String> participantIds, final String requestedParticipantId,
       final List<ApprovalRequestType> requestTypes) {
-    log.info("Fetching approvals for participant id: {}, from: {}", requestedParticipantId, product);
+    log.info("Fetching approvals for participant id: {}, from: {}", requestedParticipantId,
+        product);
 
     final Map<String, Approval> approvalParticipants = new HashMap<>();
 
@@ -134,7 +145,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
     final List<Approval> approvals = repositoryFactory.getApprovalRepository(product)
         .findPaginated(approvalRequest).getItems().stream()
-        .filter(approval -> approval.getRequestedBy().getParticipantId().equals(requestedParticipantId))
+        .filter(
+            approval -> approval.getRequestedBy().getParticipantId().equals(requestedParticipantId))
         .collect(toList());
 
     approvals.forEach(approval -> approvalParticipants
@@ -146,7 +158,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
   private void setFundedParticipants(Participant participant, String product) {
     if (ParticipantType.DIRECT_FUNDING.equals(participant.getParticipantType()) ||
-            ParticipantType.FUNDING.equals(participant.getParticipantType())) {
+        ParticipantType.FUNDING.equals(participant.getParticipantType())) {
       List<Participant> fundedParticipants = repositoryFactory.getParticipantRepository(product)
           .findByConnectingPartyAndType(participant.getId(),
               ParticipantType.FUNDED.getDescription()).getItems();

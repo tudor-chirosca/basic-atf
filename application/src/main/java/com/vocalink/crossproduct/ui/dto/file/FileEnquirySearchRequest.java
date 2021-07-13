@@ -40,7 +40,7 @@ public class FileEnquirySearchRequest {
   @ValidDirection
   private String messageDirection;
   private String messageType;
-  private String participantBic;
+  private String participantId;
   @Setter
   private String status;
   private String reasonCode;
@@ -68,8 +68,8 @@ public class FileEnquirySearchRequest {
     this.messageType = messageType;
   }
 
-  public void setParticipant_bic(String participantBic) {
-    this.participantBic = participantBic;
+  public void setParticipant_id(String participantId) {
+    this.participantId = participantId;
   }
 
   public void setReason_code(String reasonCode) {
