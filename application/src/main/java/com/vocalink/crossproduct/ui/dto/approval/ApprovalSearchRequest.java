@@ -5,6 +5,8 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidSort;
 import java.time.ZonedDateTime;
@@ -15,6 +17,7 @@ import lombok.Setter;
 @Getter
 @ValidSort(sort = "sort", sortingKeys =
     {"participants", "requestType", "jobId", "createdAt", "requestedBy", "status"})
+@JsonInclude(Include.NON_NULL)
 public class ApprovalSearchRequest {
 
   @Setter

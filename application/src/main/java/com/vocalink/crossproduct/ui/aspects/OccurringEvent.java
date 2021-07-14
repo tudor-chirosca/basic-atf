@@ -21,6 +21,9 @@ public class OccurringEvent {
   private final OperationType operationType;
   @Setter
   private String approvalRequestId;
+  private final String ipAddress;
+  private final String userRoleList;
+  private final String customer;
 
   public OccurringEvent(OccurringEvent event, String content, OperationType operationType) {
     this.product = event.getProduct();
@@ -33,5 +36,8 @@ public class OccurringEvent {
     this.content = content;
     this.operationType = operationType;
     this.approvalRequestId = event.getApprovalRequestId();
+    this.ipAddress = event.getIpAddress();
+    this.userRoleList = event.getUserRoleList();
+    this.customer = event.getCustomer();
   }
 }

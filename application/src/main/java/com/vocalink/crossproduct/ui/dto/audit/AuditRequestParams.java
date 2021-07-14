@@ -1,5 +1,7 @@
 package com.vocalink.crossproduct.ui.dto.audit;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
 import java.time.ZonedDateTime;
@@ -12,6 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonInclude(Include.NON_NULL)
 public class AuditRequestParams {
 
   private int offset;

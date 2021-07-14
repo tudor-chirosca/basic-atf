@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.skyscreamer.jsonassert.JSONAssert
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BroadcastRequestTest {
@@ -20,7 +21,10 @@ class BroadcastRequestTest {
                 """{"message":"message","recipients":["NDEASESSXXX"],"broadcastForAll":false}"""
 
         const val VALID_FALSE_RESPONSE_WITH_NULL =
-                """{"message":"message","recipients":null,"broadcastForAll":false}"""
+                """{"message":"message","broadcastForAll":false}"""
+
+        const val VALID_RESPONSE_FOR_ALL_RECIPIENTS =
+                """{"message":"message","recipients":[],"broadcastForAll":true}"""
     }
 
     @BeforeAll
@@ -52,7 +56,16 @@ class BroadcastRequestTest {
 
         val result = objectMapper.writeValueAsString(request)
 
-        assertThat(result).isEqualTo(VALID_FALSE_RESPONSE_WITH_NULL)
+        JSONAssert.assertEquals(VALID_FALSE_RESPONSE_WITH_NULL, result, true)
+    }
+
+    @Test
+    fun `should return broadcast for all true if no recipients`() {
+        val request = BroadcastRequest("message", listOf())
+
+        val result = objectMapper.writeValueAsString(request)
+
+        JSONAssert.assertEquals(VALID_RESPONSE_FOR_ALL_RECIPIENTS, result, true)
     }
 
 }

@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class AuditDetailsAdapter implements AuditDetailsRepository {
 
-  public static final String CUSTOMER = "P27-SEK";
-
   private final AuditDetailsRepositoryJpa auditDetailsRepository;
   private final Clock clock;
 
@@ -91,8 +89,10 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
         .firstName(userDetails.getFirstName())
         .lastName(userDetails.getLastName())
         .ipsSuiteApplicationName(event.getProduct())
-        .customer(CUSTOMER)
+        .customer(event.getCustomer())
         .approvalRequestId(event.getApprovalRequestId())
+        .ipAddress(event.getIpAddress())
+        .userRoleList(event.getUserRoleList())
         .build();
 
     auditDetailsRepository.save(detailsJpa);

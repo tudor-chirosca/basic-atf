@@ -1,10 +1,32 @@
 package com.vocalink.crossproduct.ui.dto.approval
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.vocalink.crossproduct.ui.aspects.EventType
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInstance
+import org.skyscreamer.jsonassert.JSONAssert
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApprovalChangeRequestTest {
+
+    private lateinit var objectMapper: ObjectMapper
+
+    private companion object {
+        const val REQUEST_WITHOUT_OPTIONAL_FIELDS =
+            """{
+                "requestType": "CONFIG_CHANGE",
+                "requestedChange": {
+                    "id": "DABASESXGBG"
+                }
+            }"""
+    }
+
+    @BeforeAll
+    fun init() {
+        objectMapper = ObjectMapper()
+    }
 
     @Test
     fun `should return eventType according to BATCH_CANCELLATION requestType`() {
@@ -68,5 +90,15 @@ class ApprovalChangeRequestTest {
 
         assertThat(result["notes"]).isEqualTo(request.notes)
         assertThat(result["requestedValues"]).isEqualTo(requestedValue)
+    }
+
+    @Test
+    fun `should ignore null optional fields when serialize ApprovalChangeRequest`() {
+        val participantId = "DABASESXGBG"
+        val request = ApprovalChangeRequest("CONFIG_CHANGE", mapOf("id" to participantId), null)
+
+        val result = objectMapper.writeValueAsString(request)
+
+        JSONAssert.assertEquals(REQUEST_WITHOUT_OPTIONAL_FIELDS, result, true)
     }
 }

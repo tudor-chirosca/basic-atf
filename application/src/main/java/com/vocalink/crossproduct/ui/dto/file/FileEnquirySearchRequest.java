@@ -5,6 +5,8 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidDirection;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
@@ -24,6 +26,7 @@ import lombok.ToString;
     {"name", "createdAt", "senderBic", "receiverBic", "messageType", "nrOfBatches", "status"})
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 @ToString
+@JsonInclude(Include.NON_NULL)
 public class FileEnquirySearchRequest {
 
   @Setter

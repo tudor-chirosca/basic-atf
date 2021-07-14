@@ -12,9 +12,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonInclude(Include.NON_NULL)
 public class SettlementDashboardRequest {
 
-    @JsonInclude(Include.NON_NULL)
     private final String fundingParticipantId;
 
     public SettlementDashboardRequest(@JsonProperty("fundingParticipantId") final String fundingParticipantId) {

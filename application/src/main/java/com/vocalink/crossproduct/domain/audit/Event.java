@@ -20,4 +20,7 @@ public class Event {
   private final String eventType;
   private final String operationType;
   private final String approvalRequestId;
+  private final String ipAddress;
+  private final String userRoleList;
+  private final String customer;
 }

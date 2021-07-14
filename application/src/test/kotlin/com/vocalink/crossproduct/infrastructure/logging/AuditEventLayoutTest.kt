@@ -61,7 +61,7 @@ class AuditEventLayoutTest {
         assertThat(result.replace(LINE_SEPARATOR, "").split(delimiter)).containsExactly(
             emptyValue,
             emptyValue,
-            AuditDetailsAdapter.CUSTOMER,
+            emptyValue,
             occurringEvent.participantId,
             occurringEvent.content,
             occurringEvent.requestUrl,

@@ -14,7 +14,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
 import com.vocalink.crossproduct.domain.audit.UserDetails;
-import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsAdapter;
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -25,9 +24,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AuditEventField {
 
-    USER_ROLE_LIST((event, layout) -> layout.getEmptyValue()),
-    IP_ADDRESS((event, layout) -> layout.getEmptyValue()),
-    CUSTOMER((event, layout) -> AuditDetailsAdapter.CUSTOMER),
+    USER_ROLE_LIST((event, layout) -> {
+    OccurringEvent occurringEvent = getOccurringEvent(event);
+        return getEmptyIfNull(occurringEvent.getUserRoleList(), layout);
+    }),
+    IP_ADDRESS((event, layout) -> {
+        OccurringEvent occurringEvent = getOccurringEvent(event);
+        return getEmptyIfNull(occurringEvent.getIpAddress(), layout);
+    }),
+    CUSTOMER((event, layout) -> {
+        OccurringEvent occurringEvent = getOccurringEvent(event);
+        return getEmptyIfNull(occurringEvent.getCustomer(), layout);
+    }),
     PARTICIPANT_ID((event, layout) -> {
         OccurringEvent occurringEvent = getOccurringEvent(event);
         return getEmptyIfNull(occurringEvent.getParticipantId(), layout);

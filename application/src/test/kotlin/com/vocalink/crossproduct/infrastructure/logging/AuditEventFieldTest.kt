@@ -104,6 +104,9 @@ class AuditEventFieldTest {
             .requestUrl("RequestUrl")
             .correlationId("CorrelationId")
             .participantId("ParticipantId")
+            .userId("UserId")
+            .userRoleList("CLEARING,READ-ONLY")
+            .ipAddress("::1")
             .build()
     }
 

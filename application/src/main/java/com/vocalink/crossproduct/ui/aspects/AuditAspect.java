@@ -7,10 +7,12 @@ import static com.vocalink.crossproduct.ui.aspects.Positions.POSITION_NOT_SET;
 import static java.lang.Boolean.valueOf;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.ui.facade.api.AuditFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import java.security.InvalidParameterException;
 import java.util.Optional;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class AuditAspect {
   public static final String X_USER_ID_HEADER = "x-user-id";
   public static final String X_PARTICIPANT_ID_HEADER = "x-participant-id";
   public static final String X_POLLING_UI_HEADER = "x-polling-ui";
+  public static final String X_ROLES_HEADER = "x-roles";
 
   @Value("${app.logging.correlation.mdc}")
   private String mdcKey;
@@ -42,6 +45,7 @@ public class AuditAspect {
   private final AuditFacade auditFacade;
   private final ContentUtils contentUtils;
   private final AuditableDetail auditableDetail;
+  private final BPSProperties bpsProperties;
 
   @Around(value = "@annotation(auditable)")
   Object log(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
@@ -57,13 +61,12 @@ public class AuditAspect {
 
     final EventType eventType = getEventType(joinPoint, auditable);
 
-    final String userId = request.map(r -> r.getHeader(X_USER_ID_HEADER))
-        .orElse(EMPTY);
-    final String participantId = request.map(r -> r.getHeader(X_PARTICIPANT_ID_HEADER))
-        .orElse(EMPTY);
-    final String requestUrl = request.map(r -> r.getRequestURL().toString())
-        .orElse(EMPTY);
+    final String userId = request.map(r -> r.getHeader(X_USER_ID_HEADER)).orElse(EMPTY);
+    final String userRoleList = request.map(r -> r.getHeader(X_ROLES_HEADER)).orElse(EMPTY);
+    final String participantId = request.map(r -> r.getHeader(X_PARTICIPANT_ID_HEADER)).orElse(EMPTY);
+    final String requestUrl = request.map(r -> r.getRequestURL().toString()).orElse(EMPTY);
     final String correlationId = MDC.get(getMdcKey());
+    final String ipAddress = request.map(ServletRequest::getRemoteAddr).orElse(EMPTY);
 
     OccurringEvent event = OccurringEvent.builder()
         .product(product)
@@ -75,6 +78,9 @@ public class AuditAspect {
         .content(jsonString)
         .eventType(eventType)
         .operationType(REQUEST)
+        .ipAddress(ipAddress)
+        .userRoleList(userRoleList)
+        .customer(getBpsProperties().getSchemeCode())
         .build();
 
     getAuditFacade().handleEvent(event);

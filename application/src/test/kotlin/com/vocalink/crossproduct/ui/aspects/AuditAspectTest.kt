@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.aspects
 
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
+import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties
 import com.vocalink.crossproduct.infrastructure.config.JacksonConfig
 import com.vocalink.crossproduct.ui.aspects.AuditAspect.EMPTY_CONTENT
 import com.vocalink.crossproduct.ui.aspects.EventType.SETTL_DETAILS
@@ -32,6 +33,7 @@ class AuditAspectTest {
     private lateinit var joinPoint: ProceedingJoinPoint
     private lateinit var auditable: Auditable
     private lateinit var positions: Positions
+    private lateinit var bpsProperties: BPSProperties
 
     private companion object {
         const val PRODUCT = "BPS"
@@ -40,6 +42,8 @@ class AuditAspectTest {
         const val PARTICIPANT_ID = "Participant_ID"
         const val REQUEST_URL = "http://hostname"
         const val RESPONSE_SUCCESS = "OK"
+        const val USER_ROLES = "CLEARING,READ-ONLY"
+        const val IP_ADDRESS = "127.0.0.1"
         val CLIENT_TYPE = SYSTEM
         val EVENT_TYPE = SETTL_DETAILS
         val HTTP_REQUEST = mock(HttpServletRequest::class.java)!!
@@ -55,6 +59,7 @@ class AuditAspectTest {
         joinPoint = mock(ProceedingJoinPoint::class.java)
         auditable = mock(Auditable::class.java)
         positions = mock(Positions::class.java)
+        bpsProperties = mock(BPSProperties::class.java)
         `when`(auditable.type).thenReturn(EVENT_TYPE)
         `when`(auditable.params).thenReturn(positions)
         `when`(joinPoint.args).thenReturn(ENDPOINT_PARAMETERS)
@@ -222,6 +227,7 @@ class AuditAspectTest {
     @Test
     fun `should audit request and response events`() {
         doCallRealMethod().`when`(auditAspect).log(joinPoint, auditable)
+        `when`(auditAspect.bpsProperties).thenReturn(bpsProperties)
         val auditFacade = prepareEvent()
         val eventCaptor = ArgumentCaptor.forClass(OccurringEvent::class.java)
 
@@ -245,6 +251,7 @@ class AuditAspectTest {
         doCallRealMethod().`when`(auditAspect).log(joinPoint, auditable)
         val auditFacade = prepareEvent()
         val eventCaptor = ArgumentCaptor.forClass(OccurringEvent::class.java)
+        `when`(auditAspect.bpsProperties).thenReturn(bpsProperties)
 
         assertThatThrownBy { auditAspect.log(joinPoint, auditable) }
                 .isExactlyInstanceOf(RuntimeException::class.java)
@@ -280,6 +287,8 @@ class AuditAspectTest {
         `when`(auditAspect.auditFacade).thenReturn(auditFacade)
         `when`(request.getHeader(AuditAspect.X_USER_ID_HEADER)).thenReturn(USER_ID)
         `when`(request.getHeader(AuditAspect.X_PARTICIPANT_ID_HEADER)).thenReturn(PARTICIPANT_ID)
+        `when`(request.getHeader(AuditAspect.X_ROLES_HEADER)).thenReturn(USER_ROLES)
+        `when`(request.remoteAddr).thenReturn(IP_ADDRESS)
         `when`(request.requestURL).thenReturn(StringBuffer(REQUEST_URL))
         `when`(auditAspect.mdcKey).thenReturn(random(10))
         `when`(auditable.type).thenReturn(EVENT_TYPE)
@@ -299,6 +308,8 @@ class AuditAspectTest {
         assertThat(event.eventType).isEqualTo(EVENT_TYPE)
         assertThat(event.product).isEqualTo(PRODUCT)
         assertThat(event.client).isEqualTo(CLIENT_TYPE.name)
+        assertThat(event.userRoleList).isEqualTo(USER_ROLES)
+        assertThat(event.ipAddress).isEqualTo(IP_ADDRESS)
     }
 
 }

@@ -5,6 +5,8 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.LIMIT;
 import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -19,6 +21,7 @@ import lombok.ToString;
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 @ValidSort(sort = "sort", sortingKeys = {"cycleId", "settlementTime", "status", "participantName"})
 @ToString
+@JsonInclude(Include.NON_NULL)
 public class SettlementEnquiryRequest {
 
   @Setter

@@ -1,6 +1,8 @@
 package com.vocalink.crossproduct.ui.dto.approval;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType;
 import com.vocalink.crossproduct.ui.aspects.AuditableRequest;
@@ -10,6 +12,7 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
+@JsonInclude(Include.NON_NULL)
 public class ApprovalConfirmationRequest implements AuditableRequest {
 
   private final ApprovalConfirmationType action;

@@ -1,13 +1,17 @@
-package com.vocalink.crossproduct.infrastructure.jpa.audit;
+package com.vocalink.crossproduct.infrastructure.jpa.audit
 
 import com.vocalink.crossproduct.domain.audit.AuditSearchRequest
 import com.vocalink.crossproduct.domain.audit.Event
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException
 import com.vocalink.crossproduct.infrastructure.exception.InfrastructureException
+import java.time.Clock
+import java.util.Optional
+import java.util.UUID
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
 import org.mockito.Mockito.atLeastOnce
@@ -15,8 +19,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory
-import java.time.Clock
-import java.util.*
 
 open class AuditDetailsAdapterTest {
 
@@ -35,9 +37,23 @@ open class AuditDetailsAdapterTest {
                 .id(id)
                 .build()
 
-        private val event = Event("product", "client", "any", "any", "any", "any", "any", "any", "any", "any")
+        private val event = Event.builder()
+            .product("product")
+            .client("client")
+            .requestUrl("request_url")
+            .userId("user_id")
+            .participantId("participant_id")
+            .content("contents")
+            .correlationId("correlation_id")
+            .eventType("event_type")
+            .operationType("operation_type")
+            .approvalRequestId("approval_request_id")
+            .ipAddress("127.0.0.1")
+            .userRoleList("CLEARING,READ-ONLY")
+            .customer("scheme_name")
+            .build()
         private val userDetails = UserDetails.builder()
-                .userId("any")
+                .userId("user_id")
                 .build()
     }
 
@@ -64,8 +80,26 @@ open class AuditDetailsAdapterTest {
     @Test
     fun `should log operation with success`() {
         adapter.logOperation(event, userDetails)
+        val captor = ArgumentCaptor.forClass(AuditDetailsJpa::class.java)
 
-        verify(repositoryJpa, atLeastOnce()).save(any())
+        verify(repositoryJpa, atLeastOnce()).save(captor.capture())
+        val result = captor.value
+        assertThat(result.approvalRequestId).isEqualTo(event.approvalRequestId)
+        assertThat(result.activityName).isEqualTo(event.eventType)
+        assertThat(result.correlationId).isEqualTo(event.correlationId)
+        assertThat(result.requestOrResponseEnum).isEqualTo(event.operationType)
+        assertThat(result.channel).isEqualTo(event.client)
+        assertThat(result.requestUrl).isEqualTo(event.requestUrl)
+        assertThat(result.contents).isEqualTo(event.content)
+        assertThat(result.participantId).isEqualTo(event.participantId)
+        assertThat(result.username).isEqualTo(event.userId)
+        assertThat(result.firstName).isEqualTo(userDetails.firstName)
+        assertThat(result.lastName).isEqualTo(userDetails.lastName)
+        assertThat(result.ipsSuiteApplicationName).isEqualTo(event.product)
+        assertThat(result.customer).isEqualTo(event.customer)
+        assertThat(result.approvalRequestId).isEqualTo(event.approvalRequestId)
+        assertThat(result.ipAddress).isEqualTo(event.ipAddress)
+        assertThat(result.userRoleList).isEqualTo(event.userRoleList)
     }
 
     @Test

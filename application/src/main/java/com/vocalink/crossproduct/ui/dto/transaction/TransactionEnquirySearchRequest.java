@@ -6,8 +6,9 @@ import static com.vocalink.crossproduct.ui.dto.DtoProperties.OFFSET;
 import static java.lang.Integer.parseInt;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vocalink.crossproduct.ui.validations.NotEqual;
 import com.vocalink.crossproduct.ui.validations.ValidCycleOrDateRange;
 import com.vocalink.crossproduct.ui.validations.ValidFromDate;
 import com.vocalink.crossproduct.ui.validations.ValidLimit;
@@ -27,6 +28,7 @@ import lombok.ToString;
     {"instructionId", "createdAt", "creditor", "debtor", "messageType", "amount", "status"})
 @ValidCycleOrDateRange(cycleId = "cycleId", dateFrom = "dateFrom", dateTo = "dateTo")
 @ToString
+@JsonInclude(Include.NON_NULL)
 public class TransactionEnquirySearchRequest {
 
   private final int offset;

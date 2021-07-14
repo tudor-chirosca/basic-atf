@@ -3,6 +3,8 @@ package com.vocalink.crossproduct.ui.dto.broadcasts;
 import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import lombok.ToString;
 
 @ToString
 @Getter
+@JsonInclude(Include.NON_NULL)
 public class BroadcastRequest {
 
   private final String message;

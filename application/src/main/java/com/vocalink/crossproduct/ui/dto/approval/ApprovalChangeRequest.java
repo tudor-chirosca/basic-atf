@@ -6,6 +6,8 @@ import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.TRAN
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -21,6 +23,7 @@ import lombok.Getter;
 
 @Getter
 @ValidNote(notes = "notes", requestType = "requestType", requestTypes = {"BATCH_CANCELLATION", "TRANSACTION_CANCELLATION"})
+@JsonInclude(Include.NON_NULL)
 public class ApprovalChangeRequest implements AuditableRequest {
 
   @ValidEnum(enumClass = ApprovalRequestType.class)
