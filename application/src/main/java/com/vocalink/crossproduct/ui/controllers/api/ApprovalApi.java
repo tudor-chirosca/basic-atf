@@ -28,7 +28,7 @@ public interface ApprovalApi {
       @ApiResponse(code = 400, message = "Some of the request params are invalid")
   })
   ResponseEntity<ApprovalDetailsDto> getApprovalDetailsById(final ClientType clientType,
-      final String context, final String id);
+      final String context, final String id,final HttpServletRequest httpServletRequest);
 
   @ApiOperation("Request approve/reject")
   @ApiResponses({

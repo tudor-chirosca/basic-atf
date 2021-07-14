@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import static com.vocalink.crossproduct.domain.approval.ApprovalRequestType.CONFIG_CHANGE;
 import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_DASHBOARD;
+import static com.vocalink.crossproduct.ui.aspects.EventType.VIEW_APPROVAL_REQ;
 
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.ui.aspects.Auditable;
@@ -50,12 +51,13 @@ public class ApprovalController implements ApprovalApi {
         .submitApprovalConfirmation(context, clientType, request, id);
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
-
+  @Auditable(type = VIEW_APPROVAL_REQ, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/approvals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApprovalDetailsDto> getApprovalDetailsById(
       @RequestHeader("client-type") final ClientType clientType,
       @RequestHeader final String context,
-      @PathVariable final String id) {
+      @PathVariable final String id,
+      final HttpServletRequest httpServletRequest) {
     final ApprovalDetailsDto approvalDetailsDto = approvalFacade
         .getApprovalDetailsById(context, clientType, id);
     return ResponseEntity.ok().body(approvalDetailsDto);
