@@ -15,6 +15,7 @@ public class BPSTransaction {
   private final String messageType;
   private final BPSAmount amount;
   private final String status;
+  private final BPSOutputType outputType;
 
   public BPSTransaction(
       @JsonProperty(value = "instructionId") String instructionId,
@@ -23,7 +24,8 @@ public class BPSTransaction {
       @JsonProperty(value = "creditor") String creditor,
       @JsonProperty(value = "messageType") String messageType,
       @JsonProperty(value = "amount") BPSAmount amount,
-      @JsonProperty(value = "status") String status) {
+      @JsonProperty(value = "status") String status,
+      @JsonProperty(value = "outputMethod") BPSOutputType outputType) {
     this.instructionId = instructionId;
     this.createdDateTime = createdDateTime;
     this.debtor = debtor;
@@ -31,5 +33,6 @@ public class BPSTransaction {
     this.messageType = messageType;
     this.amount = amount;
     this.status = status;
+    this.outputType = outputType;
   }
 }

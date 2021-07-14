@@ -66,7 +66,7 @@ class TransactionsFacadeImplTest {
                         null, null, null, null,
                         null, null, null, null,
                         null, null, null, null,
-                        null, null
+                        null, null, null
                 )
         )
         )
@@ -74,7 +74,7 @@ class TransactionsFacadeImplTest {
                 1, listOf(
                 TransactionDto(
                         null, null, null, null,
-                        null, null, null
+                        null, null, null, null
                 )
         )
         )
@@ -111,12 +111,12 @@ class TransactionsFacadeImplTest {
                 null, null, null, null,
                 null, null, null, null,
                 null, null, null, null, null,
-                null, null, null, null
+                null, null, null, null, null
         )
         val batchDetailsDto = TransactionDetailsDto(
                 null, null, null, null, null, null,
                 null, null, null, null, null,
-                null, null
+                null, null, null
         )
         val account = Account(null, null, null)
 

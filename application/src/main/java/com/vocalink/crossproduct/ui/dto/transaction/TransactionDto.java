@@ -16,4 +16,5 @@ public class TransactionDto {
   private final String messageType;
   private final BigDecimal amount;
   private final String status;
+  private final String outputType;
 }

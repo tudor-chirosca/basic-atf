@@ -31,4 +31,5 @@ public class Transaction {
   private final String debtorBic;
   private final String creditorName;
   private final String creditorBic;
+  private final OutputType outputType;
 }

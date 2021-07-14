@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.dto.transaction;
 
+import com.vocalink.crossproduct.domain.transaction.OutputType;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
@@ -22,5 +23,5 @@ public class TransactionDetailsDto {
   private final String messageType;
   private final TransactionSenderDetailsDto sender;
   private final TransactionReceiverDetailsDto receiver;
-
+  private final OutputType outputType;
 }

@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.ui.controllers
 
 import com.vocalink.crossproduct.TestConstants
+import com.vocalink.crossproduct.domain.transaction.OutputType
 import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.dto.PageDto
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto
@@ -179,7 +180,8 @@ class TransactionsControllerTest : ControllerTest() {
             "NDEASSESS",
             "rocs.001",
             BigDecimal.valueOf(3334343.80),
-            "accepted"
+            "accepted",
+            "REALTIME"
         )
         `when`(transactionsFacade.getPaginated(any(), any(), any()))
             .thenReturn(PageDto(1, listOf(transaction)))
@@ -461,8 +463,8 @@ class TransactionsControllerTest : ControllerTest() {
             "rejected",
             "004",
             "pacs.002",
-            sender, receiver
-
+            sender, receiver,
+            OutputType.REALTIME
         )
 
         `when`(transactionsFacade.getDetailsById(any(), any(), any()))

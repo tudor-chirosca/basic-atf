@@ -51,6 +51,7 @@ import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSScheduleDayDetails
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementCycleSchedule
 import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementSchedule
+import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSOutputType
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransaction
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionDetails
 import com.vocalink.crossproduct.ui.dto.alert.AlertSearchRequest
@@ -418,8 +419,9 @@ class EntityMapperTest {
             "receiverBic",
             "messageType",
             amount,
-            "status"
-        )
+            "status",
+            BPSOutputType.REALTIME
+         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.instructionId)
         assertThat(entity.amount.amount).isEqualTo(bps.amount.amount)
@@ -429,6 +431,7 @@ class EntityMapperTest {
         assertThat(entity.debtorBic).isEqualTo(bps.debtor)
         assertThat(entity.creditorBic).isEqualTo(bps.creditor)
         assertThat(entity.messageType).isEqualTo(bps.messageType)
+        assertThat(entity.outputType.name).isEqualTo(bps.outputType.name)
     }
 
     @Test
@@ -447,7 +450,8 @@ class EntityMapperTest {
             amount,
             "senderName", "senderBic", "iban", "fullname",
             "receiverName", "receiverBic", "iban", "fullname",
-            "debtorName", "debtorBic", "creditorName", "creditorBic"
+            "debtorName", "debtorBic", "creditorName", "creditorBic",
+            BPSOutputType.REALTIME
         )
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.instructionId).isEqualTo(bps.txnsInstructionId)
@@ -460,7 +464,7 @@ class EntityMapperTest {
         assertThat(entity.batchId).isEqualTo(bps.batchId)
         assertThat(entity.status).isEqualTo(bps.transactionStatus)
         assertThat(entity.amount.amount).isEqualTo(bps.transactionAmount.amount)
-        assertThat(entity.amount.currency).isEqualTo(bps.transactionAmount.currency)
+        assertThat(entity.outputType.name).isEqualTo(bps.outputType.name)
 
         assertThat(entity.senderBic).isEqualTo(bps.senderBic)
         assertThat(entity.senderFullName).isEqualTo(bps.senderFullName)
@@ -1059,7 +1063,7 @@ class EntityMapperTest {
     @Test
     fun `should map generic BPSResult object if summary field is null`() {
         val transaction = BPSTransaction("id", ZonedDateTime.now(clock), "senderBic", "receiverBic",
-            "messageType", BPSAmount(BigDecimal.valueOf(1), "SEK"), "status")
+            "messageType", BPSAmount(BigDecimal.valueOf(1), "SEK"), "status", BPSOutputType.REALTIME)
         val dto = BPSResult<BPSTransaction>(listOf(transaction), null)
 
         val result = MAPPER.toEntity(dto, Transaction::class.java)

@@ -60,6 +60,7 @@ import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
 import com.vocalink.crossproduct.domain.settlement.SettlementCycleSchedule
 import com.vocalink.crossproduct.domain.settlement.SettlementDetails
+import com.vocalink.crossproduct.domain.transaction.OutputType
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.ui.dto.alert.AlertDto
 import com.vocalink.crossproduct.ui.dto.batch.BatchDto
@@ -494,7 +495,8 @@ class DTOMapperTest {
             "debtorName",
             "debtorBic",
             "creditorName",
-            "credtiorBic"
+            "credtiorBic",
+            OutputType.REALTIME
         )
         val result = MAPPER.toDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -504,6 +506,7 @@ class DTOMapperTest {
         assertThat(result.senderBic).isEqualTo(transaction.debtorBic)
         assertThat(result.receiverBic).isEqualTo(transaction.creditorBic)
         assertThat(result.status).isEqualTo(transaction.status)
+        assertThat(result.outputType).isEqualTo(transaction.outputType.name)
     }
 
     @Test
@@ -531,7 +534,8 @@ class DTOMapperTest {
             "debtorName",
             "debtorBic",
             "creditorName",
-            "credtiorBic"
+            "credtiorBic",
+            OutputType.REALTIME
         )
         val result = MAPPER.toDetailsDto(transaction)
         assertThat(result.instructionId).isEqualTo(transaction.instructionId)
@@ -545,6 +549,7 @@ class DTOMapperTest {
         assertThat(result.status).isEqualTo(transaction.status)
         assertThat(result.reasonCode).isEqualTo(transaction.reasonCode)
         assertThat(result.messageType).isEqualTo(transaction.messageType)
+        assertThat(result.outputType.name).isEqualTo(transaction.outputType.name)
 
         assertThat(result.sender.entityName).isEqualTo(transaction.senderBank)
         assertThat(result.sender.entityBic).isEqualTo(transaction.senderBic)
