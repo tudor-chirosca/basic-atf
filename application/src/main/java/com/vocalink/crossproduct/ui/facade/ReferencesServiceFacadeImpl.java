@@ -1,5 +1,6 @@
 package com.vocalink.crossproduct.ui.facade;
 
+import static com.vocalink.crossproduct.ui.util.DateTimeAdjustingUtils.adjustWithZoneId;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.RepositoryFactory;
@@ -7,11 +8,11 @@ import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
+import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
@@ -23,19 +24,32 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
 
   private final RepositoryFactory repositoryFactory;
   private final PresenterFactory presenterFactory;
   private final Environment environment;
+  private final String zoneId;
+
+  @Autowired
+  public ReferencesServiceFacadeImpl(
+      PresenterFactory presenterFactory,
+      RepositoryFactory repositoryFactory,
+      Environment environment,
+      @Value("${app.ui.config.default.timeZone}") String zoneId) {
+    this.presenterFactory = presenterFactory;
+    this.repositoryFactory = repositoryFactory;
+    this.environment = environment;
+    this.zoneId = zoneId;
+  }
 
   @Override
   public List<ParticipantReferenceDto> getParticipantReferences(String product,
@@ -103,8 +117,10 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
       ZonedDateTime date, boolean settled) {
     log.info("Fetching cycles by date: {} for: {} from: {}", date, clientType, product);
 
-    List<DayCycle> cycles = repositoryFactory.getCycleRepository(product)
-        .findByDate(date)
+    final ZonedDateTime valueDateUTC = adjustWithZoneId(date, zoneId);
+
+    final List<DayCycle> cycles = repositoryFactory.getCycleRepository(product)
+        .findByDate(valueDateUTC)
         .stream()
         .filter(settled ? c -> !c.getStatus().equals(CycleStatus.OPEN) : c -> true)
         .collect(toList());

@@ -10,11 +10,11 @@ import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.reference.DestinationType
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference
 import com.vocalink.crossproduct.domain.reference.ReferencesRepository
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants.PRODUCT
-import com.vocalink.crossproduct.domain.reference.DestinationType
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
@@ -50,62 +50,63 @@ class ReferencesServiceFacadeImplTest {
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val environment = mock(Environment::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
-    private val cycleRepository = mock(CycleRepository::class.java)
+    private val cycleRepository = mock(CycleRepository::class.java)!!
 
     private var referenceServiceFacadeImpl = ReferencesServiceFacadeImpl(
-            repositoryFactory,
-            presenterFactory,
-            environment
+        presenterFactory,
+        repositoryFactory,
+        environment,
+        "CET"
     )
 
     @BeforeEach
     fun init() {
         `when`(repositoryFactory.getParticipantRepository(anyString()))
-                .thenReturn(participantRepository)
+            .thenReturn(participantRepository)
         `when`(repositoryFactory.getReferencesRepository(anyString()))
-                .thenReturn(referencesRepository)
+            .thenReturn(referencesRepository)
         `when`(repositoryFactory.getCycleRepository(anyString()))
-                .thenReturn(cycleRepository)
+            .thenReturn(cycleRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
-                .thenReturn(uiPresenter)
+            .thenReturn(uiPresenter)
     }
 
     @Test
     fun `should get participants name and bic`() {
         val participants = listOf(
-                Participant.builder()
-                        .id("ESSESESS")
-                        .bic("ESSESESS")
-                        .fundingBic("NA")
-                        .name("SEB Bank")
-                        .suspendedTime(null)
-                        .status(ParticipantStatus.ACTIVE)
-                        .participantType(ParticipantType.FUNDING)
-                        .schemeCode("P27-SEK")
-                        .build(),
-                Participant.builder()
-                        .id("HANDSESS")
-                        .bic("HANDSESS")
-                        .fundingBic("NDEASESSXXX")
-                        .name("Svenska Handelsbanken")
-                        .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
-                        .status(ParticipantStatus.SUSPENDED)
-                        .participantType(ParticipantType.DIRECT)
-                        .schemeCode("P27-SEK")
-                        .build(),
-                Participant.builder()
-                        .id("NDEASESSXXX")
-                        .bic("NDEASESSXXX")
-                        .fundingBic("NA")
-                        .name("Nordea")
-                        .suspendedTime(null)
-                        .status(ParticipantStatus.ACTIVE)
-                        .participantType(ParticipantType.DIRECT)
-                        .schemeCode("P27-SEK")
-                        .build()
+            Participant.builder()
+                .id("ESSESESS")
+                .bic("ESSESESS")
+                .fundingBic("NA")
+                .name("SEB Bank")
+                .suspendedTime(null)
+                .status(ParticipantStatus.ACTIVE)
+                .participantType(ParticipantType.FUNDING)
+                .schemeCode("P27-SEK")
+                .build(),
+            Participant.builder()
+                .id("HANDSESS")
+                .bic("HANDSESS")
+                .fundingBic("NDEASESSXXX")
+                .name("Svenska Handelsbanken")
+                .suspendedTime(ZonedDateTime.now(ZoneId.of("UTC")).plusDays(15))
+                .status(ParticipantStatus.SUSPENDED)
+                .participantType(ParticipantType.DIRECT)
+                .schemeCode("P27-SEK")
+                .build(),
+            Participant.builder()
+                .id("NDEASESSXXX")
+                .bic("NDEASESSXXX")
+                .fundingBic("NA")
+                .name("Nordea")
+                .suspendedTime(null)
+                .status(ParticipantStatus.ACTIVE)
+                .participantType(ParticipantType.DIRECT)
+                .schemeCode("P27-SEK")
+                .build()
         )
         `when`(participantRepository.findAll())
-                .thenReturn(Page(3, participants))
+            .thenReturn(Page(3, participants))
 
         referenceServiceFacadeImpl.getParticipantReferences(CONTEXT, ClientType.UI, DestinationType.ALERTS.toString())
 
@@ -118,10 +119,10 @@ class ReferencesServiceFacadeImplTest {
         val messageRefs = listOf(MessageDirectionReference.builder().build())
 
         `when`(repositoryFactory.getReferencesRepository(PRODUCT))
-                .thenReturn(referencesRepository)
+            .thenReturn(referencesRepository)
 
         `when`(referencesRepository.findMessageDirectionReferences())
-                .thenReturn(messageRefs)
+            .thenReturn(messageRefs)
 
         val result = referenceServiceFacadeImpl.getMessageDirectionReferences(PRODUCT, ClientType.UI)
 
@@ -135,29 +136,29 @@ class ReferencesServiceFacadeImplTest {
     fun `should get cycles by date`() {
         val date = ZonedDateTime.of(LocalDate.of(2020, 11, 3), LocalTime.MIN, ZoneId.of("UTC"))
         val cycles = listOf(DayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.OPEN,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.OPEN,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         ), DayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.COMPLETED,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.COMPLETED,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         ))
         val captor = argumentCaptor<List<DayCycle>>()
-        `when`(cycleRepository.findByDate(date))
-                .thenReturn(cycles)
+        `when`(cycleRepository.findByDate(any()))
+            .thenReturn(cycles)
         `when`(uiPresenter.presentCycleDateReferences(captor.capture()))
-                .thenReturn(emptyList())
+            .thenReturn(emptyList())
         referenceServiceFacadeImpl.getDayCyclesByDate(CONTEXT, ClientType.UI, date, false)
 
         val result = captor.value
-        verify(cycleRepository).findByDate(date)
+        verify(cycleRepository).findByDate(any())
         verify(presenterFactory).getPresenter(any())
         assertThat(result.size).isEqualTo(2)
         assertThat(result[0].status).isEqualTo(CycleStatus.OPEN)
@@ -168,32 +169,30 @@ class ReferencesServiceFacadeImplTest {
     fun `should filter remove OPEN cycles when settled`() {
         val date = ZonedDateTime.of(LocalDate.of(2020, 11, 3), LocalTime.MIN, ZoneId.of("UTC"))
         val cycles = listOf(DayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.OPEN,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.OPEN,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         ), DayCycle(
-                "cycleCode",
-                "sessionCode",
-                "sessionInstanceId",
-                CycleStatus.COMPLETED,
-                ZonedDateTime.now(ZoneId.of("UTC")),
-                ZonedDateTime.now(ZoneId.of("UTC"))
+            "cycleCode",
+            "sessionCode",
+            "sessionInstanceId",
+            CycleStatus.COMPLETED,
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            ZonedDateTime.now(ZoneId.of("UTC"))
         ))
-        `when`(cycleRepository.findByDate(date))
-                .thenReturn(cycles)
-
+        `when`(cycleRepository.findByDate(any()))
+            .thenReturn(cycles)
         val captor = argumentCaptor<List<DayCycle>>()
-
         `when`(uiPresenter.presentCycleDateReferences(captor.capture()))
-                .thenReturn(emptyList())
+            .thenReturn(emptyList())
 
         referenceServiceFacadeImpl.getDayCyclesByDate(CONTEXT, ClientType.UI, date, true)
 
         val result = captor.value
-        verify(cycleRepository).findByDate(date)
+        verify(cycleRepository).findByDate(any())
         verify(presenterFactory).getPresenter(any())
         assertThat(result.size).isEqualTo(1)
         assertThat(result[0].status).isEqualTo(CycleStatus.COMPLETED)
@@ -202,32 +201,32 @@ class ReferencesServiceFacadeImplTest {
     @Test
     fun `should get reason codes filtered by enquiry type`() {
         val reasonCodes = listOf(ReasonCodeReference.ReasonCode(
-                "F01",
-                "description",
-                true
+            "F01",
+            "description",
+            true
         ))
         val validations = listOf(
-                ReasonCodeReference.Validation("FILE", reasonCodes),
-                ReasonCodeReference.Validation("BATCH", reasonCodes),
-                ReasonCodeReference.Validation("TRANSACTION", reasonCodes)
+            ReasonCodeReference.Validation("FILE", reasonCodes),
+            ReasonCodeReference.Validation("BATCH", reasonCodes),
+            ReasonCodeReference.Validation("TRANSACTION", reasonCodes)
         )
 
         val reasonCodeReference = ReasonCodeReference(validations)
         val statuses = listOf("ACK", "NAK")
 
         `when`(referencesRepository.findReasonCodeReference())
-                .thenReturn(reasonCodeReference)
+            .thenReturn(reasonCodeReference)
 
         `when`(referencesRepository.findStatuses("FILES"))
-                .thenReturn(statuses)
+            .thenReturn(statuses)
 
         val captor = argumentCaptor<ReasonCodeReference.Validation>()
 
         `when`(uiPresenter.presentReasonCodeReferences(captor.capture(), any()))
-                .thenReturn(listOf(ReasonCodeReferenceDto.builder().build()))
+            .thenReturn(listOf(ReasonCodeReferenceDto.builder().build()))
 
         val result = referenceServiceFacadeImpl
-                .getReasonCodeReferences(CONTEXT, ClientType.UI, "FILE")
+            .getReasonCodeReferences(CONTEXT, ClientType.UI, "FILE")
 
         val filteredReasonCode = captor.value
         assertNotNull(filteredReasonCode)
