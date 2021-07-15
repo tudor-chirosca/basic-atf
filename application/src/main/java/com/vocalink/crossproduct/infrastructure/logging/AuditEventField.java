@@ -36,6 +36,10 @@ public enum AuditEventField {
         OccurringEvent occurringEvent = getOccurringEvent(event);
         return getEmptyIfNull(occurringEvent.getCustomer(), layout);
     }),
+    SCHEME((event, layout) -> {
+        OccurringEvent occurringEvent = getOccurringEvent(event);
+        return getEmptyIfNull(occurringEvent.getScheme(), layout);
+    }),
     PARTICIPANT_ID((event, layout) -> {
         OccurringEvent occurringEvent = getOccurringEvent(event);
         return getEmptyIfNull(occurringEvent.getParticipantId(), layout);

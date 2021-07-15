@@ -93,6 +93,7 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
         .approvalRequestId(event.getApprovalRequestId())
         .ipAddress(event.getIpAddress())
         .userRoleList(event.getUserRoleList())
+        .scheme(event.getScheme())
         .build();
 
     auditDetailsRepository.save(detailsJpa);

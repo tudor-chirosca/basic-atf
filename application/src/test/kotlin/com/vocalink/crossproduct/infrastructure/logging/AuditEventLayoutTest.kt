@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.infrastructure.logging
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.audit.UserDetails
-import com.vocalink.crossproduct.infrastructure.jpa.audit.AuditDetailsAdapter
 import com.vocalink.crossproduct.ui.aspects.EventType
 import com.vocalink.crossproduct.ui.aspects.OccurringEvent
 import com.vocalink.crossproduct.ui.aspects.OperationType
@@ -59,6 +58,7 @@ class AuditEventLayoutTest {
         val result = layout.doLayout(event)
 
         assertThat(result.replace(LINE_SEPARATOR, "").split(delimiter)).containsExactly(
+            emptyValue,
             emptyValue,
             emptyValue,
             emptyValue,

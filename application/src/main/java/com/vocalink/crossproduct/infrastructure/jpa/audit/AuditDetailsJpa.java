@@ -62,6 +62,8 @@ public class AuditDetailsJpa implements Serializable {
   private String customer;
   @Column(name = "ips_suite_application_name")
   private String ipsSuiteApplicationName;
+  @Column(name = "scheme", nullable = false)
+  private String scheme;
   @Column(name = "channel", nullable = false)
   private String channel;
   @Column(name = "ip_address")

@@ -80,7 +80,7 @@ public class AuditAspect {
         .operationType(REQUEST)
         .ipAddress(ipAddress)
         .userRoleList(userRoleList)
-        .customer(getBpsProperties().getSchemeCode())
+        .scheme(getBpsProperties().getSchemeCode())
         .build();
 
     getAuditFacade().handleEvent(event);
@@ -122,10 +122,13 @@ public class AuditAspect {
     if (auditable.params().content() == POSITION_NOT_SET) {
       return EMPTY_CONTENT;
     }
-    if (!EventType.UNKNOWN.equals(auditable.type())) {
-      return getContentUtils().toJsonString(joinPoint.getArgs()[auditable.params().content()]);
-    }
     Object content = joinPoint.getArgs()[auditable.params().content()];
+    if (content == null) {
+      return EMPTY_CONTENT;
+    }
+    if (!EventType.UNKNOWN.equals(auditable.type())) {
+      return getContentUtils().toJsonString(content);
+    }
     if (content instanceof AuditableRequest) {
       return getContentUtils().toJsonString(((AuditableRequest) content).getAuditableContent());
     }

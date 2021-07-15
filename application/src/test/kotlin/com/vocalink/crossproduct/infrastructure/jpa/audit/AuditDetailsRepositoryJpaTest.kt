@@ -1,4 +1,4 @@
-package com.vocalink.crossproduct.infrastructure.jpa.audit;
+package com.vocalink.crossproduct.infrastructure.jpa.audit
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -21,6 +21,7 @@ open class AuditDetailsRepositoryJpaTest @Autowired constructor(var auditDetails
                 .activityName("activityString")
                 .approvalRequestId("1")
                 .correlationId("corId")
+                .scheme("P27-SEK")
                 .channel("BPS")
                 .username(UUID.randomUUID().toString())
                 .approvalRequestId("1")

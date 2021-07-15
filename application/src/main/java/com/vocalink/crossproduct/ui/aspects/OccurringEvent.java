@@ -23,6 +23,7 @@ public class OccurringEvent {
   private String approvalRequestId;
   private final String ipAddress;
   private final String userRoleList;
+  private final String scheme;
   private final String customer;
 
   public OccurringEvent(OccurringEvent event, String content, OperationType operationType) {
@@ -38,6 +39,7 @@ public class OccurringEvent {
     this.approvalRequestId = event.getApprovalRequestId();
     this.ipAddress = event.getIpAddress();
     this.userRoleList = event.getUserRoleList();
+    this.scheme = event.getScheme();
     this.customer = event.getCustomer();
   }
 }

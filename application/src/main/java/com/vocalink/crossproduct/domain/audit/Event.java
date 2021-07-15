@@ -22,5 +22,6 @@ public class Event {
   private final String approvalRequestId;
   private final String ipAddress;
   private final String userRoleList;
+  private final String scheme;
   private final String customer;
 }

@@ -2,6 +2,7 @@ bps-config:
   retryCount: 3
   timeoutDuration: 5000
   schemeCode: P27-SEK
+  customer: P27
   ioDetailsThreshold: 2
 
   currencies:

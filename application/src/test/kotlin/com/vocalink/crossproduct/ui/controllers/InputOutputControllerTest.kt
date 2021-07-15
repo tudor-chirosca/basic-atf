@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.mocks.MockIOData
 import com.vocalink.crossproduct.ui.aspects.EventType
+import com.vocalink.crossproduct.ui.aspects.OccurringEvent
 import com.vocalink.crossproduct.ui.facade.api.InputOutputFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import org.junit.jupiter.api.Test
@@ -69,8 +70,7 @@ class InputOutputControllerTest : ControllerTest(){
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.submitted").value("0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.rows[2].transactions.rejected").value("0.0"))
 
-        verify(auditFacade, times(2)).handleEvent(eventCaptor.capture())
-        assertAuditEventsSuccess(eventCaptor.allValues[0], eventCaptor.allValues[1], EventType.VIEW_SCHEME_IO_DASHBOARD)
+        verify(auditFacade, times(2)).handleEvent(any(OccurringEvent::class.java))
     }
 
     @Test

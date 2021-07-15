@@ -121,6 +121,21 @@ class AuditAspectTest {
     }
 
     @Test
+    fun `should return empty JSON when content is null`() {
+        val contentUtils = ContentUtils(JacksonConfig().objectMapper())
+        `when`(positions.content).thenReturn(1)
+        `when`(auditAspect.contentUtils).thenReturn(contentUtils)
+        `when`(auditable.type).thenReturn(EventType.UNKNOWN)
+        val endpointParameters = arrayOf(PRODUCT, null, CLIENT_TYPE, HTTP_REQUEST)
+        `when`(joinPoint.args).thenReturn(endpointParameters)
+        doCallRealMethod().`when`(auditAspect).getContent(joinPoint, auditable)
+
+        val content = auditAspect.getContent(joinPoint, auditable)
+
+        assertThat(content).isEqualTo(EMPTY_CONTENT)
+    }
+
+    @Test
     fun `should throw exception InvalidParameterException during executing getContent`() {
         val contentUtils = ContentUtils(JacksonConfig().objectMapper())
         `when`(positions.content).thenReturn(1)
