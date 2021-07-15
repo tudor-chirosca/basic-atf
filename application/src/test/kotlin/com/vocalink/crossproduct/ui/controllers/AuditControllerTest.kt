@@ -177,8 +177,7 @@ class AuditControllerTest : ControllerTest() {
         val result: List<UserDetailsDto> = listOf(UserDetailsDto("e000000","John Doe"))
         `when`(auditFacade.getUserDetails(any(), any(), any())).thenReturn(result)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/reference/audit/users")
-                .param(PARTICIPANT_ID_PARAMETER, "HANDSESS")
+        mockMvc.perform(MockMvcRequestBuilders.get("/reference/audit/participants/HANDSESS/users")
                 .header(CONTEXT_HEADER, TestConstants.CONTEXT)
                 .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE))
                 .andExpect(status().isOk)

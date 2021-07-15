@@ -36,11 +36,11 @@ public class AuditController implements AuditApi {
 
   private final AuditFacade auditFacade;
 
-  @GetMapping(value = "/reference/audit/users", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/reference/audit/participants/{participantId}/users", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<UserDetailsDto>> getUsers(
       @RequestHeader(CLIENT_TYPE_HEADER) final ClientType clientType,
       @RequestHeader(CONTEXT_HEADER) final String context,
-      final String participantId) {
+      @PathVariable final String participantId) {
 
     List<UserDetailsDto> users = auditFacade.getUserDetails(context, clientType, participantId);
 
