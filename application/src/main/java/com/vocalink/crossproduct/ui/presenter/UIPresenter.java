@@ -341,7 +341,7 @@ public class UIPresenter implements Presenter {
       List<Participant> participants, List<ParticipantType> participantTypes) {
     final List<Predicate<Participant>> filterByParticipantTypes = new ArrayList<>();
 
-    if(!participantTypes.isEmpty()) {
+    if (!participantTypes.isEmpty()) {
       filterByParticipantTypes.add(participant -> participantTypes
           .contains(participant.getParticipantType()));
     }

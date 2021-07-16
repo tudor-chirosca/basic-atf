@@ -8,6 +8,6 @@ import lombok.Getter;
 public class Account {
 
   private final String partyCode;
-  private final Integer accountNo;
+  private final String accountNo;
   private final String iban;
 }

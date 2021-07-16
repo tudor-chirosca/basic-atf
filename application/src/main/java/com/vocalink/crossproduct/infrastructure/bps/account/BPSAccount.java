@@ -8,13 +8,13 @@ import lombok.Getter;
 public class BPSAccount {
 
   private final String partyCode;
-  private final Integer accountNo;
+  private final String accountNo;
   private final String iban;
 
   @JsonCreator
   public BPSAccount(
       @JsonProperty(value = "partyCode", required = true) String partyCode,
-      @JsonProperty(value = "accountNo", required = true) Integer accountNo,
+      @JsonProperty(value = "accountNo", required = true) String accountNo,
       @JsonProperty(value = "iban", required = true) String iban) {
     this.partyCode = partyCode;
     this.accountNo = accountNo;

@@ -500,6 +500,186 @@ class UIPresenterTest {
     }
 
     @Test
+    fun `should present reference participants filtered by DIRECT participant type`() {
+        val directParticipant = Participant.builder()
+            .id("1")
+            .name("directParticipant")
+            .participantType(DIRECT)
+            .build()
+
+        val participants = listOf(
+            directParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundedParticipant")
+                .participantType(FUNDED)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("fundingParticipant")
+                .participantType(FUNDING)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(DIRECT))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(directParticipant.id)
+        assertThat(result[0].name).isEqualTo(directParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(directParticipant.participantType.description)
+    }
+
+    @Test
+    fun `should present reference participants filtered by FUNDING participant type`() {
+        val fundingParticipant = Participant.builder()
+            .id("1")
+            .name("fundingParticipant")
+            .participantType(FUNDING)
+            .build()
+
+        val participants = listOf(
+            fundingParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundedParticipant")
+                .participantType(FUNDED)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("directParticipant")
+                .participantType(DIRECT)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(FUNDING))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(fundingParticipant.id)
+        assertThat(result[0].name).isEqualTo(fundingParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(fundingParticipant.participantType.description)
+    }
+
+    @Test
+    fun `should present reference participants filtered by FUNDED participant type`() {
+        val fundedParticipant = Participant.builder()
+            .id("1")
+            .name("fundedParticipant")
+            .participantType(FUNDED)
+            .build()
+
+        val participants = listOf(
+            fundedParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundingParticipant")
+                .participantType(FUNDING)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("directParticipant")
+                .participantType(DIRECT)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(FUNDED))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(fundedParticipant.id)
+        assertThat(result[0].name).isEqualTo(fundedParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(fundedParticipant.participantType.description)
+    }
+
+    @Test
+    fun `should present reference participants filtered by DIRECT_FUNDING participant type`() {
+        val directFundingParticipant = Participant.builder()
+            .id("1")
+            .name("directFundingParticipant")
+            .participantType(DIRECT_FUNDING)
+            .build()
+
+        val participants = listOf(
+            directFundingParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundingParticipant")
+                .participantType(FUNDING)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("directParticipant")
+                .participantType(DIRECT)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(DIRECT_FUNDING))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(directFundingParticipant.id)
+        assertThat(result[0].name).isEqualTo(directFundingParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(directFundingParticipant.participantType.description)
+    }
+
+    @Test
+    fun `should present reference participants filtered by TPSP participant type`() {
+        val tpspParticipant = Participant.builder()
+            .id("1")
+            .name("tpspParticipant")
+            .participantType(TPSP)
+            .build()
+
+        val participants = listOf(
+            tpspParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundingParticipant")
+                .participantType(FUNDING)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("directParticipant")
+                .participantType(DIRECT)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(TPSP))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(tpspParticipant.id)
+        assertThat(result[0].name).isEqualTo(tpspParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(tpspParticipant.participantType.description)
+    }
+
+    @Test
+    fun `should present reference participants filtered by SCHEME_OPERATOR participant type`() {
+        val schemeParticipant = Participant.builder()
+            .id("1")
+            .name("schemeParticipant")
+            .participantType(SCHEME_OPERATOR)
+            .build()
+
+        val participants = listOf(
+            schemeParticipant,
+            Participant.builder()
+                .id("2")
+                .name("fundingParticipant")
+                .participantType(FUNDING)
+                .build(),
+            Participant.builder()
+                .id("3")
+                .name("directParticipant")
+                .participantType(DIRECT)
+                .build()
+        )
+
+        val result = uiPresenter.presentParticipantReferences(participants, listOf(SCHEME_OPERATOR))
+
+        assertThat(result.size).isEqualTo(1)
+        assertThat(result[0].participantIdentifier).isEqualTo(schemeParticipant.id)
+        assertThat(result[0].name).isEqualTo(schemeParticipant.name)
+        assertThat(result[0].participantType).isEqualTo(schemeParticipant.participantType.description)
+    }
+
+    @Test
     fun `should get UI ClientType`() {
         val result = uiPresenter.clientType
         assertThat(result).isEqualTo(ClientType.UI)

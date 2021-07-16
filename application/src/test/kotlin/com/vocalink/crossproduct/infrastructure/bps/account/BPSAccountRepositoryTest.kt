@@ -27,7 +27,7 @@ class BPSAccountRepositoryTest @Autowired constructor(var accountRepository: BPS
         const val VALID_ACCOUNT_RESPONSE: String = """
             {
             "partyCode": "HANDSESS",
-            "accountNo": 200002,
+            "accountNo": "200002",
             "iban": "SE23 9999 9999 9999 9999 2150"
         }"""
     }
@@ -49,7 +49,7 @@ class BPSAccountRepositoryTest @Autowired constructor(var accountRepository: BPS
 
         val result = accountRepository.findByPartyCode("HANDSESS")
         assertThat(result.iban).isEqualTo("SE23 9999 9999 9999 9999 2150")
-        assertThat(result.accountNo).isEqualTo(200002)
+        assertThat(result.accountNo).isEqualTo("200002")
         assertThat(result.partyCode).isEqualTo("HANDSESS")
     }
 }

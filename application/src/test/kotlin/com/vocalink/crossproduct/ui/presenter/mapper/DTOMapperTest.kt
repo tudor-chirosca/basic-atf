@@ -1113,7 +1113,8 @@ class DTOMapperTest {
             .updatedAt(ZonedDateTime.now(clock))
             .updatedBy(approvalUser)
             .build()
-        val account = Account("partyCode", 234, "iban")
+
+        val account = Account("partyCode", "234", "iban")
 
         val result = MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals)
 

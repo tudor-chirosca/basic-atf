@@ -500,7 +500,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map Account fields`() {
-        val bps = BPSAccount("partyCode", 234234, "iban")
+        val bps = BPSAccount("partyCode", "234234", "iban")
         val entity = MAPPER.toEntity(bps)
         assertThat(entity.partyCode).isEqualTo(bps.partyCode)
         assertThat(entity.iban).isEqualTo(bps.iban)
@@ -793,7 +793,7 @@ class EntityMapperTest {
 
     @Test
     fun `should map EnquirySenderDetailsDto from Account and Participant`() {
-        val account = Account("partyCode", 234234, "iban")
+        val account = Account("partyCode", "234234", "iban")
         val participant = Participant(
             "participantId",
             "participantId",
