@@ -201,9 +201,9 @@ pipeline {
                                         addColumns: false, 
                                         buildJob: '', 
                                         buildNumber: BUILD_NUMBER, 
-                                        componentName: projectName, 
+                                        componentName: 'DEV', 
                                         data: [], 
-                                        nameOfEnv: 'DEV', 
+                                        nameOfEnv: projectName, 
                                         packageName: "${env.gitTag}-P27"
                                     ) {}
                                 }
@@ -227,11 +227,11 @@ pipeline {
                                         addColumns: false, 
                                         buildJob: '', 
                                         buildNumber: BUILD_NUMBER, 
-                                        componentName: projectName, 
+                                        componentName: 'DEV_SAMA', 
                                         data: [], 
-                                        nameOfEnv: 'DEV_SAMA', 
+                                        nameOfEnv: projectName, 
                                         packageName: "${env.gitTag}-SAMA"
-                                    ) {}
+                                    ) {}    
                                 }
                             }
                         }
