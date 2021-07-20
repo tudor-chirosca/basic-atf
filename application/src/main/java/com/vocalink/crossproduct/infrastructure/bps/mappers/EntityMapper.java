@@ -21,6 +21,7 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
+import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
@@ -87,6 +88,7 @@ import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStats;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertStatsData;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApproval;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalConfirmationResponse;
+import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalCreationResponse;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType;
 import com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalStatus;
 import com.vocalink.crossproduct.infrastructure.bps.batch.BPSBatchDetailed;
@@ -507,6 +509,8 @@ public interface EntityMapper {
     }
     return null;
   }
+
+  ApprovalCreationResponse toEntity(BPSApprovalCreationResponse bpsApprovalResponse);
 
   ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);
 

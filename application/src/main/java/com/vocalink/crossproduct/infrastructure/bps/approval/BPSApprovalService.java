@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.approval;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_CREATE_PATH;
+import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.CONFIRM_APPROVAL_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER;
 import static java.util.stream.Collectors.toList;
@@ -36,7 +36,7 @@ public class BPSApprovalService implements ApprovalService {
       ApprovalConfirmation approvalConfirmation) {
     final BPSApprovalConfirmationRequest bpsRequest = BPSMAPPER.toBps(approvalConfirmation);
     return webClient.put()
-        .uri(resolve(APPROVAL_CREATE_PATH, bpsProperties))
+        .uri(resolve(CONFIRM_APPROVAL_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .body(fromPublisher(Mono.just(bpsRequest), BPSApprovalConfirmationRequest.class))
         .retrieve()

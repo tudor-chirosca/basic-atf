@@ -2,7 +2,6 @@ package com.vocalink.crossproduct.infrastructure.bps.approval;
 
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVALS_PATH;
-import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_CREATE_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_DETAILS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_REQUEST_BY_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.APPROVAL_REQUEST_TYPE_PATH;
@@ -15,6 +14,7 @@ import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
@@ -25,6 +25,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -79,14 +80,16 @@ public class BPSApprovalRepository implements ApprovalRepository {
   }
 
   @Override
-  public Approval requestApproval(ApprovalChangeCriteria criteria) {
-    final BPSApprovalChangeRequest bpsRequest = BPSMAPPER.toBps(criteria);
-    return webClient.post()
-        .uri(resolve(APPROVAL_CREATE_PATH, bpsProperties))
+  public ApprovalCreationResponse requestApproval(ApprovalChangeCriteria criteria, String userId) {
+    final BPSApprovalRequestType bpsApprovalRequestType = BPSMAPPER
+        .toBpsApprovalRequestType(criteria.getRequestType());
+    final Map<String, Object> approvalRequest = BPSMAPPER.approvalCreationRequest(criteria, userId);
+    return webClient.put()
+        .uri(resolve(bpsApprovalRequestType.getApprovalRequestPath(), bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .body(fromPublisher(Mono.just(bpsRequest), BPSApprovalChangeRequest.class))
+        .body(fromPublisher(Mono.just(approvalRequest), Map.class))
         .retrieve()
-        .bodyToMono(BPSApproval.class)
+        .bodyToMono(BPSApprovalCreationResponse.class)
         .retryWhen(retryWebClientConfig.fixedRetry())
         .map(MAPPER::toEntity)
         .block();

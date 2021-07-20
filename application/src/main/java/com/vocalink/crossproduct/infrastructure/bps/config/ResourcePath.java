@@ -33,7 +33,9 @@ public class ResourcePath {
   public static final String SINGLE_TRANSACTION_PATH = "single-transaction-path";
   public static final String SINGLE_ACCOUNT_PATH = "single-account-path";
   public static final String APPROVAL_DETAILS_PATH = "approval-details-path";
+  public static final String CONFIRM_APPROVAL_PATH = "confirm-approval-path";
   public static final String APPROVAL_CREATE_PATH = "approval-create-path";
+  public static final String BATCH_APPROVAL_CREAT_PATH = "batch-approval-create-path";
   public static final String BROADCASTS_PATH = "broadcasts-path";
   public static final String BROADCASTS_CREATE_PATH = "broadcasts-create-path";
   public static final String APPROVALS_PATH = "approvals-path";

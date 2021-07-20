@@ -19,7 +19,7 @@ public interface ApprovalFacade {
       ApprovalSearchRequest request);
 
   ApprovalDetailsDto requestApproval(String product, ClientType clientType,
-      ApprovalChangeRequest request);
+      ApprovalChangeRequest request, String userId);
 
   ApprovalConfirmationResponseDto submitApprovalConfirmation(String product, ClientType clientType,
       ApprovalConfirmationRequest request, String id);

@@ -98,7 +98,13 @@ bps-config:
       path: /approvals/{schemeCode}/read
       base: MOCK
     approval-create-path:
+      path: /approvals/create/{schemeCode}
+      base: MOCK
+    confirm-approval-path:
       path: /approvals/{schemeCode}
+      base: MOCK
+    batch-approval-create-path:
+      path: /enquiries/batch/cancellation/{schemeCode}
       base: MOCK
     approvals-path:
       path: /approvals/{schemeCode}/readAll

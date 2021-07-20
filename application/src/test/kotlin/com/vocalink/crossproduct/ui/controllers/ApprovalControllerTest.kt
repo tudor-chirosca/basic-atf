@@ -80,8 +80,9 @@ class ApprovalControllerTest : ControllerTest() {
         }"""
 
         const val INVALID_CREATE_APPROVAL_REQUEST_BODY_BIGGER_THAN_99_BILLIONS = """ {
-           "requestType" : "BATCH_CANCELLATION",
+           "requestType" : "CONFIG_CHANGE",
            "requestedChange" : {
+                "id": "SBAVSESSXXX",
                 "debitCapLimit": 99000000001,
                 "name": "some_new_name"
               },
@@ -89,8 +90,9 @@ class ApprovalControllerTest : ControllerTest() {
         }"""
 
         const val INVALID_CREATE_APPROVAL_REQUEST_BODY_0_VALUE = """ {
-           "requestType" : "BATCH_CANCELLATION",
+           "requestType" : "CONFIG_CHANGE",
            "requestedChange" : {
+                "id": "SBAVSESSXXX",
                 "debitCapLimit": 0,
                 "name": "some_new_name"
               },
@@ -98,8 +100,9 @@ class ApprovalControllerTest : ControllerTest() {
         }"""
 
         const val INVALID_CREATE_APPROVAL_REQUEST_BODY_DECIMAL_VALUE = """ {
-           "requestType" : "BATCH_CANCELLATION",
+           "requestType" : "CONFIG_CHANGE",
            "requestedChange" : {
+                "id": "SBAVSESSXXX",
                 "debitCapLimit": 100.99,
                 "name": "some_new_name"
               },
@@ -110,6 +113,14 @@ class ApprovalControllerTest : ControllerTest() {
            "requestType" : "BATCH_CANCELLATION",
            "requestedChange" : {
                 "batchId": "some_batch_id",
+                "status": "some_new_status"
+              }
+        }"""
+
+        const val INVALID_BATCH_CANCELLATION_APPROVAL_REQUEST_BODY = """ {
+           "requestType" : "BATCH_CANCELLATION",
+           "requestedChange" : {
+                "id": "some_id",
                 "status": "some_new_status"
               }
         }"""
@@ -281,7 +292,7 @@ class ApprovalControllerTest : ControllerTest() {
             originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
-        `when`(approvalFacade.requestApproval(any(), any(), any()))
+        `when`(approvalFacade.requestApproval(any(), any(), any(), any()))
             .thenReturn(approvalDetailsDto)
 
         mockMvc.perform(
@@ -315,7 +326,7 @@ class ApprovalControllerTest : ControllerTest() {
             originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
-        `when`(approvalFacade.requestApproval(any(), any(), any()))
+        `when`(approvalFacade.requestApproval(any(), any(), any(), any()))
             .thenReturn(approvalDetailsDto)
 
         mockMvc.perform(
@@ -349,7 +360,7 @@ class ApprovalControllerTest : ControllerTest() {
             originalData, requestedChange, SuspensionLevel.SCHEME_FUNDING
         )
 
-        `when`(approvalFacade.requestApproval(any(), any(), any()))
+        `when`(approvalFacade.requestApproval(any(), any(), any(), any()))
             .thenReturn(approvalDetailsDto)
 
         mockMvc.perform(
@@ -478,6 +489,32 @@ class ApprovalControllerTest : ControllerTest() {
         )
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Inserted number should not be Decimal")))
+    }
+
+    @Test
+    fun `should fail with 400 on missing batchId in batch cancellation request in requestedChange`() {
+        mockMvc.perform(
+            post("/approvals")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_BATCH_CANCELLATION_APPROVAL_REQUEST_BODY)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Batch cancellation request should contain batch id")))
+    }
+
+    @Test
+    fun `should fail with 400 on missing batchId in transaction cancellation request in requestedChange`() {
+        mockMvc.perform(
+            post("/approvals")
+                .contentType(UTF8_CONTENT_TYPE)
+                .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                .content(INVALID_CREATE_APPROVAL_REQUEST_BODY_TRANSACTION_CANCELLATION)
+        )
+            .andExpect(status().is4xxClientError)
+            .andExpect(content().string(containsString("Transaction cancellation request should contain transaction id")))
     }
 
     @Test

@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApprovalController implements ApprovalApi {
 
+  private static final String X_USER_ID_HEADER = "x-user-id";
   private final AuditableDetail auditableDetail;
 
   private final ApprovalFacade approvalFacade;
@@ -51,6 +52,7 @@ public class ApprovalController implements ApprovalApi {
         .submitApprovalConfirmation(context, clientType, request, id);
     return ResponseEntity.ok().body(approvalDetailsDto);
   }
+
   @Auditable(type = VIEW_APPROVAL_REQ, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/approvals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ApprovalDetailsDto> getApprovalDetailsById(
@@ -84,9 +86,10 @@ public class ApprovalController implements ApprovalApi {
       @RequestHeader final String context,
       @Valid @RequestBody final ApprovalChangeRequest request,
       final HttpServletRequest httpServletRequest) {
+    final String userId = httpServletRequest.getHeader(X_USER_ID_HEADER);
 
     final ApprovalDetailsDto approvalDetailsDto = approvalFacade
-        .requestApproval(context, clientType, request);
+        .requestApproval(context, clientType, request, userId);
 
     auditableDetail.setJobId(approvalDetailsDto.getJobId());
 

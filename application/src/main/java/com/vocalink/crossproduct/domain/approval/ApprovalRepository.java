@@ -11,7 +11,7 @@ public interface ApprovalRepository extends CrossproductRepository {
 
   Page<Approval> findPaginated(ApprovalSearchCriteria criteria);
 
-  Approval requestApproval(ApprovalChangeCriteria criteria);
+  ApprovalCreationResponse requestApproval(ApprovalChangeCriteria criteria, String userId);
 
   List<UserDetails> findRequestedDetails();
 

@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.put
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria
@@ -32,22 +33,19 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
     companion object {
         const val VALID_BATCH_CANCELLATION_REQUEST = """ {
-           "requestType" : "BATCHCANCELLATION",
-           "requestedChange" : {
-                "batchId": "some_batch_id",
-                "status": "some_new_status"
-              },
-           "notes" : "notes"
+           "reasonDescribe": "notes",
+           "messageIdentifier": "some batch id",
+           "userId": "12a511"
         }"""
 
         const val VALID_TRANSACTION_CANCELLATION_REQUEST = """ {
            "requestType" : "TRANSACTIONCANCELLATION",
            "requestedChange" : {
-                "transactionId": "some_transaction_id",
-                "status": "some_new_status"
+                "transactionId": "some_transaction_id"
               },
            "notes" : "notes"
         }"""
+
 
         const val VALID_APPROVAL_DETAILS_REQUEST: String = """
             {
@@ -120,6 +118,12 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
                 "oldData": "hashed data",
                 "newData": "hashed data",
                 "notes": "Notes"
+            }"""
+
+        const val VALID_APPROVAL_CREATION_RESPONSE: String = """
+            {
+                "requestId": "cdce8c2d-a839-4431-a2af-bc1edd975f51",
+                "status": "WAITING-FORAPPROVAL"
             }"""
 
         const val VALID_APPROVALS_RESPONSE: String = """
@@ -275,60 +279,48 @@ class BPSApprovalRepositoryTest @Autowired constructor(var approvalRepository: B
 
     @Test
     fun `should return approval on create approval request`() {
-        val date = ZonedDateTime.of(LocalDateTime.of(2021, 2, 3, 14, 55,0),  ZoneId.of("UTC"))
+        val userId = "12a511"
         mockServer.stubFor(
-                post(urlEqualTo("/approvals/P27-SEK"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(VALID_APPROVAL_DETAILS_RESPONSE))
-                        .withRequestBody(equalToJson(VALID_BATCH_CANCELLATION_REQUEST)))
-        val criteria = ApprovalChangeCriteria(
-                BATCH_CANCELLATION,
-                mapOf("batchId" to "some_batch_id",
-                        "status" to "some_new_status"),
-                "notes"
+            put(urlEqualTo("/enquiries/batch/cancellation/P27-SEK"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(VALID_APPROVAL_CREATION_RESPONSE)
+                )
+                .withRequestBody(equalToJson(VALID_BATCH_CANCELLATION_REQUEST))
         )
-        val result = approvalRepository.requestApproval(criteria)
+        val criteria = ApprovalChangeCriteria(
+            BATCH_CANCELLATION,
+            mapOf("batchId" to "some batch id"),
+            "notes"
+        )
 
-        assertThat(result.approvalId).isEqualTo("10000004")
-        assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
-        assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
-        assertThat(result.date).isEqualTo(date)
-        assertThat(result.requestedBy.firstName).isEqualTo("John")
-        assertThat(result.requestedBy.lastName).isEqualTo("Doe")
-        assertThat(result.status).isEqualTo(REJECTED)
-        assertThat(result.requestComment).isEqualTo("This is the reason...")
-        assertThat(result.requestedChange["status"]).isEqualTo("suspended")
+        val result = approvalRepository.requestApproval(criteria, userId)
+
+        assertThat(result.requestId).isEqualTo("cdce8c2d-a839-4431-a2af-bc1edd975f51")
+        assertThat(result.status).isEqualTo("WAITING-FORAPPROVAL")
     }
 
     @Test
     fun `should return approval on create approval request transaction cancellation`() {
-        val date = ZonedDateTime.of(LocalDateTime.of(2021, 2, 3, 14, 55,0),  ZoneId.of("UTC"))
+        val userId = "12a511"
         mockServer.stubFor(
-                post(urlEqualTo("/approvals/P27-SEK"))
+                put(urlEqualTo("/approvals/create/P27-SEK"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(VALID_APPROVAL_DETAILS_RESPONSE))
+                                .withBody(VALID_APPROVAL_CREATION_RESPONSE))
                         .withRequestBody(equalToJson(VALID_TRANSACTION_CANCELLATION_REQUEST)))
         val criteria = ApprovalChangeCriteria(
                 TRANSACTION_CANCELLATION,
-                mapOf("transactionId" to "some_transaction_id",
-                        "status" to "some_new_status"),
+                mapOf("transactionId" to "some_transaction_id"),
                 "notes"
         )
-        val result = approvalRepository.requestApproval(criteria)
+        val result = approvalRepository.requestApproval(criteria, userId)
 
-        assertThat(result.approvalId).isEqualTo("10000004")
-        assertThat(result.requestType).isEqualTo(CONFIG_CHANGE)
-        assertThat(result.participantIds[0]).isEqualTo("ELLFSESP")
-        assertThat(result.date).isEqualTo(date)
-        assertThat(result.requestedBy.firstName).isEqualTo("John")
-        assertThat(result.requestedBy.lastName).isEqualTo("Doe")
-        assertThat(result.status).isEqualTo(REJECTED)
-        assertThat(result.requestComment).isEqualTo("This is the reason...")
-        assertThat(result.requestedChange["status"]).isEqualTo("suspended")
+        assertThat(result.requestId).isEqualTo("cdce8c2d-a839-4431-a2af-bc1edd975f51")
+        assertThat(result.status).isEqualTo("WAITING-FORAPPROVAL")
     }
 
     @Test

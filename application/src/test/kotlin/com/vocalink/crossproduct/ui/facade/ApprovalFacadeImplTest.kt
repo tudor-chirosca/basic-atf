@@ -4,11 +4,7 @@ import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.ServiceFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
-import com.vocalink.crossproduct.domain.approval.Approval
-import com.vocalink.crossproduct.domain.approval.ApprovalRepository
-import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
-import com.vocalink.crossproduct.domain.approval.ApprovalService
-import com.vocalink.crossproduct.domain.approval.ApprovalStatus
+import com.vocalink.crossproduct.domain.approval.*
 import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
@@ -158,32 +154,42 @@ class ApprovalFacadeImplTest {
 
     @Test
     fun `should invoke presenter and repository on request approval`() {
-        val approval = Approval(null, null,
-            null, null, null, null, null,
-            null, null, null, null, null,
-            null, null, null, null)
+        val userId = "12a511"
+        val approvalChangeResponse =
+            ApprovalCreationResponse(
+                "cdce8c2d-a839-4431-a2af-bc1edd975f51",
+                "WAITING-FORAPPROVAL"
+            )
 
-        val approvalDetailsDto = ApprovalDetailsDto(null,
+        val approvalDetailsDto = ApprovalDetailsDto(
+            null,
             null, null, null, null, null, null,
-            null, null, null, null, null, null, null, null)
+            null, null, null, null, null, null, null, null
+        )
 
-        val request = ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes")
+        val request =
+            ApprovalChangeRequest("PARTICIPANT_SUSPEND", mapOf("status" to "suspended"), "notes")
 
-        `when`(approvalRepository.requestApproval(any()))
-            .thenReturn(approval)
+        `when`(approvalRepository.requestApproval(any(), any()))
+            .thenReturn(approvalChangeResponse)
 
         `when`(participantRepository.findAll())
-                .thenReturn(Page(0, emptyList()))
+            .thenReturn(Page(0, emptyList()))
 
         `when`(uiPresenter.presentApprovalDetails(any(), any()))
             .thenReturn(approvalDetailsDto)
 
-        val result = approvalFacadeImpl.requestApproval(TestConstants.CONTEXT, ClientType.UI, request)
+        val result = approvalFacadeImpl.requestApproval(
+            TestConstants.CONTEXT,
+            ClientType.UI,
+            request,
+            userId
+        )
 
-        verify(approvalRepository).requestApproval(any())
+        verify(approvalRepository).requestApproval(any(), any())
         verify(presenterFactory).getPresenter(any())
         verify(uiPresenter).presentApprovalDetails(any(), any())
 
-        assertNotNull(result)
+        assertThat(result).isNotNull
     }
 }

@@ -10,6 +10,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
+import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.Participant;
@@ -68,15 +69,18 @@ public class ApprovalFacadeImpl implements ApprovalFacade {
 
   @Override
   public ApprovalDetailsDto requestApproval(String product, ClientType clientType,
-      ApprovalChangeRequest requestDto) {
+      ApprovalChangeRequest requestDto, String userId) {
 
     log.info("Creating approval by type: {} for: {} from: {}", requestDto.getRequestType(),
         clientType, product);
 
     final ApprovalChangeCriteria request = MAPPER.toEntity(requestDto);
 
+    final ApprovalCreationResponse approvalCreationResponse = repositoryFactory.getApprovalRepository(product)
+        .requestApproval(request, userId);
+
     final Approval approval = repositoryFactory.getApprovalRepository(product)
-        .requestApproval(request);
+        .findByJobId(approvalCreationResponse.getRequestId());
 
     final List<Participant> participants = repositoryFactory.getParticipantRepository(product)
         .findAll().getItems();

@@ -22,13 +22,13 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
+@ValidChangeRequest
 @ValidNote(notes = "notes", requestType = "requestType", requestTypes = {"BATCH_CANCELLATION", "TRANSACTION_CANCELLATION"})
 @JsonInclude(Include.NON_NULL)
 public class ApprovalChangeRequest implements AuditableRequest {
 
   @ValidEnum(enumClass = ApprovalRequestType.class)
   private final String requestType;
-  @ValidChangeRequest
   private final Map<String, Object> requestedChange;
   private final String notes;
 

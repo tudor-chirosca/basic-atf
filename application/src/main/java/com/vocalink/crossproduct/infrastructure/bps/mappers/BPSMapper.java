@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
 import static com.vocalink.crossproduct.infrastructure.bps.BPSSortParamMapper.resolveParams;
+import static com.vocalink.crossproduct.infrastructure.bps.approval.BPSApprovalRequestType.BATCH_CANCELLATION;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getApprovalSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getBatchSearchRequestSortParams;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getFileSearchRequestSortParams;
@@ -55,6 +56,7 @@ import com.vocalink.crossproduct.infrastructure.bps.settlement.BPSSettlementEnqu
 import com.vocalink.crossproduct.infrastructure.bps.transaction.BPSTransactionEnquirySearchRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.mapstruct.AfterMapping;
@@ -285,6 +287,24 @@ public interface BPSMapper {
       @Mapping(target = "isApproved", source = "action", qualifiedByName = "getIsApprovedFromType")
   })
   BPSApprovalConfirmationRequest toBps(ApprovalConfirmation approvalConfirmation);
+
+  default Map<String, Object> approvalCreationRequest(ApprovalChangeCriteria criteria, @Context String userId) {
+    final Map<String, Object> approvalRequest = new HashMap<>();
+    final BPSApprovalRequestType bpsApprovalRequestType = this
+        .toBpsApprovalRequestType(criteria.getRequestType());
+    if (BATCH_CANCELLATION.equals(bpsApprovalRequestType)) {
+      approvalRequest.put("messageIdentifier", criteria.getRequestedChange().get("batchId"));
+      approvalRequest.put("reasonDescribe", criteria.getNotes());
+      approvalRequest.put("userId", userId);
+      return approvalRequest;
+    }
+
+    approvalRequest.put("requestType", bpsApprovalRequestType);
+    approvalRequest.put("requestedChange", criteria.getRequestedChange());
+    approvalRequest.put("notes", criteria.getNotes());
+
+    return approvalRequest;
+  }
 
   @Named("getIsApprovedFromType")
   default boolean getIsApprovedFromType(ApprovalConfirmationType confirmationType) {
