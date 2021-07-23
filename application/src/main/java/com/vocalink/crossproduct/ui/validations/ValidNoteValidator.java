@@ -29,6 +29,14 @@ public class ValidNoteValidator implements
     if (notes == null) {
       return requestTypes.stream().noneMatch(rt -> rt.equalsIgnoreCase(requestType));
     }
+
+    if (notes.length() > 1000) {
+      context.disableDefaultConstraintViolation();
+      context.buildConstraintViolationWithTemplate("Notes parameter should not exceed 1000 symbols")
+          .addConstraintViolation();
+      return false;
+    }
+
     return true;
   }
 }

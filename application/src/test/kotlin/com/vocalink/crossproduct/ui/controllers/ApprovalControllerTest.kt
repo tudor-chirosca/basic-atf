@@ -122,6 +122,15 @@ class ApprovalControllerTest : ControllerTest() {
               }
         }"""
 
+        const val INVALID_NOTES_SIZE_REQUEST_BODY = """ {
+           "requestType" : "TRANSACTION_CANCELLATION",
+           "requestedChange" : {
+                "batchId": "some_batch_id",
+                "status": "some_new_status"
+              },
+           "notes" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed volutpat lectus, vel venenatis justo. Praesent sagittis pretium nisi vel dignissim. Nam consectetur lectus ut massa pellentesque dignissim. Integer laoreet, tortor ac commodo pharetra, risus massa venenatis tortor, vitae bibendum nisi odio at turpis. Maecenas facilisis rhoncus sem, in tincidunt mauris luctus et. Integer fermentum ante nec mauris pellentesque, eget dapibus odio tempor. Fusce libero est, placerat nec pharetra non, vehicula vel libero. Morbi consequat orci vel venenatis lobortis. Suspendisse consectetur vitae orci in elementum. Curabitur nunc dui, dapibus ac ullamcorper quis, accumsan quis lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras vel viverra magna. Vestibulum venenatis mi ac massa convallis, in bibendum nisl rhoncus.Fusce fringilla tellus lacus, a elementum orci dictum vel. Proin convallis, libero vel mollis blandit, ex dui maximus tortor, sit etcetera."
+        }"""
+
         const val INVALID_MISSING_REQUEST_TYPE_REQUEST_BODY = """ {
            "requestedChange" : {
                 "status": "some_new_status"
@@ -378,6 +387,19 @@ class ApprovalControllerTest : ControllerTest() {
         )
                 .andExpect(status().is4xxClientError)
                 .andExpect(content().string(containsString("Notes parameter is mandatory on a CANCELLATION")))
+    }
+
+    @Test
+    fun `should fail with 400 when notes exceed expected size`() {
+        mockMvc.perform(
+                post("/approvals")
+                        .contentType(UTF8_CONTENT_TYPE)
+                        .header(CONTEXT_HEADER, TestConstants.CONTEXT)
+                        .header(CLIENT_TYPE_HEADER, TestConstants.CLIENT_TYPE)
+                        .content(INVALID_NOTES_SIZE_REQUEST_BODY)
+        )
+                .andExpect(status().is4xxClientError)
+                .andExpect(content().string(containsString("Notes parameter should not exceed 1000 symbols")))
     }
 
     @Test
