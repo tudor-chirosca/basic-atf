@@ -2,7 +2,10 @@ package com.vocalink.crossproduct.ui.dto;
 
 import java.io.InputStream;
 import java.util.Properties;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultDtoConfiguration {
 
   private static final String APPLICATION_PROPERTIES = "application.properties";
@@ -20,4 +23,5 @@ public class DefaultDtoConfiguration {
   public static String getDefault(DtoProperties key) {
     return properties.getProperty(key.getProperty());
   }
+
 }

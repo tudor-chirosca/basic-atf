@@ -1,5 +1,9 @@
 package com.vocalink.crossproduct.infrastructure.exception;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorConstants {
 
   public static final String ERROR_SOURCE_ISS = "ISS";

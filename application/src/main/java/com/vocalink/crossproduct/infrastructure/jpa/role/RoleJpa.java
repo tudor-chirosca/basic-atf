@@ -1,6 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.jpa.role;
 
 import com.vocalink.crossproduct.domain.role.Role;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class RoleJpa {
+public class RoleJpa implements Serializable {
 
   @Id
   private String id;

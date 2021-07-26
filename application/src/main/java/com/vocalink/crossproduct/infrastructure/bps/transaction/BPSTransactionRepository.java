@@ -15,7 +15,6 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
-import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile;
 import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
@@ -55,7 +54,8 @@ public class BPSTransactionRepository implements TransactionRepository {
         .retrieve()
         .onStatus(s -> s.equals(HttpStatus.NOT_FOUND) || s.equals(HttpStatus.NO_CONTENT), r ->
             Mono.error(new EntityNotFoundException()))
-        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSTransaction>>() {})
+        .bodyToMono(new ParameterizedTypeReference<BPSResult<BPSTransaction>>() {
+        })
         .onErrorResume(EntityNotFoundException.class, e -> Mono.just(new BPSResult<>()))
         .retryWhen(retryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)

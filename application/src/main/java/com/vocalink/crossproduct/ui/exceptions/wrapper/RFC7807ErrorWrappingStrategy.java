@@ -70,7 +70,7 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
       BindException exception) {
 
     List<RFCError> errorDetails = new ArrayList<>();
-    exception.getBindingResult().getAllErrors().forEach((err) -> errorDetails
+    exception.getBindingResult().getAllErrors().forEach(err -> errorDetails
         .add(RFCError
             .builder()
             .source(ErrorConstants.ERROR_SOURCE_ISS)
@@ -98,7 +98,7 @@ public class RFC7807ErrorWrappingStrategy implements ErrorWrappingStrategy {
       MethodArgumentNotValidException exception) {
 
     List<RFCError> errorDetails = new ArrayList<>();
-    exception.getBindingResult().getAllErrors().forEach((err) -> errorDetails
+    exception.getBindingResult().getAllErrors().forEach(err -> errorDetails
         .add(RFCError
             .builder()
             .source(ErrorConstants.ERROR_SOURCE_ISS)

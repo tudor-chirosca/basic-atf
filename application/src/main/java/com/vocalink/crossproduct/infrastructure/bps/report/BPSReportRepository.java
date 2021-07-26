@@ -1,9 +1,5 @@
 package com.vocalink.crossproduct.infrastructure.bps.report;
 
-import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
-import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
-import java.net.URI;
-
 import static com.vocalink.crossproduct.infrastructure.bps.config.BPSPathUtils.resolve;
 import static com.vocalink.crossproduct.infrastructure.bps.config.ResourcePath.REPORTS_PATH;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER;
@@ -18,17 +14,18 @@ import com.vocalink.crossproduct.domain.Page;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.report.ReportRepository;
 import com.vocalink.crossproduct.domain.report.ReportSearchCriteria;
-import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
+import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import reactor.core.publisher.Mono;
 
 @Component

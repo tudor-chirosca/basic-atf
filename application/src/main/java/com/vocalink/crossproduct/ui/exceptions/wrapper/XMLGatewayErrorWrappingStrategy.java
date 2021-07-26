@@ -60,7 +60,7 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
       BindException exception) {
     GatewayErrorDescription error = new GatewayErrorDescription();
 
-    exception.getBindingResult().getAllErrors().forEach((err) -> error.getErrors()
+    exception.getBindingResult().getAllErrors().forEach(err -> error.getErrors()
         .addError(GatewayError
             .builder()
             .source(ErrorConstants.ERROR_SOURCE_ISS)
@@ -81,7 +81,7 @@ public class XMLGatewayErrorWrappingStrategy implements ErrorWrappingStrategy {
       MethodArgumentNotValidException exception) {
     GatewayErrorDescription error = new GatewayErrorDescription();
 
-    exception.getBindingResult().getAllErrors().forEach((err) -> error.getErrors()
+    exception.getBindingResult().getAllErrors().forEach(err -> error.getErrors()
         .addError(GatewayError
             .builder()
             .source(ErrorConstants.ERROR_SOURCE_ISS)

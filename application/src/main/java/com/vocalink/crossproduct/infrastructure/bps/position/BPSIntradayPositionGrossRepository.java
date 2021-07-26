@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
 public class BPSIntradayPositionGrossRepository implements IntraDayPositionGrossRepository {
 
   private final BPSProperties bpsProperties;
-  private final BPSRetryWebClientConfig BPSRetryWebClientConfig;
+  private final BPSRetryWebClientConfig bpsRetryWebClientConfig;
   private final WebClient webClient;
 
   @Override
@@ -48,7 +48,7 @@ public class BPSIntradayPositionGrossRepository implements IntraDayPositionGross
             Mono.error(new EntityNotFoundException()))
         .bodyToFlux(BPSIntraDayPositionGross.class)
         .onErrorResume(EntityNotFoundException.class, e -> Mono.empty())
-        .retryWhen(BPSRetryWebClientConfig.fixedRetry())
+        .retryWhen(bpsRetryWebClientConfig.fixedRetry())
         .doOnError(ExceptionUtils::raiseException)
         .map(MAPPER::toEntity)
         .collectList()

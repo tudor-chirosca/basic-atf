@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import lombok.val;
 
-public class ValidSortValidator implements
-    ConstraintValidator<ValidSort, Object> {
+public class ValidSortValidator implements ConstraintValidator<ValidSort, Object> {
 
   private String sortFieldName;
   private List<String> validSortParams;

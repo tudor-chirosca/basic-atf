@@ -533,7 +533,6 @@ public interface DTOMapper {
     return Double.valueOf(rejected.replace("%", ""));
   }
 
-//  TODO: check if percent symbol is needed in response
   @Named("removePercent")
   default String removePercent(String totalRejected) {
     return totalRejected.replace("%", "");

@@ -68,6 +68,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementScheduleDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDetailsDto;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionDto;
 import com.vocalink.crossproduct.ui.dto.validation.ValidationApprovalDto;
+import com.vocalink.crossproduct.ui.exceptions.UILayerException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
@@ -77,31 +78,33 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemPresenter implements Presenter {
+  
+  private static final String SYSTEM_API_NOT_IMPLEMENTED = "System API not implemented yet";
 
   @Override
   public SettlementDashboardDto presentAllParticipantsSettlement(List<Cycle> cycles,
       List<Participant> participants) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public SettlementDashboardDto presentFundingParticipantSettlement(List<Cycle> cycles,
       List<Participant> participants, Participant fundingParticipant,
       List<IntraDayPositionGross> intraDays) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ParticipantDashboardSettlementDetailsDto presentParticipantSettlementDetails(
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ParticipantDashboardSettlementDetailsDto presentFundedParticipantSettlementDetails(
       List<Cycle> cycles, List<ParticipantPosition> positions, Participant participant,
       Participant fundingParticipant, IntraDayPositionGross intradayPositionGross) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
@@ -112,217 +115,217 @@ public class SystemPresenter implements Presenter {
   @Override
   public IODashboardDto presentInputOutput(List<Participant> participants,
       IODashboard ioDashboard, LocalDate date) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public IODetailsDto presentIoDetails(Participant participant, IODetails ioDetails,
       LocalDate date) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public AlertReferenceDataDto presentAlertReference(AlertReferenceData alertsReference) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public AlertStatsDto presentAlertStats(AlertStats alertStats) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<AlertDto> presentAlert(Page<Alert> alerts) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<MessageDirectionReferenceDto> presentMessageDirectionReferences(
       List<MessageDirectionReference> messageDirectionReferences) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<FileDto> presentFiles(Integer totalResults, List<File> items) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<DayCycleDto> presentCycleDateReferences(List<DayCycle> dayCycles) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<ParticipantReferenceDto> presentParticipantReferences(
       List<Participant> participants, List<ParticipantType> participantTypes) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<ReasonCodeReferenceDto> presentReasonCodeReferences(
       Validation validation, List<String> statuses) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public FileDetailsDto presentFileDetails(File file, Participant sender, Participant receiver) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<BatchDto> presentBatches(Integer totalResults, List<Batch> items) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<TransactionDto> presentTransactions(Integer totalResults,
       List<Transaction> items) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public BatchDetailsDto presentBatchDetails(Batch batch) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ParticipantSettlementDetailsDto presentSettlementDetails(Page<SettlementDetails> settlement,
       List<Participant> participants, Participant participant, Participant settlementBank) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<ParticipantSettlementCycleDto> presentSettlements(
       Page<ParticipantSettlement> settlements, List<Participant> participants) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public LatestSettlementCyclesDto presentLatestCycles(
       List<Cycle> cycles) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public SettlementScheduleDto presentSchedule(SettlementSchedule schedule) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public TransactionDetailsDto presentTransactionDetails(Transaction transaction) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ApprovalDetailsDto presentApprovalDetails(Approval approval,
       List<Participant> participants) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<ManagedParticipantDto> presentManagedParticipants(
       Page<Participant> participants, Map<String, Approval> approvals) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<BroadcastDto> presentBroadcasts(int totalResults,
       List<BroadcastDto> broadcastDtos) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public BroadcastDto presentBroadcast(Broadcast broadcastDto,
       List<Participant> references) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<ApprovalDetailsDto> presentApproval(Page<Approval> approvals,
       List<Participant> participants) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
       ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
       Map<String, Approval> approvals) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
       ParticipantConfiguration configuration, Account account, Map<String, Approval> approvals) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<ReportDto> presentReports(Page<Report> reports) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public Resource presentStream(InputStream file) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ApprovalConfirmationResponseDto presentApprovalResponse(
       ApprovalConfirmationResponse response) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ValidationApprovalDto presentApprovalValidation(ValidationApproval response) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public ConfigurationDto presentConfiguration(Configuration configuration,
       Integer dataRetentionDays, String timeZone) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<UserDetailsDto> presentUserDetails(List<AuditDetails> details) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public PageDto<AuditDto> presentAuditDetails(Page<AuditDetails> details) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<String> presentEvents(List<String> events) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public AuditDetailsDto presentAuditDetails(AuditDetails details,
       AuditDetails response, Participant participant) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public List<ApprovalUserDto> presentRequestedDetails(List<UserDetails> userDetails) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 
   @Override
   public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> permissions,
       AuditDetails auditDetails) {
-    throw new RuntimeException("System API not implemented yet");
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 }

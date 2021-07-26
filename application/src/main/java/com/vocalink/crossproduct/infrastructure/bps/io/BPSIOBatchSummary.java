@@ -1,8 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.io;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter

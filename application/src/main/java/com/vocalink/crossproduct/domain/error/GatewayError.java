@@ -23,5 +23,5 @@ public class GatewayError {
    * Always null, present for backward compatibility
    */
   @Getter(onMethod_ = { @JsonGetter("Details") })
-  private final String details = null;
+  private static final String DETAILS = null;
 }

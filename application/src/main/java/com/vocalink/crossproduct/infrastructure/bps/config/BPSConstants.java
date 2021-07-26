@@ -1,5 +1,11 @@
 package com.vocalink.crossproduct.infrastructure.bps.config;
 
-public interface BPSConstants {
-  String PRODUCT = "BPS";
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class BPSConstants {
+
+  public static final String PRODUCT = "BPS";
+
 }

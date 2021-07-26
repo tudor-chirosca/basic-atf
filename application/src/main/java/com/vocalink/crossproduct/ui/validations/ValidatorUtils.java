@@ -1,7 +1,10 @@
 package com.vocalink.crossproduct.ui.validations;
 
 import java.lang.reflect.Field;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidatorUtils {
 
   static String tryGetFieldValue(Object obj, String name) {

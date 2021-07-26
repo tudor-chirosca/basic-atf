@@ -12,6 +12,7 @@ public class ClientRequestException extends HttpClientErrorException {
     this.message = message;
   }
 
+  @Override
   public String getMessage() {
     return this.message;
   }

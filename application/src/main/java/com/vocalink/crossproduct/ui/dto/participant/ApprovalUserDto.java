@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @JsonInclude(Include.NON_EMPTY)
 public class ApprovalUserDto {
 
-  final private String name;
-  final private String id;
-  final private String participantName;
+  private final String name;
+  private final String id;
+  private final String participantName;
 }
