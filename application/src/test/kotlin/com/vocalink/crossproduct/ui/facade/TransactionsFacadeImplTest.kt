@@ -80,7 +80,8 @@ class TransactionsFacadeImplTest {
         val request = TransactionEnquirySearchRequest(
             0, 20, null, null, null, null,
             null, null, null, null, null,
-            null, null, null, null, null, pseudoUTC, null, null
+            null, null, null, null, null, pseudoUTC, null, null,
+            null
         )
 
         `when`(transactionRepository.findPaginated(any()))

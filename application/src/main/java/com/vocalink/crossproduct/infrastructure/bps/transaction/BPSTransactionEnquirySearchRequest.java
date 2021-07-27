@@ -34,4 +34,5 @@ public class BPSTransactionEnquirySearchRequest {
   private final BPSAmount transactionRangeFrom;
   private final BPSAmount transactionRangeTo;
   private final List<BPSSortingQuery> sortingOrder;
+  private final BPSOutputType outputType;
 }

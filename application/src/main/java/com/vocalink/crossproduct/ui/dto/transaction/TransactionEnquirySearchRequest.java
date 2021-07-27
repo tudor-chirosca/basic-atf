@@ -55,6 +55,7 @@ public class TransactionEnquirySearchRequest {
   private final ZonedDateTime valueDate;
   private final BigDecimal txnFrom;
   private final BigDecimal txnTo;
+  private final String outputType;
 
   @JsonCreator
   public TransactionEnquirySearchRequest(
@@ -76,7 +77,8 @@ public class TransactionEnquirySearchRequest {
       @JsonProperty(value = "receivingAccount") String receivingAccount,
       @JsonProperty(value = "valueDate") ZonedDateTime valueDate,
       @JsonProperty(value = "txnFrom") BigDecimal txnFrom,
-      @JsonProperty(value = "txnTo") BigDecimal txnTo) {
+      @JsonProperty(value = "txnTo") BigDecimal txnTo,
+      @JsonProperty(value = "outputType") String outputType) {
 
     this.offset = offset == null ? parseInt(getDefault(OFFSET)) : offset;
     this.limit = limit == null ? parseInt(getDefault(LIMIT)) : limit;
@@ -97,5 +99,6 @@ public class TransactionEnquirySearchRequest {
     this.txnFrom = txnFrom;
     this.txnTo = txnTo;
     this.sort = sort;
+    this.outputType = outputType;
   }
 }

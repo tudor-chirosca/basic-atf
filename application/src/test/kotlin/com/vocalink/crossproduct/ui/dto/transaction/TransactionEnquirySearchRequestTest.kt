@@ -47,7 +47,7 @@ class TransactionEnquirySearchRequestTest {
     private fun getEmptyTransactionEnquirySearchRequest() = TransactionEnquirySearchRequest(
         null, null, null, null, null,
         null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null
+        null, null, null, null, null, null, null, null
     )
 
 }

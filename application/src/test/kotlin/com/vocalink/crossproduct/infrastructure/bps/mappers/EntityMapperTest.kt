@@ -755,7 +755,8 @@ class EntityMapperTest {
             "id",
             "sendingAccount",
             "receivingAccount",
-            date, BigDecimal.TEN, BigDecimal.ONE
+            date, BigDecimal.TEN, BigDecimal.ONE,
+            "REALTIME"
         )
         val criteria = MAPPER.toEntity(request, date)
         assertThat(criteria.offset).isEqualTo(request.offset)
@@ -777,6 +778,7 @@ class EntityMapperTest {
         assertThat(criteria.valueDate).isEqualTo(request.valueDate)
         assertThat(criteria.txnFrom).isEqualTo(request.txnFrom)
         assertThat(criteria.txnTo).isEqualTo(request.txnTo)
+        assertThat(criteria.outputType.name).isEqualTo(request.outputType)
     }
 
     @Test
@@ -785,7 +787,7 @@ class EntityMapperTest {
             0, 0, null, null, null,
             null, null, null, null,
             null, null, null, null, null,
-            null, null, null, null, null
+            null, null, null, null, null, null
         )
         val entity = MAPPER.toEntity(request, null)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))

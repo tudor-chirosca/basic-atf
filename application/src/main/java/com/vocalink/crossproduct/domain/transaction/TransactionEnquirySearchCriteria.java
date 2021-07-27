@@ -29,4 +29,5 @@ public class TransactionEnquirySearchCriteria {
   private final ZonedDateTime valueDate;
   private final BigDecimal txnFrom;
   private final BigDecimal txnTo;
+  private final OutputType outputType;
 }

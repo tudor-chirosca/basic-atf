@@ -50,6 +50,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             null,
             null,
+            null,
             null
         )
         val result = ArrayList(validator.validate(request))
@@ -73,6 +74,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             null,
             "i*d",
+            null,
             null,
             null,
             null,
@@ -105,6 +107,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             null,
             null,
+            null,
             null
         )
 
@@ -122,6 +125,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             dateFrom,
             dateTo,
+            null,
             null,
             null,
             null,
@@ -166,6 +170,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             null,
             null,
+            null,
             null
         )
         val result = ArrayList(validator.validate(request))
@@ -181,6 +186,7 @@ class TransactionEnquirySearchRequestValidationTest {
             null,
             null,
             "20190212004",
+            null,
             null,
             null,
             null,

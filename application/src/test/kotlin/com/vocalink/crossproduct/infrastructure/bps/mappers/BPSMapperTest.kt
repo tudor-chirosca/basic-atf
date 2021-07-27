@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.infrastructure.bps.mappers.BPSMapper.BPSMAPPER
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
+import com.vocalink.crossproduct.domain.transaction.OutputType
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReportType
 import java.math.BigDecimal
 import java.time.ZoneId
@@ -268,7 +269,8 @@ class BPSMapperTest {
             "id",
             "sendingAccount",
             "receivingAccount",
-            date, BigDecimal.TEN, BigDecimal.ONE
+            date, BigDecimal.TEN, BigDecimal.ONE,
+            OutputType.REALTIME
         )
         val request = BPSMAPPER.toBps(criteria, currency)
         assertNull(request.createdDateFrom)
@@ -289,6 +291,7 @@ class BPSMapperTest {
         assertThat(request.transactionRangeFrom.currency).isEqualTo(currency)
         assertThat(request.transactionRangeTo.amount).isEqualTo(criteria.txnTo)
         assertThat(request.transactionRangeTo.currency).isEqualTo(currency)
+        assertThat(request.outputType.name).isEqualTo(criteria.outputType.name)
 
         assertThat(request.sortingOrder[0].sortOrderBy).isEqualTo("instructionId")
         assertThat(request.sortingOrder[0].sortOrder).isEqualTo(DESC)
@@ -343,11 +346,13 @@ class BPSMapperTest {
             "id",
             "sendingAccount",
             "receivingAccount",
-            date, BigDecimal.TEN, BigDecimal.ONE
+            date, BigDecimal.TEN, BigDecimal.ONE,
+            OutputType.REALTIME
         )
         val request = BPSMAPPER.toBps(criteria, currency)
         assertThat(request.createdDateFrom).isEqualTo(criteria.dateFrom)
         assertThat(request.createdDateTo).isEqualTo(criteria.dateTo)
+        assertThat(request.outputType.name).isEqualTo(criteria.outputType.name)
     }
 
     @Test

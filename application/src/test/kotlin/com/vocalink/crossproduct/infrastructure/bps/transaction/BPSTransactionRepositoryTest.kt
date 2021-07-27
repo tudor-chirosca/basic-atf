@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.vocalink.crossproduct.domain.transaction.OutputType
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import java.math.BigDecimal
@@ -116,7 +117,8 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
                 ZonedDateTime.of(LocalDate.of(2021, 3, 18), LocalTime.MIN, ZoneId.of("UTC")),
                 null, null, "BARCGB22XXX",
                 null, null, null, null, null,
-                null, null, null, null, null, BigDecimal.TEN
+                null, null, null, null, null, BigDecimal.TEN,
+                null
         )
         val result = transactionRepository.findPaginated(request)
         assertThat(result).isNotNull
@@ -191,7 +193,8 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
             ZonedDateTime.of(LocalDate.of(2021, 3, 18), LocalTime.MIN, ZoneId.of("UTC")),
             null, null, "BARCGB22XXX",
             null, null, null, null, null,
-            null, null, null, null, null, BigDecimal.TEN
+            null, null, null, null, null, BigDecimal.TEN,
+            OutputType.REALTIME
         )
 
         val result = transactionRepository.findPaginated(request)
@@ -217,7 +220,8 @@ class BPSTransactionRepositoryTest @Autowired constructor(var transactionReposit
             ZonedDateTime.of(LocalDate.of(2021, 3, 18), LocalTime.MIN, ZoneId.of("UTC")),
             null, null, "BARCGB22XXX",
             null, null, null, null, null,
-            null, null, null, null, null, BigDecimal.TEN
+            null, null, null, null, null, BigDecimal.TEN,
+            OutputType.REALTIME
         )
 
         val result = transactionRepository.findPaginated(request)
