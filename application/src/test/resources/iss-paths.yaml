@@ -1,0 +1,9 @@
+paths:
+  - name: Alerts Reference
+    path: /reference/alerts
+
+  - name: Alerts Stats
+    path: /alerts/stats
+
+  - name: Alerts
+    path: /alerts

@@ -25,9 +25,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.test.assertNotNull
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
@@ -35,11 +35,10 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.MockitoAnnotations
 import org.springframework.core.env.Environment
 
 
-@RunWith(MockitoJUnitRunner::class)
 class ReferencesServiceFacadeImplTest {
 
     inline fun <reified T : Any> argumentCaptor() = ArgumentCaptor.forClass(T::class.java)
@@ -58,6 +57,11 @@ class ReferencesServiceFacadeImplTest {
         environment,
         "CET"
     )
+
+    @Before
+    fun initMocks() {
+        MockitoAnnotations.initMocks(this)
+    }
 
     @BeforeEach
     fun init() {
