@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.domain.audit;
 import com.vocalink.crossproduct.domain.CrossproductRepository;
 import com.vocalink.crossproduct.domain.Page;
 import java.util.List;
+import java.util.Optional;
 
 public interface AuditDetailsRepository extends CrossproductRepository {
 
@@ -19,4 +20,6 @@ public interface AuditDetailsRepository extends CrossproductRepository {
   List<AuditDetails> getAuditDetailsByParticipantIdAndGroupByUser(String id);
 
   List<AuditDetails> getAuditDetailsByCorrelationId(String id);
+
+  Optional<UserDetails> getUserDetailsById(String participantId, String userId);
 }

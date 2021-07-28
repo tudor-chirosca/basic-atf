@@ -79,7 +79,13 @@ public class AuditFacadeImpl implements AuditFacade {
   public void handleEvent(OccurringEvent occurringEvent) {
     Event event = MAPPER.toEntity(occurringEvent);
     try {
-      UserDetails userDetails = getUserDetails(occurringEvent);
+      final UserDetails userDetails = repositoryFactory
+          .getAuditDetailsRepository(occurringEvent.getProduct())
+          .getUserDetailsById(occurringEvent.getParticipantId(), occurringEvent.getUserId())
+          .orElseThrow(() -> new EntityNotFoundException(
+              String.format("No user details found matching for participantId: %s and userId: %s",
+                  occurringEvent.getParticipantId(), occurringEvent.getUserId())
+          ));
       repositoryFactory.getAuditDetailsRepository(event.getProduct()).logOperation(event, userDetails);
       log.info(AUDIT_EVENT_MARKER, String.format(AUDIT_EVENT_LOG_MESSAGE, occurringEvent.getEventType(),
         occurringEvent.getOperationType()), occurringEvent, userDetails);
@@ -88,19 +94,6 @@ public class AuditFacadeImpl implements AuditFacade {
         occurringEvent.getEventType(),
         occurringEvent.getOperationType()), occurringEvent);
     }
-  }
-
-  private UserDetails getUserDetails(OccurringEvent occurringEvent) {
-    return repositoryFactory
-        .getAuditDetailsRepository(occurringEvent.getProduct())
-        .getAuditDetailsByParticipantId(occurringEvent.getParticipantId())
-        .stream()
-        .filter(d -> d.getUsername().equals(occurringEvent.getUserId()))
-        .map(MAPPER::toEntity)
-        .findFirst().orElseThrow(() -> new EntityNotFoundException(
-                String.format("No user details found matching for participantId: %s and userId: %s",
-                        occurringEvent.getParticipantId(), occurringEvent.getUserId())
-        ));
   }
 
   @Override

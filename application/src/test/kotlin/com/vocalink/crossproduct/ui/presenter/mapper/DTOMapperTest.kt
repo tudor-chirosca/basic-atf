@@ -3,7 +3,6 @@ package com.vocalink.crossproduct.ui.presenter.mapper
 import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Amount
 import com.vocalink.crossproduct.domain.Page
-import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.alert.Alert
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
@@ -27,8 +26,10 @@ import com.vocalink.crossproduct.domain.files.File
 import com.vocalink.crossproduct.domain.io.IODashboard
 import com.vocalink.crossproduct.domain.io.IOData
 import com.vocalink.crossproduct.domain.io.ParticipantIOData
+import com.vocalink.crossproduct.domain.participant.OutputFlow
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
+import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -42,7 +43,6 @@ import com.vocalink.crossproduct.domain.position.IntraDayPositionGross
 import com.vocalink.crossproduct.domain.position.ParticipantPosition
 import com.vocalink.crossproduct.domain.position.Payment
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference
-import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING
 import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.BATCH
@@ -963,8 +963,6 @@ class DTOMapperTest {
             .participantType(FUNDING)
             .organizationId("00002121")
             .suspensionLevel(SCHEME)
-            .tpspName("Nordnet Bank")
-            .tpspId("475347837892")
             .fundedParticipants(listOf(fundedParticipant))
             .fundedParticipantsCount(1)
             .build()
@@ -1006,8 +1004,6 @@ class DTOMapperTest {
         assertThat(managedParticipant.suspendedTime).isEqualTo(participant.suspendedTime)
         assertThat(managedParticipant.participantType).isEqualTo(participant.participantType.description)
         assertThat(managedParticipant.organizationId).isEqualTo(participant.organizationId)
-        assertThat(managedParticipant.tpspName).isEqualTo(participant.tpspName)
-        assertThat(managedParticipant.tpspId).isEqualTo(participant.tpspId)
         assertThat(managedParticipant.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
         assertThat(managedParticipant.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
         assertThat(managedParticipant.fundedParticipants[0].connectingParticipantId).isEqualTo(
@@ -1053,20 +1049,7 @@ class DTOMapperTest {
     fun `should map to ManagedParticipantDetailsDto fields`() {
         val participantId = "FORXSES1"
 
-        val participant = Participant.builder()
-            .id(participantId)
-            .bic(participantId)
-            .name("Forex Bank")
-            .status(ACTIVE)
-            .participantType(FUNDED)
-            .organizationId("00002121")
-            .tpspName("Nordnet Bank")
-            .tpspId("475347837892")
-            .fundedParticipants(emptyList())
-            .fundedParticipantsCount(1)
-            .build()
-
-        val approvalUser = UserDetails.builder()
+        val userDetails = UserDetails.builder()
             .userId("E23423")
             .firstName("John")
             .lastName("Doe")
@@ -1078,7 +1061,7 @@ class DTOMapperTest {
             .requestType(PARTICIPANT_SUSPEND)
             .participantIds(listOf(participantId))
             .date(ZonedDateTime.now(ZoneId.of("UTC")))
-            .requestedBy(approvalUser)
+            .requestedBy(userDetails)
             .status(PENDING)
             .requestComment("comment")
             .notes("notes")
@@ -1086,7 +1069,6 @@ class DTOMapperTest {
 
         val approvals = mapOf(participantId to approval)
 
-        participant.fundedParticipants = listOf(participant)
         val fundingParticipant = Participant.builder()
             .id("participantId")
             .bic("participantId")
@@ -1096,50 +1078,44 @@ class DTOMapperTest {
             .participantType(FUNDING)
             .organizationId("organizationId")
             .build()
+        val outputFlow = OutputFlow(
+            "messageType", 10000, 20
+        )
         val configuration = ParticipantConfiguration.builder()
-            .schemeParticipantIdentifier("schemeParticipantIdentifier")
-            .txnVolume(10)
-            .outputFileTimeLimit(10)
+            .schemeParticipantIdentifier(participantId)
+            .participantName("name")
+            .participantBic("bic")
+            .partyExternalIdentifier("partyExternalIdentifier")
+            .participantType(DIRECT)
+            .connectingParty("connectingParty")
+            .participantConnectionId("participantConnectionId")
+            .settlementAccount("settlementAccount")
+            .tpspId("tpspId")
+            .tpspName("tpspName")
             .networkName("networkName")
-            .gatewayName("gatewayName")
-            .requestorDN("requestorDN")
-            .responderDN("responderDN")
-            .preSettlementAckType("preSettlementAckType")
-            .preSettlementActGenerationLevel("preSettlementActGenerationLevel")
-            .postSettlementAckType("postSettlementAckType")
-            .postSettlementAckGenerationLevel("postSettlementAckGenerationLevel")
-            .debitCapLimit(BigDecimal.ONE)
+            .outputChannel("outputChannel")
+            .status("ACTIVE")
             .debitCapLimitThresholds(listOf(0.12, 0.25))
+            .debitCapLimit(BigDecimal.ONE)
+            .outputFlow(listOf(outputFlow))
             .updatedAt(ZonedDateTime.now(clock))
-            .updatedBy(approvalUser)
+            .updatedBy("id")
             .build()
 
-        val account = Account("partyCode", "234", "iban")
+        val result = MAPPER.toDto(configuration, fundingParticipant, approvals, userDetails)
 
-        val result = MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals)
-
-        assertThat(result.bic).isEqualTo(participant.bic)
-        assertThat(result.name).isEqualTo(participant.name)
-        assertThat(result.id).isEqualTo(participant.id)
-        assertThat(result.status).isEqualTo(participant.status)
-        assertThat(result.suspendedTime).isEqualTo(participant.suspendedTime)
-        assertThat(result.participantType).isEqualTo(participant.participantType.description)
-        assertThat(result.organizationId).isEqualTo(participant.organizationId)
+        assertThat(result.bic).isEqualTo(configuration.participantBic)
+        assertThat(result.fundingBic).isEqualTo(configuration.connectingParty)
+        assertThat(result.name).isEqualTo(configuration.participantName)
+        assertThat(result.id).isEqualTo(configuration.schemeParticipantIdentifier)
+        assertThat(result.status).isEqualTo(ACTIVE)
+        assertThat(result.suspendedTime).isEqualTo(configuration.suspendedTime)
+        assertThat(result.participantType).isEqualTo(configuration.participantType.description)
+        assertThat(result.suspensionLevel).isEqualTo(configuration.suspensionLevel)
+        assertThat(result.organizationId).isEqualTo(configuration.partyExternalIdentifier)
         assertThat(result.hasActiveSuspensionRequests).isEqualTo(true)
-        assertThat(result.tpspName).isEqualTo(participant.tpspName)
-        assertThat(result.tpspId).isEqualTo(participant.tpspId)
-
-        assertThat(result.fundedParticipants[0].name).isEqualTo(participant.fundedParticipants[0].name)
-        assertThat(result.fundedParticipants[0].schemeCode).isEqualTo(participant.fundedParticipants[0].schemeCode)
-        assertThat(result.fundedParticipants[0].connectingParticipantId).isEqualTo(
-            participant.fundedParticipants[0].fundingBic
-        )
-        assertThat(result.fundedParticipants[0].participantIdentifier).isEqualTo(
-            participant.fundedParticipants[0].id
-        )
-        assertThat(result.fundedParticipants[0].participantType).isEqualTo(
-            participant.fundedParticipants[0].participantType.description
-        )
+        assertThat(result.tpspName).isEqualTo(configuration.tpspName)
+        assertThat(result.tpspId).isEqualTo(configuration.tpspId)
 
         assertThat(result.fundingParticipant.connectingParticipantId).isEqualTo(fundingParticipant.fundingBic)
         assertThat(result.fundingParticipant.participantIdentifier).isEqualTo(fundingParticipant.bic)
@@ -1147,16 +1123,19 @@ class DTOMapperTest {
         assertThat(result.fundingParticipant.participantType).isEqualTo(fundingParticipant.participantType.description)
         assertThat(result.fundingParticipant.schemeCode).isEqualTo(fundingParticipant.schemeCode)
 
-        assertThat(result.outputTxnVolume).isEqualTo(configuration.txnVolume)
-        assertThat(result.outputTxnTimeLimit).isEqualTo(configuration.outputFileTimeLimit)
+        assertThat(result.outputFlow[0].messageType).isEqualTo(configuration.outputFlow[0].messageType)
+        assertThat(result.outputFlow[0].txnTimeLimit).isEqualTo(configuration.outputFlow[0].txnTimeLimit)
+        assertThat(result.outputFlow[0].txnVolume).isEqualTo(configuration.outputFlow[0].txnVolume)
+
+        assertThat(result.outputChannel).isEqualTo(configuration.outputChannel)
         assertThat(result.debitCapLimit).isEqualTo(configuration.debitCapLimit)
         assertThat(result.debitCapLimitThresholds).isEqualTo(configuration.debitCapLimitThresholds)
-        assertThat(result.settlementAccountNo).isEqualTo(account.accountNo.toString())
+        assertThat(result.settlementAccountNo).isEqualTo(configuration.settlementAccount)
 
         assertThat(result.updatedAt).isEqualTo(configuration.updatedAt)
-        assertThat(result.updatedBy.id).isEqualTo(approvalUser.userId)
-        assertThat(result.updatedBy.name).isEqualTo(approvalUser.firstName + " " + approvalUser.lastName)
-        assertThat(result.updatedBy.participantName).isEqualTo(approvalUser.participantId)
+        assertThat(result.updatedBy.id).isEqualTo(userDetails.userId)
+        assertThat(result.updatedBy.name).isEqualTo(userDetails.firstName + " " + userDetails.lastName)
+        assertThat(result.updatedBy.participantName).isEqualTo(userDetails.participantId)
 
         assertThat(result.approvalReference.requestType).isEqualTo(approval.requestType)
         assertThat(result.approvalReference.requestedBy).isEqualTo(approval.requestedBy.fullName)
@@ -1310,8 +1289,6 @@ class DTOMapperTest {
             .schemeCode("P27-SEK")
             .organizationId("00002121")
             .suspensionLevel(SCHEME)
-            .tpspName("Nordnet Bank")
-            .tpspId("475347837892")
             .fundedParticipants(listOf(fundedParticipant))
             .fundedParticipantsCount(1)
             .reachableBics(listOf(routingRecord))
@@ -1328,8 +1305,6 @@ class DTOMapperTest {
         assertThat(result.participantType).isEqualTo(participant.participantType.description)
         assertThat(result.organizationId).isEqualTo(participant.organizationId)
         assertThat(result.suspensionLevel).isEqualTo(participant.suspensionLevel)
-        assertThat(result.tpspName).isEqualTo(participant.tpspName)
-        assertThat(result.tpspId).isEqualTo(participant.tpspId)
         assertThat(result.fundedParticipantsCount).isEqualTo(participant.fundedParticipantsCount)
         assertThat(result.reachableBics).isEqualTo(participant.reachableBics)
         assertThat(result.approvalReference.jobId).isEqualTo(approval.approvalId)

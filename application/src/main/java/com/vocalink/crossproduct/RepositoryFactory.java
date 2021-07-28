@@ -2,7 +2,6 @@ package com.vocalink.crossproduct;
 
 import static java.util.stream.Collectors.toMap;
 
-import com.vocalink.crossproduct.domain.account.AccountRepository;
 import com.vocalink.crossproduct.domain.alert.AlertRepository;
 import com.vocalink.crossproduct.domain.approval.ApprovalRepository;
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository;
@@ -45,7 +44,6 @@ public class RepositoryFactory {
   private final List<AlertRepository> alertClientList;
   private final List<ParticipantIODataRepository> participantIODataRepositories;
   private final List<TransactionRepository> transactionClientList;
-  private final List<AccountRepository> accountClientList;
   private final List<ApprovalRepository> approvalRepositories;
   private final List<BroadcastsRepository> broadcastsRepositories;
   private final List<RoutingRepository> routingRepositories;
@@ -63,7 +61,6 @@ public class RepositoryFactory {
   private Map<String, AlertRepository> alertRepositoriesByProduct;
   private Map<String, ParticipantIODataRepository> participantIODataRepositoriesByProduct;
   private Map<String, TransactionRepository> transactionRepositoriesByProduct;
-  private Map<String, AccountRepository> accountRepositoriesByProduct;
   private Map<String, ApprovalRepository> approvalRepositoriesByProduct;
   private Map<String, BroadcastsRepository> broadcastsRepositoriesByProduct;
   private Map<String, RoutingRepository> routingRepositoriesByProduct;
@@ -94,8 +91,6 @@ public class RepositoryFactory {
         .collect(toMap(ParticipantIODataRepository::getProduct, Function.identity()));
     transactionRepositoriesByProduct = transactionClientList.stream()
         .collect(toMap(TransactionRepository::getProduct, Function.identity()));
-    accountRepositoriesByProduct = accountClientList.stream()
-        .collect(toMap(AccountRepository::getProduct, Function.identity()));
     approvalRepositoriesByProduct = approvalRepositories.stream()
         .collect(toMap(ApprovalRepository::getProduct, Function.identity()));
     broadcastsRepositoriesByProduct = broadcastsRepositories.stream()
@@ -194,14 +189,6 @@ public class RepositoryFactory {
           "Transaction repository not available for product " + product);
     }
     return transactionRepositoriesByProduct.get(product);
-  }
-
-  public AccountRepository getAccountRepository(String product) {
-    if (accountRepositoriesByProduct.get(product) == null) {
-      throw new RepositoryNotAvailableException(
-          "Account repository not available for product " + product);
-    }
-    return accountRepositoriesByProduct.get(product);
   }
 
   public ApprovalRepository getApprovalRepository(String product) {

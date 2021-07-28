@@ -3,8 +3,6 @@ package com.vocalink.crossproduct.ui.facade
 import com.vocalink.crossproduct.RepositoryFactory
 import com.vocalink.crossproduct.TestConstants
 import com.vocalink.crossproduct.domain.Page
-import com.vocalink.crossproduct.domain.account.Account
-import com.vocalink.crossproduct.domain.account.AccountRepository
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.domain.transaction.Transaction
@@ -30,7 +28,6 @@ import org.mockito.Mockito.verify
 class TransactionsFacadeImplTest {
 
     private val transactionRepository = mock(TransactionRepository::class.java)!!
-    private val accountRepository = mock(AccountRepository::class.java)!!
     private val participantRepository = mock(ParticipantRepository::class.java)!!
     private val presenterFactory = mock(PresenterFactory::class.java)!!
     private val uiPresenter = mock(UIPresenter::class.java)!!
@@ -46,8 +43,6 @@ class TransactionsFacadeImplTest {
     fun init() {
         `when`(repositoryFactory.getTransactionRepository(anyString()))
             .thenReturn(transactionRepository)
-        `when`(repositoryFactory.getAccountRepository(anyString()))
-            .thenReturn(accountRepository)
         `when`(repositoryFactory.getParticipantRepository(anyString()))
             .thenReturn(participantRepository)
         `when`(presenterFactory.getPresenter(ClientType.UI))
@@ -117,20 +112,15 @@ class TransactionsFacadeImplTest {
                 null, null, null, null, null,
                 null, null, null
         )
-        val account = Account(null, null, null)
-
         val participant = Participant(
             null, null, null, null, null,
             null, null, null, null,
             null, null, null, null,
-            null, null, null
+            null
         )
 
         `when`(transactionRepository.findById(any()))
             .thenReturn(transaction)
-
-        `when`(accountRepository.findByPartyCode(any()))
-            .thenReturn(account)
 
         `when`(participantRepository.findById(any()))
             .thenReturn(participant)

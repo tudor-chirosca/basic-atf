@@ -169,27 +169,65 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
         const val VALID_PARTICIPANT_CONFIGURATION_RESPONSE: String = """
         {
             "schemeParticipantIdentifier": "NDEASESSXXX",
-            "txnVolume": 100,
-            "outputFileTimeLimit": 40,
+            "participantName": "Nordea",
+            "participantBic": "NDEASESSXXX",
+            "partyExternalIdentifier": "77777777",
+            "participantType": "DIRECT",
+            "connectingParty": "NA",
+            "participantConnectionId": "NA",
+            "suspensionLevel": "SCHEME",
+            "settlementAccount": "6789123456789",
+            "tpspId": "589328",
+            "tpspName": "Danske Bank",
             "networkName": "SWIFT",
-            "gatewayName": "Swift Alliance G004",
-            "requestorDN": "VL BPS",
-            "responderDN": "SWCTSES1",
-            "preSettlementAckType": "pacs.004.001.03",
-            "preSettlementActGenerationLevel": "BATCH",
-            "postSettlementAckType": "pacs.004.001.03",
-            "postSettlementAckGenerationLevel": "BATCH",
-            "debitCapLimit": 59099,
-            "debitCapLimitThresholds": [
-                0.1
+            "outputChannel": "XXXXXX",
+            "status": "ACTIVE",
+            "debitCapThreshold": [
+                {
+                    "debitCapLimitId": "absd1240",
+                    "limitThresholdAmounts": {
+                        "amount": 2145.41,
+                        "currency": "SEK"
+                    },
+                    "warningThresholdPercentage": 0.55
+                }
             ],
-            "updatedAt": "2021-03-29T16:00:00Z",
-            "updatedBy": {
-                "schemeParticipantIdentifier": "P27",
-                "firstName": "John",
-                "userId": "E109341",
-                "lastName": "Douglas"
-            }
+            "outputFlow": [
+                {
+                    "messageType": "pacs.008.001.02",
+                    "txnVolume": 100000
+                },
+                {
+                    "messageType": "pacs.004.001.02",
+                    "txnVolume": 15000
+                },
+                {
+                    "messageType": "camt.056.001.01",
+                    "txnVolume": 10000,
+                    "txnTimeLimit": 30
+                },
+                {
+                    "messageType": "camt.029.001.03",
+                    "txnVolume": 20,
+                    "txnTimeLimit": 15
+                },
+                {
+                    "messageType": "camt.029.001.08",
+                    "txnVolume": 1,
+                    "txnTimeLimit": 20
+                },
+                {
+                    "messageType": "camt.027.001.06",
+                    "txnTimeLimit": 10
+                },
+                {
+                    "messageType": "camt.087.001.05",
+                    "txnVolume": 1,
+                    "txnTimeLimit": 60
+                }
+            ],
+            "updatedAt": "2021-07-26T16:00:00Z",
+            "updatedBy": "12a511"
         }
         """
     }
@@ -329,7 +367,7 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
     fun `should return 200, on participant configuration`() {
         val participantId = "NDEASESSXXX"
         mockServer.stubFor(
-                post(urlEqualTo("/participants/P27-SEK/configuration"))
+                post(urlEqualTo("/participants/P27-SEK/aggregate/configuration"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -338,22 +376,25 @@ class BPSParticipantRepositoryTest @Autowired constructor(var participantReposit
 
         val result = participantRepository.findConfigurationById(participantId)
         assertThat(result.schemeParticipantIdentifier).isEqualTo("NDEASESSXXX")
-        assertThat(result.txnVolume).isEqualTo(100)
-        assertThat(result.outputFileTimeLimit).isEqualTo(40)
+        assertThat(result.participantName).isEqualTo("Nordea")
+        assertThat(result.participantBic).isEqualTo("NDEASESSXXX")
+        assertThat(result.partyExternalIdentifier).isEqualTo("77777777")
+        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT)
+        assertThat(result.suspensionLevel).isEqualTo("SCHEME")
+        assertThat(result.connectingParty).isEqualTo("NA")
+        assertThat(result.participantConnectionId).isEqualTo("NA")
+        assertThat(result.settlementAccount).isEqualTo("6789123456789")
+        assertThat(result.tpspId).isEqualTo("589328")
+        assertThat(result.tpspName).isEqualTo("Danske Bank")
         assertThat(result.networkName).isEqualTo("SWIFT")
-        assertThat(result.gatewayName).isEqualTo("Swift Alliance G004")
-        assertThat(result.requestorDN).isEqualTo("VL BPS")
-        assertThat(result.responderDN).isEqualTo("SWCTSES1")
-        assertThat(result.preSettlementAckType).isEqualTo("pacs.004.001.03")
-        assertThat(result.preSettlementActGenerationLevel).isEqualTo("BATCH")
-        assertThat(result.postSettlementAckType).isEqualTo("pacs.004.001.03")
-        assertThat(result.postSettlementAckGenerationLevel).isEqualTo("BATCH")
-        assertThat(result.debitCapLimit).isEqualTo(BigDecimal.valueOf(59099))
-        assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.1))
-        assertThat(result.updatedBy.participantId).isEqualTo("P27")
-        assertThat(result.updatedBy.lastName).isEqualTo("Douglas")
-        assertThat(result.updatedBy.firstName).isEqualTo("John")
-        assertThat(result.updatedBy.userId).isEqualTo("E109341")
-        assertThat(result.updatedAt).isEqualTo(ZonedDateTime.of(2021, Month.MARCH.value, 29, 16, 0, 0, 0, ZoneId.of("UTC")))
+        assertThat(result.outputChannel).isEqualTo("XXXXXX")
+        assertThat(result.status).isEqualTo("ACTIVE")
+        assertThat(result.updatedAt).isEqualTo(ZonedDateTime.parse("2021-07-26T16:00:00Z"))
+        assertThat(result.updatedBy).isEqualTo("12a511")
+        assertThat(result.debitCapLimit).isEqualTo(2145.41.toBigDecimal())
+        assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.55))
+        assertThat(result.outputFlow[0].messageType).isEqualTo("pacs.008.001.02")
+        assertThat(result.outputFlow[2].txnTimeLimit).isEqualTo(30)
+        assertThat(result.outputFlow[0].txnVolume).isEqualTo(100000)
     }
 }

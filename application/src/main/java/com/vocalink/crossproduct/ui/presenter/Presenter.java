@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.ui.presenter;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -53,7 +52,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
-import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
@@ -162,12 +161,13 @@ public interface Presenter {
 
   PageDto<RoutingRecordDto> presentRoutingRecords(Page<RoutingRecord> routingRecords);
 
-  ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      Map<String, Approval> approvals);
+  ParticipantConfigurationDto presentManagedParticipantDetails(
+      ParticipantConfiguration configuration, Participant fundingParticipant,
+      Map<String, Approval> approvals, UserDetails userDetails);
 
-  ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account, Map<String, Approval> approvals);
+  ParticipantConfigurationDto presentManagedParticipantDetails(
+      ParticipantConfiguration configuration, Map<String, Approval> approvals,
+      UserDetails userDetails);
 
   PageDto<ReportDto> presentReports(Page<Report> reports);
 

@@ -1,7 +1,7 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers;
 
-import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING;
 import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING;
+import static com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING;
 import static com.vocalink.crossproduct.infrastructure.bps.mappers.MapperUtils.getNameByType;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -11,7 +11,6 @@ import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Amount;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType;
@@ -24,6 +23,7 @@ import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
+import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
 import com.vocalink.crossproduct.domain.approval.ApprovalStatus;
@@ -80,7 +80,6 @@ import com.vocalink.crossproduct.domain.transaction.Transaction;
 import com.vocalink.crossproduct.domain.transaction.TransactionEnquirySearchCriteria;
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage;
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
-import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority;
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData;
@@ -107,6 +106,7 @@ import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIODetails;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOTransactionSummary;
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData;
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSDebitCapThreshold;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant;
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration;
@@ -146,6 +146,7 @@ import com.vocalink.crossproduct.ui.dto.settlement.SettlementEnquiryRequest;
 import com.vocalink.crossproduct.ui.dto.transaction.TransactionEnquirySearchRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -408,15 +409,6 @@ public interface EntityMapper {
 
   Amount toEntity(BPSAmount amount);
 
-  Account toEntity(BPSAccount priorityData);
-
-  @Mappings({
-      @Mapping(target = "entityName", source = "participant.name"),
-      @Mapping(target = "entityBic", source = "account.partyCode"),
-      @Mapping(target = "iban", source = "account.iban")
-  })
-  EnquirySenderDetails toEntity(Account account, Participant participant);
-
   ManagedParticipantsSearchCriteria toEntity(ManagedParticipantsSearchRequest request);
 
   @Mappings({
@@ -512,7 +504,33 @@ public interface EntityMapper {
 
   ApprovalCreationResponse toEntity(BPSApprovalCreationResponse bpsApprovalResponse);
 
+  @Mappings({
+      @Mapping(target = "participantType", source = "participantType", qualifiedByName = "convertParticipantType"),
+      @Mapping(target = "debitCapLimit", source = "debitCapThreshold", qualifiedByName = "getDebitCapLimit"),
+      @Mapping(target = "debitCapLimitThresholds", source = "debitCapThreshold", qualifiedByName = "getDebitCapLimitThresholds")
+  })
   ParticipantConfiguration toEntity(BPSParticipantConfiguration configuration);
+
+  @Named("getDebitCapLimit")
+  default BigDecimal getDebitCapLimit(List<BPSDebitCapThreshold> debitCapThreshold) {
+    if (debitCapThreshold == null) {
+      return null;
+    }
+    return debitCapThreshold.stream().findFirst()
+        .map(BPSDebitCapThreshold::getLimitThresholdAmounts)
+        .map(BPSAmount::getAmount)
+        .orElse(null);
+  }
+
+  @Named("getDebitCapLimitThresholds")
+  default List<Double> getDebitCapLimitThresholds(List<BPSDebitCapThreshold> debitCapThreshold) {
+    if (debitCapThreshold == null) {
+      return null;
+    }
+    return debitCapThreshold.stream()
+        .map(BPSDebitCapThreshold::getWarningThresholdPercentage)
+        .collect(toList());
+  }
 
   @Mappings({
       @Mapping(target = "participantId", source = "schemeParticipantIdentifier")
@@ -635,6 +653,11 @@ public interface EntityMapper {
       @Mapping(target = "userId", source = "username")
   })
   UserDetails toEntity(AuditDetails auditDetails);
+
+  @Mappings({
+      @Mapping(target = "userId", source = "username")
+  })
+  UserDetails toUserEntity(AuditDetailsJpa details);
 
   @Named("setDefaultDateSort")
   default List<String> setDefaultDateSort(List<String> sort) {

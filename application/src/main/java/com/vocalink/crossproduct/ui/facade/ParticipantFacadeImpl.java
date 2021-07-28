@@ -12,10 +12,10 @@ import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 import com.vocalink.crossproduct.RepositoryFactory;
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType;
 import com.vocalink.crossproduct.domain.approval.ApprovalSearchCriteria;
+import com.vocalink.crossproduct.domain.audit.UserDetails;
 import com.vocalink.crossproduct.domain.participant.ManagedParticipantsSearchCriteria;
 import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration;
@@ -23,10 +23,11 @@ import com.vocalink.crossproduct.domain.participant.ParticipantRepository;
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.ui.dto.PageDto;
-import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
 import com.vocalink.crossproduct.ui.presenter.Presenter;
@@ -81,7 +82,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   }
 
   @Override
-  public ManagedParticipantDetailsDto getById(String product, ClientType clientType,
+  public ParticipantConfigurationDto getById(String product, ClientType clientType,
       String participantId, String requestedParticipantId) {
     log.info("Fetching details of managed participant id: {} participantId: {} for: {}, from: {}",
         requestedParticipantId, participantId, clientType, product);
@@ -91,39 +92,37 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
 
     final Participant participant = participantRepository.findById(participantId);
 
-    setFundedParticipants(participant, product);
-
     final ApprovalRequestType requestType = participant.getStatus().equals(ParticipantStatus.ACTIVE)
         ? PARTICIPANT_SUSPEND
         : PARTICIPANT_UNSUSPEND;
 
-    Map<String, Approval> approvals = getApprovals(0, 1, product, singletonList(participantId),
-        requestedParticipantId, singletonList(requestType));
+    final Map<String, Approval> approvals = getApprovals(0, 1, product,
+        singletonList(participantId), requestedParticipantId, singletonList(requestType));
 
-    /**
-     * TODO In new contract updates - this will no longer be needed as BPS will
-     * return this in the aggregate calls
-     */
-    final Account account = repositoryFactory.getAccountRepository(product)
-        .findByPartyCode(participantId);
+    final ParticipantConfiguration configuration = participantRepository.findConfigurationById(
+        participantId);
 
-    final ParticipantConfiguration configuration = participantRepository.findConfigurationById(participantId);
+    final UserDetails userDetails = configuration.getUpdatedBy() == null ? null : repositoryFactory
+        .getAuditDetailsRepository(product)
+        .getUserDetailsById(participantId, configuration.getUpdatedBy())
+        .orElse(UserDetails.builder()
+            .participantId(participantId)
+            .userId(configuration.getUpdatedBy())
+            .build());
 
     final Presenter presenter = presenterFactory.getPresenter(clientType);
     if (participant.getParticipantType().equals(ParticipantType.FUNDED)) {
-      /**
-       * TODO when porting to SAMA make sure to retrieve the participant by BIC and then pass
-       * the retrieved participantId to the repository. We can no longer rely on equality
-       * of BIC and participantId
-       */
-      Participant fundingParticipant = participantRepository.findById(participant.getFundingBic());
 
-      return presenter.presentManagedParticipantDetails(
-          participant, configuration, fundingParticipant, account, approvals);
+      final Participant fundingParticipant = participantRepository
+          .findByBic(participant.getFundingBic())
+          .orElseThrow(() -> new EntityNotFoundException(
+              String.format("No participant with bic: %s found", participant.getFundingBic())));
+
+      return presenter.presentManagedParticipantDetails(configuration, fundingParticipant,
+          approvals, userDetails);
     }
 
-    return presenter.presentManagedParticipantDetails(
-        participant, configuration, account, approvals);
+    return presenter.presentManagedParticipantDetails(configuration, approvals, userDetails);
   }
 
   private Map<String, Approval> getApprovals(final int offset, final int limit,
@@ -159,7 +158,8 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
   private void setFundedParticipants(Participant participant, String product) {
     if (ParticipantType.DIRECT_FUNDING.equals(participant.getParticipantType()) ||
         ParticipantType.FUNDING.equals(participant.getParticipantType())) {
-      List<Participant> fundedParticipants = repositoryFactory.getParticipantRepository(product)
+      final List<Participant> fundedParticipants = repositoryFactory
+          .getParticipantRepository(product)
           .findByConnectingPartyAndType(participant.getId(),
               ParticipantType.FUNDED.getDescription()).getItems();
       fundedParticipants.sort(comparing(Participant::getName));
@@ -172,7 +172,7 @@ public class ParticipantFacadeImpl implements ParticipantFacade {
     if (participant.getBic() != null && participant.getBic().contains(searchString)) {
       return;
     }
-    List<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
+    final List<RoutingRecord> routingRecords = repositoryFactory.getRoutingRepository(product)
         .findAllByBic(participant.getBic())
         .stream()
         .filter(f -> containsIgnoreCase(f.getReachableBic(), searchString))

@@ -76,9 +76,6 @@ bps-config:
     settlement-details-path:
       path: /enquiries/settlement/enquiry/{schemeCode}/read
       base: MOCK
-    instruction-enquiries-path:
-      path: /enquiry/instructions
-      base: MOCK
     settlement-enquiries-path:
       path: /enquiries/settlement/enquiry/{schemeCode}/readAll
       base: MOCK
@@ -116,7 +113,7 @@ bps-config:
       path: /broadcasts
       base: MOCK
     participant-configuration-path:
-      path: /participants/{schemeCode}/configuration
+      path: /participants/{schemeCode}/aggregate/configuration
       base: MOCK
     routing-record-path:
       path: /routing/{schemeCode}/records

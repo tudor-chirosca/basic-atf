@@ -7,7 +7,7 @@ import com.vocalink.crossproduct.ui.aspects.Auditable;
 import com.vocalink.crossproduct.ui.aspects.Positions;
 import com.vocalink.crossproduct.ui.controllers.api.ParticipantApi;
 import com.vocalink.crossproduct.ui.dto.PageDto;
-import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantsSearchRequest;
 import com.vocalink.crossproduct.ui.facade.api.ParticipantFacade;
@@ -51,7 +51,7 @@ public class ParticipantController implements ParticipantApi {
 
   @Auditable(type = VIEW_PARTICIPANT_MNG_DETAILS, params = @Positions(clientType = 0, context = 1, content = 2, request = 3))
   @GetMapping(value = "/participants/{participantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ManagedParticipantDetailsDto> getManagedParticipantDetails(
+  public ResponseEntity<ParticipantConfigurationDto> getManagedParticipantDetails(
       @RequestHeader("client-type") ClientType clientType,
       @RequestHeader String context,
       @PathVariable String participantId,
@@ -59,9 +59,9 @@ public class ParticipantController implements ParticipantApi {
 
     final String requestedParticipant = httpServletRequest.getHeader(X_PARTICIPANT_ID_HEADER);
 
-    final ManagedParticipantDetailsDto managedParticipantDetailsDto = participantFacade
+    final ParticipantConfigurationDto participantConfigurationDto = participantFacade
         .getById(context, clientType, participantId, requestedParticipant);
 
-    return ResponseEntity.ok().body(managedParticipantDetailsDto);
+    return ResponseEntity.ok().body(participantConfigurationDto);
   }
 }

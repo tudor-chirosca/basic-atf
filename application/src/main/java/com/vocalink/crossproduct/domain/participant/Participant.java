@@ -25,8 +25,6 @@ public class Participant implements Serializable {
   private final String schemeCode;
   private final String organizationId;
   private final SuspensionLevel suspensionLevel;
-  private final String tpspName;
-  private final String tpspId;
   @Setter
   private List<Participant> fundedParticipants;
   @Setter

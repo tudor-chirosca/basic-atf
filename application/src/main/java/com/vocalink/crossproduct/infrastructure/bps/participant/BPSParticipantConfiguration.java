@@ -1,8 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.participant;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -11,52 +9,63 @@ import lombok.Getter;
 public class BPSParticipantConfiguration {
 
   private final String schemeParticipantIdentifier;
-  private final Integer txnVolume;
-  private final Integer outputFileTimeLimit;
+  private final String participantName;
+  private final String participantBic;
+  private final String partyExternalIdentifier;
+  private final String participantType;
+  private final String connectingParty;
+  private final String suspensionLevel;
+  private final ZonedDateTime suspendedTime;
+  private final String participantConnectionId;
+  private final String settlementAccount;
+  private final String tpspId;
+  private final String tpspName;
   private final String networkName;
-  private final String gatewayName;
-  private final String requestorDN;
-  private final String responderDN;
-  private final String preSettlementAckType;
-  private final String preSettlementActGenerationLevel;
-  private final String postSettlementAckType;
-  private final String postSettlementAckGenerationLevel;
-  private final BigDecimal debitCapLimit;
-  private final List<Double> debitCapLimitThresholds;
+  private final String outputChannel;
+  private final String status;
+  private final List<BPSDebitCapThreshold> debitCapThreshold;
+  private final List<BPSOutputFlow> outputFlow;
   private final ZonedDateTime updatedAt;
-  private final BPSUserDetails updatedBy;
+  private final String updatedBy;
 
-  @JsonCreator
   public BPSParticipantConfiguration(
       @JsonProperty(value = "schemeParticipantIdentifier", required = true) String schemeParticipantIdentifier,
-      @JsonProperty(value = "txnVolume", required = true) Integer txnVolume,
-      @JsonProperty(value = "outputFileTimeLimit") Integer outputFileTimeLimit,
-      @JsonProperty(value = "networkName") String networkName,
-      @JsonProperty(value = "gatewayName") String gatewayName,
-      @JsonProperty(value = "requestorDN") String requestorDN,
-      @JsonProperty(value = "responderDN") String responderDN,
-      @JsonProperty(value = "preSettlementAckType") String preSettlementAckType,
-      @JsonProperty(value = "preSettlementActGenerationLevel") String preSettlementActGenerationLevel,
-      @JsonProperty(value = "postSettlementAckType") String postSettlementAckType,
-      @JsonProperty(value = "postSettlementAckGenerationLevel") String postSettlementAckGenerationLevel,
-      @JsonProperty(value = "debitCapLimit") BigDecimal debitCapLimit,
-      @JsonProperty(value = "debitCapLimitThresholds") List<Double> debitCapLimitThresholds,
-      @JsonProperty(value = "updatedAt") ZonedDateTime updatedAt,
-      @JsonProperty(value = "updatedBy") BPSUserDetails updatedBy) {
+      @JsonProperty(value = "participantName", required = true) String participantName,
+      @JsonProperty(value = "participantBic", required = true) String participantBic,
+      @JsonProperty(value = "partyExternalIdentifier", required = true) String partyExternalIdentifier,
+      @JsonProperty(value = "participantType", required = true) String participantType,
+      @JsonProperty(value = "suspensionLevel") String suspensionLevel,
+      @JsonProperty(value = "suspendedTime") ZonedDateTime suspendedTime,
+      @JsonProperty(value = "connectingParty") String connectingParty,
+      @JsonProperty(value = "participantConnectionId") String participantConnectionId,
+      @JsonProperty(value = "settlementAccount", required = true) String settlementAccount,
+      @JsonProperty(value = "tpspId") String tpspId,
+      @JsonProperty(value = "tpspName") String tpspName,
+      @JsonProperty(value = "networkName", required = true) String networkName,
+      @JsonProperty(value = "outputChannel") String outputChannel,
+      @JsonProperty(value = "status", required = true) String status,
+      @JsonProperty(value = "debitCapThreshold") List<BPSDebitCapThreshold> debitCapThreshold,
+      @JsonProperty(value = "outputFlow") List<BPSOutputFlow> outputFlow,
+      @JsonProperty(value = "updatedAt", required = true) ZonedDateTime updatedAt,
+      @JsonProperty(value = "updatedBy") String updatedBy) {
     this.schemeParticipantIdentifier = schemeParticipantIdentifier;
-    this.txnVolume = txnVolume;
-    this.outputFileTimeLimit = outputFileTimeLimit;
+    this.participantName = participantName;
+    this.participantBic = participantBic;
+    this.partyExternalIdentifier = partyExternalIdentifier;
+    this.participantType = participantType;
+    this.suspensionLevel = suspensionLevel;
+    this.connectingParty = connectingParty;
+    this.participantConnectionId = participantConnectionId;
+    this.settlementAccount = settlementAccount;
+    this.tpspId = tpspId;
+    this.tpspName = tpspName;
     this.networkName = networkName;
-    this.gatewayName = gatewayName;
-    this.requestorDN = requestorDN;
-    this.responderDN = responderDN;
-    this.preSettlementAckType = preSettlementAckType;
-    this.preSettlementActGenerationLevel = preSettlementActGenerationLevel;
-    this.postSettlementAckType = postSettlementAckType;
-    this.postSettlementAckGenerationLevel = postSettlementAckGenerationLevel;
-    this.debitCapLimit = debitCapLimit;
-    this.debitCapLimitThresholds = debitCapLimitThresholds;
+    this.outputChannel = outputChannel;
+    this.status = status;
+    this.debitCapThreshold = debitCapThreshold;
+    this.outputFlow = outputFlow;
     this.updatedAt = updatedAt;
     this.updatedBy = updatedBy;
+    this.suspendedTime = suspendedTime;
   }
 }

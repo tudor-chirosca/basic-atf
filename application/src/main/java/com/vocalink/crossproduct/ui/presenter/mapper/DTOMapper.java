@@ -11,7 +11,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertPriorityData;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
@@ -69,8 +68,8 @@ import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.io.ParticipantIODataDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalReferenceDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
-import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.position.IntraDayPositionGrossDto;
@@ -592,44 +591,47 @@ public interface DTOMapper {
   RoutingRecordDto toDto(RoutingRecord routingRecord);
 
   @Mappings({
-      @Mapping(target = "bic", source = "participant.bic"),
-      @Mapping(target = "fundingBic", source = "participant.fundingBic"),
-      @Mapping(target = "id", source = "participant.id"),
-      @Mapping(target = "name", source = "participant.name"),
-      @Mapping(target = "status", source = "participant.status"),
-      @Mapping(target = "suspendedTime", source = "participant.suspendedTime"),
-      @Mapping(target = "participantType", source = "participant.participantType"),
-      @Mapping(target = "suspensionLevel", source = "participant.suspensionLevel"),
-      @Mapping(target = "organizationId", source = "participant.organizationId"),
-      @Mapping(target = "tpspName", source = "participant.tpspName"),
-      @Mapping(target = "tpspId", source = "participant.tpspId"),
-      @Mapping(target = "fundedParticipants", source = "participant.fundedParticipants"),
+      @Mapping(target = "updatedBy.name", expression = "java(userDetails.getFirstName() + \" \" + userDetails.getLastName())"),
+      @Mapping(target = "updatedBy.id", source = "userDetails.userId"),
+      @Mapping(target = "updatedBy.participantName", source = "userDetails.participantId"),
+      @Mapping(target = "bic", source = "configuration.participantBic"),
+      @Mapping(target = "fundingBic", source = "configuration.connectingParty"),
+      @Mapping(target = "id", source = "configuration.schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "configuration.participantName"),
+      @Mapping(target = "status", source = "configuration.status"),
+      @Mapping(target = "suspendedTime", source = "configuration.suspendedTime"),
+      @Mapping(target = "participantType", source = "configuration.participantType"),
+      @Mapping(target = "suspensionLevel", source = "configuration.suspensionLevel"),
+      @Mapping(target = "organizationId", source = "configuration.partyExternalIdentifier"),
       @Mapping(target = "fundingParticipant", source = "fundingParticipant"),
-      @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
-      @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
-      @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
-      @Mapping(target = "debitCapLimitThresholds", source = "configuration.debitCapLimitThresholds"),
-      @Mapping(target = "outputChannel", source = "configuration.networkName"),
-      @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
-      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "outputChannel", source = "configuration.outputChannel"),
+      @Mapping(target = "settlementAccountNo", source = "configuration.settlementAccount"),
+      @Mapping(target = "approvalReference", source = "configuration.schemeParticipantIdentifier", qualifiedByName = "getApprovalReference"),
       @Mapping(target = "hasActiveSuspensionRequests", expression = "java(!approvals.isEmpty())")
   })
-  ManagedParticipantDetailsDto toDto(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      @Context Map<String, Approval> approvals);
+  ParticipantConfigurationDto toDto(ParticipantConfiguration configuration,
+      Participant fundingParticipant, @Context Map<String, Approval> approvals,
+      UserDetails userDetails);
 
   @Mappings({
-      @Mapping(target = "outputTxnVolume", source = "configuration.txnVolume"),
-      @Mapping(target = "outputTxnTimeLimit", source = "configuration.outputFileTimeLimit"),
-      @Mapping(target = "debitCapLimit", source = "configuration.debitCapLimit"),
-      @Mapping(target = "outputChannel", source = "configuration.networkName"),
-      @Mapping(target = "settlementAccountNo", source = "account.accountNo"),
-      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "bic", source = "configuration.participantBic"),
+      @Mapping(target = "fundingBic", source = "configuration.connectingParty"),
+      @Mapping(target = "id", source = "configuration.schemeParticipantIdentifier"),
+      @Mapping(target = "name", source = "configuration.participantName"),
+      @Mapping(target = "suspendedTime", source = "configuration.suspendedTime"),
+      @Mapping(target = "participantType", source = "configuration.participantType"),
+      @Mapping(target = "suspensionLevel", source = "configuration.suspensionLevel"),
+      @Mapping(target = "status", source = "configuration.status"),
+      @Mapping(target = "organizationId", source = "configuration.partyExternalIdentifier"),
+      @Mapping(target = "updatedBy.name", expression = "java(userDetails.getFirstName() + \" \" + userDetails.getLastName())"),
+      @Mapping(target = "updatedBy.id", source = "userDetails.userId"),
+      @Mapping(target = "updatedBy.participantName", source = "userDetails.participantId"),
+      @Mapping(target = "settlementAccountNo", source = "configuration.settlementAccount"),
+      @Mapping(target = "approvalReference", source = "configuration.schemeParticipantIdentifier", qualifiedByName = "getApprovalReference"),
       @Mapping(target = "hasActiveSuspensionRequests", expression = "java(!approvals.isEmpty())")
   })
-  ManagedParticipantDetailsDto toDto(Participant participant,
-      ParticipantConfiguration configuration, Account account,
-      @Context Map<String, Approval> approvals);
+  ParticipantConfigurationDto toDto(ParticipantConfiguration configuration,
+      @Context Map<String, Approval> approvals, UserDetails userDetails);
 
   @Mappings({
       @Mapping(target = "id", source = "userId"),
@@ -707,7 +709,7 @@ public interface DTOMapper {
       @Context Map<String, Approval> approvals, @Context Map<String, String> fundingParticipants);
 
   @Mappings({
-      @Mapping(target = "approvalReference", source = "participant", qualifiedByName = "getApprovalReference"),
+      @Mapping(target = "approvalReference", source = "participant.id", qualifiedByName = "getApprovalReference"),
       @Mapping(target = "fundingName", source = "participant", qualifiedByName = "getFundingName")
   })
   ManagedParticipantDto toDto(Participant participant, @Context Map<String, Approval> approvals,
@@ -720,10 +722,10 @@ public interface DTOMapper {
   }
 
   @Named("getApprovalReference")
-  default ApprovalReferenceDto getApprovalReference(Participant participant,
+  default ApprovalReferenceDto getApprovalReference(String participantId,
       @Context Map<String, Approval> approvals) {
     final Approval approval = approvals
-        .getOrDefault(participant.getId(), Approval.builder().build());
+        .getOrDefault(participantId, Approval.builder().build());
 
     return ApprovalReferenceDto.builder()
         .jobId(approval.getApprovalId())

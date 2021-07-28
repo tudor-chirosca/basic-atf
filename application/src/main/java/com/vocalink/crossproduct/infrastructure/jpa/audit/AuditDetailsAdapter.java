@@ -14,6 +14,7 @@ import com.vocalink.crossproduct.infrastructure.exception.InfrastructureExceptio
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -120,6 +121,15 @@ public class AuditDetailsAdapter implements AuditDetailsRepository {
     return auditDetailsRepository.findByCorrelationId(id).stream()
         .map(MAPPER::toEntity)
         .collect(toList());
+  }
+
+  @Override
+  public Optional<UserDetails> getUserDetailsById(String participantId, String userId) {
+    return auditDetailsRepository.findAllByParticipantId(participantId)
+        .stream()
+        .filter(d -> d.getUsername().equals(userId))
+        .map(MAPPER::toUserEntity)
+        .findFirst();
   }
 
   @Override

@@ -1,7 +1,6 @@
 package com.vocalink.crossproduct.infrastructure.bps.mappers
 
 import com.vocalink.crossproduct.TestConstants
-import com.vocalink.crossproduct.domain.account.Account
 import com.vocalink.crossproduct.domain.alert.AlertPriorityType
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationType
 import com.vocalink.crossproduct.domain.approval.ApprovalRequestType
@@ -18,7 +17,6 @@ import com.vocalink.crossproduct.domain.reference.MessageReferenceType
 import com.vocalink.crossproduct.domain.transaction.Transaction
 import com.vocalink.crossproduct.infrastructure.bps.BPSPage
 import com.vocalink.crossproduct.infrastructure.bps.BPSResult
-import com.vocalink.crossproduct.infrastructure.bps.account.BPSAccount
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlert
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertPriority
 import com.vocalink.crossproduct.infrastructure.bps.alert.BPSAlertReferenceData
@@ -39,7 +37,9 @@ import com.vocalink.crossproduct.infrastructure.bps.file.BPSFile
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSIOData
 import com.vocalink.crossproduct.infrastructure.bps.io.BPSParticipantIOData
 import com.vocalink.crossproduct.infrastructure.bps.mappers.EntityMapper.MAPPER
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSDebitCapThreshold
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSManagedParticipant
+import com.vocalink.crossproduct.infrastructure.bps.participant.BPSOutputFlow
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipant
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantConfiguration
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
@@ -499,15 +499,6 @@ class EntityMapperTest {
     }
 
     @Test
-    fun `should map Account fields`() {
-        val bps = BPSAccount("partyCode", "234234", "iban")
-        val entity = MAPPER.toEntity(bps)
-        assertThat(entity.partyCode).isEqualTo(bps.partyCode)
-        assertThat(entity.iban).isEqualTo(bps.iban)
-        assertThat(entity.accountNo).isEqualTo(bps.accountNo)
-    }
-
-    @Test
     fun `should map BPSApprovalDetails to ApprovalDetails`() {
         val approvalUser = BPSUserDetails("P27", "John", " 12a514", "Doe")
         val date = ZonedDateTime.of( LocalDateTime.now(), ZoneId.of("UTC+1"))
@@ -607,45 +598,59 @@ class EntityMapperTest {
 
     @Test
     fun `should map ParticipantConfiguration fields`() {
-        val bpsApprovingUser = BPSUserDetails(
-            "FORXSES1", "John", "E23423", "Doe"
+        val decimalAmount = 50.toBigDecimal()
+        val bpsAmount = BPSAmount(decimalAmount, "SEK")
+        val bpsDebitCapThreshold = BPSDebitCapThreshold(
+            "debitCapLimitId", bpsAmount, 0.2
         )
-        val entity = BPSParticipantConfiguration(
+        val bpsOutputFlow = BPSOutputFlow(
+            "messageType", 10, 30
+        )
+        val bps = BPSParticipantConfiguration(
             "schemeParticipantIdentifier",
-            10,
-            10,
+            "participantName",
+            "participantBic",
+            "partyExternalIdentifier",
+            "DIRECT",
+            "suspensionLevel",
+            ZonedDateTime.now(TestConstants.FIXED_CLOCK),
+            "connectingParty",
+            "participantConnectionId",
+            "settlementAccount",
+            "tpspId",
+            "tpspName",
             "networkName",
-            "gatewayName",
-            "requestorDN",
-            "responderDN",
-            "preSettlementAckType",
-            "preSettlementActGenerationLevel",
-            "postSettlementAckType",
-            "postSettlementAckGenerationLevel",
-            BigDecimal.ONE,
-            listOf(0.12, 0.25),
-            ZonedDateTime.now(ZoneId.of("UTC")),
-            bpsApprovingUser
-        )
-        val result = MAPPER.toEntity(entity)
-        assertThat(result.schemeParticipantIdentifier).isEqualTo(entity.schemeParticipantIdentifier)
-        assertThat(result.txnVolume).isEqualTo(entity.txnVolume)
-        assertThat(result.outputFileTimeLimit).isEqualTo(entity.outputFileTimeLimit)
-        assertThat(result.networkName).isEqualTo(entity.networkName)
-        assertThat(result.gatewayName).isEqualTo(entity.gatewayName)
-        assertThat(result.requestorDN).isEqualTo(entity.requestorDN)
-        assertThat(result.responderDN).isEqualTo(entity.responderDN)
-        assertThat(result.preSettlementAckType).isEqualTo(entity.preSettlementAckType)
-        assertThat(result.preSettlementActGenerationLevel).isEqualTo(entity.preSettlementActGenerationLevel)
-        assertThat(result.postSettlementAckType).isEqualTo(entity.postSettlementAckType)
-        assertThat(result.postSettlementAckGenerationLevel).isEqualTo(entity.postSettlementAckGenerationLevel)
-        assertThat(result.debitCapLimit).isEqualTo(entity.debitCapLimit)
-        assertThat(result.debitCapLimitThresholds).isEqualTo(entity.debitCapLimitThresholds)
-        assertThat(result.updatedAt).isEqualTo(entity.updatedAt)
-        assertThat(result.updatedBy.firstName).isEqualTo(entity.updatedBy.firstName)
-        assertThat(result.updatedBy.lastName).isEqualTo(entity.updatedBy.lastName)
-        assertThat(result.updatedBy.userId).isEqualTo(entity.updatedBy.userId)
-        assertThat(result.updatedBy.participantId).isEqualTo(entity.updatedBy.schemeParticipantIdentifier)
+            "outputChannel",
+            "ACTIVE",
+            listOf(bpsDebitCapThreshold),
+            listOf(bpsOutputFlow),
+            ZonedDateTime.now(TestConstants.FIXED_CLOCK),
+            "updatedBy"
+            )
+
+        val result = MAPPER.toEntity(bps)
+        assertThat(result.schemeParticipantIdentifier).isEqualTo(bps.schemeParticipantIdentifier)
+        assertThat(result.participantName).isEqualTo(bps.participantName)
+        assertThat(result.participantBic).isEqualTo(bps.participantBic)
+        assertThat(result.suspensionLevel).isEqualTo(bps.suspensionLevel)
+        assertThat(result.partyExternalIdentifier).isEqualTo(bps.partyExternalIdentifier)
+        assertThat(result.participantType).isEqualTo(ParticipantType.DIRECT)
+        assertThat(result.connectingParty).isEqualTo(bps.connectingParty)
+        assertThat(result.participantConnectionId).isEqualTo(bps.participantConnectionId)
+        assertThat(result.settlementAccount).isEqualTo(bps.settlementAccount)
+        assertThat(result.tpspId).isEqualTo(bps.tpspId)
+        assertThat(result.tpspName).isEqualTo(bps.tpspName)
+        assertThat(result.networkName).isEqualTo(bps.networkName)
+        assertThat(result.outputChannel).isEqualTo(bps.outputChannel)
+        assertThat(result.status).isEqualTo(bps.status)
+        assertThat(result.updatedAt).isEqualTo(bps.updatedAt)
+        assertThat(result.updatedBy).isEqualTo(bps.updatedBy)
+        assertThat(result.suspendedTime).isEqualTo(bps.suspendedTime)
+        assertThat(result.debitCapLimit).isEqualTo(decimalAmount)
+        assertThat(result.debitCapLimitThresholds).isEqualTo(listOf(0.2))
+        assertThat(result.outputFlow[0].txnVolume).isEqualTo(bps.outputFlow[0].txnVolume)
+        assertThat(result.outputFlow[0].txnTimeLimit).isEqualTo(bps.outputFlow[0].txnTimeLimit)
+        assertThat(result.outputFlow[0].messageType).isEqualTo(bps.outputFlow[0].messageType)
     }
 
     @Test
@@ -791,33 +796,6 @@ class EntityMapperTest {
         )
         val entity = MAPPER.toEntity(request, null)
         assertThat(entity.sort).isEqualTo(listOf("-createdAt"))
-    }
-
-    @Test
-    fun `should map EnquirySenderDetailsDto from Account and Participant`() {
-        val account = Account("partyCode", "234234", "iban")
-        val participant = Participant(
-            "participantId",
-            "participantId",
-            "name",
-            "fundingBic",
-            ParticipantStatus.ACTIVE,
-            null,
-            null,
-            ParticipantType.FUNDED,
-            null,
-            "organizationId",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-        val result = MAPPER.toEntity(account, participant)
-        assertThat(result.entityBic).isEqualTo(account.partyCode)
-        assertThat(result.entityName).isEqualTo(participant.name)
-        assertThat(result.iban).isEqualTo(account.iban)
     }
 
     @Test
@@ -1058,8 +1036,6 @@ class EntityMapperTest {
         assertThat(result.schemeCode).isEqualTo(bpsManagedParticipant.schemeCode)
         assertThat(result.organizationId).isEqualTo(bpsManagedParticipant.partyExternalIdentifier)
         assertThat(result.suspensionLevel).isEqualTo(SuspensionLevel.valueOf(bpsManagedParticipant.suspensionLevel))
-        assertThat(result.tpspName).isEqualTo(bpsManagedParticipant.tpspName)
-        assertThat(result.tpspId).isEqualTo(bpsManagedParticipant.tpspId)
     }
 
     @Test

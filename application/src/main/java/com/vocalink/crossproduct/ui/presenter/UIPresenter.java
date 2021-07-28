@@ -14,7 +14,6 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.vocalink.crossproduct.domain.Page;
-import com.vocalink.crossproduct.domain.account.Account;
 import com.vocalink.crossproduct.domain.alert.Alert;
 import com.vocalink.crossproduct.domain.alert.AlertReferenceData;
 import com.vocalink.crossproduct.domain.alert.AlertStats;
@@ -72,7 +71,7 @@ import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
-import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDetailsDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
@@ -446,16 +445,17 @@ public class UIPresenter implements Presenter {
   }
 
   @Override
-  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Participant fundingParticipant, Account account,
-      Map<String, Approval> approvals) {
-    return MAPPER.toDto(participant, configuration, fundingParticipant, account, approvals);
+  public ParticipantConfigurationDto presentManagedParticipantDetails(
+      ParticipantConfiguration configuration, Participant fundingParticipant,
+      Map<String, Approval> approvals, UserDetails userDetails) {
+    return MAPPER.toDto(configuration, fundingParticipant, approvals, userDetails);
   }
 
   @Override
-  public ManagedParticipantDetailsDto presentManagedParticipantDetails(Participant participant,
-      ParticipantConfiguration configuration, Account account, Map<String, Approval> approvals) {
-    return MAPPER.toDto(participant, configuration, account, approvals);
+  public ParticipantConfigurationDto presentManagedParticipantDetails(
+      ParticipantConfiguration configuration, Map<String, Approval> approvals,
+      UserDetails userDetails) {
+    return MAPPER.toDto(configuration, approvals, userDetails);
   }
 
   @Override

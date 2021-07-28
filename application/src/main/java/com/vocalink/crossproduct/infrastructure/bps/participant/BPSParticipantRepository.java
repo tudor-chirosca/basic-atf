@@ -19,8 +19,10 @@ import com.vocalink.crossproduct.infrastructure.bps.BPSResult;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSConstants;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSProperties;
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSRetryWebClientConfig;
+import com.vocalink.crossproduct.infrastructure.exception.EntityNotFoundException;
 import com.vocalink.crossproduct.infrastructure.exception.ExceptionUtils;
 import java.net.URI;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -73,6 +75,13 @@ public class BPSParticipantRepository implements ParticipantRepository {
   }
 
   @Override
+  public Optional<Participant> findByBic(final String participantBic) {
+    return this.findAll().getItems().stream()
+        .filter(p -> p.getBic().equalsIgnoreCase(participantBic))
+        .findFirst();
+  }
+
+  @Override
   public Page<Participant> findPaginated(ManagedParticipantsSearchCriteria criteria) {
     BPSManagedParticipantsSearchRequest request = BPSMAPPER.toBps(criteria);
     return webClient.post()
@@ -89,7 +98,9 @@ public class BPSParticipantRepository implements ParticipantRepository {
 
   @Override
   public ParticipantConfiguration findConfigurationById(String participantId) {
-    BPSParticipantConfigurationRequest request = new BPSParticipantConfigurationRequest(participantId);
+    BPSParticipantConfigurationRequest request = BPSParticipantConfigurationRequest.builder()
+        .schemeParticipantIdentifier(participantId)
+        .build();
     return webClient.post()
         .uri(resolve(PARTICIPANT_CONFIGURATION_PATH, bpsProperties))
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

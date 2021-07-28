@@ -626,8 +626,6 @@ class BPSMapperTest {
             .status(ParticipantStatus.ACTIVE)
             .participantType(ParticipantType.FUNDED)
             .organizationId("00002121")
-            .tpspName("Nordnet Bank")
-            .tpspId("475347837892")
             .fundedParticipants(emptyList())
             .fundedParticipantsCount(1)
             .build()

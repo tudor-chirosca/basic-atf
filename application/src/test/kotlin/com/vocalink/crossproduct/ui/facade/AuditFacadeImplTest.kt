@@ -5,6 +5,7 @@ import com.vocalink.crossproduct.TestConstants.FIXED_CLOCK
 import com.vocalink.crossproduct.domain.Page
 import com.vocalink.crossproduct.domain.audit.AuditDetails
 import com.vocalink.crossproduct.domain.audit.AuditDetailsRepository
+import com.vocalink.crossproduct.domain.audit.UserDetails
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantRepository
 import com.vocalink.crossproduct.ui.aspects.ContentUtils
@@ -15,17 +16,16 @@ import com.vocalink.crossproduct.ui.dto.audit.AuditRequestParams
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import com.vocalink.crossproduct.ui.presenter.PresenterFactory
 import com.vocalink.crossproduct.ui.presenter.UIPresenter
+import java.util.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
 import org.mockito.Mockito.anyString
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import java.util.*
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
 class AuditFacadeImplTest {
 
@@ -82,8 +82,12 @@ class AuditFacadeImplTest {
 
     @Test
     fun `audit details repository should log occurring event`() {
+        val userDetails = UserDetails("userId", "firstName", "lastName",
+            "participantId");
         `when`(repositoryFactory.getAuditDetailsRepository(anyString())).thenReturn(auditDetailsRepository)
         `when`(auditDetailsRepository.getAuditDetailsByParticipantId(PARTICIPANT_ID)).thenReturn(AUDIT_DETAILS_LIST)
+        `when`(auditDetailsRepository.getUserDetailsById(any(), any()))
+            .thenReturn(Optional.of(userDetails))
 
         val occurringEvent = OccurringEvent.builder()
                 .product(PRODUCT)
