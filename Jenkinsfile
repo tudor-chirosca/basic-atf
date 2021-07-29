@@ -10,8 +10,8 @@ pipeline {
     }
 
     environment {
-        RELEASE_BRANCH = "master"
-        // when RELEASE_BRANCH != master, update sonar projet key to avoid overwriting current sonar project
+        RELEASE_BRANCH = "main"
+        // when RELEASE_BRANCH != main, update sonar projet key to avoid overwriting current sonar project
         repoType = "staging"
         sonarProjectKey = "international-suite-service"
     }
@@ -142,7 +142,7 @@ pipeline {
                 anyOf {
                     // Always build docker container for branches
                     expression { skipCondition != 'true' && env.BRANCH != env.RELEASE_BRANCH }
-                    // Build docker container for master branch only if there are changes
+                    // Build docker container for main branch only if there are changes
                     expression { skipCondition != 'true' && env.BRANCH == env.RELEASE_BRANCH && env.currentGitCommitHash != env.gitCommitPr }
                 }
             }
