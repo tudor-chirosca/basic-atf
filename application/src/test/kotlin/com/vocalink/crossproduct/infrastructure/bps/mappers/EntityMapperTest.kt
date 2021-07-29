@@ -45,6 +45,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSParticipantCo
 import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSEnquiryType
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSOutputFlowReference
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport
 import com.vocalink.crossproduct.infrastructure.bps.routing.BPSRoutingRecord
@@ -1121,5 +1122,26 @@ class EntityMapperTest {
         assertThat(result.subType[3]).isEqualTo(MessageReferenceType.NON_INQUIRY)
         assertThat(result.subType[4]).isEqualTo(MessageReferenceType.MESSAGE_STATUS_REPORT)
         assertThat(result.subType[5]).isEqualTo(MessageReferenceType.ADMI)
+    }
+
+    @Test
+    fun `should map BPSOutputFlowReference to OutputFlowReference`() {
+        val bps = BPSOutputFlowReference(
+            "messageType",
+            true,
+            20,
+            10000,
+            10,
+            60
+        )
+
+        val result = MAPPER.toEntity(bps)
+
+        assertThat(result.outputVolumeMin).isEqualTo(bps.outputVolumeMin)
+        assertThat(result.outputVolumeMax).isEqualTo(bps.outputVolumeMax)
+        assertThat(result.messageType).isEqualTo(bps.messageType)
+        assertThat(result.editable).isEqualTo(bps.editable)
+        assertThat(result.outputTimeMin).isEqualTo(bps.outputTimeMin)
+        assertThat(result.outputTimeMax).isEqualTo(bps.outputTimeMax)
     }
 }

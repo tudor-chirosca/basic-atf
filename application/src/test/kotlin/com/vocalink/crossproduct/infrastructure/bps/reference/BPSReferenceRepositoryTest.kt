@@ -4,7 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING
 import com.vocalink.crossproduct.infrastructure.bps.config.BPSTestConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 @BPSTestConfiguration
 @Import(BPSReferenceRepository::class)
@@ -84,15 +83,28 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
         }
         """
         const val VALID_STATUSES_RESPONSE: String = """ 
-    [
-        {
-            "status": "Accepted"
-        },
-        {
-            "status": "Rejected"
-        }
-    ]
-    """ }
+        [
+            {
+                "status": "Accepted"
+            },
+            {
+                "status": "Rejected"
+            }
+        ]
+        """
+        const val VALID_OUTPUT_FLOW_REFERENCES_RESPONSE: String = """
+        [
+            {
+              "messageType": "camt.056.001.01",
+              "editable": true,
+              "outputVolumeMin": 20,
+              "outputVolumeMax": 100000,
+              "outputTimeMin": 10,
+              "outputTimeMax": 60
+            }
+        ]
+        """
+    }
 
     @Test
     fun `should pass message direction reference success`() {
@@ -144,5 +156,26 @@ class BPSReferenceRepositoryTest @Autowired constructor(var client: BPSReference
         assertThat(result).isNotEmpty
         assertThat(result[0]).isEqualTo("Accepted")
         assertThat(result[1]).isEqualTo("Rejected")
+    }
+
+    @Test
+    fun `should pass output flow reference success`() {
+        mockServer.stubFor(
+            post(urlEqualTo("/reference/messages/outputFlow/P27-SEK/readAll"))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(VALID_OUTPUT_FLOW_REFERENCES_RESPONSE)))
+
+        val result = client.findOutputFlowReferences()
+
+        assertThat(result.size).isEqualTo(1)
+
+        assertThat(result[0].messageType).isEqualTo("camt.056.001.01")
+        assertThat(result[0].editable).isEqualTo(true)
+        assertThat(result[0].outputVolumeMin).isEqualTo(20)
+        assertThat(result[0].outputVolumeMax).isEqualTo(100000)
+        assertThat(result[0].outputTimeMin).isEqualTo(10)
+        assertThat(result[0].outputTimeMax).isEqualTo(60)
     }
 }

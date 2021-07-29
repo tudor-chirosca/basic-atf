@@ -20,7 +20,6 @@ import com.vocalink.crossproduct.domain.alert.AlertStats;
 import com.vocalink.crossproduct.domain.alert.AlertStatsData;
 import com.vocalink.crossproduct.domain.approval.Approval;
 import com.vocalink.crossproduct.domain.approval.ApprovalChangeCriteria;
-import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmation;
 import com.vocalink.crossproduct.domain.approval.ApprovalConfirmationResponse;
 import com.vocalink.crossproduct.domain.approval.ApprovalCreationResponse;
@@ -38,7 +37,6 @@ import com.vocalink.crossproduct.domain.broadcasts.BroadcastsSearchCriteria;
 import com.vocalink.crossproduct.domain.cycle.Cycle;
 import com.vocalink.crossproduct.domain.cycle.CycleStatus;
 import com.vocalink.crossproduct.domain.cycle.DayCycle;
-import com.vocalink.crossproduct.domain.files.EnquirySenderDetails;
 import com.vocalink.crossproduct.domain.files.File;
 import com.vocalink.crossproduct.domain.files.FileEnquirySearchCriteria;
 import com.vocalink.crossproduct.domain.io.IOBatchesMessageTypes;
@@ -62,6 +60,7 @@ import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
 import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection;
 import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel;
 import com.vocalink.crossproduct.domain.reference.MessageReferenceType;
+import com.vocalink.crossproduct.domain.reference.OutputFlowReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
 import com.vocalink.crossproduct.domain.report.Report;
@@ -114,6 +113,7 @@ import com.vocalink.crossproduct.infrastructure.bps.participant.BPSUserDetails;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSIntraDayPositionGross;
 import com.vocalink.crossproduct.infrastructure.bps.position.BPSSettlementPositionWrapper;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSMessageDirectionReference;
+import com.vocalink.crossproduct.infrastructure.bps.reference.BPSOutputFlowReference;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference;
 import com.vocalink.crossproduct.infrastructure.bps.reference.BPSReasonCodeReference.BPSReasonCode;
 import com.vocalink.crossproduct.infrastructure.bps.report.BPSReport;
@@ -569,6 +569,8 @@ public interface EntityMapper {
       @Mapping(target = "participantIdentifier", source = "partyCode")
   })
   Report toEntity(BPSReport bpsReport);
+
+  OutputFlowReference toEntity(BPSOutputFlowReference bpsReport);
 
   default <T> Page<T> toEntity(BPSPage<?> page, Class<T> targetType) {
     List<?> sourceItems = page.getItems();

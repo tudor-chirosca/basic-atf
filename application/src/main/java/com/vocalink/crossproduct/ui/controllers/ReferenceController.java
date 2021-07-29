@@ -2,11 +2,12 @@ package com.vocalink.crossproduct.ui.controllers;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.infrastructure.exception.ClientRequestException;
 import com.vocalink.crossproduct.ui.controllers.api.ReferenceApi;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
-import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
@@ -78,5 +79,16 @@ public class ReferenceController implements ReferenceApi {
         .getDayCyclesByDate(context, clientType, ZonedDateTime.parse(date), settled);
 
     return ResponseEntity.ok().body(cycleDto);
+  }
+
+  @GetMapping(value = "/reference/messages/outputflow", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<OutputFlowReferenceDto>> getOutputFlowReferences(
+      final @RequestHeader String context,
+      final @RequestHeader("client-type") ClientType clientType) {
+
+    final List<OutputFlowReferenceDto> outputFlowReferences = referencesServiceFacade
+        .getOutputFlowReferences(context, clientType);
+
+    return ResponseEntity.ok().body(outputFlowReferences);
   }
 }

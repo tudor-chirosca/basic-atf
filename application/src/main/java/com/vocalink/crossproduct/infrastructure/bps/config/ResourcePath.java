@@ -12,6 +12,7 @@ public class ResourcePath {
   public static final String REASON_CODES_PATH = "reason-codes-path";
   public static final String FILE_ENQUIRIES_PATH = "file-enquiries-path";
   public static final String STATUSES_PATH = "statuses-path";
+  public static final String OUTPUT_FLOW_REFERENCES_PATH = "output-flow-references-path";
   public static final String BATCH_ENQUIRIES_PATH = "batch-enquiries-path";
   public static final String IO_PARTICIPANTS_PATH = "io-participants-path";
   public static final String IO_DETAILS_PATH = "io-details-path";

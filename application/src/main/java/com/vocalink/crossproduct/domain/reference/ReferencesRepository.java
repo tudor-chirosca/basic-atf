@@ -11,4 +11,6 @@ public interface ReferencesRepository extends CrossproductRepository {
 
   List<String> findStatuses(String enquiryType);
 
+  List<OutputFlowReference> findOutputFlowReferences();
+
 }

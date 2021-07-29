@@ -3,6 +3,7 @@ package com.vocalink.crossproduct.ui.controllers.api;
 import com.vocalink.crossproduct.ui.dto.cycle.CycleDto;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -45,4 +46,11 @@ public interface ReferenceApi {
   })
   ResponseEntity<List<DayCycleDto>> getDayCyclesByDate(
       ClientType clientType, String context, String date, boolean settled);
+
+  @ApiOperation("Fetch all output flow references")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Output flow references retrieved successfully", response = OutputFlowReferenceDto.class),
+      @ApiResponse(code = 400, message = "Invalid context")
+  })
+  ResponseEntity<List<OutputFlowReferenceDto>> getOutputFlowReferences(String context, ClientType clientType);
 }

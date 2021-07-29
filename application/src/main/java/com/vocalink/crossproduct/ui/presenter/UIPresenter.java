@@ -36,6 +36,7 @@ import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.OutputFlowReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.ReasonCode;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.domain.report.Report;
@@ -71,12 +72,13 @@ import com.vocalink.crossproduct.ui.dto.file.FileDetailsDto;
 import com.vocalink.crossproduct.ui.dto.file.FileDto;
 import com.vocalink.crossproduct.ui.dto.io.IODetailsDto;
 import com.vocalink.crossproduct.ui.dto.participant.ApprovalUserDto;
-import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
+import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.position.TotalPositionDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
@@ -584,5 +586,13 @@ public class UIPresenter implements Presenter {
         .map(UIPermission::getKey)
         .collect(toList());
     return MAPPER.toDto(participant, permissions, auditDetails);
+  }
+
+  @Override
+  public List<OutputFlowReferenceDto> presentOutputFlowReferences(
+      List<OutputFlowReference> outputFlowReferences) {
+    return outputFlowReferences.stream()
+        .map(MAPPER::toDto)
+        .collect(toList());
   }
 }

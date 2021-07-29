@@ -29,7 +29,6 @@ import com.vocalink.crossproduct.domain.io.ParticipantIOData
 import com.vocalink.crossproduct.domain.participant.OutputFlow
 import com.vocalink.crossproduct.domain.participant.Participant
 import com.vocalink.crossproduct.domain.participant.ParticipantConfiguration
-import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.ACTIVE
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus.SUSPENDED
 import com.vocalink.crossproduct.domain.participant.ParticipantType
@@ -55,6 +54,7 @@ import com.vocalink.crossproduct.domain.reference.MessageReferenceType.MESSAGE_S
 import com.vocalink.crossproduct.domain.reference.MessageReferenceType.NON_INQUIRY
 import com.vocalink.crossproduct.domain.reference.MessageReferenceType.NON_PAYMENT
 import com.vocalink.crossproduct.domain.reference.MessageReferenceType.PAYMENT
+import com.vocalink.crossproduct.domain.reference.OutputFlowReference
 import com.vocalink.crossproduct.domain.report.Report
 import com.vocalink.crossproduct.domain.routing.RoutingRecord
 import com.vocalink.crossproduct.domain.settlement.InstructionStatus
@@ -1460,5 +1460,26 @@ class DTOMapperTest {
         assertThat(result.subType[3]).isEqualTo(NON_INQUIRY)
         assertThat(result.subType[4]).isEqualTo(MESSAGE_STATUS_REPORT)
         assertThat(result.subType[5]).isEqualTo(ADMI)
+    }
+
+    @Test
+    fun `should map OutputFlowReference to OutputFlowReferenceDto`() {
+        val entity = OutputFlowReference(
+            "messageType",
+            true,
+            20,
+            10000,
+            10,
+            60
+        )
+
+        val result = MAPPER.toDto(entity)
+
+        assertThat(result.outputVolumeMin).isEqualTo(entity.outputVolumeMin)
+        assertThat(result.outputVolumeMax).isEqualTo(entity.outputVolumeMax)
+        assertThat(result.messageType).isEqualTo(entity.messageType)
+        assertThat(result.editable).isEqualTo(entity.editable)
+        assertThat(result.outputTimeMin).isEqualTo(entity.outputTimeMin)
+        assertThat(result.outputTimeMax).isEqualTo(entity.outputTimeMax)
     }
 }

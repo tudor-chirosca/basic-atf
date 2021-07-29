@@ -6,13 +6,15 @@ import com.vocalink.crossproduct.TestConstants.CONTEXT
 import com.vocalink.crossproduct.domain.cycle.CycleStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantStatus
 import com.vocalink.crossproduct.domain.participant.ParticipantType
-import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.*
-import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.*
-import com.vocalink.crossproduct.domain.reference.MessageReferenceType.*
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.RECEIVING
+import com.vocalink.crossproduct.domain.reference.MessageReferenceDirection.SENDING
+import com.vocalink.crossproduct.domain.reference.MessageReferenceLevel.FILE
+import com.vocalink.crossproduct.domain.reference.MessageReferenceType.PAYMENT
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto
-import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto
+import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade
 import com.vocalink.crossproduct.ui.presenter.ClientType
 import java.time.LocalDate
@@ -119,6 +121,18 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
         "sessionCode": "03",
         "status": "OPEN"
         }]
+        """
+        const val VALID_OUTPUT_FLOW_REFERENCES_RESPONSE: String = """
+        [
+            {
+              "messageType": "camt.056.001.01",
+              "editable": true,
+              "outputVolumeMin": 20,
+              "outputVolumeMax": 100000,
+              "outputTimeMin": 10,
+              "outputTimeMax": 60
+            }
+        ]
         """
     }
 
@@ -320,5 +334,27 @@ class ReferenceControllerTest constructor(@Autowired var mockMvc: MockMvc) {
                 .header(CONTEXT_HEADER, CONTEXT)
                 .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
                 .andExpect(status().is5xxServerError)
+    }
+
+    @Test
+    fun `should get 200 for find output flow references wth valid response`() {
+        val references = listOf(
+            OutputFlowReferenceDto(
+                "camt.056.001.01",
+                true,
+                20,
+                100000,
+                10,
+                60)
+        )
+
+        `when`(referencesServiceFacade.getOutputFlowReferences(CONTEXT, ClientType.UI))
+            .thenReturn(references)
+
+        mockMvc.perform(get("/reference/messages/outputflow")
+            .header(CONTEXT_HEADER, CONTEXT)
+            .header(CLIENT_TYPE_HEADER, CLIENT_TYPE))
+            .andExpect(status().isOk)
+            .andExpect(content().json(VALID_OUTPUT_FLOW_REFERENCES_RESPONSE))
     }
 }

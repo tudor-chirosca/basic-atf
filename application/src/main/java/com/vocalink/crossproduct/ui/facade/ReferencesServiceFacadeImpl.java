@@ -10,10 +10,12 @@ import com.vocalink.crossproduct.domain.participant.Participant;
 import com.vocalink.crossproduct.domain.participant.ParticipantType;
 import com.vocalink.crossproduct.domain.reference.DestinationType;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.OutputFlowReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.infrastructure.exception.NonConsistentDataException;
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.facade.api.ReferencesServiceFacade;
@@ -126,5 +128,17 @@ public class ReferencesServiceFacadeImpl implements ReferencesServiceFacade {
         .collect(toList());
 
     return presenterFactory.getPresenter(clientType).presentCycleDateReferences(cycles);
+  }
+
+  @Override
+  public List<OutputFlowReferenceDto> getOutputFlowReferences(String product,
+      ClientType clientType) {
+
+    final List<OutputFlowReference> outputFlowReferences = repositoryFactory
+        .getReferencesRepository(product)
+        .findOutputFlowReferences();
+
+    return presenterFactory.getPresenter(clientType)
+        .presentOutputFlowReferences(outputFlowReferences);
   }
 }

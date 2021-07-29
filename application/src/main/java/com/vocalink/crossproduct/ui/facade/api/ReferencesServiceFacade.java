@@ -2,6 +2,7 @@ package com.vocalink.crossproduct.ui.facade.api;
 
 import com.vocalink.crossproduct.ui.dto.cycle.DayCycleDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.presenter.ClientType;
@@ -21,4 +22,7 @@ public interface ReferencesServiceFacade {
 
   List<DayCycleDto> getDayCyclesByDate(String product, ClientType clientType, ZonedDateTime date,
       boolean settled);
+
+  List<OutputFlowReferenceDto> getOutputFlowReferences(String product,
+      ClientType clientType);
 }

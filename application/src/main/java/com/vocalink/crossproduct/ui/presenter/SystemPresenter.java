@@ -23,6 +23,7 @@ import com.vocalink.crossproduct.domain.permission.UIPermission;
 import com.vocalink.crossproduct.domain.position.IntraDayPositionGross;
 import com.vocalink.crossproduct.domain.position.ParticipantPosition;
 import com.vocalink.crossproduct.domain.reference.MessageDirectionReference;
+import com.vocalink.crossproduct.domain.reference.OutputFlowReference;
 import com.vocalink.crossproduct.domain.reference.ReasonCodeReference.Validation;
 import com.vocalink.crossproduct.domain.report.Report;
 import com.vocalink.crossproduct.domain.routing.RoutingRecord;
@@ -56,6 +57,7 @@ import com.vocalink.crossproduct.ui.dto.participant.ManagedParticipantDto;
 import com.vocalink.crossproduct.ui.dto.participant.ParticipantConfigurationDto;
 import com.vocalink.crossproduct.ui.dto.permission.CurrentUserInfoDto;
 import com.vocalink.crossproduct.ui.dto.reference.MessageDirectionReferenceDto;
+import com.vocalink.crossproduct.ui.dto.reference.OutputFlowReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ParticipantReferenceDto;
 import com.vocalink.crossproduct.ui.dto.reference.ReasonCodeReferenceDto;
 import com.vocalink.crossproduct.ui.dto.report.ReportDto;
@@ -326,6 +328,12 @@ public class SystemPresenter implements Presenter {
   @Override
   public CurrentUserInfoDto presentCurrentUserInfo(Participant participant, List<UIPermission> permissions,
       AuditDetails auditDetails) {
+    throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
+  }
+
+  @Override
+  public List<OutputFlowReferenceDto> presentOutputFlowReferences(
+      List<OutputFlowReference> outputFlowReferences) {
     throw new UILayerException(SYSTEM_API_NOT_IMPLEMENTED);
   }
 }

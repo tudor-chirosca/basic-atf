@@ -61,6 +61,9 @@ bps-config:
     statuses-path:
       path: /reference/status/{schemeCode}/{level}/readAll
       base: MOCK
+    output-flow-references-path:
+      path: /reference/messages/outputFlow/{schemeCode}/readAll
+      base: MOCK
     batch-enquiries-path:
       path: /enquiries/batches/{schemeCode}/readAll
       base: MOCK
