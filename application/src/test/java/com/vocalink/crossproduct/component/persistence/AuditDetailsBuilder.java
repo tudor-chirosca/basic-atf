@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -79,5 +80,10 @@ public class AuditDetailsBuilder implements AuditDetailsRepository {
     @Override
     public List<AuditDetails> getAuditDetailsByCorrelationId(String id) {
         return null;
+    }
+
+    @Override
+    public Optional<UserDetails> getUserDetailsById(String participantId, String userId) {
+        return Optional.empty();
     }
 }
