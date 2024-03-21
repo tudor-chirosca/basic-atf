@@ -1,6 +1,0 @@
-paths:
-  - name: Alerts
-    path: /positions-mock-server/alerts
-
-  - name: Alerts Reference
-    path: /positions-mock-server/reference/alerts

@@ -1,6 +1,0 @@
-staticData                 ,someStaticData
-randomAlpha                ,generateRandomAlphanumeric(35)
-randomNumber		       ,generateRandomNumber(3)
-dateTime_1				   ,dateTimeNow(yyyy-MM-dd'T'HH:mm:ss.SSS'Z':::UTC)
-dateTime_2                 ,dateTimeNow(yyyy-MM-dd)
-dateTime_3                 ,dateTimeNow(yyyy-MM-dd:::UTC)

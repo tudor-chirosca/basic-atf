@@ -1,1 +1,0 @@
-ALTER TABLE user_audit_details MODIFY (contents VARCHAR(2000));

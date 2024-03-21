@@ -1,1 +1,0 @@
-DELETE FROM ROLE WHERE function='SCHEME';
